@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{73AE2514-FBA3-4B43-B17F-5ECAE203B28C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Aero</RootNamespace>
+    <AssemblyName>Aero.Universal</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile32</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\Aero.Core.Universal\Aero.Core.Universal.csproj">
+      <Project>{f1c233f3-a862-45fd-b745-9f107132f0b7}</Project>
+      <Name>Aero.Core.Universal</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
+    <TargetPlatform Include="Windows, Version=8.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Converters\AnyConverter.cs" />
+    <Compile Include="Converters\BooleanConverter.cs" />
+    <Compile Include="Converters\EqualsConverter.cs" />
+    <Compile Include="Converters\LetterCaseConverter.cs" />
+    <Compile Include="Converters\NumericCompareConverter.cs" />
+    <Compile Include="Converters\Patterns\ICompositeConverter.cs" />
+    <Compile Include="Converters\Patterns\IInlineConverter.cs" />
+    <Compile Include="Converters\Patterns\ISwitchConverter.cs" />
+    <Compile Include="Converters\SwitchConverter.cs" />
+    <Compile Include="LocalizationSource.cs" />
+    <Compile Include="Markup\Attacher.cs" />
+    <Compile Include="Markup\Patterns\ABindingExtension.cs" />
+    <Compile Include="Markup\Case.cs" />
+    <Compile Include="Markup\Context.cs" />
+    <Compile Include="Markup\ContextTrigger.cs" />
+    <Compile Include="Markup\Localizing.cs" />
+    <Compile Include="Markup\Localizing.Manager.cs" />
+    <Compile Include="Markup\Rack.cs" />
+    <Compile Include="Markup\Set.cs" />
+    <Compile Include="Markup\Smart.cs" />
+    <Compile Include="Markup\Store.cs" />
+    <Compile Include="Specific\Core.Store.cs" />
+    <Compile Include="Specific\KeyFileStorage.Store.cs" />
+    <Compile Include="VisualTree.Sugar.cs" />
+    <Compile Include="Adapters\Async.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aero.Core\Aero.Core.Universal.csproj">
+      <Project>{2582f9f6-c381-475e-b454-4c1e4d323269}</Project>
+      <Name>Aero.Core.Portable</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

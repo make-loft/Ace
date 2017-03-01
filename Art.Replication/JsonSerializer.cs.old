@@ -1,0 +1,343 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
+
+namespace Yandex.Metrica.Aides
+{
+    public static class Standard
+    {
+        public static TItem FromJsonStandard<TItem>(this string json, DataContractJsonSerializerSettings settings = null)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(TItem),
+                settings ??
+                new DataContractJsonSerializerSettings
+                {
+                    UseSimpleDictionaryFormat = true,
+                    KnownTypes = new List<Type> { typeof(Dictionary<string, object>) }
+                });
+
+            using (var stream = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+            {
+                return (TItem)serializer.ReadObject(stream);
+            }
+        }
+
+
+        public static string ToJsonStandard<TItem>(this TItem item, DataContractJsonSerializerSettings settings = null)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(TItem),
+                settings ??
+                new DataContractJsonSerializerSettings
+                {
+                    UseSimpleDictionaryFormat = true,
+                    KnownTypes = new List<Type> { typeof(Dictionary<string, object>) }
+                });
+
+            using (var stream = new MemoryStream())
+            {
+                serializer.WriteObject(stream, item);
+                stream.Position = 0;
+                var bytes = stream.ToArray();
+                return Encoding.Unicode.GetString(bytes, 0, bytes.Length);
+            }
+        }
+    }
+
+    public class JsonProfile
+    {
+        public readonly string KeyValuePairName = "KeyValuePair`";
+        public string NullLiteral { get; set; }
+        public string TrueLiteral { get; set; }
+        public string FalseLiteral { get; set; }
+        public string EmptyArray { get; set; }
+        public string EmptyObject { get; set; }
+        public string DictionaryEntryPattern { get; set; }
+        public DateTimeFormat DateTimeFormat { get; set; }
+        public bool SimpleDictionaryFormat { get; set; }
+        public string IndentChars { get; set; }
+        public string NewLine { get; set; }
+        public string Delimiter { get; set; }
+
+        public static JsonProfile GetFormatted()
+        {
+            return new JsonProfile
+            {
+                NullLiteral = "null",
+                TrueLiteral = "true",
+                FalseLiteral = "false",
+                EmptyArray = "[ ]",
+                EmptyObject = "{ }",
+                DictionaryEntryPattern = "\"{0}\": {1}",
+                SimpleDictionaryFormat = true,
+                IndentChars = "  ",
+                NewLine = Environment.NewLine,
+                Delimiter = ","
+            };
+        }
+
+        public static JsonProfile GetCompact()
+        {
+            return new JsonProfile
+            {
+                NullLiteral = "null",
+                TrueLiteral = "true",
+                FalseLiteral = "false",
+                EmptyArray = "[]",
+                EmptyObject = "{}",
+                DictionaryEntryPattern = "\"{0}\":{1}",
+                SimpleDictionaryFormat = true,
+                IndentChars = "",
+                NewLine = "",
+                Delimiter = ","
+            };
+        }
+    }
+
+    public static class JsonSerializer
+    {
+        private static string GetIndent(int indentLevel, string indent)
+        {
+            var result = string.Empty;
+            for (var i = 0; i < indentLevel; i++)
+            {
+                result += indent;
+            }
+
+            return result;
+        }
+
+        public static string ToJson(this object value, Type memberType = null)
+        {
+            return ToJson(value, JsonProfile.GetFormatted(), memberType);
+        }
+
+        public static string ToJson(this object value, JsonProfile profile, Type memberType = null, int indentLevel = 1)
+        {
+            return
+                IsSimpleValue(value, profile)
+                    ? ToSimpleValue(value, profile)
+                    : IsArray(value, profile)
+                        ? ToArray(value, profile, indentLevel)
+                        : ToObject(value, profile, memberType, indentLevel);
+        }
+
+        private static bool IsSimpleValue(this object value, JsonProfile profile)
+        {
+            return value == null || value is string || value is Guid || value is Uri || value is DateTime || value is decimal || value is Enum ||
+                   value.GetType().GetTypeInfo().IsPrimitive ||
+                   (profile.SimpleDictionaryFormat &&
+                    (value.GetType().Name.StartsWith(profile.KeyValuePairName) || value is DictionaryEntry));
+        }
+
+        private static bool IsArray(this object value, JsonProfile profile)
+        {
+            if (profile.SimpleDictionaryFormat && value is IDictionary) return false;
+            var collection = value as ICollection;
+            return collection != null && !collection.GetType().GetCustomAttributes(typeof(DataContractAttribute), true).Any();
+        }
+
+        internal static readonly long DatetimeMinTimeTicks = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Ticks;
+
+        private static string ToSimpleValue(this object value, JsonProfile profile)
+        {
+            if (value == null) return profile.NullLiteral;
+            if (value is string || value is Guid || value is Uri) return '"' + Escape(value.ToString()) + '"';
+            if (value is decimal) return ((decimal)value).ToString("G", CultureInfo.InvariantCulture);
+            if (value is double) return ((double)value).ToString("G", CultureInfo.InvariantCulture);
+            if (value is float) return ((float)value).ToString("G", CultureInfo.InvariantCulture);
+            if (value is Enum) return ((int)value).ToString();
+            if (profile.SimpleDictionaryFormat && value is DictionaryEntry)
+            {
+                var entry = (DictionaryEntry)value;
+                return string.Format(profile.DictionaryEntryPattern,
+                    Escape(entry.Key.ToString()), ToJson(entry.Value, profile, typeof(object)));
+            }
+            if (value is DateTime)
+            {
+                var datetime = (DateTime)value;
+                return profile.DateTimeFormat != null
+                    ? datetime.ToString(profile.DateTimeFormat.FormatProvider)
+                    : @"""\/Date(" + (datetime.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
+                      DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
+            }
+            return Equals(value, true)
+                ? profile.TrueLiteral
+                : Equals(value, false)
+                ? profile.FalseLiteral
+                : Escape(value.ToString());
+        }
+
+        private static string ToArray(this object value, JsonProfile profile, int indentLevel)
+        {
+            var collection = value as ICollection;
+            if (collection == null || collection.Count == 0) return profile.EmptyArray;
+            var profileDelimiter = profile.NewLine + GetIndent(indentLevel - 1, profile.IndentChars);
+            var indent = profile.NewLine + GetIndent(indentLevel, profile.IndentChars);
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append(collection, profile, profile.Delimiter, profileDelimiter, indent, indentLevel);
+            return "[" + jsonBuilder + "]";
+        }
+
+        private static string ToObject(this object value, JsonProfile profile, Type memberType, int indentLevel)
+        {
+            var jsonBuilder = new StringBuilder();
+            var indent = profile.NewLine + GetIndent(indentLevel, profile.IndentChars);
+            var emptyDelimiter = profile.NewLine + GetIndent(indentLevel - 1, profile.IndentChars);
+
+            var dictionary = value as IDictionary;
+            if (dictionary != null && profile.SimpleDictionaryFormat)
+            {
+                if (dictionary.Count == 0) return profile.EmptyObject;
+                jsonBuilder.Append(dictionary, profile, profile.Delimiter, emptyDelimiter, indent);
+            }
+            else
+            {
+                var type = value.GetType();
+                var dataMembers = GetDataMembers(value);
+                var isEmpty = dataMembers.Count == 0;
+                if (memberType != null && memberType != type)
+                {
+                    var delimiter = isEmpty ? emptyDelimiter : profile.Delimiter;
+                    jsonBuilder.Append(indent);
+                    var typeName = type.FullName
+                        .Substring(type.Namespace?.Length + 1 ?? 0).Replace("+", ".");
+                    jsonBuilder.Append(string.Format(profile.DictionaryEntryPattern, "__type",
+                        '"' + typeName + ":#" + type.Namespace + '"'));
+                    jsonBuilder.Append(delimiter);
+                    if (isEmpty) return "{" + jsonBuilder + "}";
+                }
+                if (isEmpty) return profile.EmptyObject;
+
+                var members = dataMembers.ToDictionary(p => p.Key,
+                    p => p.Value.GetValue(value).ToJson(profile, p.Value.GetMemberType(), indentLevel + 1));
+
+                jsonBuilder.Append(members, profile.DictionaryEntryPattern, profile.Delimiter, emptyDelimiter, indent);
+            }
+
+            return "{" + jsonBuilder + "}";
+        }
+
+        private static Dictionary<string, MemberInfo> GetDataMembers(object item)
+        {
+            var type = item.GetType();
+            var dataFields = item is DictionaryEntry
+                ? type.GetMembers().ToDictionary(i => i, i => (DataMemberAttribute)null).ToList()
+                : type.GetMembers().ToDictionary(i => i, i => i.GetCustomAttribute<DataMemberAttribute>()).Where(p => p.Value != null)
+                .OrderBy(p => p.Value.Name).ThenBy(p => p.Value.Order)
+                .ToList();
+            return dataFields.ToDictionary(p => p.Value == null ? p.Key.Name : p.Value.Name ?? p.Key.Name, p => p.Key);
+        }
+
+        private static Type GetMemberType(this MemberInfo memberInfo)
+        {
+            var propertyInfo = memberInfo as PropertyInfo;
+            if (propertyInfo != null) return propertyInfo.PropertyType;
+            var fieldInfo = memberInfo as FieldInfo;
+            if (fieldInfo != null) return fieldInfo.FieldType;
+            return null;
+        }
+
+        private static object GetValue(this MemberInfo memberInfo, object obj)
+        {
+            var propertyInfo = memberInfo as PropertyInfo;
+            if (propertyInfo != null) return propertyInfo.GetValue(obj, null);
+            var fieldInfo = memberInfo as FieldInfo;
+            if (fieldInfo != null) return fieldInfo.GetValue(obj);
+            return null;
+        }
+
+        private static void Append(
+            this StringBuilder jsonBuilder, Dictionary<string, string> items,
+            string keyValuePattern, string actualDelimiter, string emptyDelimiter, string indent)
+        {
+            var counter = 1;
+            foreach (var item in items)
+            {
+                var delimiter = counter++ == items.Count ? emptyDelimiter : actualDelimiter;
+                jsonBuilder.Append(indent);
+                jsonBuilder.Append(string.Format(keyValuePattern, item.Key, item.Value));
+                jsonBuilder.Append(delimiter);
+            }
+        }
+
+        private static void Append(
+            this StringBuilder jsonBuilder, IDictionary items, // Important! Use IDictionary instead ICollection
+            JsonProfile profile, string actualDelimiter, string emptyDelimiter, string indent)
+        {
+            var counter = 1;
+            foreach (var item in items)
+            {
+                var delimiter = counter++ == items.Count ? emptyDelimiter : actualDelimiter;
+                jsonBuilder.Append(indent);
+                jsonBuilder.Append(ToJson(item, profile));
+                jsonBuilder.Append(delimiter);
+            }
+        }
+
+        private static void Append(
+            this StringBuilder jsonBuilder, ICollection items,
+            JsonProfile profile, string actualDelimiter, string emptyDelimiter, string indent, int indentLevel)
+        {
+            var counter = 1;
+            foreach (var item in items)
+            {
+                var delimiter = counter++ == items.Count ? emptyDelimiter : actualDelimiter;
+                jsonBuilder.Append(indent);
+                jsonBuilder.Append(ToJson(item, profile, typeof(object), indentLevel + 1));
+                jsonBuilder.Append(delimiter);
+            }
+        }
+
+        public static string Escape(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return "";
+
+            var jsonBuilder = new StringBuilder();
+            foreach (var c in value)
+            {
+                switch (c)
+                {
+                    case '\"':
+                        jsonBuilder.Append("\\\"");
+                        break;
+                    case '\\':
+                        jsonBuilder.Append("\\\\");
+                        break;
+                    case '/':
+                        jsonBuilder.Append("\\/");
+                        break;
+                    //case '\b':
+                    //    jsonBuilder.Append("\\b");
+                    //    break;
+                    //case '\f':
+                    //    jsonBuilder.Append("\\f");
+                    //    break;
+                    //case '\n':
+                    //    jsonBuilder.Append("\\n");
+                    //    break;
+                    //case '\r':
+                    //    jsonBuilder.Append("\\r");
+                    //    break;
+                    //case '\t':
+                    //    jsonBuilder.Append("\\t");
+                    //    break;
+                    default:
+                        int i = c;
+                        if (i < 32 || i > 127)
+                            jsonBuilder.AppendFormat("\\u{0:x04}", i);
+                        else jsonBuilder.Append(c);
+                        break;
+                }
+            }
+
+            return jsonBuilder.ToString();
+        }
+    }
+}
