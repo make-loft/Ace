@@ -9,6 +9,7 @@ namespace Art.Replication
     {
         public readonly string IdKey = "#Id";
         public readonly string SetKey = "#Set";
+        public readonly string MapKey = "#Map";
         public readonly string TypeKey = "#Type";
         public readonly string SetTypeKey = "#SetType";
         public bool AttachTypeInfo = true;

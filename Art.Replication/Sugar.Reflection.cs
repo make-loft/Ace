@@ -7,13 +7,13 @@ namespace Art.Replication
         public static bool CanRead(this MemberInfo member)
         {
             var property = member as PropertyInfo;
-            return property != null ? property.CanRead : member is FieldInfo;
+            return property?.CanRead ?? member is FieldInfo;
         }
 
         public static bool CanWrite(this MemberInfo member)
         {
             var property = member as PropertyInfo;
-            return property != null ? property.CanWrite : member is FieldInfo;
+            return property?.CanWrite ?? member is FieldInfo;
         }
 
         public static bool CanReadWrite(this MemberInfo member) => CanRead(member) && CanWrite(member);
@@ -27,9 +27,9 @@ namespace Art.Replication
         public static void SetValue(this MemberInfo member, object obj, object value)
         {
             var property = member as PropertyInfo;
-            if (property != null) property.SetValue(obj, value);
+            property?.SetValue(obj, value, null);
             var field = member as FieldInfo;
-            if (field != null) field.SetValue(obj, value);
+            field?.SetValue(obj, value);
         }
     }
 }

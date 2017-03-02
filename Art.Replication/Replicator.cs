@@ -24,6 +24,9 @@ namespace Art.Replication
 
             if (ActiveProfile.AttachId) snapshot.Add(ActiveProfile.IdKey, id);
             if (ActiveProfile.AttachTypeInfo || master is IEnumerable) snapshot.Add(ActiveProfile.TypeKey, type);
+            //if (master is IDictionary map)
+            //    snapshot.Add(ActiveProfile.MapKey, new Map(map));
+            //else 
             if (master is IEnumerable set)
                 snapshot.Add(ActiveProfile.SetKey, new Set(set.Cast<object>().Select(TranscribeSnapshotFrom)));
 
@@ -40,7 +43,8 @@ namespace Art.Replication
             var id = (int) snapshot[ActiveProfile.IdKey];
             if (ActiveProfile.IdToReplicaCache.TryGetValue(id, out object replica)) return replica;
 
-            var type = (Type) snapshot[ActiveProfile.TypeKey];
+            var typeValue = snapshot[ActiveProfile.TypeKey];
+            var type = typeValue is Type ? (Type) typeValue : Type.GetType(typeValue.ToString(), true);
             replica = type.IsArray
                 ? ((IEnumerable) snapshot[ActiveProfile.SetKey]).Cast<object>().Select(TranslateReplicaFrom).ToArray()
                 : ActiveProfile.IdToReplicaCache[id] = Activator.CreateInstance(type);

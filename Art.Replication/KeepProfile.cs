@@ -212,7 +212,7 @@ namespace Art.Replication
             var builder = new StringBuilder();
             var escapeFlag = false;
             var quotesFlag = data[offset] == '"';
-            if (quotesFlag) offset++;
+            if (quotesFlag) builder.Append(data[offset++]);
 
             do
             {
@@ -229,7 +229,11 @@ namespace Art.Replication
                 }
 
                 if (!quotesFlag && (char.IsWhiteSpace(c) || c == ',')) break;
-                if (c == '"' && quotesFlag && !escapeFlag) break;
+                if (c == '"' && quotesFlag && !escapeFlag)
+                {
+                    builder.Append(c);
+                    break;
+                }
                 escapeFlag = c == '\\';
                 builder.Append(c);
             } while (true);
@@ -239,32 +243,41 @@ namespace Art.Replication
 
         public object FromSimplex(string value)
         {
+            if (value.StartsWith("\"")) return value.Substring(1, value.Length -2);
+            if (value == NullLiteral) return null;
+            if (value == TrueLiteral) return true;
+            if (value == FalseLiteral) return false;
+            if (int.TryParse(value, out var l)) return l;
+            if (float.TryParse(value, out var d)) return d;
             return value;
         }
         public string ToSimplex(object value)
         {
-            if (value == null) return NullLiteral;
-            if (value is string || value is Guid || value is Uri) return '"' + Escape(value.ToString()) + '"';
-            if (value is decimal) return ((decimal)value).ToString("G", CultureInfo.InvariantCulture);
-            if (value is double) return ((double)value).ToString("G", CultureInfo.InvariantCulture);
-            if (value is float) return ((float)value).ToString("G", CultureInfo.InvariantCulture);
-            if (value is Enum) return ((long)value).ToString();
-
-            if (value is DateTime datetime)
+            switch (value)
             {
-                return @"""\/Date(" + (datetime.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
-                       DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
-                //return DateTimeFormat != null
-                //    ? datetime.ToString(DateTimeFormat.FormatProvider)
-                //    : @"""\/Date(" + (datetime.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
-                //      DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
+                case null:
+                    return NullLiteral;
+                case bool b:
+                    return b ? TrueLiteral : FalseLiteral;
+                case string s:
+                    return '"' + Escape(s) + '"';
+                case float n:
+                    return n.ToString("G", CultureInfo.InvariantCulture);
+                case double n:
+                    return n.ToString("G", CultureInfo.InvariantCulture);
+                case decimal n:
+                    return n.ToString("G", CultureInfo.InvariantCulture);
+                case Enum e:
+                    return ((long) value).ToString();
+                case Type t:
+                    return '"' + Escape(t.AssemblyQualifiedName) + '"';
+                case DateTime d:
+                    return @"""\/Date(" + (d.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
+                           DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
+                default:
+                    return Escape(value.ToString());
+                
             }
-            if (value is Type type) return '"' + Escape(type.ToString()) + '"';
-            return Equals(value, true)
-                ? TrueLiteral
-                : Equals(value, false)
-                ? FalseLiteral
-                : Escape(value.ToString());
         }
     }
 }
