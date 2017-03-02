@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Art.Replication
@@ -23,11 +24,11 @@ namespace Art.Replication
             var snapshot = new Map();
 
             if (ActiveProfile.AttachId) snapshot.Add(ActiveProfile.IdKey, id);
-            if (ActiveProfile.AttachTypeInfo || master is IEnumerable) snapshot.Add(ActiveProfile.TypeKey, type);
-            //if (master is IDictionary map)
-            //    snapshot.Add(ActiveProfile.MapKey, new Map(map));
-            //else 
-            if (master is IEnumerable set)
+            if (ActiveProfile.AttachTypeInfo || master is IEnumerable)
+                snapshot.Add(ActiveProfile.TypeKey, type.AssemblyQualifiedName);
+            if (master is Dictionary<string, object> map)
+                snapshot.Add(ActiveProfile.MapKey, new Map(map.ToDictionary(p => p.Key, p => TranscribeSnapshotFrom(p.Value))));
+            else if (master is IEnumerable set)
                 snapshot.Add(ActiveProfile.SetKey, new Set(set.Cast<object>().Select(TranscribeSnapshotFrom)));
 
             members.ForEach(m => snapshot.Add(ActiveProfile.Schema.GetDataKey(m), TranscribeSnapshotFrom(m.GetValue(master))));
@@ -43,14 +44,15 @@ namespace Art.Replication
             var id = (int) snapshot[ActiveProfile.IdKey];
             if (ActiveProfile.IdToReplicaCache.TryGetValue(id, out object replica)) return replica;
 
-            var typeValue = snapshot[ActiveProfile.TypeKey];
-            var type = typeValue is Type ? (Type) typeValue : Type.GetType(typeValue.ToString(), true);
+            var type = Type.GetType(snapshot[ActiveProfile.TypeKey].ToString(), true);
             replica = type.IsArray
                 ? ((IEnumerable) snapshot[ActiveProfile.SetKey]).Cast<object>().Select(TranslateReplicaFrom).ToArray()
                 : ActiveProfile.IdToReplicaCache[id] = Activator.CreateInstance(type);
             var members = ActiveProfile.Schema.GetDataMembers(type);
             members.ForEach(m => m.SetValue(replica, TranslateReplicaFrom(snapshot[ActiveProfile.Schema.GetDataKey(m)])));
 
+            if (replica is IDictionary<string, object> map)
+                ((Map) snapshot[ActiveProfile.MapKey]).ToList().ForEach(p => map.Add(p.Key, p.Value));
             if (replica is IList set && !set.GetType().IsArray)
                 ((IEnumerable)snapshot[ActiveProfile.SetKey]).Cast<object>()
                     .Select(TranslateReplicaFrom)

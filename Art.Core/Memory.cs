@@ -50,7 +50,7 @@ namespace Aero
                     try
                     {
                         var data = File.ReadAllText(storageKey);
-                        int i = 0;
+                        var i = 0;
                         var snapshot = data.Capture(KeepProfile, ref i);
                         var item = (TValue)Replicator.TranslateReplicaFrom(snapshot);
                         if (Equals(item, null)) throw new Exception();

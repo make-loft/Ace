@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 //using System.Runtime.Serialization;
 using System.Text;
 
@@ -29,24 +28,6 @@ namespace Art.Replication
         public string SetHead { get; set; } = "[";
         public string SetTail { get; set; } = "]";
         public bool UseTailDelimiter { get; set; }
-
-        //public string GetHead(object value)
-        //{
-        //    return value is Dictionary<string, object>
-        //        ? MapHead
-        //        : value is Array
-        //            ? SetHead
-        //            : "";
-        //}
-
-        //public string GetTail(object value)
-        //{
-        //    return value is Dictionary<string, object>
-        //        ? MapTail
-        //        : value is Array
-        //            ? SetTail
-        //            : "";
-        //}
 
         public string GetMapHead(Map map) => MapHead;
 
@@ -196,9 +177,12 @@ namespace Art.Replication
             foreach (var c in value)
             {
                 if (EscapeChars.TryGetValue(c, out var s)) builder.Append(s);
-                int i = c;
-                if (i < 32 || 127 < i) builder.AppendFormat("\\u{0:x04}", i);
-                else builder.Append(c);
+                else
+                {
+                    int i = c;
+                    if (i < 32 || 127 < i) builder.AppendFormat("\\u{0:x04}", i);
+                    else builder.Append(c);
+                }
             }
 
             return builder.ToString();
@@ -219,12 +203,17 @@ namespace Art.Replication
                 var c = data[offset++];
                 if (escapeFlag)
                 {
-                    if (UnescapeChars.TryGetValue(c, out var s)) builder.Append(s);
+                    if (UnescapeChars.TryGetValue(c, out var s))
+                    {
+                        builder.Append(s);
+                        continue;
+                    }
                     if (c == 'u')
                     {
                         c = (char) int.Parse(data.Substring(offset, 4));
                         builder.Append(c);
                         offset += 4;
+                        continue;
                     }
                 }
 
@@ -235,7 +224,7 @@ namespace Art.Replication
                     break;
                 }
                 escapeFlag = c == '\\';
-                builder.Append(c);
+                if (!escapeFlag) builder.Append(c);
             } while (true);
 
             return builder.ToString();

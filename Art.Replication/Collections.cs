@@ -4,6 +4,14 @@ namespace Art.Replication
 {
     public class Map : Dictionary<string, object>
     {
+        public Map()
+        {
+        }
+
+        public Map(IDictionary<string, object> dictionary) : base(dictionary)
+        {
+
+        }
     }
 
     public class Set : List<object>
