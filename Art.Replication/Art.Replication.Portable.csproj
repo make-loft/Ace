@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\Adapters.cs" />
+    <Compile Include="EscapeProfile.cs" />
     <Compile Include="KeepProfile.cs" />
     <None Include="Models\Data\ContractProfile.cs.old" />
     <Compile Include="Models\Data\GeneralProfile.cs" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 //using System.Runtime.Serialization;
 using System.Text;
@@ -149,92 +148,23 @@ namespace Art.Replication
             return key;
         }
 
-        public char EscapeChar = '\\';
 
-        public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
-        {
-            {'\"', "\\\""},
-            {'\\', "\\\\"},
-            {'/', "\\/"},
-            {'\b', "\\b"},
-            {'\f', "\\f"},
-            {'\n', "\\n"},
-            {'\r', "\\r"},
-            {'\t', "\\t"},
-        };
+        public bool AppendSyffixToNumbers;
 
-        public Dictionary<char, char> UnescapeChars = new Dictionary<char, char>
-        {
-            {'"', '\"'},
-            {'\\', '\\'},
-            {'/', '/'},
-            {'b', '\b'},
-            {'f', '\f'},
-            {'n', '\n'},
-            {'r', '\r'},
-            {'t', '\t'},
-        };
+        public bool AppendSyffixToDouble;
 
-        public string Escape(string value)
-        {
-            if (string.IsNullOrEmpty(value)) return value;
+        public string RealNumbersFormat = "G";
 
-            var builder = new StringBuilder();
-            foreach (var c in value)
-            {
-                if (EscapeChars.TryGetValue(c, out var s)) builder.Append(s);
-                else
-                {
-                    int i = c;
-                    if (i < 32 || 127 < i) builder.AppendFormat("\\u{0:x04}", i);
-                    else builder.Append(c);
-                }
-            }
+        public string IntegerNumbersFormat = "G";
 
-            return builder.ToString();
-        }
+        public CultureInfo ActiveCulture = CultureInfo.InvariantCulture;
 
+        public EscapeProfile EscapeProfile = new EscapeProfile();
 
         public string CaptureSimplex(string data, ref int offset)
         {
             SkipWhiteSpace(data, ref offset);
-
-            var builder = new StringBuilder();
-            var escapeFlag = false;
-            var quotesFlag = data[offset] == '"';
-            if (quotesFlag) builder.Append(data[offset++]);
-
-            do
-            {
-                var c = data[offset++];
-                if (escapeFlag)
-                {
-                    if (UnescapeChars.TryGetValue(c, out var s))
-                    {
-                        builder.Append(s);
-                        continue;
-                    }
-                    if (c == 'u')
-                    {
-                        c = (char) int.Parse(data.Substring(offset, 4));
-                        builder.Append(c);
-                        offset += 4;
-                        continue;
-                    }
-                }
-
-                if (!quotesFlag && (char.IsWhiteSpace(c) || c == ',')) break;
-                if (c == '"' && quotesFlag && !escapeFlag)
-                {
-                    builder.Append(c);
-                    break;
-                }
-                
-                escapeFlag = c == EscapeChar;
-                if (!escapeFlag) builder.Append(c);
-            } while (true);
-
-            return builder.ToString();
+            return EscapeProfile.CaptureSimplex(data, ref offset);
         }
 
         public object FromSimplex(string value)
@@ -256,16 +186,6 @@ namespace Art.Replication
 
             return value;
         }
-
-        public bool AppendSyffixToNumbers;
-
-        public bool AppendSyffixToDouble;
-
-        public string RealNumbersFormat = "G";
-
-        public string IntegerNumbersFormat = "G";
-
-        public CultureInfo ActiveCulture = CultureInfo.InvariantCulture;
 
         public string ToSimplex(object value)
         {
@@ -299,7 +219,7 @@ namespace Art.Replication
                 case bool b:
                     return b ? TrueLiteral : FalseLiteral;
                 case string s:
-                    return '"' + Escape(s) + '"';
+                    return EscapeProfile.Escape(s);
                 case float n:
                     return n.ToString(RealNumbersFormat, ActiveCulture);
                 case double n when AppendSyffixToDouble:
@@ -312,12 +232,12 @@ namespace Art.Replication
                 case Enum e:
                     return ((long) value).ToString();
                 case Type t:
-                    return '"' + Escape(t.AssemblyQualifiedName) + '"';
+                    return EscapeProfile.Escape(t.AssemblyQualifiedName);
                 case DateTime d:
                     return @"""\/Date(" + (d.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
                            DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
                 default:
-                    return Escape(value.ToString());
+                    return value.ToString();
 
             }
         }
