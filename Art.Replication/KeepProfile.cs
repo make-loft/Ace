@@ -13,14 +13,17 @@ namespace Art.Replication
         public const string Set = "Set";
         public const string Simplex = "Simplex";
         public ReplicationProfile ReplicationProfile { get; set; }
-        public string NullLiteral { get; set; }
-        public string TrueLiteral { get; set; }
+        public string NullLiteral;
+        public string TrueLiteral;
         public string FalseLiteral { get; set; }
         public string EmptyArray { get; set; }
         public string EmptyObject { get; set; }
+
         public string MapPairSplitter { get; set; }
+
         //public DateTimeFormat DateTimeFormat { get; set; }
         public string IndentChars { get; set; }
+
         public string NewLineChars { get; set; }
         public string Delimiter { get; set; }
         public string MapHead { get; set; } = "{";
@@ -67,7 +70,7 @@ namespace Art.Replication
 
         public void SkipTailIndent(string data, ref int offset)
         {
-            while (offset < data.Length && (char.IsWhiteSpace(data[offset])||data[offset] == ',')) offset++;
+            while (offset < data.Length && (char.IsWhiteSpace(data[offset]) || data[offset] == ',')) offset++;
         }
 
         public bool MatchMapHead(string data, ref int offset) => Match(data, ref offset, MapHead);
@@ -111,7 +114,8 @@ namespace Art.Replication
             return isMap ? MatchMapTail(data, ref offset) : MatchSetTail(data, ref offset);
         }
 
-        internal static readonly long DatetimeMinTimeTicks = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Ticks;
+        internal static readonly long DatetimeMinTimeTicks =
+            (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Ticks;
 
         public static KeepProfile GetFormatted()
         {
@@ -144,6 +148,8 @@ namespace Art.Replication
             offset = splitterIndex + MapPairSplitter.Length;
             return key;
         }
+
+        public char EscapeChar = '\\';
 
         public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
         {
@@ -223,7 +229,8 @@ namespace Art.Replication
                     builder.Append(c);
                     break;
                 }
-                escapeFlag = c == '\\';
+                
+                escapeFlag = c == EscapeChar;
                 if (!escapeFlag) builder.Append(c);
             } while (true);
 
@@ -232,16 +239,59 @@ namespace Art.Replication
 
         public object FromSimplex(string value)
         {
-            if (value.StartsWith("\"")) return value.Substring(1, value.Length -2);
+            if (value.StartsWith("\"")) return value.Substring(1, value.Length - 2);
             if (value == NullLiteral) return null;
             if (value == TrueLiteral) return true;
             if (value == FalseLiteral) return false;
-            if (int.TryParse(value, out var l)) return l;
-            if (float.TryParse(value, out var d)) return d;
+
+            if (int.TryParse(value, out var i)) return i;
+            if (double.TryParse(value, out var r)) return r;
+
+            var number = value.ToUpper();
+            if ((value.EndsWith("UL") || value.EndsWith("LU")) && ulong.TryParse(number, out var ul)) return ul;
+            if (value.EndsWith("U") && uint.TryParse(number, out var u)) return u;
+            if (value.EndsWith("D") && uint.TryParse(number, out var d)) return d;
+            if (value.EndsWith("F") && uint.TryParse(number, out var f)) return f;
+            if (value.EndsWith("M") && uint.TryParse(number, out var m)) return m;
+
             return value;
         }
+
+        public bool AppendSyffixToNumbers;
+
+        public bool AppendSyffixToDouble;
+
+        public string RealNumbersFormat = "G";
+
+        public string IntegerNumbersFormat = "G";
+
+        public CultureInfo ActiveCulture = CultureInfo.InvariantCulture;
+
         public string ToSimplex(object value)
         {
+            if (AppendSyffixToNumbers)
+            {
+                switch (value)
+                {
+                    case int i:
+                        return i.ToString(IntegerNumbersFormat);
+                    case uint i:
+                        return i.ToString(IntegerNumbersFormat) + "U";
+                    case long i:
+                        return i.ToString(IntegerNumbersFormat) + "L";
+                    case ulong i:
+                        return i.ToString(IntegerNumbersFormat) + "UL";
+                    case float n:
+                        return n.ToString(RealNumbersFormat, ActiveCulture) + "F";
+                    case double n when AppendSyffixToDouble:
+                        return n.ToString(RealNumbersFormat, ActiveCulture) + "D";
+                    case double n:
+                        return n.ToString(RealNumbersFormat, ActiveCulture);
+                    case decimal m:
+                        return m.ToString(RealNumbersFormat, ActiveCulture) + "M";
+                }
+            }
+
             switch (value)
             {
                 case null:
@@ -251,11 +301,14 @@ namespace Art.Replication
                 case string s:
                     return '"' + Escape(s) + '"';
                 case float n:
-                    return n.ToString("G", CultureInfo.InvariantCulture);
+                    return n.ToString(RealNumbersFormat, ActiveCulture);
+                case double n when AppendSyffixToDouble:
+                    return n.ToString(RealNumbersFormat, ActiveCulture);
                 case double n:
-                    return n.ToString("G", CultureInfo.InvariantCulture);
-                case decimal n:
-                    return n.ToString("G", CultureInfo.InvariantCulture);
+                    return n.ToString(RealNumbersFormat, ActiveCulture);
+                case decimal m:
+                    return m.ToString(RealNumbersFormat, ActiveCulture);
+
                 case Enum e:
                     return ((long) value).ToString();
                 case Type t:
@@ -265,7 +318,7 @@ namespace Art.Replication
                            DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
                 default:
                     return Escape(value.ToString());
-                
+
             }
         }
     }

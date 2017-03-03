@@ -10,7 +10,6 @@ namespace Art.Replication
 
         public Map(IDictionary<string, object> dictionary) : base(dictionary)
         {
-
         }
     }
 

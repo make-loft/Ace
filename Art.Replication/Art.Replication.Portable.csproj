@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\Adapters.cs" />
-    <None Include="JsonSerializer.cs.old" />
     <Compile Include="KeepProfile.cs" />
     <None Include="Models\Data\ContractProfile.cs.old" />
     <Compile Include="Models\Data\GeneralProfile.cs" />

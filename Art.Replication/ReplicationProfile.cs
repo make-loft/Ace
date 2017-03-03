@@ -7,11 +7,10 @@ namespace Art.Replication
 {
     public class ReplicationProfile
     {
-        public readonly string IdKey = "#Id";
-        public readonly string SetKey = "#Set";
-        public readonly string MapKey = "#Map";
-        public readonly string TypeKey = "#Type";
-        public readonly string SetTypeKey = "#SetType";
+        public string IdKey = "#Id";
+        public string SetKey = "#Set";
+        public string MapKey = "#Map";
+        public string TypeKey = "#Type";
         public bool AttachTypeInfo = true;
         public bool AttachId = true;
 
