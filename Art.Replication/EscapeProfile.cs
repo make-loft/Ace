@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Art.Replication
@@ -44,7 +45,8 @@ namespace Art.Replication
             foreach (var c in value)
             {
                 if (escapeChars.TryGetValue(c, out var s)) builder.Append(s);
-                else if (!verbatim)
+                else if (verbatim) builder.Append(c);
+                else
                 {
                     int i = c;
                     if (i < 32 || 127 < i) builder.AppendFormat("\\u{0:x04}", i);
@@ -71,6 +73,7 @@ namespace Art.Replication
             return builder.ToString();
         }
 
+        public char[] AllowedSimplexSymbols = { '#', '_', '+', '-', '@', '"' };
         public string CaptureSimplex(string data, ref int offset)
         {
             var builder = new StringBuilder();
@@ -93,7 +96,13 @@ namespace Art.Replication
                         builder.Append(s);
                         continue;
                     }
-                    if (c == 'u' && !useVerbatim)
+                    if (useVerbatim)
+                    {
+                        builder.Append(c);
+                        break;
+                    }
+
+                    if (c == 'u')
                     {
                         c = (char)int.Parse(data.Substring(offset, 4));
                         builder.Append(c);
@@ -102,7 +111,7 @@ namespace Art.Replication
                     }
                 }
 
-                if (!quotesFlag && !char.IsLetterOrDigit(c)) break;
+                if (!quotesFlag && !(char.IsLetterOrDigit(c) || AllowedSimplexSymbols.Contains(c))) break;
                 escapeFlag = c == escapeChar;
                 if (c == '"' && quotesFlag && !escapeFlag)
                 {

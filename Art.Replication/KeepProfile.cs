@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Globalization;
+using System.Linq;
 //using System.Runtime.Serialization;
 using System.Text;
 
@@ -57,10 +58,23 @@ namespace Art.Replication
                 : Delimiter;
         }
 
+        public void MoveToSimplex(string data, ref int offset)
+        {
+            while (offset < data.Length && !(char.IsLetterOrDigit(data[offset]) ||
+                EscapeProfile.AllowedSimplexSymbols.Contains(data[offset]))) offset++;
+        }
+
+        public void MoveToItem(string data, ref int offset)
+        {
+            while (offset < data.Length && !IsItem(data[offset])) offset++;
+        }
+
         public void SkipWhiteSpace(string data, ref int offset)
         {
             while (offset < data.Length && char.IsWhiteSpace(data[offset])) offset++;
         }
+
+        public bool IsItem(char c) => char.IsLetterOrDigit(c) || EscapeProfile.AllowedSimplexSymbols.Contains(c) || c == '{' || c == '[';
 
         public void SkipHeadIndent(string data, ref int offset)
         {
@@ -69,7 +83,9 @@ namespace Art.Replication
 
         public void SkipTailIndent(string data, ref int offset)
         {
-            while (offset < data.Length && (char.IsWhiteSpace(data[offset]) || data[offset] == ',')) offset++;
+            while (offset < data.Length && 
+                (char.IsWhiteSpace(data[offset]) || 
+                data[offset] == ',' || data[offset] == ';' || data[offset] == '.')) offset++;
         }
 
         public bool MatchMapHead(string data, ref int offset) => Match(data, ref offset, MapHead);
@@ -89,7 +105,7 @@ namespace Art.Replication
 
         public string MatchHead(string data, ref int offset)
         {
-            SkipWhiteSpace(data, ref offset);
+            MoveToItem(data, ref offset);
             return MatchMapHead(data, ref offset)
                 ? Map
                 : MatchSetHead(data, ref offset)
@@ -138,17 +154,6 @@ namespace Art.Replication
             builder.Append(MapPairSplitter);
         }
 
-        public string CaptureKey(string data, ref int offset)
-        {
-            var keyStart = offset;
-            var splitterIndex = data.IndexOf(MapPairSplitter, keyStart, StringComparison.OrdinalIgnoreCase);
-            var keyLength = splitterIndex - keyStart;
-            var key = data.Substring(keyStart, keyLength).Trim();
-            offset = splitterIndex + MapPairSplitter.Length;
-            return key;
-        }
-
-
         public bool AppendSyffixToNumbers;
 
         public bool AppendSyffixToDouble;
@@ -163,7 +168,7 @@ namespace Art.Replication
 
         public string CaptureSimplex(string data, ref int offset)
         {
-            SkipWhiteSpace(data, ref offset);
+            MoveToSimplex(data, ref offset);
             return EscapeProfile.CaptureSimplex(data, ref offset);
         }
 

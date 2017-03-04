@@ -16,7 +16,7 @@ namespace Aero
             var item = Memory.ActiveBox.Revive<TItem>(null, constructorArgs);
             Container.Add(itemType, item);
             var exposable = item as IExposable;
-            if (exposable != null) exposable.Expose();
+            exposable?.Expose();
             return item;
         }
 

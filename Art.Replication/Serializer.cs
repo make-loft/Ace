@@ -54,7 +54,7 @@ namespace Art.Replication
 
                 if (items is Map map)
                 {
-                    var key = profile.CaptureKey(data, ref offset);
+                    var key = profile.CaptureSimplex(data, ref offset);
                     map.Add(key, Capture(data, profile, ref offset));
                 }
                 else if (items is Set set) set.Add(Capture(data, profile, ref offset));
