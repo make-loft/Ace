@@ -34,9 +34,9 @@ namespace Art.Replication
             {'t', '\t'},
         };
 
-        public Dictionary<char, string> EscapeCharsLite = new Dictionary<char, string> {{'\"', "\"\""}};
+        public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> {{'\"', "\"\""}};
 
-        public Dictionary<char, char> UnescapeCharsLite = new Dictionary<char, char> {{'"', '\"'}};
+        public Dictionary<char, char> VerbatimUnescapeChars = new Dictionary<char, char> {{'"', '\"'}};
 
         public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars, bool verbatim)
         {
@@ -64,11 +64,11 @@ namespace Art.Replication
         public string Escape(string value)
         {
             var useVerbatim = value.Contains("\\") || value.Contains("/");
-            var escapeStrategy = useVerbatim ? EscapeCharsLite : EscapeChars;
+            var escapeChars = useVerbatim ? VerbatimEscapeChars : EscapeChars;
             var builder = new StringBuilder();
             if (useVerbatim) builder.Append(VerbatimLiteral);
             builder.Append(HeadQuote);
-            AppendWithEscape(builder, value, escapeStrategy, useVerbatim);
+            AppendWithEscape(builder, value, escapeChars, useVerbatim);
             builder.Append(TailQuote);
             return builder.ToString();
         }
@@ -83,7 +83,7 @@ namespace Art.Replication
             var quotesFlag = data[offset] == '"';
             if (quotesFlag) builder.Append(data[offset++]);
 
-            var unescapeStrategy = useVerbatim ? UnescapeCharsLite : UnescapeChars;
+            var unescapeStrategy = useVerbatim ? VerbatimUnescapeChars : UnescapeChars;
             var escapeChar = useVerbatim ? EscapeCharVerbatim : EscapeChar;
 
             do

@@ -11,7 +11,8 @@ namespace Art.Replication.Models.Data
     {
         private static readonly Type EnumerableType = typeof(IEnumerable);
 
-        public override List<MemberInfo> GetDataMembers(Type type) => type.Name.StartsWith("KeyValuePair")
+        public override List<MemberInfo> GetDataMembers(Type type) => type.Name.StartsWith("KeyValuePair") ||
+                                                                      type == typeof(DictionaryEntry)
             ? type.GetMembers().Where(m => m is PropertyInfo).ToList()
             : type.GetMembers()
                 .Where(Sugar.CanReadWrite)
