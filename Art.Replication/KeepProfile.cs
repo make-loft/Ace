@@ -16,8 +16,6 @@ namespace Art.Replication
         public string NullLiteral;
         public string TrueLiteral;
         public string FalseLiteral { get; set; }
-        public string EmptyArray { get; set; }
-        public string EmptyObject { get; set; }
 
         public string MapPairSplitter { get; set; }
 
@@ -139,8 +137,6 @@ namespace Art.Replication
                 NullLiteral = "null",
                 TrueLiteral = "true",
                 FalseLiteral = "false",
-                EmptyArray = "[ ]",
-                EmptyObject = "{ }",
                 MapPairSplitter = ": ",
                 IndentChars = "  ",
                 NewLineChars = Environment.NewLine,
