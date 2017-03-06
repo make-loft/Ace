@@ -73,7 +73,8 @@ namespace Art.Replication
             return builder.ToString();
         }
 
-        public char[] AllowedSimplexSymbols = { '#', '_', '+', '-', '@', '"' };
+        public char[] AllowedSimplexSymbols = {'#', '_', '+', '-', '@', '"', '.'};
+
         public string CaptureSimplex(string data, ref int offset)
         {
             var builder = new StringBuilder();
@@ -88,11 +89,12 @@ namespace Art.Replication
 
             do
             {
-                var c = data[offset++];
+                var c = data[offset];
                 if (escapeFlag)
                 {
                     if (unescapeStrategy.TryGetValue(c, out var s))
                     {
+                        escapeFlag = false;
                         builder.Append(s);
                         continue;
                     }
@@ -104,7 +106,7 @@ namespace Art.Replication
 
                     if (c == 'u')
                     {
-                        c = (char)int.Parse(data.Substring(offset, 4));
+                        c = (char) int.Parse(data.Substring(offset, 4));
                         builder.Append(c);
                         offset += 4;
                         continue;
@@ -116,11 +118,12 @@ namespace Art.Replication
                 if (c == '"' && quotesFlag && !escapeFlag)
                 {
                     builder.Append(c);
+                    offset++;
                     break;
                 }
 
                 if (!escapeFlag) builder.Append(c);
-            } while (true);
+            } while (offset++ < data.Length);
 
             return builder.ToString();
         }
