@@ -13,61 +13,44 @@ namespace Aero
     [DataContract]
     public class ContextObject : SmartObject, INotifyDataErrorInfo, IDataErrorInfo
     {
-        public ContextObject()
-        {
-            Initialize();
-        }
+        public ContextObject() => Initialize();
 
         public Dictionary<ICommand, CommandEvocator> CommandEvocators { get; private set; }
         public Dictionary<string, PropertyEvocator> PropertyEvocators { get; private set; }
 
-        public CommandEvocator this[ICommand command]
-        {
-            get
-            {
-                CommandEvocator evocator;
-                if (CommandEvocators.TryGetValue(command, out evocator)) return evocator;
-                return CommandEvocators[command] = new CommandEvocator(command);
-            }
-        }
+        public CommandEvocator this[ICommand command] =>
+            CommandEvocators.TryGetValue(command, out var evocator)
+                ? evocator
+                : CommandEvocators[command] = new CommandEvocator(command);
 
         public PropertyEvocator this[Expression<Func<object>> expression]
         {
             get
             {
-                PropertyEvocator evocator;
-                var propertyName = Member.ExtractName(expression);
-                if (PropertyEvocators.TryGetValue(propertyName, out evocator)) return evocator;
-                return PropertyEvocators[propertyName] = new PropertyEvocator(propertyName);
+                var propertyName = expression.ExtractName();
+                return PropertyEvocators.TryGetValue(propertyName, out var evocator)
+                    ? evocator
+                    : PropertyEvocators[propertyName] = new PropertyEvocator(propertyName);
             }
         }
 
-        public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default(TValue))
-        {
-            var propertyName = Member.ExtractName(expression);
-            return (TValue) base[propertyName, defaultValue];
-        }
+        public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default(TValue)) =>
+            (TValue) base[expression.ExtractName(), defaultValue];
 
         public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool checkEquals = false)
         {
             if (checkEquals && Equals(Get(expression), value)) return;
-            var propertyName = Member.ExtractName(expression);
+            var propertyName = expression.ExtractName();
             RaisePropertyChanging(propertyName);
             base[propertyName] = value;
             RaisePropertyChanged(propertyName);
         }
 
-        public void RaisePropertyChanging<TValue>(Expression<Func<TValue>> expression)
-        {
-            var propertyName = Member.ExtractName(expression);
-            RaisePropertyChanging(propertyName);
-        }
+        public void RaisePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
+            RaisePropertyChanging(expression.ExtractName());
 
-        public void RaisePropertyChanged<TValue>(Expression<Func<TValue>> expression)
-        {
-            var propertyName = Member.ExtractName(expression);
-            RaisePropertyChanged(propertyName);
-        }
+        public void RaisePropertyChanged<TValue>(Expression<Func<TValue>> expression) =>
+            RaisePropertyChanged(expression.ExtractName());
 
         [OnDeserializing]
         public new void Initialize(StreamingContext context = default(StreamingContext))
@@ -81,17 +64,13 @@ namespace Aero
 
         private void OnPropertyChanging(object sender, PropertyChangingEventArgs args)
         {
-            PropertyEvocator evocator;
-            var propertyName = args.PropertyName;
-            if (PropertyEvocators.TryGetValue(propertyName, out evocator))
+            if (PropertyEvocators.TryGetValue(args.PropertyName, out var evocator))
                 evocator.EvokePropertyChanging(sender, args);
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            PropertyEvocator evocator;
-            var propertyName = args.PropertyName;
-            if (PropertyEvocators.TryGetValue(propertyName, out evocator))
+            if (PropertyEvocators.TryGetValue(args.PropertyName, out var evocator))
                 evocator.EvokePropertyChanged(sender, args);
         }
 
@@ -99,44 +78,34 @@ namespace Aero
 
         public virtual string Error
         {
-            get { return Get(() => Error); }
-            protected set { Set(() => Error, value); }
+            get => Get(() => Error);
+            protected set => Set(() => Error, value);
         }
 
         public virtual bool HasErrors
         {
-            get { return Get(() => HasErrors); }
-            protected set { Set(() => HasErrors, value); }
+            get => Get(() => HasErrors);
+            protected set => Set(() => HasErrors, value);
         }
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = (sender, args) => { };
 
-        public IEnumerable GetErrors(string propertyName)
-        {
-            PropertyEvocator evocator;
-            return PropertyEvocators.TryGetValue(propertyName, out evocator)
+        public IEnumerable GetErrors(string propertyName) =>
+            PropertyEvocators.TryGetValue(propertyName, out var evocator)
                 ? evocator.GetErrors(propertyName)
                 : Enumerable.Empty<object>();
-        }
 
         private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs args)
         {
-            PropertyEvocator evocator;
-            var propertyName = args.PropertyName;
-            if (PropertyEvocators.TryGetValue(propertyName, out evocator))
+            if (PropertyEvocators.TryGetValue(args.PropertyName, out var evocator))
                 evocator.EvokeErrorsChanged(sender, args);
         }
 
-        public void RaiseErrorsChanged<TValue>(Expression<Func<TValue>> expression)
-        {
-            var propertyName = Member.ExtractName(expression);
-            ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
-        }
+        public void RaiseErrorsChanged<TValue>(Expression<Func<TValue>> expression) =>
+            ErrorsChanged(this, new DataErrorsChangedEventArgs(expression.ExtractName()));
 
-        public void RaiseErrorsChanged(string propertyName)
-        {
+        public void RaiseErrorsChanged(string propertyName) =>
             ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
-        }
 
         string IDataErrorInfo.this[string propertyName]
         {

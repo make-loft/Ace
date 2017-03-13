@@ -13,22 +13,21 @@ namespace Aero
         protected Dictionary<string, object> SmartContainer = new Dictionary<string, object>();
         public event PropertyChangingEventHandler PropertyChanging = (sender, args) => { };
         public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
-        
+
         public const string SmartPropertyName = "Smart";
 
         public SmartObject Smart
         {
-            set { if (Equals(this, value)) RaisePropertyChanged(SmartPropertyName); }
-            get { return this; }
+            set
+            {
+                if (Equals(this, value)) RaisePropertyChanged(SmartPropertyName);
+            }
+            get => this;
         }
 
         public object this[string key]
         {
-            get
-            {
-                object value = SmartContainer.TryGetValue(key, out value) ? value : UndefinedValue;
-                return value;
-            }
+            get => SmartContainer.TryGetValue(key, out var value) ? value : UndefinedValue;
             set
             {
                 RaisePropertyChanging(SmartPropertyName);
@@ -37,20 +36,16 @@ namespace Aero
             }
         }
 
-        public object this[string key, object defaultValue] // {Binding Path='Smart[Test,1]'}
+        public object this[string key, object defaultValue] /* {Binding Path='Smart[Test,1]'} */
         {
-            get
-            {
-                object value = SmartContainer.TryGetValue(key, out value) ? value : this[key] = defaultValue;
-                return value;
-            }
-            set { this[key] = value; }
+            get => SmartContainer.TryGetValue(key, out var value) ? value : this[key] = defaultValue;
+            set => this[key] = value;
         }
 
-        public object this[string key, object defaultValue, bool segregate] // {Binding Path='Smart[Test,1,True].Value'}
+        public object this[string key, object defaultValue, bool segregate] /* {Binding Path='Smart[Test,1,True].Value'} */
         {
-            get { return this[key, segregate ? new Segregator {Value = defaultValue} : defaultValue]; }
-            set { this[key] = value; }
+            get => this[key, segregate ? new Segregator {Value = defaultValue} : defaultValue];
+            set => this[key] = value;
         }
 
         [DataMember]
@@ -62,18 +57,14 @@ namespace Aero
                 return SmartContainer.Where(p => thisType.GetProperty(p.Key) == null)
                     .ToDictionary(p => p.Key, p => p.Value is ValueType ? p.Value.ToString() : p.Value);
             }
-            set { if (value != null) value.ForEach(pair => this[pair.Key] = pair.Value); }
+            set => value?.ForEach(pair => this[pair.Key] = pair.Value);
         }
 
-        public void RaisePropertyChanging(string propertyName)
-        {
+        public void RaisePropertyChanging(string propertyName) =>
             PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-        }
 
-        public void RaisePropertyChanged(string propertyName)
-        {
+        public void RaisePropertyChanged(string propertyName) =>
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         [OnDeserializing]
         public void Initialize(StreamingContext context = default(StreamingContext))

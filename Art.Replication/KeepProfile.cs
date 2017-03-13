@@ -175,8 +175,8 @@ namespace Art.Replication
             if (value == TrueLiteral) return true;
             if (value == FalseLiteral) return false;
 
-            if (int.TryParse(value, out var i)) return i;
-            if (double.TryParse(value, out var r)) return r;
+            if (int.TryParse(value, NumberStyles.Any, ActiveCulture, out var i)) return i;
+            if (double.TryParse(value, NumberStyles.Any, ActiveCulture, out var r)) return r;
 
             var number = value.ToUpper();
             if ((value.EndsWith("UL") || value.EndsWith("LU")) && ulong.TryParse(number, out var ul)) return ul;
