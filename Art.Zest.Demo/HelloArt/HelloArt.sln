@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Art.Core.Desktop", "..\..\A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Art.Wrap.Desktop", "..\..\Art.Wrap.Classic\Art.Wrap.Desktop.csproj", "{A78C2D1C-9446-4B87-915B-2615F98F63C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Art.Replication.Diagnostics", "Art.Replication.Diagnostics\Art.Replication.Diagnostics.csproj", "{91D81D4E-8276-464C-9E1B-9DAD9DC7B72F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A78C2D1C-9446-4B87-915B-2615F98F63C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A78C2D1C-9446-4B87-915B-2615F98F63C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A78C2D1C-9446-4B87-915B-2615F98F63C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91D81D4E-8276-464C-9E1B-9DAD9DC7B72F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91D81D4E-8276-464C-9E1B-9DAD9DC7B72F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91D81D4E-8276-464C-9E1B-9DAD9DC7B72F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91D81D4E-8276-464C-9E1B-9DAD9DC7B72F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

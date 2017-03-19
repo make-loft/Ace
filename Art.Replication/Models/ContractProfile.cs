@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Art.Wiz.Patterns;
+using Art.Replication.Patterns;
 
-namespace Art.Wiz.Models.Data
+namespace Art.Replication.Models
 {
     public class ContractProfile : ADataProfile
     {
         public override List<MemberInfo> GetDataMembers(Type type)
         {
-            var serializableAttribute = type.GetTypeInfo().GetCustomAttribute<SerializableAttribute>();
+            var serializableAttribute = type.GetCustomAttributes(true).FirstOrDefault(a=>a.GetType().Name.Contains(SerializableAttribute)))
             var dataMemberToAttribute = serializableAttribute != null
                 ? type.GetMembers().Where(m=>m is FieldInfo || m is PropertyInfo).ToDictionary(i => i, i => (DataMemberAttribute)null).ToList()
                 : type.GetMembers().ToDictionary(i => i, i => i.GetCustomAttribute<DataMemberAttribute>()).Where(p => p.Value != null)

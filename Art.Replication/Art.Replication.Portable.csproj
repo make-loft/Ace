@@ -57,8 +57,8 @@
     <Compile Include="Adapters\Adapters.cs" />
     <Compile Include="EscapeProfile.cs" />
     <Compile Include="KeepProfile.cs" />
-    <None Include="Models\Data\ContractProfile.cs.old" />
-    <Compile Include="Models\Data\GeneralProfile.cs" />
+    <Compile Include="Models\ContractProfile.cs" />
+    <Compile Include="Models\GeneralProfile.cs" />
     <Compile Include="Patterns\ADataProfile.cs" />
     <Compile Include="Collections.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

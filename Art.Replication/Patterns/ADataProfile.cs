@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Art.Wiz.Patterns
+namespace Art.Replication.Patterns
 {
     public abstract class ADataProfile
     {

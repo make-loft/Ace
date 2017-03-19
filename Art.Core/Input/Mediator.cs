@@ -25,10 +25,7 @@ namespace Aero.Input
                 else mediator.RaiseCanExecuteChanged(sender, eventArgs);
             }
 
-            public void Dispose()
-            {
-                _command.CanExecuteChanged -= CommandOnCanExecuteChanged;
-            }
+            public void Dispose() => _command.CanExecuteChanged -= CommandOnCanExecuteChanged;
         }
 
         private ICommand _command;
@@ -37,19 +34,13 @@ namespace Aero.Input
         private WeakReference _weakEvocator;
         private WeakListener _weakListener;
 
-        ~Mediator()
-        {
-            if (_weakListener != null) _weakListener.Dispose();
-        }
+        ~Mediator() => _weakListener?.Dispose();
 
         public Mediator()
         {
         }
 
-        public Mediator(object sender, CommandEvocator evocator)
-        {
-            Initialize(sender, evocator);
-        }
+        public Mediator(object sender, CommandEvocator evocator) => Initialize(sender, evocator);
 
         public void Initialize(object sender, CommandEvocator evocator)
         {
@@ -59,13 +50,10 @@ namespace Aero.Input
             _weakListener = new WeakListener(_command, this); //_command.CanExecuteChanged += RaiseCanExecuteChanged;
 
             var contextCommand = _command as Command;
-            if (contextCommand != null) contextCommand.RaiseCanExecuteChanged();
+            contextCommand?.RaiseCanExecuteChanged();
         }
 
-        public void SetSender(object sender)
-        {
-            _weakSender = new WeakReference(sender);
-        }
+        public void SetSender(object sender) => _weakSender = new WeakReference(sender);
 
         public bool CanExecute(object parameter)
         {
@@ -97,13 +85,10 @@ namespace Aero.Input
             evocator.EvokeExecuted(sender, new ExecutedEventArgs(_command, parameter));
 
             var contextCommand = _command as Command;
-            if (contextCommand != null) contextCommand.RaiseCanExecuteChanged();
+            contextCommand?.RaiseCanExecuteChanged();
         }
 
-        public void RaiseCanExecuteChanged(object o, EventArgs args)
-        {
-            CanExecuteChanged(o, args);
-        }
+        public void RaiseCanExecuteChanged(object o, EventArgs args) => CanExecuteChanged(o, args);
 
         public event EventHandler CanExecuteChanged = (sender, args) => { };
     }

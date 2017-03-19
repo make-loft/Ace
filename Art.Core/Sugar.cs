@@ -6,40 +6,19 @@ namespace Aero
 {
     public static class Sugar
     {
-        public static T Of<T>(this object o)
-        {
-            return (T) o;
-        }
+        public static T Of<T>(this object o) => (T) o;
 
-        public static bool Is<T>(this object o)
-        {
-            return o is T;
-        }
+        public static bool Is<T>(this object o) => o is T;
 
-        public static T As<T>(this object o) where T : class
-        {
-            return o as T;
-        }
+        public static T As<T>(this object o) where T : class => o as T;
 
-        public static bool IsNull(this object o)
-        {
-            return o == null;
-        }
+        public static bool IsNull(this object o) => o == null;
 
-        public static bool IsNotNull(this object o)
-        {
-            return o != null;
-        }
+        public static bool IsNotNull(this object o) => o != null;
 
-        public static bool IsNullOrEmpty(this string value)
-        {
-            return string.IsNullOrEmpty(value);
-        }
+        public static bool IsNullOrEmpty(this string value) => string.IsNullOrEmpty(value);
 
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection)
-        {
-            return collection == null || !collection.Any();
-        }
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection) => collection == null || !collection.Any();
 
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
@@ -69,31 +48,27 @@ namespace Aero
             return exception;
         }
 
-        public static Exception Try(Action action)
-        {
-            return Try<Exception>(action);
-        }
+        public static Exception Try(Action action) => Try<Exception>(action);
 
-        public static Exception Catch(this Exception exception, Action<Exception> action)
-        {
-            return exception.Catch<Exception>(action);
-        }
+        public static Exception Catch(this Exception exception, Action<Exception> action) => 
+            exception.Catch<Exception>(action);
 
-        public static void Finally(this Exception exception, Action action)
-        {
-            action();
-        }
+        public static void Finally(this Exception exception, Action action) => action();
 
         public static TResult With<TSource, TResult>(this TSource source, Func<TSource, TResult> action)
+            where TSource : class => source == default(TSource) ? default(TResult) : action(source);
+
+        public static TSource Make<TSource>(this TSource source, Action<TSource> action)
             where TSource : class
         {
-            return source == default(TSource) ? default(TResult) : action(source);
+            action(source);
+            return source;
         }
 
-        public static TSource Do<TSource>(this TSource source, Action<TSource> action)
+        public static TSource Make<TSource>(this TSource source, Func<TSource, bool> condition, Action<TSource> action)
             where TSource : class
         {
-            if (source != default(TSource)) action(source);
+            if (condition(source)) action(source);
             return source;
         }
 
@@ -163,11 +138,9 @@ namespace Aero
             {
                 foreach (var item in source)
                 {
-                    if (count > 0)
-                    {
-                        count--;
-                        yield return item;
-                    }
+                    if (count <= 0) continue;
+                    count--;
+                    yield return item;
                 }
 
                 if (count == 0) yield break;

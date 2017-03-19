@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aero
 {
@@ -10,14 +11,13 @@ namespace Aero
         public static TItem Get<TItem>(params object[] constructorArgs) where TItem : class
         {
             var itemType = typeof (TItem);
-            if (Container.ContainsKey(itemType)) 
-                return (TItem) Container[itemType];
+            if (Container.TryGetValue(itemType, out var item)) 
+                return (TItem) item;
 
-            var item = Memory.ActiveBox.Revive<TItem>(null, constructorArgs);
-            Container.Add(itemType, item);
-            var exposable = item as IExposable;
-            exposable?.Expose();
-            return item;
+            var newItem = Memory.ActiveBox.Revive<TItem>(null, constructorArgs);
+            Container.Add(itemType, newItem);
+            (newItem as IExposable)?.Expose();
+            return newItem;
         }
 
         public static void Set<TItem>(TItem value) where TItem : class
@@ -28,9 +28,6 @@ namespace Aero
             else Container[itemType] = value;
         }
 
-        public static void Snapshot()
-        {
-            Container.Values.ForEach(i => Memory.ActiveBox.Keep(i));
-        }
+        public static void Snapshot() => Container.Values.ToArray().ForEach(i => Memory.ActiveBox.Keep(i));
     }
 }

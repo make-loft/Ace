@@ -8,32 +8,17 @@ namespace Aero.Input
         private const string UsingMessage =
             "Please, use 'Context.Mediator' class or 'ContextObject.GetMediator' method for Command executing.";
 
-        public string Name { get; private set; }
+        public string Name { get; internal set; }
 
-        public Command(string name)
-        {
-            Name = name;
-        }
+        public Command(string name) => Name = name;
 
-        public new string ToString()
-        {
-            return "[" + Name + "]";
-        }
+        public new string ToString() => "[" + Name + "]";
 
-        public void RaiseCanExecuteChanged()
-        {
-            CanExecuteChanged(this, EventArgs.Empty);
-        }
+        public void RaiseCanExecuteChanged() => CanExecuteChanged(this, EventArgs.Empty);
 
-        bool ICommand.CanExecute(object parameter)
-        {
-            throw new Exception(UsingMessage);
-        }
+        bool ICommand.CanExecute(object parameter) => throw new Exception(UsingMessage);
 
-        void ICommand.Execute(object parameter)
-        {
-            throw new Exception(UsingMessage);
-        }
+        void ICommand.Execute(object parameter) => throw new Exception(UsingMessage);
 
         public event EventHandler CanExecuteChanged = (sender, args) => { };
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Art.Replication.Models.Data;
-using Art.Wiz.Patterns;
+using Art.Replication.Models;
+using Art.Replication.Patterns;
 
 namespace Art.Replication
 {
@@ -19,6 +19,7 @@ namespace Art.Replication
         public ADataProfile Schema = new GeneralProfile();
 
         public bool IsSimplex(object obj) =>
-            obj == null || obj is string || obj is DateTime || obj.GetType().IsPrimitive || obj is Guid || obj is Uri || obj is Type;
+            obj == null || obj is string || obj.GetType().IsPrimitive ||
+            obj is Type || obj is DateTime || obj is TimeSpan || obj is DateTimeOffset || obj is Guid || obj is Uri;
     }
 }
