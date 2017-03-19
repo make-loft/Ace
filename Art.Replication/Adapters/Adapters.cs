@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 // ReSharper disable once CheckNamespace
 namespace System.Linq
@@ -8,6 +9,9 @@ namespace System.Linq
     {
         public static T GetCustomAttribute<T>(this Type type) where T: class =>
             type.GetCustomAttributes(true).FirstOrDefault(a => a is T) as T;
+
+        public static T GetCustomAttribute<T>(this MemberInfo member) where T : class =>
+            member?.GetCustomAttributes(true).FirstOrDefault(a => a is T) as T;
     }
 
     internal static class Enumerable
