@@ -11,8 +11,10 @@ namespace Art.Replication
         public string SetKey = "#Set";
         public string MapKey = "#Map";
         public string TypeKey = "#Type";
-        public bool AttachTypeInfo = true;
-        public bool AttachId = true;
+        public bool AttachTypeInfo = false;
+        public bool AttachId = false;
+        public bool SimplifySets = true;
+        public bool SimplifyMaps = true;
 
         public readonly Dictionary<object, int> SnapshotToIdCache = new Dictionary<object, int>();
         public readonly Dictionary<int, object> IdToReplicaCache = new Dictionary<int, object>();

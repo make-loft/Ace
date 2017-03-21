@@ -50,7 +50,7 @@ namespace Aero
                         var data = File.ReadAllText(storageKey);
                         var i = 0;
                         var snapshot = data.Capture(KeepProfile, ref i);
-                        var item = (TValue)Replicator.TranslateReplicaFrom(snapshot);
+                        var item = (TValue)Replicator.TranslateReplicaFrom(snapshot, type);
                         if (Equals(item, null)) throw new Exception();
                         return item;
                     }
@@ -89,7 +89,7 @@ namespace Aero
 
                     try
                     {
-                        var snapshot = Replicator.TranscribeSnapshotFrom(item);
+                        var snapshot = Replicator.TranscribeSnapshotFrom(item, type);
                         var data = new StringBuilder().Append(snapshot, KeepProfile).ToString();
                         File.WriteAllText(storageKey, data);
                     }
