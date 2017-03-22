@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Art.Replication
 {
-    public class EscapeProfile
+    public class EscapeProfile : IConverter<string, string>
     {
         public char EscapeChar = '\\';
-
         public char EscapeCharVerbatim = '\"';
 
         public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
@@ -38,7 +37,8 @@ namespace Art.Replication
 
         public Dictionary<char, char> VerbatimUnescapeChars = new Dictionary<char, char> {{'"', '\"'}};
 
-        public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars, bool verbatim)
+        public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
+            bool verbatim)
         {
             if (value == null) return builder;
 
@@ -61,7 +61,7 @@ namespace Art.Replication
         public string HeadQuote = "\"";
         public string TailQuote = "\"";
 
-        public string Escape(string value)
+        public string Convert(string value)
         {
             var useVerbatim = value.Contains("\\") || value.Contains("/");
             var escapeChars = useVerbatim ? VerbatimEscapeChars : EscapeChars;
@@ -73,7 +73,7 @@ namespace Art.Replication
             return builder.ToString();
         }
 
-        public char[] AllowedSimplexSymbols = {'#', '_', '+', '-', '@', '"', '.'};
+        public List<char> AllowedSimplexSymbols = new List<char> {'#', '_', '+', '-', '@', '"', '.'};
 
         public string CaptureSimplex(string data, ref int offset)
         {

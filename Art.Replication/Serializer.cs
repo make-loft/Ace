@@ -12,16 +12,16 @@ namespace Art.Replication
             {
                 case Map map:
                     return builder
-                        .Append(profile.GetMapHead(map)) /* "{" */
+                        .Append(profile.GetHead(map)) /* "{" */
                         .Append(profile, indentLevel, map)
-                        .Append(profile.GetMapTail(map)); /* "}" */
+                        .Append(profile.GetTail(map)); /* "}" */
                 case Set set:
                     return builder
-                        .Append(profile.GetSetHead(set)) /* "[" */
+                        .Append(profile.GetHead(set)) /* "[" */
                         .Append(profile, indentLevel, set)
-                        .Append(profile.GetSetTail(set)); /* "]" */
+                        .Append(profile.GetTail(set)); /* "]" */
                 default:
-                    return builder.Append(profile.ToSimplex(value));
+                    return builder.Append(profile.SimplexConverter.Convert(value));
             }
         }
 
@@ -75,7 +75,7 @@ namespace Art.Replication
                     return data.Capture(profile, ref offset, new Set());
                 default:
                     var value = profile.CaptureSimplex(data, ref offset);
-                    return profile.FromSimplex(value);
+                    return profile.SimplexConverter.Convert(value);
             }
         }
     }

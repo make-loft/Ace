@@ -53,11 +53,12 @@
   <ItemGroup>
     <Compile Include="Adapters\Adapters.cs" />
     <Compile Include="EscapeProfile.cs" />
-    <Compile Include="KeepProfile.cs" />
+    <Compile Include="SimplexConverter.cs" />
     <Compile Include="Models\ContractProfile.cs" />
     <Compile Include="Models\GeneralProfile.cs" />
     <Compile Include="Patterns\ADataProfile.cs" />
     <Compile Include="Collections.cs" />
+    <Compile Include="KeepProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReplicationProfile.cs" />
     <Compile Include="Replicator.cs" />
