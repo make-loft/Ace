@@ -20,7 +20,6 @@ namespace Art.Replication
             ActiveProfile.SnapshotToIdCache.Add(master, id);
 
             var type = master.GetType();
-            var members = ActiveProfile.Schema.GetDataMembers(type);
             var snapshot = new Map();
 
             if (ActiveProfile.AttachId) snapshot.Add(ActiveProfile.IdKey, id);
@@ -42,6 +41,7 @@ namespace Art.Replication
                 snapshot.Add(ActiveProfile.SetKey, s);
             }
 
+            var members = ActiveProfile.Schema.GetDataMembers(type);
             members.ForEach(m => snapshot.Add(ActiveProfile.Schema.GetDataKey(m),
                 TranscribeSnapshotFrom(m.GetValue(master), m.GetMemberType())));
 

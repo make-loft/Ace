@@ -14,7 +14,7 @@ namespace Art.Replication.Models
         public override List<MemberInfo> GetDataMembers(Type type) =>
             type.Name.StartsWith("KeyValuePair") || type == typeof(DictionaryEntry)
                 ? type.GetMembers().Where(m => m is PropertyInfo).ToList()
-                : type.GetMembers()
+                : type.GetMembers(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                     .Where(Sugar.CanReadWrite)
                     .Where(m => !EnumerableType.IsAssignableFrom(type) && m.Name != "Item")
                     .ToList();

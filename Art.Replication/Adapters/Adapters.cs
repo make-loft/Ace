@@ -5,7 +5,7 @@ using System.Reflection;
 // ReSharper disable once CheckNamespace
 namespace System.Linq
 {
-    public static class Reflection
+    internal static class Reflection
     {
         public static T GetCustomAttribute<T>(this Type type) where T: class =>
             type.GetCustomAttributes(true).FirstOrDefault(a => a is T) as T;
