@@ -88,10 +88,17 @@ namespace Art.Replication
                 case Enum e:
                     return ((long) value).ToString();
                 case Type t:
-                    return EscapeConverter.Convert(t.AssemblyQualifiedName);
+                    return "#" + EscapeConverter.Convert(t.AssemblyQualifiedName);
+                case Guid d:
+                    return "#" + EscapeConverter.Convert("(Guid) " + d);
                 case DateTime d:
-                    return @"""\/Date(" + (d.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
-                           DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
+                    return "#" + EscapeConverter.Convert("(DateTime) " + d);
+                case DateTimeOffset d:
+                    return "#" + EscapeConverter.Convert("(DateTimeOffset) " + d);
+                case TimeSpan d:
+                    return "#" + EscapeConverter.Convert("(TimeSpan) " + d);
+                    //return @"""\/Date(" + (d.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
+                    //       DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
                 default:
                     return value.ToString();
 
