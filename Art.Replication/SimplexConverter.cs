@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Art.Replication
 {
-    public class SimplexConverter : IConverter<string, object> , IConverter<object, string>
+    public class SimplexConverter : IConverter<Simplex, object> , IConverter<object, string>
     {
         public IConverter<string, string> EscapeConverter { get; }
 
@@ -22,9 +22,9 @@ namespace Art.Replication
         public string IntegerNumbersFormat = "G";
         internal static readonly long DatetimeMinTimeTicks = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
 
-        public object Convert(string value)
+        public object Convert(Simplex simplex)
         {
-            if (value.StartsWith("\"")) return value.Substring(1, value.Length - 2);
+            var value = simplex.Segments.Count == 1 ? simplex.Segments[0] : simplex.Segments[1];
             if (value == NullLiteral) return null;
             if (value == TrueLiteral) return true;
             if (value == FalseLiteral) return false;
@@ -38,6 +38,20 @@ namespace Art.Replication
             if (value.EndsWith("D") && uint.TryParse(number, out var d)) return d;
             if (value.EndsWith("F") && uint.TryParse(number, out var f)) return f;
             if (value.EndsWith("M") && uint.TryParse(number, out var m)) return m;
+
+            if (simplex.Segments.Count < 2) return value;
+            var type = simplex.Segments[0].Replace("@", "").Replace("\"", "");
+            switch (type)
+            {
+                case "g":
+                case "guid":
+                    if (Guid.TryParse(value, out var g)) return g;
+                    break;
+                case "dt":
+                case "datetime":
+                    if (DateTime.TryParse(value, out var dt)) return dt;
+                    break;
+            }
 
             return value;
         }
@@ -88,15 +102,15 @@ namespace Art.Replication
                 case Enum e:
                     return ((long) value).ToString();
                 case Type t:
-                    return "#" + EscapeConverter.Convert(t.AssemblyQualifiedName);
+                    return "@" + EscapeConverter.Convert(t.AssemblyQualifiedName);
                 case Guid d:
-                    return "#" + EscapeConverter.Convert("(Guid) " + d);
+                    return "Guid(" + EscapeConverter.Convert(d.ToString()) + ")";
                 case DateTime d:
-                    return "#" + EscapeConverter.Convert("(DateTime) " + d);
+                    return "DateTime(" + EscapeConverter.Convert(d.ToString()) + ")";
                 case DateTimeOffset d:
-                    return "#" + EscapeConverter.Convert("(DateTimeOffset) " + d);
+                    return "DateTimeOffset(" + EscapeConverter.Convert(d.ToString()) + ")";
                 case TimeSpan d:
-                    return "#" + EscapeConverter.Convert("(TimeSpan) " + d);
+                    return "TimeSpan(" + EscapeConverter.Convert(d.ToString()) + ")";
                     //return @"""\/Date(" + (d.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
                     //       DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
                 default:

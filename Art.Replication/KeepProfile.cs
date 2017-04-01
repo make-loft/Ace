@@ -96,7 +96,7 @@ namespace Art.Replication
                     : Simplex;
         }
 
-        public string CaptureSimplex(string data, ref int offset)
+        public Simplex CaptureSimplex(string data, ref int offset)
         {
             MoveToSimplex(data, ref offset);
             return EscapeProfile.CaptureSimplex(data, ref offset);
@@ -104,8 +104,7 @@ namespace Art.Replication
 
         public void MoveToSimplex(string data, ref int offset)
         {
-            while (offset < data.Length && !(char.IsLetterOrDigit(data[offset]) ||
-                                             EscapeProfile.AllowedSimplexSymbols.Contains(data[offset]))) offset++;
+            while (offset < data.Length && EscapeProfile.IsNonSimplex(data[offset])) offset++;
         }
 
         public void MoveToItem(string data, ref int offset)
@@ -113,9 +112,7 @@ namespace Art.Replication
             while (offset < data.Length && !IsItem(data[offset])) offset++;
         }
 
-
-        public bool IsItem(char c) => char.IsLetterOrDigit(c) || EscapeProfile.AllowedSimplexSymbols.Contains(c) ||
-                                      c == '{' || c == '[';
+        public bool IsItem(char c) => !EscapeProfile.IsNonSimplex(c) || c == '{' || c == '[';
 
         public string MatchTail(string data, ref int offset)
         {

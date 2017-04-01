@@ -13,19 +13,19 @@ namespace Art.Replication
                 case Map map:
                     return builder
                         .Append(profile.GetHead(map)) /* "{" */
-                        .Append(profile, indentLevel, map)
+                        .Append(map, profile, indentLevel)
                         .Append(profile.GetTail(map)); /* "}" */
                 case Set set:
                     return builder
                         .Append(profile.GetHead(set)) /* "[" */
-                        .Append(profile, indentLevel, set)
+                        .Append(set, profile, indentLevel)
                         .Append(profile.GetTail(set)); /* "]" */
                 default:
                     return builder.Append(profile.SimplexConverter.Convert(value));
             }
         }
 
-        public static StringBuilder Append(this StringBuilder builder, KeepProfile profile, int indentLevel, ICollection items)
+        public static StringBuilder Append(this StringBuilder builder, ICollection items, KeepProfile profile, int indentLevel = 1)
         {
             var counter = 0;
 
@@ -54,7 +54,7 @@ namespace Art.Replication
 
                 if (items is Map map)
                 {
-                    var key = profile.CaptureSimplex(data, ref offset);
+                    var key = profile.CaptureSimplex(data, ref offset).ToString();
                     map.Add(key, Capture(data, profile, ref offset));
                 }
                 else if (items is Set set) set.Add(Capture(data, profile, ref offset));
