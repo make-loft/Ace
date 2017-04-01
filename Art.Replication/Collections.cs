@@ -25,9 +25,10 @@ namespace Art.Replication
         }
     }
 
-    public struct Simplex
+    public class Simplex
     {
         public readonly List<string> Segments;
+        public bool IgnoreQuotes { get; set; }
 
         public Simplex(List<string> segments) => Segments = segments ?? new List<string>();
 

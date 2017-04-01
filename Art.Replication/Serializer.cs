@@ -74,8 +74,8 @@ namespace Art.Replication
                 case KeepProfile.Set:
                     return data.Capture(profile, ref offset, new Set());
                 default:
-                    var value = profile.CaptureSimplex(data, ref offset);
-                    return profile.SimplexConverter.Convert(value);
+                    var simplex = profile.CaptureSimplex(data, ref offset);
+                    return profile.SimplexConverter.Convert(simplex);
             }
         }
     }
