@@ -15,6 +15,16 @@ namespace Art.Replication.Diagnostics
 
         [DataMember]
         public DateTime Property2 { get; set; } = DateTime.Now;
+
+        [DataMember]
+        public TimeSpan Property3 { get; set; } = TimeSpan.MinValue;
+
+
+        [DataMember]
+        public DateTimeOffset Property4 { get; set; } = DateTimeOffset.MinValue;
+
+        [DataMember]
+        public Uri Property5 { get; set; } = new Uri("http://makeloft.xyz");
     }
 
     [TestClass]

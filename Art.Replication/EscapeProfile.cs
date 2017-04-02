@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Art.Replication
 {
-    public class EscapeProfile : IConverter<string, string>
+    public class EscapeProfile
     {
         public char EscapeChar = '\\';
         public char EscapeVerbatimChar = '\"';
+        public char VerbatimChar = '@';
         public char HeadQuoteChar = '\"';
         public char TailQuoteChar = '\"';
-        public char VerbatimChar = '@';
 
         public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
         {
@@ -48,8 +47,7 @@ namespace Art.Replication
             foreach (var c in value)
             {
                 if (escapeChars.TryGetValue(c, out var s)) builder.Append(s);
-                else if (verbatim) builder.Append(c);
-                else
+                else if (!verbatim)
                 {
                     int i = c;
                     if (i < 32 || 127 < i) builder.AppendFormat("\\u{0:x04}", i);
@@ -66,9 +64,7 @@ namespace Art.Replication
             var escapeChars = useVerbatim ? VerbatimEscapeChars : EscapeChars;
             var builder = new StringBuilder();
             if (useVerbatim) builder.Append(VerbatimChar);
-            builder.Append(HeadQuoteChar);
             AppendWithEscape(builder, value, escapeChars, useVerbatim);
-            builder.Append(TailQuoteChar);
             return builder.ToString();
         }
 
@@ -102,7 +98,7 @@ namespace Art.Replication
 
                 var escapeChar = verbatimFlag ? EscapeVerbatimChar : EscapeChar;
                 var unescapeStrategy = verbatimFlag ? VerbatimUnescapeChars : UnescapeChars;
-                AppendEscapedLiteral(builder, data, ref offset, unescapeStrategy, escapeChar, TailQuoteChar);
+                AppendEscapedLiteral(builder, data, ref offset, unescapeStrategy, escapeChar, TailQuoteChar, verbatimFlag);
 
                 segments.Add(builder.ToString());
                 builder.Clear();
@@ -111,12 +107,12 @@ namespace Art.Replication
                 offset++;
             } while (true);
 
-            return new Simplex(segments);
+            return new Simplex {Segments = segments};
         }
 
         public static void AppendEscapedLiteral(
             StringBuilder builder, string data, ref int offset,
-            Dictionary<char, char> unescapeStrategy, char escapeChar, char breakChar)
+            Dictionary<char, char> unescapeStrategy, char escapeChar, char breakChar, bool verbatim)
         {
             for (var escapeFlag = false; ; offset++)
             {
@@ -124,7 +120,7 @@ namespace Art.Replication
                 if (escapeFlag)
                 {
                     if (unescapeStrategy.TryGetValue(c, out var s)) builder.Append(s);
-                    else if (c == 'u')
+                    else if (!verbatim && c == 'u')
                     {
                         c = (char) int.Parse(data.Substring(offset, 4));
                         builder.Append(c);

@@ -6,7 +6,7 @@ namespace Art.Replication
 {
     public interface IConverter<in TIn, out TOut>
     {
-        TOut Convert(TIn value);
+        TOut Convert(TIn value, params object[] args);
     }
 
     public interface IBodyProfile<in TIn, out TOut>
