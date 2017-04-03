@@ -45,7 +45,7 @@ namespace Art.Replication
             if (value.EndsWith("M") && uint.TryParse(number, out var m)) return m;
             
             if (simplex.Segments.Count < 2 || simplex.Segments[0].Length == 1) return value;
-            var typeName = simplex.Segments[0].Replace("@", "").Replace("\"", "").Replace("(", "");
+            var typeName = simplex.Segments[0].Replace("@", "").Replace("\"", "").Replace("<", "").Replace(">", "");
             var type = Type.GetType("System." + typeName);
             var parseMethod = type?.GetMethod("Parse", new[] {typeof(string)});
             return parseMethod?.Invoke(null, new object[] {simplex.Segments[1]});
@@ -137,7 +137,7 @@ namespace Art.Replication
             var parseMethod = type.GetMethod("Parse", new []{typeof(string)});
 
             return parseMethod != null
-                ? new Simplex {Segments = {type.Name, "(", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString(), ")"}}
+                ? new Simplex {Segments = {"<", type.Name, ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()}}
                 : new Simplex {Segments = {HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()}};
         }
     }

@@ -68,7 +68,7 @@ namespace Art.Replication
             return builder.ToString();
         }
 
-        private readonly List<char> NonSimplexChars = new List<char> {'{', '}', '[', ']', ',', ';', ':'}; // and all whitespaces
+        public readonly List<char> NonSimplexChars = new List<char> {'{', '}', '[', ']', ',', ';', ':'}; // and all whitespaces
 
         public bool IsNonSimplex(char c) => char.IsWhiteSpace(c) || NonSimplexChars.Contains(c);
 
