@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Aero.Input
+namespace Art.Input
 {
     public class Command : ICommand
     {

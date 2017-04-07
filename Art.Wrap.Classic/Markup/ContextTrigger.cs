@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using Aero.Input;
+using Art.Input;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public class ContextTrigger : DependencyObject
     {

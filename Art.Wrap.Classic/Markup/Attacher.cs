@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public static class Attacher
     {

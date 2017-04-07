@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Aero
+namespace Art
 {
     public static class Member
     {

@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Aero;
-using HelloAero.Aides;
+using Art;
+using HelloArt.Aides;
 
-namespace HelloAero.ViewModel
+namespace HelloArt.ViewModel
 {
     [DataContract]
     public class AppViewModel : ContextObject, IExposable

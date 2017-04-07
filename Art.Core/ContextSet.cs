@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.Serialization;
 
-namespace Aero
+namespace Art
 {
     [DataContract]
     public class ContextSet<T> : ContextObject, IList<T>, IList, INotifyCollectionChanged

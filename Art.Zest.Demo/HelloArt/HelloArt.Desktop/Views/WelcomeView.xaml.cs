@@ -1,6 +1,6 @@
-﻿using Aero.Converters.Patterns;
+﻿using Art.Converters.Patterns;
 
-namespace HelloAero.Views
+namespace HelloArt.Views
 {
     public partial class AppView
     {

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Aero.Markup.Patterns
+namespace Art.Markup.Patterns
 {
     public abstract class ABindingExtension : Binding, IValueConverter
     {

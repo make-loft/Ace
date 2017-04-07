@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public class Store : Patterns.ABindingExtension
     {
@@ -22,7 +22,7 @@ namespace Aero.Markup
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var itemType = Key;
-            var methodInfo = typeof (Aero.Store).GetMethod("Get").
+            var methodInfo = typeof (Art.Store).GetMethod("Get").
                 MakeGenericMethod(itemType.DeclaringType ?? itemType);
             var item = methodInfo.Invoke(null, new object[] {new object[0]});
 

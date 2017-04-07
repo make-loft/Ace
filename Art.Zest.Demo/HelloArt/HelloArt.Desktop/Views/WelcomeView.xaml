@@ -1,8 +1,8 @@
 ﻿<Window 
-    x:Class="HelloAero.Views.AppView"
+    x:Class="HelloArt.Views.AppView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewModel="clr-namespace:HelloAero.ViewModel"
+    xmlns:viewModel="clr-namespace:HelloArt.ViewModel"
     DataContext="{Store Key=viewModel:AppViewModel}"
     WindowStyle="{Smart 'WindowStyle, SingleBorderWindow'}"
     ResizeMode="{Smart 'ResizeMode, CanResizeWithGrip'}"

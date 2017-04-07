@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
-using Aero.Input;
+using Art.Input;
 
-namespace Aero
+namespace Art
 {
     public static class Context
     {

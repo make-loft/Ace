@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Aero.Evocators
+namespace Art.Evocators
 {
     public class ExecutedEventArgs : EventArgs
     {

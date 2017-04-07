@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
-using Aero;
+using Art;
 
-namespace HelloAero.ViewModel
+namespace HelloArt.ViewModel
 {
     [DataContract]
     public class GuyViewModel : ContextObject, IExposable

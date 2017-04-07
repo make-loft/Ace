@@ -3,13 +3,13 @@
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Aero.Core")]
+[assembly: AssemblyTitle("Art.Core")]
 [assembly: AssemblyDescription("http://makeloft.by/tools")]
 //[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Makeloft")]
-[assembly: AssemblyProduct("Aero Framework")]
+[assembly: AssemblyProduct("Art Framework")]
 [assembly: AssemblyCopyright("Copyright © Makeloft Studio")]
-[assembly: AssemblyTrademark("Aero Framework")]
+[assembly: AssemblyTrademark("Art Framework")]
 //[assembly: AssemblyCulture("")]
 
 // Version information for an assembly consists of the following four values:

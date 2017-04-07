@@ -6,9 +6,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using System.Windows.Input;
-using Aero.Evocators;
+using Art.Evocators;
 
-namespace Aero
+namespace Art
 {
     [DataContract]
     public class ContextObject : SmartObject, INotifyDataErrorInfo, IDataErrorInfo

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Data;
 
-namespace Aero.Converters.Patterns
+namespace Art.Converters.Patterns
 {
     public interface ICompositeConverter : IValueConverter
     {

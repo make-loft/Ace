@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Aero.Patterns
+namespace Art.Patterns
 {
     public abstract class AResourceWrap<TKey, TValue, TCulture, TManager> : INotifyPropertyChanged
     {

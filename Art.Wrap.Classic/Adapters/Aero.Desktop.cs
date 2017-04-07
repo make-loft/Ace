@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using Aero.Evocators;
+using Art.Evocators;
 
 // ReSharper disable once CheckNamespace
 
-namespace Aero
+namespace Art
 {
     public static class RoutedCommandsAdapter
     {

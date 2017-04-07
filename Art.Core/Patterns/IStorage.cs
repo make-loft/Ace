@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Aero.Patterns
+namespace Art.Patterns
 {
     public interface IStorage
     {

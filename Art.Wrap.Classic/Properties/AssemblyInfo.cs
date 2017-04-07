@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 using System.Windows.Markup;
 
-[assembly: AssemblyTitle("Aero.Desktop")]
+[assembly: AssemblyTitle("Art.Desktop")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Aero.Desktop")]
+[assembly: AssemblyProduct("Art.Desktop")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -35,7 +35,7 @@ using System.Windows.Markup;
 [assembly: AssemblyVersion("2.0.*")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
 
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Aero.Converters")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Aero.Markup")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Art.Converters")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Art.Markup")]
 [assembly: XmlnsPrefix("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "c")]
 [assembly: XmlnsPrefix("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "m")]

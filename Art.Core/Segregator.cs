@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.Serialization;
 
-namespace Aero
+namespace Art
 {
     [DataContract]
     public class Segregator : Segregator<object>

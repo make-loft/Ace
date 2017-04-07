@@ -11,6 +11,7 @@ namespace Art.Replication
         public char HeadQuoteChar = '\"';
         public char TailQuoteChar = '\"';
 
+        public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> { { '\"', "\"\"" } };
         public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
         {
             {'\"', "\\\""},
@@ -23,6 +24,7 @@ namespace Art.Replication
             {'\t', "\\t"},
         };
 
+        public Dictionary<char, char> VerbatimUnescapeChars = new Dictionary<char, char> { { '"', '\"' } };
         public Dictionary<char, char> UnescapeChars = new Dictionary<char, char>
         {
             {'"', '\"'},
@@ -35,9 +37,6 @@ namespace Art.Replication
             {'t', '\t'},
         };
 
-        public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> {{'\"', "\"\""}};
-
-        public Dictionary<char, char> VerbatimUnescapeChars = new Dictionary<char, char> {{'"', '\"'}};
 
         public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
             bool verbatim)
@@ -68,22 +67,21 @@ namespace Art.Replication
             return builder.ToString();
         }
 
-        public readonly List<char> NonSimplexChars = new List<char> {'{', '}', '[', ']', ',', ';', ':'}; // and all whitespaces
+        public readonly List<char> NonSimplexChars = new List<char> { '{', '}', '[', ']', ',', ';', ':' }; // and all whitespaces
 
         public bool IsNonSimplex(char c) => char.IsWhiteSpace(c) || NonSimplexChars.Contains(c);
 
-
         public Simplex CaptureSimplex(string data, ref int offset)
         {
-            var segments = new List<string>();
-
+            var simplex = new Simplex();
             var builder = new StringBuilder();
+
             do
             {
                 var c = data[offset++];
                 if (char.IsWhiteSpace(c) || NonSimplexChars.Contains(c))
                 {
-                    segments.Add(builder.ToString());
+                    simplex.Add(builder.ToString());
                     break;
                 }
 
@@ -93,21 +91,21 @@ namespace Art.Replication
                 var headQuoteFlag = c == HeadQuoteChar;
                 if (!headQuoteFlag) continue;
 
-                segments.Add(builder.ToString());
+                simplex.Add(builder.ToString());
                 builder.Clear();
 
                 var escapeChar = verbatimFlag ? EscapeVerbatimChar : EscapeChar;
                 var unescapeStrategy = verbatimFlag ? VerbatimUnescapeChars : UnescapeChars;
                 AppendEscapedLiteral(builder, data, ref offset, unescapeStrategy, escapeChar, TailQuoteChar, verbatimFlag);
 
-                segments.Add(builder.ToString());
+                simplex.Add(builder.ToString());
                 builder.Clear();
 
                 builder.Append(TailQuoteChar);
                 offset++;
             } while (true);
 
-            return new Simplex {Segments = segments};
+            return simplex;
         }
 
         public static void AppendEscapedLiteral(
@@ -122,7 +120,7 @@ namespace Art.Replication
                     if (unescapeStrategy.TryGetValue(c, out var s)) builder.Append(s);
                     else if (!verbatim && c == 'u')
                     {
-                        c = (char) int.Parse(data.Substring(offset, 4));
+                        c = (char)int.Parse(data.Substring(offset, 4));
                         builder.Append(c);
                         offset += 4;
                     }

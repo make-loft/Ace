@@ -4,9 +4,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
-using Aero.Converters.Patterns;
+using Art.Converters.Patterns;
 
-namespace Aero.Converters
+namespace Art.Converters
 {
     [ContentProperty("Cases")]
     public class SwitchConverter : DependencyObject, ISwitchConverter, ICompositeConverter

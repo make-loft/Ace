@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public class Set : ObservableCollection<object>
     {

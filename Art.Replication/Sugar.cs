@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Aero
+namespace Art
 {
     public static class Sugar
     {

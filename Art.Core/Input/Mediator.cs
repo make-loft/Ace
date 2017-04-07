@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
-using Aero.Evocators;
+using Art.Evocators;
 
-namespace Aero.Input
+namespace Art.Input
 {
     public class Mediator : ICommand
     {

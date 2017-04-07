@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HelloAero.Properties {
+namespace HelloArt.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

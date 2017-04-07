@@ -289,7 +289,7 @@ equals
 Possible, like this at App.xaml
 
 &lt;Application
-    x:Class="HelloAero.App"
+    x:Class="HelloArt.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     StartupUri="Views/WelcomeView.xaml"

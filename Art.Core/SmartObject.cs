@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Aero
+namespace Art
 {
     [DataContract]
     public class SmartObject : INotifyPropertyChanging, INotifyPropertyChanged

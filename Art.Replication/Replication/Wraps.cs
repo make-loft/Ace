@@ -27,6 +27,6 @@ namespace Art.Replication
 
     public class Simplex : List<string>
     {
-        public override string ToString() => this.Aggregate("", (s, s1) => s + s1);
+        public override string ToString() => this.Aggregate("", (a, b) => a + b);
     }
 }

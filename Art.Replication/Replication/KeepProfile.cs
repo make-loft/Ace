@@ -4,11 +4,6 @@ using System.Text;
 
 namespace Art.Replication
 {
-    public interface IConverter<in TIn, out TOut>
-    {
-        TOut Convert(TIn value, params object[] args);
-    }
-
     public interface IBodyProfile<in TIn, out TOut>
     {
         string GetHead(TIn body);

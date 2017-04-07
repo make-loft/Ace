@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Aero;
-using HelloAero.Languages;
+using Art;
+using HelloArt.Languages;
 
-namespace HelloAero.ViewModel
+namespace HelloArt.ViewModel
 {
     [DataContract]
     public class SettingsViewModel : ContextObject, IExposable

@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using System.Linq;
 using System.Resources;
-using Aero.Patterns;
+using Art.Patterns;
 
-namespace Aero
+namespace Art
 {
     public class LocalizationSource : AResourceWrap<string, string, CultureInfo, ResourceManager>
     {

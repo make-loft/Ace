@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Aero.Converters
+namespace Art.Converters
 {
     public class BooleanConverter : DependencyObject, IValueConverter
     {

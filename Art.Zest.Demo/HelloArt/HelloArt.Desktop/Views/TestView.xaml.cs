@@ -1,4 +1,4 @@
-﻿namespace HelloAero.Views
+﻿namespace HelloArt.Views
 {
     public partial class TestView
     {

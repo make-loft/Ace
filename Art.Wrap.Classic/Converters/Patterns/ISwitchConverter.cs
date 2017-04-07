@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Data;
 
-namespace Aero.Converters.Patterns
+namespace Art.Converters.Patterns
 {
     public class CaseSet : List<ICase>
     {

@@ -22,7 +22,7 @@ namespace Art.Replication
                         .Append(set, profile, indentLevel)
                         .Append(profile.GetTail(set)); /* "]" */
                 default:
-                    profile.SimplexConverter.Convert(value).Segments.ForEach(s => builder.Append(s));
+                    profile.SimplexConverter.Convert(value).ForEach(s => builder.Append(s));
                     return builder;
             }
         }

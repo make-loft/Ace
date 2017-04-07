@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Threading;
 
-namespace Aero.Specific
+namespace Art.Specific
 {
     public class Core
     {

@@ -1,8 +1,8 @@
 ﻿using System.Windows;
-using Aero;
-using Aero.Specific;
+using Art;
+using Art.Specific;
 
-namespace HelloAero
+namespace HelloArt
 {
     public partial class App
     {

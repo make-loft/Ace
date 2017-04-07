@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Data;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public class StoreBinding : Binding
     {
@@ -13,7 +13,7 @@ namespace Aero.Markup
             set
             {
                 var itemType = value;
-                var methodInfo = typeof(Aero.Store).GetMethod("Get").
+                var methodInfo = typeof(Art.Store).GetMethod("Get").
                     MakeGenericMethod(itemType.DeclaringType ?? itemType);
                 Source = methodInfo.Invoke(null, new object[] { new object[0] });
             }

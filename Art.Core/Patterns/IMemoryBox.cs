@@ -1,4 +1,4 @@
-﻿namespace Aero.Patterns
+﻿namespace Art.Patterns
 {
     public interface IMemoryBox
     {

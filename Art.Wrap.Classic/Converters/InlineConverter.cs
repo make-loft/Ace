@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Aero.Converters.Patterns;
+using Art.Converters.Patterns;
 
-namespace Aero.Converters
+namespace Art.Converters
 {
     public class InlineConverter : IInlineConverter, ICompositeConverter
     {

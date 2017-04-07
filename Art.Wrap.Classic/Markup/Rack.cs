@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public static class Rack
     {

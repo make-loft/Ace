@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using Aero.Converters;
+using Art.Converters;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public class Localizing : Patterns.ABindingExtension
     {

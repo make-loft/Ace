@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HelloAero.Languages {
+namespace HelloArt.Languages {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace HelloAero.Languages {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HelloAero.Languages.Russian", typeof(Russian).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HelloArt.Languages.Russian", typeof(Russian).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -322,7 +322,7 @@ namespace HelloAero.Languages {
         ///Possible, like this at App.xaml
         ///
         ///&lt;Application
-        ///    x:Class=&quot;HelloAero.App&quot;
+        ///    x:Class=&quot;HelloArt.App&quot;
         ///    xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
         ///    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;
         ///    StartupUri=&quot;Views/WelcomeView.xaml&quot;

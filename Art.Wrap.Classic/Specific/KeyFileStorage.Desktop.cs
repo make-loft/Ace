@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using Aero.Patterns;
+using Art.Patterns;
 
-namespace Aero.Specific
+namespace Art.Specific
 {
     public class KeyFileStorage : IStorage
     {

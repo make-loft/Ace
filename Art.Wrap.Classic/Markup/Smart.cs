@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public class Smart : Patterns.ABindingExtension
     {
@@ -47,7 +47,7 @@ namespace Aero.Markup
             set
             {
                 var itemType = value;
-                var methodInfo = typeof(Aero.Store).GetMethod("Get").
+                var methodInfo = typeof(Art.Store).GetMethod("Get").
                     MakeGenericMethod(itemType.DeclaringType ?? itemType);
                 Source = methodInfo.Invoke(null, new object[] { new object[0] });
             }

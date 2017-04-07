@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Aero
+namespace Art
 {
     public static class WatcherSugar
     {

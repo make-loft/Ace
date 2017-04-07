@@ -5,10 +5,10 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
-using Aero.Patterns;
+using Art.Patterns;
 using Art.Replication;
 
-namespace Aero
+namespace Art
 {
     public class Memory : IMemoryBox
     {

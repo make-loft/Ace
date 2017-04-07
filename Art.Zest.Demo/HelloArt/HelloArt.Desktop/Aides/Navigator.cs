@@ -1,6 +1,6 @@
-﻿using HelloAero.Views;
+﻿using HelloArt.Views;
 
-namespace HelloAero.Aides
+namespace HelloArt.Aides
 {
     public static class Navigator
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Markup;
-using Aero.Converters.Patterns;
+using Art.Converters.Patterns;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     [ContentProperty("Value")]
     public class Case : DependencyObject, ICase

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Aero.Converters.Patterns
+namespace Art.Converters.Patterns
 {
     public class ConverterEventArgs : EventArgs
     {

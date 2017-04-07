@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public class XamlTypeConverter : TypeConverter
     {

@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using Aero.Evocators;
-using Aero.Input;
+using Art.Evocators;
+using Art.Input;
 
-namespace Aero.Markup
+namespace Art.Markup
 {
     public class Context : Patterns.ABindingExtension
     {
@@ -70,7 +70,7 @@ namespace Aero.Markup
                 ? dataContext as ContextObject
                 : new Store {Key = StoreKey}.Convert(null, null, null, culture) as ContextObject;
             if (context == null) return null;
-            var command = Aero.Context.Get(Key);
+            var command = Art.Context.Get(Key);
             return command == null ? null : context[command];
         }
     }
