@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Art.Replication
@@ -21,7 +22,8 @@ namespace Art.Replication
                         .Append(set, profile, indentLevel)
                         .Append(profile.GetTail(set)); /* "]" */
                 default:
-                    return builder.Append(profile.SimplexConverter.Convert(value));
+                    profile.SimplexConverter.Convert(value).Segments.ForEach(s => builder.Append(s));
+                    return builder;
             }
         }
 

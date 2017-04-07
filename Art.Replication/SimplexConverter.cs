@@ -29,7 +29,7 @@ namespace Art.Replication
 
         public object Convert(Simplex simplex, params object[] args)
         {
-            var value = simplex.Segments.Count == 1 ? simplex.Segments[0] : simplex.Segments[1];
+            var value = simplex.Count == 1 ? simplex[0] : simplex[1];
             if (value == NullLiteral) return null;
             if (value == TrueLiteral) return true;
             if (value == FalseLiteral) return false;
@@ -44,11 +44,13 @@ namespace Art.Replication
             if (value.EndsWith("F") && uint.TryParse(number, out var f)) return f;
             if (value.EndsWith("M") && uint.TryParse(number, out var m)) return m;
             
-            if (simplex.Segments.Count < 2 || simplex.Segments[0].Length == 1) return value;
-            var typeName = simplex.Segments[0].Replace("@", "").Replace("\"", "").Replace("<", "").Replace(">", "");
+            if (simplex.Count < 2 || simplex[0].Length == 1) return value;
+            var typeName = simplex[0].Replace("@", "").Replace("\"", "").Replace("<", "").Replace(">", "");
+            if (typeName == "Uri") return new Uri(simplex[1]);
             var type = Type.GetType("System." + typeName);
             var parseMethod = type?.GetMethod("Parse", new[] {typeof(string)});
-            return parseMethod?.Invoke(null, new object[] {simplex.Segments[1]});
+            ;
+            return parseMethod?.Invoke(null, new object[] {simplex[1]});
         }
 
         public string ConvertUnescaped(object value)
@@ -126,7 +128,7 @@ namespace Art.Replication
         public Simplex Convert(object value, params object[] args)
         {
             var segment = ConvertUnescaped(value);
-            if (segment != null) return new Simplex {Segments = {segment}};
+            if (segment != null) return new Simplex { segment };
 
             segment = ConvertForEscape(value);
             var useVerbatim = segment.Contains("\\") || segment.Contains("/");
@@ -136,9 +138,37 @@ namespace Art.Replication
             var type = value.GetType();
             var parseMethod = type.GetMethod("Parse", new []{typeof(string)});
 
+            if (value is Uri u)
+                return new Simplex
+                {
+                        "<",
+                        type.Name,
+                        ">",
+                        HeadQuoteChar.ToString(),
+                        segment,
+                        TailQuoteChar.ToString(),
+                        HeadQuoteChar.ToString(),
+                        u.IsAbsoluteUri ? "Absolute" : "Relative",
+                        TailQuoteChar.ToString(),
+                };
+
+            if (value is DateTime dt)
+                return new Simplex
+                {
+                        "<",
+                        type.Name,
+                        ">",
+                        HeadQuoteChar.ToString(),
+                        segment,
+                        TailQuoteChar.ToString(),
+                        HeadQuoteChar.ToString(),
+                        dt.Kind.ToString(),
+                        TailQuoteChar.ToString(),
+                };
+
             return parseMethod != null
-                ? new Simplex {Segments = {"<", type.Name, ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()}}
-                : new Simplex {Segments = {HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()}};
+                ? new Simplex {"<", type.Name, ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()}
+                : new Simplex {HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()};
         }
     }
 }

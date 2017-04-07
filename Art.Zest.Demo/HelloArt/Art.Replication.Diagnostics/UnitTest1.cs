@@ -36,8 +36,11 @@ namespace Art.Replication.Diagnostics
         [TestMethod]
         public void TestMethod1()
         {
+            var x = DateTime.Now;
+            var a = x.ToUniversalTime().ToString();
+            var b = x.ToLocalTime().ToString();
             var item = new ComplexData();
-            var replicator = new Replicator() {ActiveProfile = _replicationProfile};
+            var replicator = new Replicator {ActiveProfile = _replicationProfile};
             var snap = replicator.TranscribeSnapshotFrom(item);
             var data = new StringBuilder().Append(snap, keepProfile).ToString();
             var i = 0;
@@ -45,3 +48,4 @@ namespace Art.Replication.Diagnostics
         }
     }
 }
+ 

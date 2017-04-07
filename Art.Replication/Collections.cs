@@ -25,11 +25,8 @@ namespace Art.Replication
         }
     }
 
-    public class Simplex
+    public class Simplex : List<string>
     {
-        public List<string> Segments = new List<string>();
-        public bool IgnoreQuotes { get; set; }
-
-        public override string ToString() => Segments.Aggregate("", (s, s1) => s + s1);
+        public override string ToString() => this.Aggregate("", (s, s1) => s + s1);
     }
 }
