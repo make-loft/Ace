@@ -335,7 +335,7 @@ namespace HelloArt.Languages {
         ///
         ///    public partial class App
         ///    {
-        ///        private void Ap [rest of string was truncated]&quot;;.
+        ///        private void App [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SmartStateSample {
             get {

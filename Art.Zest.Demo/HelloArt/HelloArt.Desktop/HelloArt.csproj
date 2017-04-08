@@ -8,8 +8,8 @@
     <ProjectGuid>{49BB9E82-4272-4C62-964A-AB8EA279DE91}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HelloAero</RootNamespace>
-    <AssemblyName>HelloAero</AssemblyName>
+    <RootNamespace>HelloArt</RootNamespace>
+    <AssemblyName>HelloArt</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -129,6 +129,10 @@
     <ProjectReference Include="..\..\..\Art.Core\Art.Core.Desktop.csproj">
       <Project>{2582f9f6-c381-475e-b454-4c1e4d323269}</Project>
       <Name>Art.Core.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Art.Replication\Art.Replication.Portable.csproj">
+      <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
+      <Name>Art.Replication.Portable</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Art.Wrap.Classic\Art.Wrap.Desktop.csproj">
       <Project>{a78c2d1c-9446-4b87-915b-2615f98f63c1}</Project>

@@ -51,21 +51,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapters.cs" />
-    <Compile Include="Patterns.cs" />
+    <Compile Include="Adapters\Adapters.cs" />
+    <Compile Include="Art.Patterns.cs" />
     <Compile Include="Replication\EscapeProfile.cs" />
     <Compile Include="Replication\SimplexConverter.cs" />
     <Compile Include="Replication\Models\ContractProfile.cs" />
     <Compile Include="Replication\Models\GeneralProfile.cs" />
     <Compile Include="Replication\Patterns\ADataProfile.cs" />
-    <Compile Include="Sugar.cs" />
     <Compile Include="Replication\Wraps.cs" />
     <Compile Include="Replication\KeepProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Replication\ReplicationProfile.cs" />
     <Compile Include="Replication\Replicator.cs" />
     <Compile Include="Replication\Serializer.cs" />
-    <Compile Include="Sugar.Reflection.cs" />
+    <Compile Include="Replication\Sugar.Reflection.cs" />
+    <Compile Include="Sugar.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

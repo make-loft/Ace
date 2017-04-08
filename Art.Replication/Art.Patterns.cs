@@ -1,5 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Art
+﻿namespace Art
 {
     public interface IExposable
     {

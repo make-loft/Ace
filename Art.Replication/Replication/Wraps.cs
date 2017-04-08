@@ -21,7 +21,7 @@ namespace Art.Replication
         }
 
         public Set(IEnumerable<object> collection) : base(collection)
-        {
+        {           
         }
     }
 

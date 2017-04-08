@@ -2,7 +2,7 @@
 
 namespace Art.Replication
 {
-    public static partial class Sugar
+    public static class Member
     {
         public static bool CanRead(this MemberInfo member) =>
             (member as PropertyInfo)?.CanRead ?? member is FieldInfo;

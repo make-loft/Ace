@@ -68,12 +68,17 @@
     <Compile Include="PropertyChangedWatcher.cs" />
     <Compile Include="Specific\Core.Desktop.cs" />
     <Compile Include="Specific\KeyFileStorage.Desktop.cs" />
+    <Compile Include="Sugar.cs" />
     <Compile Include="VisualTree.Sugar.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Art.Core\Art.Core.Desktop.csproj">
       <Project>{2582f9f6-c381-475e-b454-4c1e4d323269}</Project>
       <Name>Aero.Core.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Art.Replication\Art.Replication.Portable.csproj">
+      <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
+      <Name>Art.Replication.Portable</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

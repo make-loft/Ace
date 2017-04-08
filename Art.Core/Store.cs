@@ -28,6 +28,6 @@ namespace Art
             else Container[itemType] = value;
         }
 
-        public static void Snapshot() => Container.Values.ToArray().ForEach(i => Memory.ActiveBox.Keep(i));
+        public static void Snapshot() => Container.Values.ForEach(i => Memory.ActiveBox.Keep(i));
     }
 }
