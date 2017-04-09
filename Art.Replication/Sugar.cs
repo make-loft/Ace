@@ -10,6 +10,7 @@ namespace Art
         public static T As<T>(this object o) where T : class => o as T;
     }
 }
+
 namespace System.Linq
 {
     public static class EnumerableArt

@@ -7,6 +7,56 @@ namespace Art.Replication
 {
     public static class Serializer
     {
+        public static IEnumerable<string> ToBeads(this object value, KeepProfile profile, int indentLevel = 1)
+        {
+            switch (value)
+            {
+                case Map map:
+                    yield return profile.GetHead(map); /* "{" */
+                    foreach (var bead in map.ToBeads(profile, indentLevel))
+                        yield return bead;
+                    yield return profile.GetTail(map); /* "}" */
+                    yield break;
+                case Set set:
+                    yield return profile.GetHead(set); /* "[" */
+                    foreach (var bead in set.ToBeads(profile, indentLevel))
+                        yield return bead;
+                    yield return profile.GetTail(set); /* "]" */
+                    yield break;
+                default:
+                    foreach (var bead in profile.SimplexConverter.Convert(value))
+                        yield return bead;
+                    yield break;
+            }
+        }
+
+        public static IEnumerable<string> ToBeads(this ICollection items, KeepProfile profile, int indentLevel = 1)
+        {
+            var counter = 0;
+
+            foreach (var item in items)
+            {
+                yield return profile.GetHeadIndent(indentLevel, items, counter);
+
+                if (items is Map && item is KeyValuePair<string, object> pair)
+                {
+                    yield return pair.Key;
+                    yield return profile.MapPairSplitter;
+                    foreach (var bead in pair.Value.ToBeads(profile, indentLevel + 1))
+                        yield return bead;
+                }
+                else
+                {
+                    foreach (var bead in item.ToBeads(profile, indentLevel + 1))
+                        yield return bead;
+                }
+
+                yield return profile.GetTailIndent(indentLevel, items, counter++);
+            }
+        }
+
+
+
         public static StringBuilder Append(this StringBuilder builder, object value, KeepProfile profile, int indentLevel = 1)
         {
             switch (value)
