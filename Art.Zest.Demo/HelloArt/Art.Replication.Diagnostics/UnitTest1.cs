@@ -16,7 +16,10 @@ namespace Art.Replication.Diagnostics
         public Guid Property1 { get; set; }
 
         [DataMember]
-        public DateTime Property2 { get; set; } = DateTime.Now;
+        public DateTime Local { get; set; } = DateTime.Now.ToLocalTime();
+
+        [DataMember]
+        public DateTime Universal { get; set; } = DateTime.Now.ToUniversalTime();
 
         [DataMember]
         public TimeSpan Property3 { get; set; } = TimeSpan.MinValue;
@@ -27,6 +30,9 @@ namespace Art.Replication.Diagnostics
 
         [DataMember]
         public Uri Property5 { get; set; } = new Uri("http://makeloft.xyz");
+
+        [DataMember]
+        public object[] Objects { get; set; } = {"str", 123, 23u, DateTime.Now};
     }
 
     [TestClass]
@@ -46,7 +52,7 @@ namespace Art.Replication.Diagnostics
             var snap = replicator.TranscribeSnapshotFrom(item);
             var data = new StringBuilder().Append(snap, keepProfile).ToString();
             
-            var data1 = snap.ToBeads(keepProfile).ToList();
+            var data1 = snap.ToStringBeads(keepProfile).ToList();
             var d2 = data1.Aggregate(new StringBuilder(), (bu, s) => bu.Append(s)).ToString();
             var i = 0;
             var snap1 = data.Capture(keepProfile, ref i);

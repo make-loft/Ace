@@ -46,54 +46,67 @@ namespace Art.Replication
             if (simplex.Count < 2 || simplex[0].Length == 1) return value;
             var typeName = simplex[0].Replace("@", "").Replace("\"", "").Replace("<", "").Replace(">", "");
             if (typeName == "Uri") return new Uri(simplex[1]);
+
+            if (typeName == "DateTime")
+                return simplex[1].EndsWith("Z")
+                    ? DateTime.Parse(simplex[1], ActiveCulture, DateTimeStyles.AdjustToUniversal)
+                    : DateTime.Parse(simplex[1], ActiveCulture);
+
             var type = Type.GetType("System." + typeName);
             var parseMethod = type?.GetMethod("Parse", new[] {typeof(string)});
-            ;
             return parseMethod?.Invoke(null, new object[] {simplex[1]});
         }
 
-        public string ConvertUnescaped(object value)
+        public string ConvertPrimitive(object value)
         {
-            if (AppendSyffixToNumbers)
-            {
-                switch (value)
-                {
-                    case int i:
-                        return i.ToString(IntegerNumbersFormat);
-                    case uint i:
-                        return i.ToString(IntegerNumbersFormat) + "U";
-                    case long i:
-                        return i.ToString(IntegerNumbersFormat) + "L";
-                    case ulong i:
-                        return i.ToString(IntegerNumbersFormat) + "UL";
-                    case float n:
-                        return n.ToString(RealNumbersFormat, ActiveCulture) + "F";
-                    case double n when AppendSyffixToDouble:
-                        return n.ToString(RealNumbersFormat, ActiveCulture) + "D";
-                    case double n:
-                        return n.ToString(RealNumbersFormat, ActiveCulture);
-                    case decimal m:
-                        return m.ToString(RealNumbersFormat, ActiveCulture) + "M";
-                }
-            }
-
             switch (value)
             {
                 case null:
                     return NullLiteral;
                 case bool b:
                     return b ? TrueLiteral : FalseLiteral;
+                case int i:
+                    return i.ToString(IntegerNumbersFormat);
+                case uint i:
+                    return i.ToString(IntegerNumbersFormat);
+                case long i:
+                    return i.ToString(IntegerNumbersFormat);
+                case ulong i:
+                    return i.ToString(IntegerNumbersFormat);
                 case float n:
-                    return n.ToString(RealNumbersFormat, ActiveCulture);
-                case double n when AppendSyffixToDouble:
                     return n.ToString(RealNumbersFormat, ActiveCulture);
                 case double n:
                     return n.ToString(RealNumbersFormat, ActiveCulture);
                 case decimal m:
                     return m.ToString(RealNumbersFormat, ActiveCulture);
+                default:
+                    return null;
             }
+        }
 
-            return null;
+        public string GetNumberSuffix(object value)
+        {
+            switch (value)
+            {
+                case int i:
+                    return null;
+                case uint i:
+                    return "U";
+                case long i:
+                    return "L";
+                case ulong i:
+                    return "UL";
+                case float n:
+                    return "F";
+                case double n when AppendSyffixToDouble:
+                    return "D";
+                case double n:
+                    return null;
+                case decimal m:
+                    return "M";
+                default:
+                    return null;
+            }
         }
 
         public string ConvertForEscape(object value)
@@ -106,18 +119,16 @@ namespace Art.Replication
                     return ((long) value).ToString();
                 case Type t:
                     return t.AssemblyQualifiedName;
-                //case Uri u:
-                //    return u.ToString();
-                //case Guid d:
-                //    return d.ToString();
-                //case DateTime d:
-                //    return d.ToString();
-                //case DateTimeOffset d:
-                //    return d.ToString();
-                //case TimeSpan d:
-                //    return d.ToString();
-                //return @"""\/Date(" + (d.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000 + "+" +
-                //       DateTimeOffset.Now.Offset.ToString("hhmm") + @")\/""";
+                case Uri u:
+                    return u.ToString();
+                case Guid d:
+                    return d.ToString("D");
+                case DateTime d:
+                    return d.ToString("O");
+                case DateTimeOffset d:
+                    return d.ToString("O");
+                case TimeSpan d:
+                    return d.ToString("G");
                 default:
                     return value.ToString();
 
@@ -126,8 +137,9 @@ namespace Art.Replication
 
         public Simplex Convert(object value, params object[] args)
         {
-            var segment = ConvertUnescaped(value);
-            if (segment != null) return new Simplex {segment};
+            var segment = ConvertPrimitive(value);
+            if (segment != null)
+                return AppendSyffixToNumbers ? new Simplex {segment, GetNumberSuffix(value)} : new Simplex {segment};
 
             segment = ConvertForEscape(value);
             var useVerbatim = segment.Contains("\\") || segment.Contains("/");
@@ -137,35 +149,7 @@ namespace Art.Replication
             var type = value.GetType();
             var parseMethod = type.GetMethod("Parse", new[] {typeof(string)});
 
-            if (value is Uri u)
-                return new Simplex
-                {
-                    "<",
-                    type.Name,
-                    ">",
-                    HeadQuoteChar.ToString(),
-                    segment,
-                    TailQuoteChar.ToString(),
-                    HeadQuoteChar.ToString(),
-                    u.IsAbsoluteUri ? "Absolute" : "Relative",
-                    TailQuoteChar.ToString(),
-                };
-
-            if (value is DateTime dt)
-                return new Simplex
-                {
-                    "<",
-                    type.Name,
-                    ">",
-                    HeadQuoteChar.ToString(),
-                    dt.ToString("O"),
-                    TailQuoteChar.ToString(),
-                    HeadQuoteChar.ToString(),
-                    dt.Kind.ToString(),
-                    TailQuoteChar.ToString(),
-                };
-
-            return parseMethod != null
+            return parseMethod != null || value is Uri
                 ? new Simplex {"<", type.Name, ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()}
                 : new Simplex {HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()};
         }

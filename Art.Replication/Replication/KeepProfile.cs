@@ -43,6 +43,7 @@ namespace Art.Replication
                     NullLiteral = "null",
                     TrueLiteral = "true",
                     FalseLiteral = "false",
+                    AppendSyffixToNumbers = true,
                 },
                 MapPairSplitter = ": ",
                 IndentChars = "  ",

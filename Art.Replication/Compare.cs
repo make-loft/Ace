@@ -19,7 +19,7 @@ namespace Art
 
         public override string ToString()
         {
-            return State + " # " + Path + " # " + Source + " <> " + Target;
+            return State + "•" + Path + "•" + Source + "•" + Target;
         }
     }
 
@@ -61,7 +61,20 @@ namespace Art
                 {
                     var a = pair.Value;
                     var b = mB[pair.Key];
-                    foreach (var result in GetResults(a, b, path + "." + pair.Key))
+                    path = string.IsNullOrEmpty(path) ? path : path + ".";
+                    foreach (var result in GetResults(a, b, path + pair.Key))
+                    {
+                        yield return result;
+                    }
+                }
+            }
+            else if (o is Set sA && items is Set sB)
+            {
+                for (var index = 0; index < sB.Count; index++)
+                {
+                    var a = sB[index];
+                    var b = sB[index];
+                    foreach (var result in GetResults(a, b, path + "[" + index + "]"))
                     {
                         yield return result;
                     }

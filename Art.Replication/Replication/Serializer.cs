@@ -7,19 +7,19 @@ namespace Art.Replication
 {
     public static class Serializer
     {
-        public static IEnumerable<string> ToBeads(this object value, KeepProfile profile, int indentLevel = 1)
+        public static IEnumerable<string> ToStringBeads(this object value, KeepProfile profile, int indentLevel = 1)
         {
             switch (value)
             {
                 case Map map:
                     yield return profile.GetHead(map); /* "{" */
-                    foreach (var bead in map.ToBeads(profile, indentLevel))
+                    foreach (var bead in map.ToStringBeads(profile, indentLevel))
                         yield return bead;
                     yield return profile.GetTail(map); /* "}" */
                     yield break;
                 case Set set:
                     yield return profile.GetHead(set); /* "[" */
-                    foreach (var bead in set.ToBeads(profile, indentLevel))
+                    foreach (var bead in set.ToStringBeads(profile, indentLevel))
                         yield return bead;
                     yield return profile.GetTail(set); /* "]" */
                     yield break;
@@ -30,7 +30,7 @@ namespace Art.Replication
             }
         }
 
-        public static IEnumerable<string> ToBeads(this ICollection items, KeepProfile profile, int indentLevel = 1)
+        private static IEnumerable<string> ToStringBeads(this ICollection items, KeepProfile profile, int indentLevel = 1)
         {
             var counter = 0;
 
@@ -42,20 +42,18 @@ namespace Art.Replication
                 {
                     yield return pair.Key;
                     yield return profile.MapPairSplitter;
-                    foreach (var bead in pair.Value.ToBeads(profile, indentLevel + 1))
+                    foreach (var bead in pair.Value.ToStringBeads(profile, indentLevel + 1))
                         yield return bead;
                 }
                 else
                 {
-                    foreach (var bead in item.ToBeads(profile, indentLevel + 1))
+                    foreach (var bead in item.ToStringBeads(profile, indentLevel + 1))
                         yield return bead;
                 }
 
                 yield return profile.GetTailIndent(indentLevel, items, counter++);
             }
         }
-
-
 
         public static StringBuilder Append(this StringBuilder builder, object value, KeepProfile profile, int indentLevel = 1)
         {
@@ -98,7 +96,7 @@ namespace Art.Replication
             return builder;
         }
 
-        public static ICollection Capture(this string data, KeepProfile profile, ref int offset, ICollection items)
+        private static ICollection Capture(this ICollection items, KeepProfile profile, string data, ref int offset)
         {
             while (!profile.MatchTail(data, ref offset, items is Map))
             {
@@ -122,9 +120,9 @@ namespace Art.Replication
             switch (profile.MatchHead(data, ref offset))
             {
                 case KeepProfile.Map:
-                    return data.Capture(profile, ref offset, new Map());
+                    return new Map().Capture(profile, data, ref offset);
                 case KeepProfile.Set:
-                    return data.Capture(profile, ref offset, new Set());
+                    return new Set().Capture(profile, data, ref offset);
                 default:
                     var simplex = profile.CaptureSimplex(data, ref offset);
                     return profile.SimplexConverter.Convert(simplex);
