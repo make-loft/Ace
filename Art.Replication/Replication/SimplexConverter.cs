@@ -24,7 +24,25 @@ namespace Art.Replication
         public bool AppendSyffixToDouble;
         public string RealNumbersFormat = "G";
         public string IntegerNumbersFormat = "G";
-        internal static readonly long DatetimeMinTimeTicks = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
+
+        public Simplex Convert(object value, params object[] args)
+        {
+            var segment = ConvertPrimitive(value);
+            if (segment != null)
+                return AppendSyffixToNumbers ? new Simplex { segment, GetNumberSuffix(value) } : new Simplex { segment };
+
+            segment = ConvertForEscape(value);
+            var useVerbatim = segment.Contains("\\") || segment.Contains("/");
+            var escapeChars = useVerbatim ? EscapeConverter.VerbatimEscapeChars : EscapeConverter.EscapeChars;
+            EscapeConverter.AppendWithEscape(new StringBuilder(), segment, escapeChars, useVerbatim);
+
+            var type = value.GetType();
+            var parseMethod = type.GetMethod("Parse", new[] { typeof(string) });
+
+            return parseMethod != null || value is Uri
+                ? new Simplex { "<", type.Name, ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString() }
+                : new Simplex { HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString() };
+        }
 
         public object Convert(Simplex simplex, params object[] args)
         {
@@ -66,13 +84,13 @@ namespace Art.Replication
                 case bool b:
                     return b ? TrueLiteral : FalseLiteral;
                 case int i:
-                    return i.ToString(IntegerNumbersFormat);
+                    return i.ToString(IntegerNumbersFormat, ActiveCulture);
                 case uint i:
-                    return i.ToString(IntegerNumbersFormat);
+                    return i.ToString(IntegerNumbersFormat, ActiveCulture);
                 case long i:
-                    return i.ToString(IntegerNumbersFormat);
+                    return i.ToString(IntegerNumbersFormat, ActiveCulture);
                 case ulong i:
-                    return i.ToString(IntegerNumbersFormat);
+                    return i.ToString(IntegerNumbersFormat, ActiveCulture);
                 case float n:
                     return n.ToString(RealNumbersFormat, ActiveCulture);
                 case double n:
@@ -88,21 +106,21 @@ namespace Art.Replication
         {
             switch (value)
             {
-                case int i:
+                case int _:
                     return null;
-                case uint i:
+                case uint _:
                     return "U";
-                case long i:
+                case long _:
                     return "L";
-                case ulong i:
+                case ulong _:
                     return "UL";
-                case float n:
+                case float _:
                     return "F";
-                case double n when AppendSyffixToDouble:
+                case double _ when AppendSyffixToDouble:
                     return "D";
-                case double n:
+                case double _:
                     return null;
-                case decimal m:
+                case decimal _:
                     return "M";
                 default:
                     return null;
@@ -116,7 +134,7 @@ namespace Art.Replication
                 case string s:
                     return s;
                 case Enum e:
-                    return ((long) value).ToString();
+                    return e.ToString();
                 case Type t:
                     return t.AssemblyQualifiedName;
                 case Uri u:
@@ -124,34 +142,14 @@ namespace Art.Replication
                 case Guid d:
                     return d.ToString("D");
                 case DateTime d:
-                    return d.ToString("O");
+                    return d.ToString("O", ActiveCulture);
                 case DateTimeOffset d:
-                    return d.ToString("O");
+                    return d.ToString("O", ActiveCulture);
                 case TimeSpan d:
-                    return d.ToString("G");
+                    return d.ToString("G", ActiveCulture);
                 default:
                     return value.ToString();
-
             }
-        }
-
-        public Simplex Convert(object value, params object[] args)
-        {
-            var segment = ConvertPrimitive(value);
-            if (segment != null)
-                return AppendSyffixToNumbers ? new Simplex {segment, GetNumberSuffix(value)} : new Simplex {segment};
-
-            segment = ConvertForEscape(value);
-            var useVerbatim = segment.Contains("\\") || segment.Contains("/");
-            var escapeChars = useVerbatim ? EscapeConverter.VerbatimEscapeChars : EscapeConverter.EscapeChars;
-            EscapeConverter.AppendWithEscape(new StringBuilder(), segment, escapeChars, useVerbatim);
-
-            var type = value.GetType();
-            var parseMethod = type.GetMethod("Parse", new[] {typeof(string)});
-
-            return parseMethod != null || value is Uri
-                ? new Simplex {"<", type.Name, ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()}
-                : new Simplex {HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()};
         }
     }
 }

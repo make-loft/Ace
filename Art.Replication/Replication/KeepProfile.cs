@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Text;
 
 namespace Art.Replication
 {
@@ -64,22 +63,14 @@ namespace Art.Replication
         public IBodyProfile<Set, bool> SetBody = new BodyProfile<Set> {Head = "[", Tail = "]"};
 
         public string MapPairSplitter { get; set; } = ": ";
-
-        public string Delimiter { get; set; }
-
-        public bool UseTailDelimiter { get; set; }
-
-        //public DateTimeFormat DateTimeFormat { get; set; }
-        public string IndentChars { get; set; }
-
-        public string NewLineChars { get; set; }
+        public string Delimiter { get; set; } = ",";
+        public bool UseTailDelimiter { get; set; } = true;
+        public string IndentChars { get; set; } = " ";
+        public string NewLineChars { get; set; } = Environment.NewLine;
 
         public string GetHead(Map body) => MapBody.GetHead(body);
-
         public string GetTail(Map body) => MapBody.GetTail(body);
-
         public string GetHead(Set body) => SetBody.GetHead(body);
-
         public string GetTail(Set body) => SetBody.GetTail(body);
 
         public string MatchHead(string data, ref int offset)
@@ -154,17 +145,9 @@ namespace Art.Replication
             return NewLineChars + indent;
         }
 
-        public string GetTailIndent(int indentLevel, ICollection items, int index)
-        {
-            return items.Count == ++index && !UseTailDelimiter
+        public string GetTailIndent(int indentLevel, ICollection items, int index) =>
+            items.Count == ++index && !UseTailDelimiter
                 ? GetHeadIndent(indentLevel - 1, items, index)
                 : Delimiter;
-        }
-
-        public void AppendKey(StringBuilder builder, string key)
-        {
-            builder.Append(key);
-            builder.Append(MapPairSplitter);
-        }
     }
 }

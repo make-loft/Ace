@@ -84,10 +84,9 @@ namespace Art.Replication
                 builder.Append(profile.GetHeadIndent(indentLevel, items, counter));
 
                 if (items is Map && item is KeyValuePair<string, object> pair)
-                {
-                    profile.AppendKey(builder, pair.Key);
-                    builder.Append(pair.Value, profile, indentLevel + 1);
-                }
+                    builder.Append(pair.Key)
+                        .Append(profile.MapPairSplitter)
+                        .Append(pair.Value, profile, indentLevel + 1);    
                 else builder.Append(item, profile, indentLevel + 1);
 
                 builder.Append(profile.GetTailIndent(indentLevel, items, counter++));
