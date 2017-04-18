@@ -63,12 +63,15 @@ namespace Art.Replication
 
             if (simplex.Count < 2 || simplex[0].Length == 1) return value;
             var typeName = simplex[0].Replace("@", "").Replace("\"", "").Replace("<", "").Replace(">", "");
-            if (typeName == "Uri") return new Uri(simplex[1]);
-
-            if (typeName == "DateTime")
-                return simplex[1].EndsWith("Z")
-                    ? DateTime.Parse(simplex[1], ActiveCulture, DateTimeStyles.AdjustToUniversal)
-                    : DateTime.Parse(simplex[1], ActiveCulture);
+            switch (typeName)
+            {
+                case "Uri":
+                    return new Uri(simplex[1]);
+                case "DateTime":
+                    return simplex[1].EndsWith("Z")
+                        ? DateTime.Parse(simplex[1], ActiveCulture, DateTimeStyles.AdjustToUniversal)
+                        : DateTime.Parse(simplex[1], ActiveCulture);
+            }
 
             var type = Type.GetType("System." + typeName);
             var parseMethod = type?.GetMethod("Parse", new[] {typeof(string)});
