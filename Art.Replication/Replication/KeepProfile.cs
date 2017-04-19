@@ -55,7 +55,6 @@ namespace Art.Replication
 
         public const string Map = "Map";
         public const string Set = "Set";
-        public const string Simplex = "Simplex";
 
         public EscapeProfile EscapeProfile = new EscapeProfile();
         public SimplexConverter SimplexConverter;
@@ -80,7 +79,7 @@ namespace Art.Replication
                 ? Map
                 : SetBody.MatchHead(data, ref offset)
                     ? Set
-                    : Simplex;
+                    : null;
         }
 
         public Simplex CaptureSimplex(string data, ref int offset)
@@ -108,7 +107,7 @@ namespace Art.Replication
                 ? Map
                 : SetBody.MatchTail(data, ref offset)
                     ? Set
-                    : Simplex;
+                    : null;
         }
 
         public bool MatchTail(string data, ref int offset, bool isMap)
@@ -146,8 +145,8 @@ namespace Art.Replication
         }
 
         public string GetTailIndent(int indentLevel, ICollection items, int index) =>
-            items.Count == ++index && !UseTailDelimiter
-                ? GetHeadIndent(indentLevel - 1, items, index)
+            items.Count == ++index
+                ? (UseTailDelimiter ? Delimiter : null) + GetHeadIndent(indentLevel - 1, items, index)
                 : Delimiter;
     }
 }

@@ -11,13 +11,13 @@ namespace Art.Replication
             {
                 case Map map:
                     yield return keepProfile.GetHead(map); /* "{" */
-                    foreach (var bead in map.ToStringBeads(keepProfile, indentLevel))
+                    foreach (var bead in map.ConvertComplex(keepProfile, indentLevel))
                         yield return bead;
                     yield return keepProfile.GetTail(map); /* "}" */
                     yield break;
                 case Set set:
                     yield return keepProfile.GetHead(set); /* "[" */
-                    foreach (var bead in set.ToStringBeads(keepProfile, indentLevel))
+                    foreach (var bead in set.ConvertComplex(keepProfile, indentLevel))
                         yield return bead;
                     yield return keepProfile.GetTail(set); /* "]" */
                     yield break;
@@ -28,7 +28,7 @@ namespace Art.Replication
             }
         }
 
-        private static IEnumerable<string> ToStringBeads(this ICollection items, KeepProfile keepProfile, int indentLevel = 1)
+        private static IEnumerable<string> ConvertComplex(this ICollection items, KeepProfile keepProfile, int indentLevel = 1)
         {
             var counter = 0;
 

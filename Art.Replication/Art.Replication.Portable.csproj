@@ -55,6 +55,7 @@
     <Compile Include="Art.Patterns.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="Replication\EscapeProfile.cs" />
+    <Compile Include="Replication\Serializer.Aides.cs" />
     <Compile Include="Replication\Serializer.Capture.cs" />
     <Compile Include="Replication\Serializer.Conversion.StringBuilder.cs" />
     <Compile Include="Replication\SimplexConverter.cs" />

@@ -38,26 +38,15 @@ namespace Art.Replication.Diagnostics
     [TestClass]
     public class UnitTest1
     {
-        ReplicationProfile _replicationProfile = new ReplicationProfile();
-        KeepProfile keepProfile = KeepProfile.GetFormatted();
-
         [TestMethod]
         public void TestMethod1()
         {
-            var x = DateTime.Now;
-            var a = x.ToUniversalTime().ToString("O");
-            var b = x.ToLocalTime().ToString("O", CultureInfo.InvariantCulture);
             var item = new ComplexData();
-            var replicator = new Replicator {ActiveProfile = _replicationProfile};
-            var snap = replicator.TranscribeSnapshotFrom(item);
-            var data = new StringBuilder().Append(snap, keepProfile).ToString();
-            
-            var data1 = snap.ToStringBeads(keepProfile).ToList();
-            var d2 = data1.Aggregate(new StringBuilder(), (bu, s) => bu.Append(s)).ToString();
-            var i = 0;
-            var snap1 = data.Capture(keepProfile, ref i);
-            var results = Comparizer.GetResults(snap, snap1, "").ToList();
-            results = results;
+            var tmp = item.ToStringState();
+            var instance = tmp.ToInstance();
+            instance = tmp;
+            //var results = Comparizer.GetResults(snap, snap1, "").ToList();
+            //results = results;
         }
     }
 }

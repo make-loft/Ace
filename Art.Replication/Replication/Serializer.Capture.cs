@@ -2,32 +2,32 @@
 {
     public static partial class Serializer
     {
-        public static object Capture(this string data, KeepProfile keepProfile, ref int offset)
+        public static object CreateSnapshot(this string matrix, KeepProfile keepProfile, ref int offset)
         {
-            switch (keepProfile.MatchHead(data, ref offset))
+            switch (keepProfile.MatchHead(matrix, ref offset)) /* ("{" or "[") else simplex value */
             {
                 case KeepProfile.Map:
-                    return new Map().Capture(keepProfile, data, ref offset);
+                    return new Map().CaptureComplex(keepProfile, matrix, ref offset);
                 case KeepProfile.Set:
-                    return new Set().Capture(keepProfile, data, ref offset);
+                    return new Set().CaptureComplex(keepProfile, matrix, ref offset);
                 default:
-                    var simplex = keepProfile.CaptureSimplex(data, ref offset);
+                    var simplex = keepProfile.CaptureSimplex(matrix, ref offset);
                     return keepProfile.SimplexConverter.Convert(simplex);
             }
         }
 
-        private static object Capture(this object items, KeepProfile keepProfile, string data, ref int offset)
+        private static object CaptureComplex(this object items, KeepProfile keepProfile, string data, ref int offset)
         {
-            while (!keepProfile.MatchTail(data, ref offset, items is Map))
+            while (!keepProfile.MatchTail(data, ref offset, items is Map)) /* "}" or "]" */
             {
                 keepProfile.SkipHeadIndent(data, ref offset);
 
                 if (items is Map map)
                 {
                     var key = keepProfile.CaptureSimplex(data, ref offset).ToString();
-                    map.Add(key, Capture(data, keepProfile, ref offset));
+                    map.Add(key, data.CreateSnapshot(keepProfile, ref offset));
                 }
-                else if (items is Set set) set.Add(Capture(data, keepProfile, ref offset));
+                else if (items is Set set) set.Add(data.CreateSnapshot(keepProfile, ref offset));
 
                 keepProfile.SkipTailIndent(data, ref offset);
             }

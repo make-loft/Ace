@@ -5,89 +5,86 @@ using System.Linq;
 
 namespace Art.Replication
 {
-    public class Replicator
+    public static class Replicator
     {
-        public ReplicationProfile ActiveProfile { get; set; } = new ReplicationProfile();
-
-        public object TranscribeSnapshotFrom(object master, Type baseType = null)
+        public static object TranscribeStateFrom(this object master, ReplicationProfile activeProfile, Type baseType = null)
         {
-            if (ActiveProfile.IsSimplex(master)) return master;
+            if (activeProfile.IsSimplex(master)) return master;
 
-            if (ActiveProfile.SnapshotToIdCache.TryGetValue(master, out int id))
-                return new Map {{ActiveProfile.IdKey, id}};
+            if (activeProfile.SnapshotToIdCache.TryGetValue(master, out int id))
+                return new Map {{activeProfile.IdKey, id}};
 
-            id = ActiveProfile.SnapshotToIdCache.Count;
-            ActiveProfile.SnapshotToIdCache.Add(master, id);
+            id = activeProfile.SnapshotToIdCache.Count;
+            activeProfile.SnapshotToIdCache.Add(master, id);
 
             var type = master.GetType();
             var snapshot = new Map();
 
-            if (ActiveProfile.AttachId) snapshot.Add(ActiveProfile.IdKey, id);
+            if (activeProfile.AttachId) snapshot.Add(activeProfile.IdKey, id);
 
-            if (ActiveProfile.AttachTypeInfo || master is IEnumerable || baseType != type)
-                snapshot.Add(ActiveProfile.TypeKey, type.AssemblyQualifiedName);
+            if (activeProfile.AttachTypeInfo || master is IEnumerable || baseType != type)
+                snapshot.Add(activeProfile.TypeKey, type.AssemblyQualifiedName);
 
             if (master is IDictionary map && type.IsGenericType && type.GetGenericArguments().First() == typeof(string))
             {
                 var m = new Map(map.Cast<DictionaryEntry>()
-                    .ToDictionary(p => (string) p.Key, p => TranscribeSnapshotFrom(p.Value)));
-                if (ActiveProfile.SimplifyMaps) return m;
-                snapshot.Add(ActiveProfile.MapKey, m);
+                    .ToDictionary(p => (string) p.Key, p => p.Value.TranscribeStateFrom(activeProfile)));
+                if (activeProfile.SimplifyMaps) return m;
+                snapshot.Add(activeProfile.MapKey, m);
             }
             else if (master is IEnumerable set)
             {
-                var s = new Set(set.Cast<object>().Select(i => TranscribeSnapshotFrom(i)));
-                if (ActiveProfile.SimplifySets) return s;
-                snapshot.Add(ActiveProfile.SetKey, s);
+                var s = new Set(set.Cast<object>().Select(i => i.TranscribeStateFrom(activeProfile)));
+                if (activeProfile.SimplifySets) return s;
+                snapshot.Add(activeProfile.SetKey, s);
             }
 
-            var members = ActiveProfile.Schema.GetDataMembers(type);
-            members.ForEach(m => snapshot.Add(ActiveProfile.Schema.GetDataKey(m),
-                TranscribeSnapshotFrom(m.GetValue(master), m.GetMemberType())));
+            var members = activeProfile.Schema.GetDataMembers(type);
+            members.ForEach(m => snapshot.Add(activeProfile.Schema.GetDataKey(m),
+                m.GetValue(master).TranscribeStateFrom(activeProfile, m.GetMemberType())));
 
             return snapshot;
         }
 
-        public object TranslateReplicaFrom(object masterSnapshot, Type baseType = null)
+        public static object TranslateReplicaFrom(this object state, ReplicationProfile activeProfile, Type baseType = null)
         {
-            if (ActiveProfile.IsSimplex(masterSnapshot)) return masterSnapshot;
+            if (activeProfile.IsSimplex(state)) return state;
 
-            var snapshot = (Map) masterSnapshot;
-            var id = snapshot.TryGetValue(ActiveProfile.IdKey, out var key)
+            var snapshot = state is Set && activeProfile.SimplifySets
+                ? new Map
+                {
+                    {activeProfile.TypeKey, baseType ?? typeof(object[])},
+                    {activeProfile.SetKey, state}
+                }
+                : (Map) state;
+
+            var id = snapshot.TryGetValue(activeProfile.IdKey, out var key)
                 ? (int) key
-                : ActiveProfile.IdToReplicaCache.Count;
-            if (ActiveProfile.IdToReplicaCache.TryGetValue(id, out object replica)) return replica;
+                : activeProfile.IdToReplicaCache.Count;
+            if (activeProfile.IdToReplicaCache.TryGetValue(id, out object replica)) return replica;
 
-            var type = snapshot.TryGetValue(ActiveProfile.TypeKey, out var typeName)
+            var type = snapshot.TryGetValue(activeProfile.TypeKey, out var typeName)
                 ? Type.GetType(typeName.ToString(), true)
                 : baseType ?? throw new Exception("Missed type info.");
 
-            replica = type.IsArray
-                ? ((IEnumerable) snapshot[ActiveProfile.SetKey]).Cast<object>()
-                .Select(i => TranslateReplicaFrom(i))
-                .ToArray()
-                : ActiveProfile.IdToReplicaCache[id] = Activator.CreateInstance(type);
+            replica = activeProfile.IdToReplicaCache[id] = type.IsArray
+                ? ((Set) snapshot[activeProfile.SetKey]).Select(i => i.TranslateReplicaFrom(activeProfile)).ToArray()
+                : Activator.CreateInstance(type);
 
             if (replica is IDictionary<string, object> map)
             {
-                var m = (Map) (ActiveProfile.SimplifyMaps ? snapshot : snapshot[ActiveProfile.MapKey]);
-                m.ToList().ForEach(p => map.Add(p.Key, p.Value));
-                if (ActiveProfile.SimplifyMaps) return m;
+                var items = (IDictionary<string, object>) snapshot[activeProfile.MapKey];
+                items.ToList().ForEach(p => map.Add(p.Key, p.Value));
             }
-
-            if (replica is IList set && !set.GetType().IsArray)
+            else if (replica is IList set && !type.IsArray)
             {
-                var s = (IEnumerable) (ActiveProfile.SimplifySets ? snapshot : snapshot[ActiveProfile.SetKey]);
-                s.Cast<object>()
-                    .Select(i => TranslateReplicaFrom(i))
-                    .ToList()
-                    .ForEach(i => set.Add(i));
-                if (ActiveProfile.SimplifySets) return set;
+                var items = ((IList) snapshot[activeProfile.SetKey]).Cast<object>();
+                items.Select(i => i.TranslateReplicaFrom(activeProfile)).ToList().ForEach(i => set.Add(i));
             }
 
-            var members = ActiveProfile.Schema.GetDataMembers(type);
+            var members = activeProfile.Schema.GetDataMembers(type);
             members.ForEach(m => m.SetValue(replica,
-                TranslateReplicaFrom(snapshot[ActiveProfile.Schema.GetDataKey(m)], m.GetMemberType())));
+                snapshot[activeProfile.Schema.GetDataKey(m)].TranslateReplicaFrom(activeProfile, m.GetMemberType())));
 
             return replica;
         }
