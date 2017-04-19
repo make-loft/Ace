@@ -41,12 +41,14 @@ namespace Art.Replication.Diagnostics
         [TestMethod]
         public void TestMethod1()
         {
-            var item = new ComplexData();
-            var tmp = item.ToStringState();
-            var instance = tmp.ToInstance();
-            instance = tmp;
-            //var results = Comparizer.GetResults(snap, snap1, "").ToList();
-            //results = results;
+            var masterItem = new ComplexData();
+            var masterSnaphot = masterItem.CreateSnapshot();
+            var replicationMatrix = masterSnaphot.ToString();
+            var clonedSnapshot = replicationMatrix.CreateSnapshot();
+            var clonedItem = clonedSnapshot.CreateInstance();
+            var lastSnapshot = clonedItem.CreateSnapshot();
+            var results = masterSnaphot.GetResults(lastSnapshot, "").ToList();
+            results = results;
         }
     }
 }

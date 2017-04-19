@@ -2,7 +2,7 @@
 {
     public static partial class Serializer
     {
-        public static object CreateSnapshot(this string matrix, KeepProfile keepProfile, ref int offset)
+        public static object Capture(this string matrix, KeepProfile keepProfile, ref int offset)
         {
             switch (keepProfile.MatchHead(matrix, ref offset)) /* ("{" or "[") else simplex value */
             {
@@ -25,9 +25,9 @@
                 if (items is Map map)
                 {
                     var key = keepProfile.CaptureSimplex(data, ref offset).ToString();
-                    map.Add(key, data.CreateSnapshot(keepProfile, ref offset));
+                    map.Add(key, data.Capture(keepProfile, ref offset));
                 }
-                else if (items is Set set) set.Add(data.CreateSnapshot(keepProfile, ref offset));
+                else if (items is Set set) set.Add(data.Capture(keepProfile, ref offset));
 
                 keepProfile.SkipTailIndent(data, ref offset);
             }

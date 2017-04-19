@@ -49,7 +49,7 @@ namespace Art
                     {
                         var data = File.ReadAllText(storageKey);
                         var i = 0;
-                        var snapshot = data.CreateSnapshot(KeepProfile, ref i);
+                        var snapshot = data.Capture(KeepProfile, ref i);
                         var item = (TValue)Replicator.TranslateReplicaFrom(snapshot, type);
                         if (Equals(item, null)) throw new Exception();
                         return item;

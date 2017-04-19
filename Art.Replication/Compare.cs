@@ -25,7 +25,10 @@ namespace Art
 
     public static class Comparizer
     {
-        public static IEnumerable<CompareResult> GetResults(this object o, object value, string path)
+        public static IEnumerable<CompareResult> GetResults(this Snapshot o, Snapshot value, string path) =>
+            o.MasterState.GetResults(value.MasterState, path);
+
+        private static IEnumerable<CompareResult> GetResults(this object o, object value, string path)
         {
             switch (value)
             {
