@@ -24,7 +24,6 @@ namespace Art.Replication.Diagnostics
         [DataMember]
         public TimeSpan Property3 { get; set; } = TimeSpan.MinValue;
 
-
         [DataMember]
         public DateTimeOffset Property4 { get; set; } = DateTimeOffset.MinValue;
 

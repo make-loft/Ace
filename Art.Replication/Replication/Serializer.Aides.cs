@@ -21,7 +21,7 @@ namespace Art.Replication
             ReplicationProfile replicationProfile = null,
             KeepProfile keepProfile = null) => new Snapshot
         {
-            MasterState = master.TranscribeStateFrom(replicationProfile ?? DefaultReplicationProfile),
+            MasterState = master.GetState(replicationProfile ?? DefaultReplicationProfile),
             ActiveReplicationProfile = replicationProfile ?? DefaultReplicationProfile,
             ActiveKeepProfile = keepProfile ?? DefaultKeepProfile
         };
@@ -38,9 +38,9 @@ namespace Art.Replication
 
         public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
 
-        public object CreateInstance() => MasterState.TranslateReplicaFrom(ActiveReplicationProfile);
+        public object CreateInstance() => MasterState.GetInstance(ActiveReplicationProfile);
 
-        public T CreateInstance<T>() => (T) MasterState.TranslateReplicaFrom(ActiveReplicationProfile, typeof(T));
+        public T CreateInstance<T>() => (T) MasterState.GetInstance(ActiveReplicationProfile, typeof(T));
     }
 
     public static partial class Serializer

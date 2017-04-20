@@ -17,16 +17,10 @@ namespace Art
         public IStorage Storage { get; private set; }
         public string KeyFormat { get; private set; }
 
-        public Replicator Replicator;
-
-        public KeepProfile KeepProfile;
-
         public Memory(IStorage storage, string keyFormat = "{0}.json")
         {
             Storage = storage;
             KeyFormat = keyFormat;
-            Replicator = new Replicator();
-            KeepProfile = KeepProfile.GetFormatted();
         }
 
         public TValue Revive<TValue>(string key = null, params object[] constructorArgs)
@@ -48,9 +42,8 @@ namespace Art
                     try
                     {
                         var data = File.ReadAllText(storageKey);
-                        var i = 0;
-                        var snapshot = data.Capture(KeepProfile, ref i);
-                        var item = (TValue)Replicator.TranslateReplicaFrom(snapshot, type);
+                        var snapshot = data.CreateSnapshot();
+                        var item = snapshot.CreateInstance<TValue>();
                         if (Equals(item, null)) throw new Exception();
                         return item;
                     }
@@ -89,8 +82,8 @@ namespace Art
 
                     try
                     {
-                        var snapshot = Replicator.TranscribeSnapshotFrom(item, type);
-                        var data = new StringBuilder().Append(snapshot, KeepProfile).ToString();
+                        var snapshot = item.CreateSnapshot();
+                        var data = snapshot.ToString();
                         File.WriteAllText(storageKey, data);
                     }
                     catch (Exception exception)

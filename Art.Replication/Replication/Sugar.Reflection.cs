@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections;
+using System.Linq;
+using System.Reflection;
 
 namespace Art.Replication
 {
@@ -26,5 +29,9 @@ namespace Art.Replication
             if (member is PropertyInfo property) property.SetValue(obj, value, null);
             else if (member is FieldInfo field) field.SetValue(obj, value);
         }
+
+        public static bool IsGenericDictionaryWithKey<TKey>(this Type type) =>
+            type.Name == "Dictionary`2" && type.IsGenericType &&
+            type.GetGenericArguments().First() == typeof(TKey);
     }
 }
