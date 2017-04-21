@@ -44,7 +44,7 @@ namespace Art.Replication
 
         public object CreateInstance() => MasterState.GetInstance(ActiveReplicationProfile);
 
-        public T CreateInstance<T>() => (T) MasterState.GetInstance(ActiveReplicationProfile, typeof(T));
+        public T CreateInstance<T>() => (T) MasterState.GetInstance(ActiveReplicationProfile, null, typeof(T));
     }
 
     public static partial class Serializer

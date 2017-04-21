@@ -19,8 +19,6 @@ namespace Art.Replication
         public bool SimplifySets = true;
         public bool SimplifyMaps = true;
 
-        public readonly Dictionary<object, int> SnapshotToIdCache = new Dictionary<object, int>();
-        public readonly Dictionary<int, object> IdToReplicaCache = new Dictionary<int, object>();
         public ADataProfile Schema = new ContractProfile();
 
         public List<IActivator> Activators = new List<IActivator>();

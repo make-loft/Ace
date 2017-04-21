@@ -7,21 +7,21 @@ namespace Art.Replication
 {
     public static partial class Replicator
     {
-        public static object GetInstance(this object state, ReplicationProfile replicationProfile, Type baseType = null)
+        public static object GetInstance(this object state, ReplicationProfile replicationProfile,
+            Dictionary<int, object> cache = null, Type baseType = null)
         {
             if (replicationProfile.IsSimplex(state)) return state;
 
-            var snapshot = CompleteIfRequried(state, replicationProfile, baseType);
-            var id = snapshot.TryGetValue(replicationProfile.IdKey, out var key)
-                ? (int) key
-                : replicationProfile.IdToReplicaCache.Count;
-            if (replicationProfile.IdToReplicaCache.TryGetValue(id, out object replica)) return replica;
+            cache = cache ?? new Dictionary<int, object>();
+            var snapshot = CompleteMapIfRequried(state, replicationProfile, baseType);
+            var id = snapshot.TryGetValue(replicationProfile.IdKey, out var key) ? (int) key : cache.Count;
+            if (cache.TryGetValue(id, out object replica)) return replica;
 
             var type = snapshot.TryGetValue(replicationProfile.TypeKey, out var typeName)
                 ? Type.GetType(typeName.ToString(), true)
                 : baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
 
-            replica = replicationProfile.IdToReplicaCache[id] =
+            replica = cache[id] =
                 replicationProfile.Activators.Select(a => a.CreateInstance(snapshot, type)).FirstOrDefault() ??
                 (type.IsArray
                     ? Array.CreateInstance(type.GetElementType(), ((Set) snapshot[replicationProfile.SetKey]).Count)
@@ -37,20 +37,20 @@ namespace Art.Replication
                 var items = (Set) snapshot[replicationProfile.SetKey];
                 if (type.IsArray)
                 {
-                    var source = items.Select(i => i.GetInstance(replicationProfile)).ToArray();
+                    var source = items.Select(i => i.GetInstance(replicationProfile, cache)).ToArray();
                     Array.Copy(source, (Array) replica, items.Count);
                 }
-                else items.ForEach(i => set.Add(i.GetInstance(replicationProfile)));
+                else items.ForEach(i => set.Add(i.GetInstance(replicationProfile, cache)));
             }
 
             var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
             members.ForEach(m => m.SetValueIfCanWrite(replica, /* should restore items at read-only members too */
-                snapshot[replicationProfile.Schema.GetDataKey(m)].GetInstance(replicationProfile, m.GetMemberType())));
+                snapshot[replicationProfile.Schema.GetDataKey(m)].GetInstance(replicationProfile, cache, m.GetMemberType())));
 
             return replica;
         }
 
-        private static Map CompleteIfRequried(object state, ReplicationProfile replicationProfile, Type baseType) =>
+        private static Map CompleteMapIfRequried(object state, ReplicationProfile replicationProfile, Type baseType) =>
             replicationProfile.SimplifySets && state is Set
                 ? new Map
                 {
