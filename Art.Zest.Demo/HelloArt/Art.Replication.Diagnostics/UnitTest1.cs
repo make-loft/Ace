@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Art.Replication.Diagnostics
@@ -30,8 +28,14 @@ namespace Art.Replication.Diagnostics
         [DataMember]
         public Uri Property5 { get; set; } = new Uri("http://makeloft.xyz");
 
+        //[DataMember]
+        //public Regex Regex0 { get; set; } = new Regex("abc");
+
         [DataMember]
         public object[] Objects { get; set; } = {"str", 123, 23u, DateTime.Now};
+
+        [DataMember]
+        public int[] Ints = {1, 2, 3, 4, 5, 6, 7, 8, 7};
     }
 
     [TestClass]
@@ -40,6 +44,10 @@ namespace Art.Replication.Diagnostics
         [TestMethod]
         public void TestMethod1()
         {
+            //var a = new Regex("a");
+            //var b = new Regex("a");
+            //var t = a == b;
+
             var masterItem = new ComplexData();
             var masterSnaphot = masterItem.CreateSnapshot();
             var replicationMatrix = masterSnaphot.ToString();

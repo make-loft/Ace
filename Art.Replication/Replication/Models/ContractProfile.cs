@@ -8,9 +8,9 @@ namespace Art.Replication.Models
 {
     public class ContractProfile : GeneralProfile
     {
-        public override List<MemberInfo> GetDataMembers(Type type)
+        public override List<MemberInfo> GetDataMembers(Type type, Func<MemberInfo, bool> filter)
         {
-            var allMembers = base.GetDataMembers(type);
+            var allMembers = base.GetDataMembers(type, filter);
             var serializableAttribute = type.GetCustomAttributes(true)
                 .FirstOrDefault(a => a.GetType().Name.Contains("SerializableAttribute"));
             var dataMemberToAttribute = serializableAttribute != null

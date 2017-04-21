@@ -54,7 +54,9 @@
     <Compile Include="Adapters\Adapters.cs" />
     <Compile Include="Art.Patterns.cs" />
     <Compile Include="Compare.cs" />
+    <Compile Include="Replication\Activators\GeneralActivator.cs" />
     <Compile Include="Replication\EscapeProfile.cs" />
+    <Compile Include="Replication\Replicator.Capture.cs" />
     <Compile Include="Replication\Serializer.Aides.cs" />
     <Compile Include="Replication\Serializer.Capture.cs" />
     <Compile Include="Replication\Serializer.Conversion.StringBuilder.cs" />
@@ -66,7 +68,7 @@
     <Compile Include="Replication\KeepProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Replication\ReplicationProfile.cs" />
-    <Compile Include="Replication\Replicator.cs" />
+    <Compile Include="Replication\Replicator.Conversion.cs" />
     <Compile Include="Replication\Serializer.Conversion.cs" />
     <Compile Include="Replication\Sugar.Reflection.cs" />
     <Compile Include="Sugar.cs" />

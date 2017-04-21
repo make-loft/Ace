@@ -135,6 +135,8 @@ namespace Art.Replication
 
         public string GetHeadIndent(int indentLevel, ICollection items, int index)
         {
+            if (items is Set set && index < set.Count && set[index].GetType().IsPrimitive) return " ";
+
             var indent = string.Empty;
             for (var i = 0; i < indentLevel; i++)
             {

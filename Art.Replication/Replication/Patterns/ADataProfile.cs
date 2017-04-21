@@ -6,7 +6,7 @@ namespace Art.Replication.Patterns
 {
     public abstract class ADataProfile
     {
-        public abstract List<MemberInfo> GetDataMembers(Type type);
+        public abstract List<MemberInfo> GetDataMembers(Type type, Func<MemberInfo, bool> filter);
 
         public abstract string GetDataKey(MemberInfo member);
     }
