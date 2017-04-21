@@ -75,7 +75,7 @@ namespace Art
             {
                 for (var index = 0; index < sB.Count; index++)
                 {
-                    var a = sB[index];
+                    var a = sA[index];
                     var b = sB[index];
                     foreach (var result in GetResults(a, b, path + "[" + index + "]"))
                     {
