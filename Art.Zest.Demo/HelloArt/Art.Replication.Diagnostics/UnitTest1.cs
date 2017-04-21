@@ -36,6 +36,8 @@ namespace Art.Replication.Diagnostics
 
         [DataMember]
         public int[] Ints = {1, 2, 3, 4, 5, 6, 7, 8, 7};
+
+        [DataMember] public object[] Test;
     }
 
     [TestClass]
@@ -49,6 +51,7 @@ namespace Art.Replication.Diagnostics
             //var t = a == b;
 
             var masterItem = new ComplexData();
+            masterItem.Test = new object[] {masterItem, masterItem.Objects};
             var masterSnaphot = masterItem.CreateSnapshot();
             var replicationMatrix = masterSnaphot.ToString();
             var clonedSnapshot = replicationMatrix.CreateSnapshot();

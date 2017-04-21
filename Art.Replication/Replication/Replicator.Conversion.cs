@@ -28,13 +28,13 @@ namespace Art.Replication
             {
                 var m = new Map(map.Cast<DictionaryEntry>()
                     .ToDictionary(p => (string) p.Key, p => p.Value.GetState(replicationProfile)));
-                if (replicationProfile.SimplifyMaps) return m;
+                if (replicationProfile.SimplifyMaps && type == baseType) return m;
                 snapshot.Add(replicationProfile.MapKey, m);
             }
             else if (master is IEnumerable set)
             {
                 var s = new Set(set.Cast<object>().Select(i => i.GetState(replicationProfile)));
-                if (replicationProfile.SimplifySets) return s;
+                if (replicationProfile.SimplifySets && type == baseType && master is IList) return s; /* todo? */
                 snapshot.Add(replicationProfile.SetKey, s);
             }
 
