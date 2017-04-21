@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Art.Replication.Diagnostics
@@ -28,8 +29,8 @@ namespace Art.Replication.Diagnostics
         [DataMember]
         public Uri Property5 { get; set; } = new Uri("http://makeloft.xyz");
 
-        //[DataMember]
-        //public Regex Regex0 { get; set; } = new Regex("abc");
+        [DataMember]
+        public Regex Regex0 { get; set; } = new Regex("abc");
 
         [DataMember]
         public object[] Objects { get; set; } = {"str", 123, 23u, DateTime.Now};

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Art.Replication
 {
@@ -39,7 +40,7 @@ namespace Art.Replication
             var type = value.GetType();
             var parseMethod = type.GetMethod("Parse", new[] { typeof(string) });
 
-            return parseMethod != null || value is Uri
+            return parseMethod != null || value is Uri || value is Regex
                 ? new Simplex { "<", type.Name, ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString() }
                 : new Simplex { HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString() };
         }
@@ -67,6 +68,8 @@ namespace Art.Replication
             {
                 case "Uri":
                     return new Uri(simplex[1]);
+                case "Regex":
+                    return new Regex(simplex[1]);
                 case "DateTime":
                     return simplex[1].EndsWith("Z")
                         ? DateTime.Parse(simplex[1], ActiveCulture, DateTimeStyles.AdjustToUniversal)

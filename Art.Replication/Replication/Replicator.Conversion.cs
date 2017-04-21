@@ -38,7 +38,7 @@ namespace Art.Replication
                 snapshot.Add(replicationProfile.SetKey, s);
             }
 
-            var members = replicationProfile.Schema.GetDataMembers(type, Member.CanReadWrite);
+            var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
             members.ForEach(m => snapshot.Add(replicationProfile.Schema.GetDataKey(m),
                 m.GetValue(master).GetState(replicationProfile, m.GetMemberType())));
 

@@ -30,6 +30,13 @@ namespace Art.Replication
             else if (member is FieldInfo field) field.SetValue(obj, value);
         }
 
+        public static void SetValueIfCanWrite(this MemberInfo member, object obj, object value)
+        {
+            if (!member.CanWrite()) return;
+            if (member is PropertyInfo property) property.SetValue(obj, value, null);
+            else if (member is FieldInfo field) field.SetValue(obj, value);
+        }
+
         public static bool IsGenericDictionaryWithKey<TKey>(this Type type) =>
             type.Name == "Dictionary`2" && type.IsGenericType &&
             type.GetGenericArguments().First() == typeof(TKey);

@@ -1,17 +1,19 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Art.Replication.Activators
 {
-    public class GeneralActivator
+    public interface IActivator
     {
-        public object CreateInstance(object sample, Type type, params object[] args)
+        object CreateInstance(Map map, Type type, params object[] args);
+    }
+
+    public class RegexActivator : IActivator
+    {
+        public object CreateInstance(Map map, Type type, params object[] args)
         {
-            var instance = Activator.CreateInstance(type, args);
-            return instance;
+            if (type != typeof(Regex)) return null;
+            return new Regex(map["pattern"].ToString());
         }
     }
 }

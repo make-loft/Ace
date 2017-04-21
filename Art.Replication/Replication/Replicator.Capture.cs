@@ -19,11 +19,13 @@ namespace Art.Replication
 
             var type = snapshot.TryGetValue(replicationProfile.TypeKey, out var typeName)
                 ? Type.GetType(typeName.ToString(), true)
-                : baseType ?? throw new Exception("Missed type info. Try specify it explicitly.");
+                : baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
 
-            replica = replicationProfile.IdToReplicaCache[id] = type.IsArray
-                ? Array.CreateInstance(type.GetElementType(), ((Set) snapshot[replicationProfile.SetKey]).Count)
-                : Activator.CreateInstance(type);
+            replica = replicationProfile.IdToReplicaCache[id] =
+                replicationProfile.Activators.Select(a => a.CreateInstance(snapshot, type)).FirstOrDefault() ??
+                (type.IsArray
+                    ? Array.CreateInstance(type.GetElementType(), ((Set) snapshot[replicationProfile.SetKey]).Count)
+                    : Activator.CreateInstance(type));
 
             if (replica is IDictionary<string, object> map)
             {
@@ -41,8 +43,8 @@ namespace Art.Replication
                 else items.ForEach(i => set.Add(i.GetInstance(replicationProfile)));
             }
 
-            var members = replicationProfile.Schema.GetDataMembers(type, Member.CanWrite);
-            members.ForEach(m => m.SetValue(replica,
+            var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
+            members.ForEach(m => m.SetValueIfCanWrite(replica, /* should restore items at read-only members too */
                 snapshot[replicationProfile.Schema.GetDataKey(m)].GetInstance(replicationProfile, m.GetMemberType())));
 
             return replica;
