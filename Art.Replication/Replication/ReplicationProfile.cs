@@ -14,9 +14,8 @@ namespace Art.Replication
     {
         public static readonly ContentProvider Default = new CoreContentProvider();
 
-        public virtual bool CanApply(object value) => true;
-
         public virtual bool NoId => true;
+        public virtual bool CanApply(object value) => true;
 
         public virtual object Provide(object master, ReplicationProfile replicationProfile,
             Dictionary<object, int> idCache, Type baseType = null) => master?.ToString();
@@ -38,8 +37,8 @@ namespace Art.Replication
         public override object Provide(object master, ReplicationProfile replicationProfile,
             Dictionary<object, int> idCache, Type baseType = null) => master;
 
-        public virtual object ProvideBack(object master, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache , Type baseType = null) => master;
+        public override object ProvideBack(object master, ReplicationProfile replicationProfile,
+            Dictionary<int, object> idCache , Type baseType = null) => master;
     }
 
     public class TimeContentProvider : CoreContentProvider
@@ -52,7 +51,7 @@ namespace Art.Replication
         public override bool CanApply(object obj) => obj is Type || obj is Guid || obj is Uri;
     }
 
-    public class RegexContentProvider : ContentProvider
+    public class RegexContentProvider : CoreContentProvider
     {
         public override bool CanApply(object obj) => obj is Regex;
     }
@@ -75,6 +74,19 @@ namespace Art.Replication
             if (replicationProfile.AttachTypeInfo || master is IEnumerable || baseType != type)
                 snapshot.Add(replicationProfile.TypeKey, type.AssemblyQualifiedName);
 
+            if (master is IDictionary map && type.IsGenericDictionaryWithKey<string>())
+            {
+                var m = new Map(map.Cast<DictionaryEntry>()
+                    .ToDictionary(p => (string)p.Key, p => p.Value.GetState(replicationProfile, idCache)));
+                if (replicationProfile.SimplifyMaps && type == baseType) return m;
+                snapshot.Add(replicationProfile.MapKey, m);
+            }
+            else if (master is IList set)
+            {
+                var s = new Set(set.Cast<object>().Select(i => i.GetState(replicationProfile, idCache)));
+                if (replicationProfile.SimplifySets && type == baseType) return s; /* todo? */
+                snapshot.Add(replicationProfile.SetKey, s);
+            }
             var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
             members.ForEach(m => snapshot.Add(replicationProfile.Schema.GetDataKey(m),
                 m.GetValue(master).GetState(replicationProfile, idCache, m.GetMemberType())));
@@ -85,7 +97,6 @@ namespace Art.Replication
         public override object ProvideBack(object state, ReplicationProfile replicationProfile, Dictionary<int, object> idCache,
             Type baseType = null)
         {
-            idCache = idCache ?? new Dictionary<int, object>();
             var snapshot = CompleteMapIfRequried(state, replicationProfile, baseType);
             var id = snapshot.TryGetValue(replicationProfile.IdKey, out var key) ? (int)key : idCache.Count;
             if (idCache.TryGetValue(id, out object replica)) return replica;
@@ -100,18 +111,18 @@ namespace Art.Replication
                     ? Array.CreateInstance(type.GetElementType(), ((Set)snapshot[replicationProfile.SetKey]).Count)
                     : Activator.CreateInstance(type));
 
-            if (replica is IDictionary<string, object> map)
+            if (replica is IDictionary map && type.IsGenericDictionaryWithKey<string>())
             {
-                var items = (IDictionary<string, object>)snapshot[replicationProfile.MapKey];
-                items.ToList().ForEach(p => map.Add(p.Key, p.Value));
+                var items = (IDictionary)snapshot[replicationProfile.MapKey];
+                items.Cast<DictionaryEntry>().ForEach(p => map.Add(p.Key, p.Value));
             }
-            else if (replica is IList set)
+            else if (state is IList set)
             {
                 var items = (Set)snapshot[replicationProfile.SetKey];
-                if (type.IsArray)
+                if (replica is Array array)
                 {
                     var source = items.Select(i => i.GetInstance(replicationProfile, idCache)).ToArray();
-                    Array.Copy(source, (Array)replica, items.Count);
+                    Array.Copy(source, array, items.Count);
                 }
                 else items.ForEach(i => set.Add(i.GetInstance(replicationProfile, idCache)));
             }
@@ -123,7 +134,7 @@ namespace Art.Replication
             return replica;
         }
 
-        private static Map CompleteMapIfRequried(object state, ReplicationProfile replicationProfile, Type baseType) =>
+        protected static Map CompleteMapIfRequried(object state, ReplicationProfile replicationProfile, Type baseType) =>
             replicationProfile.SimplifySets && state is Set
                 ? new Map
                 {
@@ -138,57 +149,6 @@ namespace Art.Replication
                         {replicationProfile.MapKey, state}
                     }
                     : (Map)state;
-    }
-
-    public class DictionaryContentProvider : MemberContentProvider
-    {
-        public override bool CanApply(object value)
-        {
-            return value is IDictionary && value.GetType().IsGenericDictionaryWithKey<string>();
-        }
-
-        public override object Provide(object master, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache = null, Type baseType = null)
-        {
-            var type = master.GetType();
-            var snapshot = (Map) base.Provide(master, replicationProfile, idCache, baseType);
-            var map = (IDictionary) master;
-            var m = new Map(map.Cast<DictionaryEntry>()
-                .ToDictionary(p => (string) p.Key, p => p.Value.GetState(replicationProfile, idCache)));
-            if (replicationProfile.SimplifyMaps && type == baseType) return m;
-            snapshot.Add(replicationProfile.MapKey, m);
-            return snapshot;
-        }
-
-        public override object ProvideBack(object state, ReplicationProfile replicationProfile, Dictionary<int, object> idCache,
-            Type baseType = null)
-        {
-            var replica = base.ProvideBack(state, replicationProfile, idCache, baseType);
-            if (replica is IDictionary<string, object> map)
-            {
-                var items = (IDictionary<string, object>)snapshot[replicationProfile.MapKey];
-                items.ToList().ForEach(p => map.Add(p.Key, p.Value));
-            }
-
-            return replica;
-        }
-    }
-
-    public class CollectionContentProvider : MemberContentProvider
-    {
-        public override bool CanApply(object value) => value is ICollection;
-
-        public override object Provide(object master, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache, Type baseType = null)
-        {
-            var type = master.GetType();
-            var snapshot = (Map) base.Provide(master, replicationProfile, idCache, baseType);
-            var set = (ICollection) master;
-            var s = new Set(set.Cast<object>().Select(i => i.GetState(replicationProfile, idCache)));
-            if (replicationProfile.SimplifySets && type == baseType && master is IList) return s; /* todo? */
-            snapshot.Add(replicationProfile.SetKey, s);
-            return snapshot;
-        }
     }
 
     public class ReplicationProfile
@@ -212,18 +172,11 @@ namespace Art.Replication
             new TimeContentProvider(),
             new ExtendedContentProvider(),
             new RegexContentProvider(),
-            new DictionaryContentProvider(),
-            new CollectionContentProvider(),
             new MemberContentProvider()
         };
 
         public ContentProvider DefaultContentProvider = new CoreContentProvider();
 
         public Func<MemberInfo, bool> MembersFilter = Member.CanReadWrite;
-
-        public bool IsSimplex(object obj) =>
-            obj == null || obj is string || obj.GetType().IsPrimitive ||
-            obj is Type || obj is DateTime || obj is TimeSpan || obj is DateTimeOffset || obj is Guid || obj is Uri ||
-            obj is Regex;
     }
 }

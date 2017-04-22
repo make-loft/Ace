@@ -56,11 +56,12 @@ namespace Art.Replication
             if (double.TryParse(value, NumberStyles.Any, ActiveCulture, out var r)) return r;
 
             var number = value.ToUpper();
-            if ((value.EndsWith("UL") || value.EndsWith("LU")) && ulong.TryParse(number, out var ul)) return ul;
-            if (value.EndsWith("U") && uint.TryParse(number, out var u)) return u;
-            if (value.EndsWith("D") && uint.TryParse(number, out var d)) return d;
-            if (value.EndsWith("F") && uint.TryParse(number, out var f)) return f;
-            if (value.EndsWith("M") && uint.TryParse(number, out var m)) return m;
+            if ((value.EndsWith("UL") || value.EndsWith("LU")) && ulong.TryParse(number.Substring(0, number.Length - 2), out var ul)) return ul;
+            if (value.EndsWith("U") && uint.TryParse(number.Substring(0, number.Length - 1), out var u)) return u;
+            if (value.EndsWith("L") && long.TryParse(number.Substring(0, number.Length - 1), out var l)) return l;
+            if (value.EndsWith("D") && double.TryParse(number.Substring(0, number.Length - 1), out var d)) return d;
+            if (value.EndsWith("F") && float.TryParse(number.Substring(0, number.Length - 1), out var f)) return f;
+            if (value.EndsWith("M") && decimal.TryParse(number.Substring(0, number.Length - 1), out var m)) return m;
 
             if (simplex.Count < 2 || simplex[0].Length == 1) return value;
             var typeName = simplex[0].Replace("@", "").Replace("\"", "").Replace("<", "").Replace(">", "");
