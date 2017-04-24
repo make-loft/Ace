@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using Art.Replication.Activators;
 using Art.Replication.Models;
@@ -53,7 +54,17 @@ namespace Art.Replication
 
     public class RegexContentProvider : CoreContentProvider
     {
-        public override bool CanApply(object obj) => obj is Regex;
+        public override bool CanApply(object obj) => obj is StringBuilder || obj is Regex;
+
+        public override object Provide(object master, ReplicationProfile replicationProfile,
+            Dictionary<object, int> idCache, Type baseType = null) => master is Regex regex
+            ? (object) new Regex(regex.ToString(), regex.Options)
+            : (master is StringBuilder builder
+                ? new StringBuilder(builder.ToString(), builder.Capacity)
+                : null);
+
+        public override object ProvideBack(object master, ReplicationProfile replicationProfile,
+            Dictionary<int, object> idCache, Type baseType = null) => Provide(master, null, null);
     }
 
     public class MemberContentProvider : ContentProvider
@@ -71,7 +82,7 @@ namespace Art.Replication
 
             if (replicationProfile.AttachId) snapshot.Add(replicationProfile.IdKey, id);
 
-            if (replicationProfile.AttachTypeInfo || master is IEnumerable || baseType != type)
+            if (replicationProfile.AttachType || master is IEnumerable || baseType != type)
                 snapshot.Add(replicationProfile.TypeKey, type.AssemblyQualifiedName);
 
             if (master is IDictionary map && type.IsGenericDictionaryWithKey<string>())
@@ -87,6 +98,7 @@ namespace Art.Replication
                 if (replicationProfile.SimplifySets && type == baseType) return s; /* todo? */
                 snapshot.Add(replicationProfile.SetKey, s);
             }
+
             var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
             members.ForEach(m => snapshot.Add(replicationProfile.Schema.GetDataKey(m),
                 m.GetValue(master).GetState(replicationProfile, idCache, m.GetMemberType())));
@@ -106,7 +118,7 @@ namespace Art.Replication
                 : baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
 
             replica = idCache[id] =
-                replicationProfile.Activators.Select(a => a.CreateInstance(snapshot, type)).FirstOrDefault() ??
+                //replicationProfile.Activators.Select(a => a.CreateInstance(snapshot, type)).FirstOrDefault() ??
                 (type.IsArray
                     ? Array.CreateInstance(type.GetElementType(), ((Set)snapshot[replicationProfile.SetKey]).Count)
                     : Activator.CreateInstance(type));
@@ -157,7 +169,7 @@ namespace Art.Replication
         public string SetKey = "#Set";
         public string MapKey = "#Map";
         public string TypeKey = "#Type";
-        public bool AttachTypeInfo = false;
+        public bool AttachType = false;
         public bool AttachId = false;
         public bool SimplifySets = true;
         public bool SimplifyMaps = true;
@@ -178,5 +190,26 @@ namespace Art.Replication
         public ContentProvider DefaultContentProvider = new CoreContentProvider();
 
         public Func<MemberInfo, bool> MembersFilter = Member.CanReadWrite;
+    }
+
+    public static class Replicator
+    {
+        public static object GetInstance(this object state, ReplicationProfile replicationProfile,
+            Dictionary<int, object> idCache = null, Type baseType = null)
+        {
+            var contentProvider = replicationProfile.ContentProviders.FirstOrDefault(p => p.CanApply(state)) ??
+                                  ContentProvider.Default;
+            idCache = idCache ?? new Dictionary<int, object>();
+            return contentProvider.ProvideBack(state, replicationProfile, idCache, baseType);
+        }
+
+        public static object GetState(this object master, ReplicationProfile replicationProfile,
+            Dictionary<object, int> idCache = null, Type baseType = null)
+        {
+            var contentProvider = replicationProfile.ContentProviders.FirstOrDefault(p => p.CanApply(master)) ??
+                                  ContentProvider.Default;
+            idCache = idCache ?? new Dictionary<object, int>();
+            return contentProvider.Provide(master, replicationProfile, idCache, baseType);
+        }
     }
 }
