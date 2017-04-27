@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Art.Replication.Activators;
 
 namespace Art.Replication
 {
     public class Snapshot
     {
-        public static ReplicationProfile DefaultReplicationProfile = new ReplicationProfile
-            {Activators = new List<IActivator> {new RegexActivator()}, AttachId = true};
+        public static ReplicationProfile DefaultReplicationProfile = new ReplicationProfile {AttachId = true};
 
         public static KeepProfile DefaultKeepProfile = KeepProfile.GetFormatted();
 

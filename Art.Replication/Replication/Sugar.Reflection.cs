@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using System.Reflection;
 
@@ -21,7 +20,7 @@ namespace Art.Replication
                 ? property.GetValue(obj, null)
                 : (member as FieldInfo)?.GetValue(obj);
 
-        public static System.Type GetMemberType(this MemberInfo member) =>
+        public static Type GetMemberType(this MemberInfo member) =>
             (member as PropertyInfo)?.PropertyType ?? (member as FieldInfo)?.FieldType;
 
         public static void SetValue(this MemberInfo member, object obj, object value)

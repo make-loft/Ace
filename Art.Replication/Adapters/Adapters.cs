@@ -12,3 +12,11 @@ namespace System.Reflection
             member?.GetCustomAttributes(true).FirstOrDefault(a => a is T) as T;
     }
 }
+
+namespace System
+{
+    public static class TypeInfo
+    {
+        public static Type GetTypeInfo(this Type type) => type;
+    }
+}
