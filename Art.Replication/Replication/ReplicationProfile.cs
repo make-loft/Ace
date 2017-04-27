@@ -24,14 +24,15 @@ namespace Art.Replication
 
         public List<Replicator> Replicators = new List<Replicator>
         {
-            new RegexReplicator(),
-            new StringBuilderReplicator(),
+            new CoreReplicator(),
             new CoreReplicator<Type>(),
             new CoreReplicator<Guid>(),
             new CoreReplicator<Uri>(),
             new TimeCoreReplicator(),
-            new CoreReplicator(),
-            new ReflexiveReplicator()
+            new RegexReplicator(),
+            new StringBuilderReplicator(),
+            /* recomended position for cusom replicators */
+            new DeepReplicator()
         };
     }
 }

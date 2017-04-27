@@ -30,10 +30,10 @@ namespace Art.Replication.Diagnostics
         public Uri Property5 { get; set; } = new Uri("http://makeloft.xyz");
 
         [DataMember]
-        public Regex Regex0 { get; set; } = new Regex("abc");
+        public Regex Regex0 { get; set; } = new Regex("abc", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         [DataMember]
-        public object[] Objects { get; set; } = {"str", null, 123, 23u, 123l, 345f, 456.12d, DateTime.Now};
+        public object[] Objects { get; set; } = {"str", null, 123, 23u, 123L, 345f, 456.12d, DateTime.Now};
 
         [DataMember]
         public int[] Ints = {1, 2, 3, 4, 5, 6, 7, 8, 7};

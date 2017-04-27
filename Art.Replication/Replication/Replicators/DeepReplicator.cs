@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Art.Replication.Replicators
 {
-    public class ReflexiveReplicator : Replicator
+    public class DeepReplicator : Replicator
     {
         public override object Translate(object master, ReplicationProfile replicationProfile,
             Dictionary<object, int> idCache, Type baseType = null)

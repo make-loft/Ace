@@ -95,6 +95,7 @@ namespace Art.Replication
 
         public void MoveToItem(string data, ref int offset)
         {
+            SkipWhiteSpaceWithComments(data, ref offset);
             while (offset < data.Length && !IsItem(data[offset])) offset++;
         }
 
@@ -102,7 +103,7 @@ namespace Art.Replication
 
         public string MatchTail(string data, ref int offset)
         {
-            SkipWhiteSpace(data, ref offset);
+            SkipWhiteSpaceWithComments(data, ref offset);
             return MapBody.MatchTail(data, ref offset)
                 ? Map
                 : SetBody.MatchTail(data, ref offset)
@@ -112,7 +113,7 @@ namespace Art.Replication
 
         public bool MatchTail(string data, ref int offset, bool isMap)
         {
-            SkipWhiteSpace(data, ref offset);
+            SkipWhiteSpaceWithComments(data, ref offset);
             return isMap ? MapBody.MatchTail(data, ref offset) : SetBody.MatchTail(data, ref offset);
         }
 
@@ -128,9 +129,16 @@ namespace Art.Replication
                     data[offset] == ',' || data[offset] == ';' || data[offset] == '.')) offset++;
         }
 
-        public void SkipWhiteSpace(string data, ref int offset)
+        public void SkipWhiteSpaceWithComments(string data, ref int offset)
         {
-            while (offset < data.Length && char.IsWhiteSpace(data[offset])) offset++;
+            do
+            {
+                while (offset < data.Length && char.IsWhiteSpace(data[offset])) offset++;
+                if (!data.Match("/", offset)) return;
+                if (data.Match("/*", offset)) offset = data.IndexOf("*/", offset, StringComparison.Ordinal) + 2;
+                if (data.Match("//", offset)) offset = data.IndexOf(NewLineChars, offset, StringComparison.Ordinal) + 2;
+                if (offset < 0) offset = data.Length;
+            } while (offset < data.Length);
         }
 
         public string GetHeadIndent(int indentLevel, ICollection items, int index)

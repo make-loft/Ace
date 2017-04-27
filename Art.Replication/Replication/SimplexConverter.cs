@@ -38,6 +38,8 @@ namespace Art.Replication
             EscapeConverter.AppendWithEscape(new StringBuilder(), segment, escapeChars, useVerbatim);
 
             var type = value.GetType();
+            if (value is Enum)
+                return new Simplex {"<", type.AssemblyQualifiedName?.Replace(" ", "#").Replace(",", "$"), ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()};
             var parseMethod = type.GetMethod("Parse", new[] { typeof(string) });
 
             return parseMethod != null || value is Uri || value is Regex
@@ -69,12 +71,14 @@ namespace Art.Replication
             {
                 case "Uri":
                     return new Uri(simplex[1]);
-                case "Regex":
-                    return new Regex(simplex[1]);
                 case "DateTime":
                     return simplex[1].EndsWith("Z")
                         ? DateTime.Parse(simplex[1], ActiveCulture, DateTimeStyles.AdjustToUniversal)
                         : DateTime.Parse(simplex[1], ActiveCulture);
+                default:
+                    var t = Type.GetType(typeName.Replace("#", " ").Replace("$", ","));
+                    if (t!= null && t.IsEnum) return Enum.Parse(t, simplex[1], true);
+                    break;
             }
 
             var type = Type.GetType("System." + typeName);

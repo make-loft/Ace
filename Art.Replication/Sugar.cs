@@ -9,6 +9,21 @@ namespace Art
         public static bool Is<T>(this object o) => o is T;
         public static T As<T>(this object o) where T : class => o as T;
     }
+
+    public static class SrtringExtensions
+    {
+        public static bool Match(this string original, string substring, int offset)
+        {
+            if (offset + substring.Length > original.Length) return false;
+
+            for (var i = 0; i < substring.Length && offset + i < original.Length; i++)
+            {
+                if (original[offset + i] != substring[i]) return false;
+            }
+
+            return true;
+        }
+    }
 }
 
 namespace System.Linq

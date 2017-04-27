@@ -8,26 +8,26 @@ namespace Art.Replication
     {
         public static readonly Replicator Default = new Replicator();
 
-        public static object GetState(this object master, ReplicationProfile replicationProfile,
+        public static object GetState(this object value, ReplicationProfile replicationProfile,
             Dictionary<object, int> idCache = null, Type baseType = null)
         {
             idCache = idCache ?? new Dictionary<object, int>();
             var contentProvider = replicationProfile.Replicators.FirstOrDefault(p =>
-                                      p.CanTranslate(master, replicationProfile, idCache, baseType)) ??
-                                  Default ?? throw new Exception("Can not translate " + master);
+                                      p.CanTranslate(value, replicationProfile, idCache, baseType)) ??
+                                  Default ?? throw new Exception("Can not translate " + value);
 
-            return contentProvider.Translate(master, replicationProfile, idCache, baseType);
+            return contentProvider.Translate(value, replicationProfile, idCache, baseType);
         }
 
-        public static object GetInstance(this object state, ReplicationProfile replicationProfile,
+        public static object GetInstance(this object value, ReplicationProfile replicationProfile,
             Dictionary<int, object> idCache = null, Type baseType = null)
         {
             idCache = idCache ?? new Dictionary<int, object>();
             var contentProvider = replicationProfile.Replicators.FirstOrDefault(p =>
-                                      p.CanReplicate(state, replicationProfile, idCache, baseType)) ??
-                                  Default ?? throw new Exception("Can not replicate " + state);
+                                      p.CanReplicate(value, replicationProfile, idCache, baseType)) ??
+                                  Default ?? throw new Exception("Can not replicate " + value);
 
-            return contentProvider.Replicate(state, replicationProfile, idCache, baseType);
+            return contentProvider.Replicate(value, replicationProfile, idCache, baseType);
         }
     }
 }

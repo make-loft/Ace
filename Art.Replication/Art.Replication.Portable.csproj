@@ -58,7 +58,7 @@
     <Compile Include="Replication\Replicator.cs" />
     <Compile Include="Replication\EscapeProfile.cs" />
     <Compile Include="Replication\Replicators\CoreReplicators.cs" />
-    <Compile Include="Replication\Replicators\ReflexiveReplicator.cs" />
+    <Compile Include="Replication\Replicators\DeepReplicator.cs" />
     <Compile Include="Replication\Replicators\RegexReplicator.cs" />
     <Compile Include="Replication\Replicators\StringBuilderReplicator.cs" />
     <Compile Include="Replication\Serializer.Aides.cs" />

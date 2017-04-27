@@ -10,12 +10,14 @@ namespace Art.Replication
             switch (value)
             {
                 case Map map:
+                    yield return "/*" + map.Count + "*/ ";
                     yield return keepProfile.GetHead(map); /* "{" */
                     foreach (var bead in map.ConvertComplex(keepProfile, indentLevel))
                         yield return bead;
                     yield return keepProfile.GetTail(map); /* "}" */
                     yield break;
                 case Set set:
+                    yield return "/*" + set.Count + "*/ ";
                     yield return keepProfile.GetHead(set); /* "[" */
                     foreach (var bead in set.ConvertComplex(keepProfile, indentLevel))
                         yield return bead;
