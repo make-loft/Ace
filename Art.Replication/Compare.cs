@@ -17,10 +17,7 @@ namespace Art
 
         public CompareState State { get; set; }
 
-        public override string ToString()
-        {
-            return State + "•" + Path + "•" + Source + "•" + Target;
-        }
+        public override string ToString() => State + "•" + Path + "•" + Source + "•" + Target;
     }
 
     public static class Comparizer

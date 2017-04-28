@@ -12,13 +12,13 @@ namespace Art
 
     public static class SrtringExtensions
     {
-        public static bool Match(this string original, string substring, int offset)
+        public static bool Match(this string original, string pattern, int offset)
         {
-            if (offset + substring.Length > original.Length) return false;
+            if (offset + pattern.Length > original.Length) return false;
 
-            for (var i = 0; i < substring.Length && offset + i < original.Length; i++)
+            for (var i = 0; i < pattern.Length && offset + i < original.Length; i++)
             {
-                if (original[offset + i] != substring[i]) return false;
+                if (original[offset + i] != pattern[i]) return false;
             }
 
             return true;

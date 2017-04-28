@@ -85,23 +85,19 @@ namespace Art.Replication
                     break;
                 }
 
-                builder.Append(c);
+                if (c != HeadQuoteChar && c != TailQuoteChar) builder.Append(c);
 
                 var verbatimFlag = c == VerbatimChar;
                 var headQuoteFlag = c == HeadQuoteChar;
                 if (!headQuoteFlag) continue;
 
-                simplex.Add(builder.ToString());
+                if (builder.Length > 0) simplex.Add(builder.ToString());
                 builder.Clear();
 
                 var escapeChar = verbatimFlag ? EscapeVerbatimChar : EscapeChar;
                 var unescapeStrategy = verbatimFlag ? VerbatimUnescapeChars : UnescapeChars;
-                AppendEscapedLiteral(builder, data, ref offset, unescapeStrategy, escapeChar, TailQuoteChar, verbatimFlag);
-
-                simplex.Add(builder.ToString());
-                builder.Clear();
-
-                builder.Append(TailQuoteChar);
+                AppendEscapedLiteral(builder, data, ref offset, unescapeStrategy, escapeChar, TailQuoteChar,
+                    verbatimFlag);
                 offset++;
             } while (true);
 

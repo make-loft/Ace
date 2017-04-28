@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Art.Replication
 {
+    public class Simplex : List<string>
+    {
+        public override string ToString() => this.Aggregate("", (a, b) => a + b);
+    }
+
     public class SimplexConverter : IConverter<Simplex, object>, IConverter<object, Simplex>
     {
         public EscapeProfile EscapeConverter { get; }
@@ -39,11 +46,11 @@ namespace Art.Replication
 
             var type = value.GetType();
             if (value is Enum)
-                return new Simplex {"<", type.AssemblyQualifiedName?.Replace(" ", "#").Replace(",", "$"), ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()};
+                return new Simplex {"\"", type.AssemblyQualifiedName, "\"", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString()};
             var parseMethod = type.GetMethod("Parse", new[] { typeof(string) });
 
             return parseMethod != null || value is Uri || value is Regex
-                ? new Simplex { "<", type.Name, ">", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString() }
+                ? new Simplex { "\"", type.Name, "\"", HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString() }
                 : new Simplex { HeadQuoteChar.ToString(), segment, TailQuoteChar.ToString() };
         }
 
@@ -76,7 +83,7 @@ namespace Art.Replication
                         ? DateTime.Parse(simplex[1], ActiveCulture, DateTimeStyles.AdjustToUniversal)
                         : DateTime.Parse(simplex[1], ActiveCulture);
                 default:
-                    var t = Type.GetType(typeName.Replace("#", " ").Replace("$", ","));
+                    var t = Type.GetType(typeName);
                     if (t!= null && t.IsEnum) return Enum.Parse(t, simplex[1], true);
                     break;
             }

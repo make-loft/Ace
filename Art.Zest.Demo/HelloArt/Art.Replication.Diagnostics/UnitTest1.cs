@@ -9,7 +9,7 @@ namespace Art.Replication.Diagnostics
     public class ComplexData
     {
         [DataMember]
-        public string Property0 { get; set; }
+        public string Property0 { get; set; } = "абв";
 
         [DataMember]
         public Guid Property1 { get; set; }

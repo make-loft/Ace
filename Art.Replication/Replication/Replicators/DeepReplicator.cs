@@ -24,20 +24,20 @@ namespace Art.Replication.Replicators
             if (master is IDictionary map && type.IsGenericDictionaryWithKey<string>())
             {
                 var m = new Map(map.Cast<DictionaryEntry>()
-                    .ToDictionary(p => (string)p.Key, p => p.Value.GetState(replicationProfile, idCache)));
+                    .ToDictionary(p => (string)p.Key, p => p.Value.RecursiveTranslate(replicationProfile, idCache)));
                 if (replicationProfile.SimplifyMaps && type == baseType) return m;
                 snapshot.Add(replicationProfile.MapKey, m);
             }
             else if (master is IList set)
             {
-                var s = new Set(set.Cast<object>().Select(i => i.GetState(replicationProfile, idCache)));
+                var s = new Set(set.Cast<object>().Select(i => i.RecursiveTranslate(replicationProfile, idCache)));
                 if (replicationProfile.SimplifySets && type == baseType) return s; /* todo? */
                 snapshot.Add(replicationProfile.SetKey, s);
             }
 
             var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
             members.ForEach(m => snapshot.Add(replicationProfile.Schema.GetDataKey(m),
-                m.GetValue(master).GetState(replicationProfile, idCache, m.GetMemberType())));
+                m.GetValue(master).RecursiveTranslate(replicationProfile, idCache, m.GetMemberType())));
 
             return snapshot;
         }
@@ -67,15 +67,15 @@ namespace Art.Replication.Replicators
                 var items = (Set)snapshot[replicationProfile.SetKey];
                 if (replica is Array array)
                 {
-                    var source = items.Select(i => i.GetInstance(replicationProfile, idCache)).ToArray();
+                    var source = items.Select(i => i.RecursiveReplicate(replicationProfile, idCache)).ToArray();
                     Array.Copy(source, array, items.Count);
                 }
-                else items.ForEach(i => set.Add(i.GetInstance(replicationProfile, idCache)));
+                else items.ForEach(i => set.Add(i.RecursiveReplicate(replicationProfile, idCache)));
             }
 
             var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
             members.ForEach(m => m.SetValueIfCanWrite(replica, /* should restore items at read-only members too */
-                snapshot[replicationProfile.Schema.GetDataKey(m)].GetInstance(replicationProfile, idCache, m.GetMemberType())));
+                snapshot[replicationProfile.Schema.GetDataKey(m)].RecursiveReplicate(replicationProfile, idCache, m.GetMemberType())));
 
             return replica;
         }
