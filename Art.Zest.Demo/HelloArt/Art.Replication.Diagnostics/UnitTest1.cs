@@ -9,6 +9,12 @@ namespace Art.Replication.Diagnostics
     public class ComplexData
     {
         [DataMember]
+        public byte B = 44;
+
+        [DataMember]
+        public char C = 'c';
+
+        [DataMember]
         public string Property0 { get; set; } = "абв";
 
         [DataMember]

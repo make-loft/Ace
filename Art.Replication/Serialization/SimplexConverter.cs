@@ -65,6 +65,8 @@ namespace Art.Replication
             if (double.TryParse(value, NumberStyles.Any, ActiveCulture, out var r)) return r;
 
             var number = value.ToUpper();
+            if (value.EndsWith("B") && byte.TryParse(number.Substring(0, number.Length - 1), out var b)) return b;
+            if (value.EndsWith("C") && byte.TryParse(number.Substring(0, number.Length - 1), out var c)) return c;
             if ((value.EndsWith("UL") || value.EndsWith("LU")) && ulong.TryParse(number.Substring(0, number.Length - 2), out var ul)) return ul;
             if (value.EndsWith("U") && uint.TryParse(number.Substring(0, number.Length - 1), out var u)) return u;
             if (value.EndsWith("L") && long.TryParse(number.Substring(0, number.Length - 1), out var l)) return l;
@@ -101,6 +103,10 @@ namespace Art.Replication
                     return NullLiteral;
                 case bool b:
                     return b ? TrueLiteral : FalseLiteral;
+                case byte i:
+                    return i.ToString(IntegerNumbersFormat, ActiveCulture);
+                case char i:
+                    return ((int)i).ToString(IntegerNumbersFormat, ActiveCulture);
                 case int i:
                     return i.ToString(IntegerNumbersFormat, ActiveCulture);
                 case uint i:
@@ -124,6 +130,10 @@ namespace Art.Replication
         {
             switch (value)
             {
+                case byte _:
+                    return "B";
+                case char _:
+                    return "C";
                 case int _:
                     return null;
                 case uint _:
