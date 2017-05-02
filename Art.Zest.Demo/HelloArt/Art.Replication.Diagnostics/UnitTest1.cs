@@ -2,10 +2,21 @@
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using Art.Serialization.Serializers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Art.Replication.Diagnostics
 {
+    public static class Program
+    {
+        public static void Main()
+        {
+            var ut = new UnitTest1();
+            ut.TestMethod1();
+
+        }
+    }
+
     public class ComplexData
     {
         [DataMember]

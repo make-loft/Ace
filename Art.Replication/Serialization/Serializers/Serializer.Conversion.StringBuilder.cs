@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Art.Replication;
 
-namespace Art.Replication
+namespace Art.Serialization.Serializers
 {
     public static partial class Serializer
     {

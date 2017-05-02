@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
+using Art.Replication;
 
-namespace Art.Replication
+namespace Art.Serialization.Serializers
 {
     public static partial class Serializer
     {
@@ -22,6 +22,6 @@ namespace Art.Replication
             KeepProfile keepProfile = null) => Snapshot.Create(matrix, replicationProfile, keepProfile);
 
         public static object Capture(this string matrix, KeepProfile keepProfile, int offset = 0) =>
-            Capture(matrix, keepProfile, ref offset);
+            matrix.Capture(keepProfile, ref offset);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using Art.Replication;
+using Art.Serialization.Converters;
 
-namespace Art.Replication
+namespace Art.Serialization
 {
     public interface IBodyProfile<in TIn, out TOut>
     {
@@ -42,7 +44,6 @@ namespace Art.Replication
                     NullLiteral = "null",
                     TrueLiteral = "true",
                     FalseLiteral = "false",
-                    AppendSyffixToNumbers = true,
                 },
                 MapPairSplitter = ": ",
                 IndentChars = "  ",

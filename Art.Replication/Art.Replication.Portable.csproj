@@ -57,6 +57,7 @@
     <Compile Include="Replication\DeepOperations.cs" />
     <Compile Include="Replication\Replicator.cs" />
     <Compile Include="Replication\Snapshot.cs" />
+    <Compile Include="Serialization\Converters\StringConverter.cs" />
     <Compile Include="Serialization\EscapeProfile.cs" />
     <Compile Include="Replication\Replicators\CoreReplicators.cs" />
     <Compile Include="Replication\Replicators\DeepReplicator.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="Serialization\Serializers\Serializer.Aides.cs" />
     <Compile Include="Serialization\Serializers\Serializer.Capture.cs" />
     <Compile Include="Serialization\Serializers\Serializer.Conversion.StringBuilder.cs" />
-    <Compile Include="Serialization\SimplexConverter.cs" />
+    <Compile Include="Serialization\Converters\SimplexConverter.cs" />
     <Compile Include="Replication\Models\ContractProfile.cs" />
     <Compile Include="Replication\Models\GeneralProfile.cs" />
     <Compile Include="Replication\Patterns\ADataProfile.cs" />

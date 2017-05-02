@@ -1,4 +1,6 @@
-﻿namespace Art.Replication
+﻿using Art.Replication;
+
+namespace Art.Serialization.Serializers
 {
     public static partial class Serializer
     {
@@ -12,7 +14,8 @@
                     return new Set().CaptureComplex(keepProfile, matrix, ref offset);
                 default:
                     var simplex = keepProfile.CaptureSimplex(matrix, ref offset);
-                    return keepProfile.SimplexConverter.Convert(simplex);
+                    var value = keepProfile.SimplexConverter.Convert(simplex);
+                    return value;
             }
         }
 

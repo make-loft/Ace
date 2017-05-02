@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Art.Replication;
 
-namespace Art.Replication
+namespace Art.Serialization.Serializers
 {
     public static partial class Serializer
     {

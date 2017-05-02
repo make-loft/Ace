@@ -1,4 +1,6 @@
 ﻿using System;
+using Art.Serialization;
+using Art.Serialization.Serializers;
 
 namespace Art.Replication
 {

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using Art.Patterns;
 using Art.Replication;
+using Art.Serialization.Serializers;
 
 namespace Art
 {

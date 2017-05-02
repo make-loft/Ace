@@ -1,15 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
+using Art.Serialization.Converters;
 
-namespace Art.Replication
+namespace Art.Serialization
 {
     public class EscapeProfile
     {
         public char EscapeChar = '\\';
         public char EscapeVerbatimChar = '\"';
-        public char VerbatimChar = '@';
-        public char HeadQuoteChar = '\"';
-        public char TailQuoteChar = '\"';
+        public string VerbatimPattern = "@";
+        //public string HeadPattern = "\"";
+        //public string TailPattern = "\"";
+
+        public List<string> HeadPatterns = new List<string> {"\"", "<", "'"};
+        public List<string> TailPatterns = new List<string> {"\"", ">", "'"};
 
         public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> { { '\"', "\"\"" } };
         public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
@@ -51,7 +58,10 @@ namespace Art.Replication
                     int i = c;
                     if (i < 32 || 127 < i) builder.AppendFormat("\\u{0:x04}", i);
                     else builder.Append(c);
+                    continue;
                 }
+
+                builder.Append(c);
             }
 
             return builder;
@@ -59,10 +69,10 @@ namespace Art.Replication
 
         public string Convert(string value)
         {
-            var useVerbatim = value.Contains("\\") || value.Contains("/");
+            var useVerbatim = false; //value.Contains("\\") || value.Contains("/");
             var escapeChars = useVerbatim ? VerbatimEscapeChars : EscapeChars;
             var builder = new StringBuilder();
-            if (useVerbatim) builder.Append(VerbatimChar);
+            if (useVerbatim) builder.Append(VerbatimPattern);
             AppendWithEscape(builder, value, escapeChars, useVerbatim);
             return builder.ToString();
         }
@@ -76,50 +86,70 @@ namespace Art.Replication
             var simplex = new Simplex();
             var builder = new StringBuilder();
 
-            do
+            for (;offset < data.Length; )
             {
-                var c = data[offset++];
+                var c = data[offset];
                 if (char.IsWhiteSpace(c) || NonSimplexChars.Contains(c))
                 {
-                    simplex.Add(builder.ToString());
+                    if (builder.Length > 0) simplex.Add(builder.ToString());
+                    //if (!char.IsWhiteSpace(c)) simplex.Add(c.ToString());
                     break;
                 }
 
-                if (c != HeadQuoteChar && c != TailQuoteChar) builder.Append(c);
+                var verbatimFlag = data.Match(VerbatimPattern, offset);
+                if (verbatimFlag)
+                {
+                    //simplex.Add(VerbatimPattern);
+                    offset += VerbatimPattern.Length;
+                }
 
-                var verbatimFlag = c == VerbatimChar;
-                var headQuoteFlag = c == HeadQuoteChar;
-                if (!headQuoteFlag) continue;
+                var o = offset;
+                var headPattern = HeadPatterns.FirstOrDefault(p => data.Match(p, o));
+                if (headPattern != null)
+                {
+                    var escapeChar = verbatimFlag ? EscapeVerbatimChar : EscapeChar;
+                    var unescapeStrategy = verbatimFlag ? VerbatimUnescapeChars : UnescapeChars;
+                    simplex.Add(headPattern);
+                    offset += headPattern.Length;
+                    var index = HeadPatterns.IndexOf(headPattern);
+                    var tailPattern = TailPatterns[index];
+                    AppendEscapedLiteral(builder, data, ref offset, unescapeStrategy, escapeChar, tailPattern,
+                        verbatimFlag);
+                    simplex.Add(builder.ToString());
+                    builder.Clear();
 
-                if (builder.Length > 0) simplex.Add(builder.ToString());
-                builder.Clear();
-
-                var escapeChar = verbatimFlag ? EscapeVerbatimChar : EscapeChar;
-                var unescapeStrategy = verbatimFlag ? VerbatimUnescapeChars : UnescapeChars;
-                AppendEscapedLiteral(builder, data, ref offset, unescapeStrategy, escapeChar, TailQuoteChar,
-                    verbatimFlag);
-                offset++;
-            } while (true);
+                    simplex.Add(tailPattern);
+                    offset += tailPattern.Length;
+                    if (offset > data.Length) throw new Exception("Unexpected end of escaped value: " + builder);
+                }
+                else
+                {
+                    builder.Append(c);
+                    offset++;
+                }
+            }
 
             return simplex;
         }
 
         public static void AppendEscapedLiteral(
             StringBuilder builder, string data, ref int offset,
-            Dictionary<char, char> unescapeStrategy, char escapeChar, char breakChar, bool verbatim)
+            Dictionary<char, char> unescapeStrategy, char escapeChar, string breakPattern, bool verbatim)
         {
-            for (var escapeFlag = false; ; offset++)
+            for (var escapeFlag = false; offset < data.Length; offset++)
             {
                 var c = data[offset];
                 if (escapeFlag)
                 {
+                    
                     if (unescapeStrategy.TryGetValue(c, out var s)) builder.Append(s);
                     else if (!verbatim && c == 'u')
                     {
-                        c = (char)int.Parse(data.Substring(offset, 4));
+                        c = (char) int.Parse(data.Substring(offset + 1, 4), NumberStyles.AllowHexSpecifier);
                         builder.Append(c);
                         offset += 4;
                     }
+                    else builder.Append(c);
 
                     escapeFlag = false;
                     continue;
@@ -127,7 +157,7 @@ namespace Art.Replication
 
                 escapeFlag = c == escapeChar;
                 if (escapeFlag) continue;
-                if (c == breakChar) break;
+                if (data.Match(breakPattern, offset)) break;
                 builder.Append(c);
             }
         }
