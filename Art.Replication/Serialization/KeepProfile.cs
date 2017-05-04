@@ -83,6 +83,12 @@ namespace Art.Serialization
                     : null;
         }
 
+        public void SkipMapPairSplitter(string data, ref int offset)
+        {
+            SkipWhiteSpaceWithComments(data, ref offset);
+            if (data.Match(MapPairSplitter, offset)) offset += MapPairSplitter.Length;
+        }
+
         public Simplex CaptureSimplex(string data, ref int offset)
         {
             MoveToSimplex(data, ref offset);
@@ -135,7 +141,7 @@ namespace Art.Serialization
         {
             do
             {
-                while (offset < data.Length && (char.IsWhiteSpace(data[offset]) || data[offset] == ':')) offset++;
+                while (offset < data.Length && char.IsWhiteSpace(data[offset])) offset++;
                 if (!data.Match("/", offset)) return;
                 if (data.Match("/*", offset)) offset = data.IndexOf("*/", offset, StringComparison.Ordinal) + 2;
                 if (data.Match("//", offset)) offset = data.IndexOf(NewLineChars, offset, StringComparison.Ordinal) + 2;

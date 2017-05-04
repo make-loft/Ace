@@ -28,6 +28,7 @@ namespace Art.Serialization.Serializers
                 if (items is Map map)
                 {
                     var key = keepProfile.CaptureSimplex(data, ref offset).ToString();
+                    keepProfile.SkipMapPairSplitter(data, ref offset);
                     map.Add(key, data.Capture(keepProfile, ref offset));
                 }
                 else if (items is Set set) set.Add(data.Capture(keepProfile, ref offset));
