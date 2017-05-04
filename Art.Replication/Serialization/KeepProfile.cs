@@ -91,6 +91,7 @@ namespace Art.Serialization
 
         public void MoveToSimplex(string data, ref int offset)
         {
+            SkipWhiteSpaceWithComments(data, ref offset);
             while (offset < data.Length && EscapeProfile.IsNonSimplex(data[offset])) offset++;
         }
 
@@ -134,7 +135,7 @@ namespace Art.Serialization
         {
             do
             {
-                while (offset < data.Length && char.IsWhiteSpace(data[offset])) offset++;
+                while (offset < data.Length && (char.IsWhiteSpace(data[offset]) || data[offset] == ':')) offset++;
                 if (!data.Match("/", offset)) return;
                 if (data.Match("/*", offset)) offset = data.IndexOf("*/", offset, StringComparison.Ordinal) + 2;
                 if (data.Match("//", offset)) offset = data.IndexOf(NewLineChars, offset, StringComparison.Ordinal) + 2;

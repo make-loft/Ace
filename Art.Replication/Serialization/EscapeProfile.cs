@@ -11,6 +11,7 @@ namespace Art.Serialization
     {
         public char EscapeChar = '\\';
         public char EscapeVerbatimChar = '\"';
+
         public string VerbatimPattern = "@";
         //public string HeadPattern = "\"";
         //public string TailPattern = "\"";
@@ -18,20 +19,22 @@ namespace Art.Serialization
         public List<string> HeadPatterns = new List<string> {"\"", "<", "'"};
         public List<string> TailPatterns = new List<string> {"\"", ">", "'"};
 
-        public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> { { '\"', "\"\"" } };
+        public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> {{'\"', "\"\""}};
+
         public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
         {
-            {'\"', "\\\""},
-            {'\\', "\\\\"},
-            {'/', "\\/"},
-            {'\b', "\\b"},
-            {'\f', "\\f"},
-            {'\n', "\\n"},
-            {'\r', "\\r"},
-            {'\t', "\\t"},
+            {'\"', "\""},
+            {'\\', "\\"},
+            {'/', "/"},
+            {'\b', "b"},
+            {'\f', "f"},
+            {'\n', "n"},
+            {'\r', "r"},
+            {'\t', "t"},
         };
 
-        public Dictionary<char, char> VerbatimUnescapeChars = new Dictionary<char, char> { { '"', '\"' } };
+        public Dictionary<char, char> VerbatimUnescapeChars = new Dictionary<char, char> {{'"', '\"'}};
+
         public Dictionary<char, char> UnescapeChars = new Dictionary<char, char>
         {
             {'"', '\"'},
@@ -46,13 +49,17 @@ namespace Art.Serialization
 
 
         public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
-            bool verbatim)
+            bool verbatim, string escapeSequence = "\\")
         {
             if (value == null) return builder;
 
             foreach (var c in value)
             {
-                if (escapeChars.TryGetValue(c, out var s)) builder.Append(s);
+                if (escapeChars.TryGetValue(c, out var s))
+                {
+                    builder.Append(escapeSequence);
+                    builder.Append(s);
+                }
                 else if (!verbatim)
                 {
                     int i = c;
@@ -69,7 +76,7 @@ namespace Art.Serialization
 
         public string Convert(string value)
         {
-            var useVerbatim = false; //value.Contains("\\") || value.Contains("/");
+            var useVerbatim = value.Contains("\\") || value.Contains("/");
             var escapeChars = useVerbatim ? VerbatimEscapeChars : EscapeChars;
             var builder = new StringBuilder();
             if (useVerbatim) builder.Append(VerbatimPattern);
@@ -77,7 +84,8 @@ namespace Art.Serialization
             return builder.ToString();
         }
 
-        public readonly List<char> NonSimplexChars = new List<char> { '{', '}', '[', ']', ',', ';', ':' }; // and all whitespaces
+        public readonly List<char> NonSimplexChars =
+            new List<char> {'{', '}', '[', ']', ',', ';', ':'}; // and all whitespaces
 
         public bool IsNonSimplex(char c) => char.IsWhiteSpace(c) || NonSimplexChars.Contains(c);
 
@@ -86,7 +94,7 @@ namespace Art.Serialization
             var simplex = new Simplex();
             var builder = new StringBuilder();
 
-            for (;offset < data.Length; )
+            for (; offset < data.Length;)
             {
                 var c = data[offset];
                 if (char.IsWhiteSpace(c) || NonSimplexChars.Contains(c))
@@ -136,29 +144,77 @@ namespace Art.Serialization
             StringBuilder builder, string data, ref int offset,
             Dictionary<char, char> unescapeStrategy, char escapeChar, string breakPattern, bool verbatim)
         {
-            for (var escapeFlag = false; offset < data.Length; offset++)
+            for (; offset < data.Length; offset++)
             {
                 var c = data[offset];
+                var escapeFlag = c == escapeChar;
                 if (escapeFlag)
                 {
-                    
-                    if (unescapeStrategy.TryGetValue(c, out var s)) builder.Append(s);
-                    else if (!verbatim && c == 'u')
+                    var d = data[offset + 1];
+                    if (unescapeStrategy.TryGetValue(d, out var s)) builder.Append(s);
+                    else if (!verbatim && d == 'u')
                     {
-                        c = (char) int.Parse(data.Substring(offset + 1, 4), NumberStyles.AllowHexSpecifier);
+                        c = (char) int.Parse(data.Substring(offset + 2, 4), NumberStyles.AllowHexSpecifier);
                         builder.Append(c);
-                        offset += 4;
+                        offset += 5;
                     }
+                    else if (data.Match(breakPattern, offset)) break;
                     else builder.Append(c);
-
-                    escapeFlag = false;
-                    continue;
                 }
+                else
+                {
+                    if (data.Match(breakPattern, offset)) break;
+                    builder.Append(c);
+                }
+            }
+        }
 
-                escapeFlag = c == escapeChar;
-                if (escapeFlag) continue;
-                if (data.Match(breakPattern, offset)) break;
-                builder.Append(c);
+        public static IEnumerable<char> Escape(
+            string originalSequence, Dictionary<string, string> escapeRules, string escapeSequence, string breakSequence)
+        {
+            for (var i = 0; i < originalSequence.Length; i++)
+            {
+                var escapeRule = escapeRules.FirstOrDefault(r => originalSequence.Match(r.Key, i));
+                if (escapeRule.Key == null)
+                {
+                    if (originalSequence.Match(breakSequence, i)) yield break;
+                    yield return originalSequence[i];
+                }
+                else
+                {
+                    i += escapeRule.Value.Length;
+                    foreach (var c in escapeSequence) yield return c;
+                    foreach (var c in escapeRule.Value) yield return c;
+                }
+            }
+        }
+
+        public static IEnumerable<char> Unescape(
+            string originalSequence, int offset, Dictionary<string, string> escapeRules, string escapeSequence, string breakSequence)
+        {
+            for (var i = offset; i < originalSequence.Length; i++)
+            {
+                var escapeFlag = originalSequence.Match(escapeSequence, i);
+                if (escapeFlag)
+                {
+                    var escapeRule = escapeRules.FirstOrDefault(r => originalSequence.Match(r.Value, i + escapeSequence.Length));
+                    if (escapeRule.Key == null)
+                    {
+                        if (originalSequence.Match(breakSequence, i)) yield break;
+                        yield return originalSequence[i];
+                    }
+                    else
+                    {
+                        i += escapeSequence.Length;
+                        //foreach (var c in escapeSequence) yield return c;
+                        foreach (var c in escapeRule.Key) yield return c;
+                    }
+                }
+                else
+                {
+                    if (originalSequence.Match(breakSequence, i)) yield break;
+                    yield return originalSequence[i];
+                }
             }
         }
     }

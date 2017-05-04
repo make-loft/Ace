@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Art.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,6 +9,44 @@ namespace Art.Replication.Diagnostics
     [TestClass]
     public class EscapeTests
     {
+        [TestMethod]
+        public void TestSkipWhiteSpaceWithComments()
+        {
+            var kp = KeepProfile.GetFormatted();
+            var data = "  /*2*/ ";
+            int i = 0;
+            kp.SkipWhiteSpaceWithComments(data, ref i);
+            Assert.AreEqual(i, 8);
+        }
+
+        public Dictionary<string, string> EscapeChars = new Dictionary<string, string>
+        {
+            {"\"", "\""},
+            {"\\", "\\"},
+            {"/", "/"},
+            {"\b", "b"},
+            {"\f", "f"},
+            {"\n", "n"},
+            {"\r", "r"},
+            {"\t", "t"},
+        };
+
+        [TestMethod]
+        public void TestCapture123()
+        {
+            var i = "abcde/\" xyz";
+            var escaped = EscapeProfile.Escape(i, EscapeChars, "\\", "\"").Aggregate(new StringBuilder(), (b, c) => b.Append(c));
+            Assert.AreEqual(escaped, "abcde\\/");
+        }
+
+        [TestMethod]
+        public void TestUnescape()
+        {
+            var i = @"ab""""xy""we";
+            var escaped = EscapeProfile.Unescape(i, 0, EscapeChars, "\"", "\"").Aggregate(new StringBuilder(), (b, c) => b.Append(c));
+            Assert.AreEqual(escaped, "abcde\\/");
+        }
+
         [TestMethod]
         public void TestCapture12()
         {
@@ -31,6 +71,16 @@ namespace Art.Replication.Diagnostics
                 escapeProfile.VerbatimUnescapeChars, '\"', "\"", true);
             var s = builder.ToString();
             Assert.AreEqual("a", s);
+        }
+
+        [TestMethod]
+        public void TestCaptureSimplexWithType()
+        {
+            var i = 0;
+            var escapeProfile = new EscapeProfile();
+            var source = "@\"a\"<bb> ,";
+            var simplex = escapeProfile.CaptureSimplex(source, ref i);
+            Assert.AreEqual("a", simplex);
         }
 
         [TestMethod]

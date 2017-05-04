@@ -13,7 +13,7 @@ namespace Art.Serialization.Converters
         public Simplex Modify(EscapeProfile escapeProfile, int segmentIndex)
         {
             var segment = this[segmentIndex];
-            var useVerbatim = false; // segment.Contains("\\") || segment.Contains("/");
+            var useVerbatim = segment.Contains("\\") || segment.Contains("/");
             var escapeChars = useVerbatim ? escapeProfile.VerbatimEscapeChars : escapeProfile.EscapeChars;
             this[segmentIndex] = escapeProfile.AppendWithEscape(new StringBuilder(), segment, escapeChars, useVerbatim).ToString();
             if (useVerbatim) Insert(segmentIndex - 1, "@");
@@ -45,7 +45,7 @@ namespace Art.Serialization.Converters
 
             stringValue = ConvertComplex(value) ?? value.ToString();
             var type = value.GetType();
-            var typeName = type.Assembly == typeof(object).Assembly || type.Assembly == typeof(Uri).Assembly
+            var typeName = type.Assembly == typeof(object).Assembly || type == typeof(Uri)
                 ? type.Name
                 : type.AssemblyQualifiedName;
             return new Simplex
@@ -63,6 +63,7 @@ namespace Art.Serialization.Converters
         public object Convert(Simplex simplex, params object[] args)
         {
             var value = simplex.Count == 1 ? simplex[0] : simplex[1];
+            if (simplex.Count == 3) return value;
             return simplex.Count > 3 ? ConvertComplex(value, simplex[4]) : base.Convert(value);
         }
     }
