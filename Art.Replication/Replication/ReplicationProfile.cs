@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Art.Replication.Models;
-using Art.Replication.Patterns;
+using Art.Replication.MemberProviders;
 using Art.Replication.Replicators;
 
 namespace Art.Replication
@@ -18,9 +17,12 @@ namespace Art.Replication
         public bool SimplifySets = true;
         public bool SimplifyMaps = true;
 
-        public Func<MemberInfo, bool> MembersFilter = Member.CanReadWrite;
-
-        public ADataProfile Schema = new ContractProfile();
+        public List<MemberProvider> MemberProviders = new List<MemberProvider>
+        {
+            new KeyValuePairCoreMemberProvider(),
+            new CoreMemberProvider(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, Member.CanReadWrite),
+            new ContractMemberProvider(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, Member.CanReadWrite),
+        };
 
         public List<Replicator> Replicators = new List<Replicator>
         {

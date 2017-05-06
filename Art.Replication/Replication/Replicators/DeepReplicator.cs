@@ -11,7 +11,8 @@ namespace Art.Replication.Replicators
             Dictionary<object, int> idCache, Type baseType = null)
         {
             if (idCache.TryGetValue(master, out int id)) return new Map { { replicationProfile.IdKey, id } };
-            idCache.Add(master, idCache.Count);
+            id = idCache.Count;
+            idCache.Add(master, id);
 
             var type = master.GetType();
             var snapshot = new Map();
@@ -35,8 +36,9 @@ namespace Art.Replication.Replicators
                 snapshot.Add(replicationProfile.SetKey, s);
             }
 
-            var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
-            members.ForEach(m => snapshot.Add(replicationProfile.Schema.GetDataKey(m),
+            var memberProvider = replicationProfile.MemberProviders.First(p => p.CanApply(type));
+            var members = memberProvider.GetDataMembers(type);
+            members.ForEach(m => snapshot.Add(memberProvider.GetDataKey(m),
                 m.GetValue(master).RecursiveTranslate(replicationProfile, idCache, m.GetMemberType())));
 
             return snapshot;
@@ -62,7 +64,7 @@ namespace Art.Replication.Replicators
                 var items = (IDictionary)snapshot[replicationProfile.MapKey];
                 items.Cast<DictionaryEntry>().ForEach(p => map.Add(p.Key, p.Value));
             }
-            else if (state is IList set)
+            else if (replica is IList set)
             {
                 var items = (Set)snapshot[replicationProfile.SetKey];
                 if (replica is Array array)
@@ -73,9 +75,10 @@ namespace Art.Replication.Replicators
                 else items.ForEach(i => set.Add(i.RecursiveReplicate(replicationProfile, idCache)));
             }
 
-            var members = replicationProfile.Schema.GetDataMembers(type, replicationProfile.MembersFilter);
+            var memberProvider = replicationProfile.MemberProviders.First(p => p.CanApply(type));
+            var members = memberProvider.GetDataMembers(type);
             members.ForEach(m => m.SetValueIfCanWrite(replica, /* should restore items at read-only members too */
-                snapshot[replicationProfile.Schema.GetDataKey(m)].RecursiveReplicate(replicationProfile, idCache, m.GetMemberType())));
+                snapshot[memberProvider.GetDataKey(m)].RecursiveReplicate(replicationProfile, idCache, m.GetMemberType())));
 
             return replica;
         }

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using Art.Serialization.Serializers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,6 +21,10 @@ namespace Art.Replication.Diagnostics
         }
     }
 
+    
+
+    [DataContract]
+    [Serializable]
     public class ComplexData
     {
         [DataMember]
@@ -70,6 +78,32 @@ namespace Art.Replication.Diagnostics
 
             var masterItem = new ComplexData();
             masterItem.Test = new object[] {masterItem, masterItem.Objects};
+            var sw= new Stopwatch();
+            sw.Reset();
+            sw.Start();
+            for (int i = 0; i < 10000; i++)
+            {
+                var dc = masterItem.DeepClone();
+            }
+            sw.Stop();
+            Debug.WriteLine(sw.ElapsedMilliseconds);
+
+            sw.Reset();
+            sw.Start();
+            for (int i = 0; i < 10000; i++)
+            {
+                var dc = masterItem.CreateSnapshot().CreateInstance();
+            }
+            sw.Stop();
+            Debug.WriteLine(sw.ElapsedMilliseconds);
+
+            var a0 = masterItem.CreateSnapshot();
+            var b0 = masterItem.CreateSnapshot();
+
+            var r = a0.GetResults(b0, "").ToList();
+            r = r;
+           // dc = dc;
+            
             var masterSnaphot = masterItem.CreateSnapshot();
             var replicationMatrix = masterSnaphot.ToString();
             var clonedSnapshot = replicationMatrix.CreateSnapshot();
@@ -77,7 +111,15 @@ namespace Art.Replication.Diagnostics
             var lastSnapshot = clonedItem.CreateSnapshot();
             var results = masterSnaphot.GetResults(lastSnapshot, "").ToList();
             results = results;
+
+            var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem);
+            var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(x);
+            var s0 = masterItem.CreateSnapshot();
+            var s1 = y.CreateSnapshot();
+            var results0 = s0.GetResults(s1, "").ToList();
+            results0 = results0;
         }
     }
 }
  
+

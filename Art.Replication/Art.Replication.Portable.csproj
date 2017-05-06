@@ -45,7 +45,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -55,6 +54,7 @@
     <Compile Include="Art.Patterns.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="Replication\DeepOperations.cs" />
+    <Compile Include="Replication\MemberProviders\MemberProvider.cs" />
     <Compile Include="Replication\Replicator.cs" />
     <Compile Include="Replication\Snapshot.cs" />
     <Compile Include="Serialization\Converters\StringConverter.cs" />
@@ -67,9 +67,8 @@
     <Compile Include="Serialization\Serializers\Serializer.Capture.cs" />
     <Compile Include="Serialization\Serializers\Serializer.Conversion.StringBuilder.cs" />
     <Compile Include="Serialization\Converters\SimplexConverter.cs" />
-    <Compile Include="Replication\Models\ContractProfile.cs" />
-    <Compile Include="Replication\Models\GeneralProfile.cs" />
-    <Compile Include="Replication\Patterns\ADataProfile.cs" />
+    <Compile Include="Replication\MemberProviders\ContractMemberProvider.cs" />
+    <Compile Include="Replication\MemberProviders\CoreMemberProviders.cs" />
     <Compile Include="Replication\ReplicationModels.cs" />
     <Compile Include="Serialization\KeepProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

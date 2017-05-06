@@ -43,5 +43,4 @@ namespace Art.Replication
 
         public T CreateInstance<T>() => (T)MasterState.RecursiveReplicate(ActiveReplicationProfile, null, typeof(T));
     }
-
 }

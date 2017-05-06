@@ -1,0 +1,8 @@
+﻿<Application
+    x:Class="Art.Replication.Diagnostics.Universal.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Art.Replication.Diagnostics.Universal"
+    RequestedTheme="Light">
+
+</Application>

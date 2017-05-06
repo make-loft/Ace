@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 
 namespace Art.Replication
@@ -38,6 +37,6 @@ namespace Art.Replication
 
         public static bool IsGenericDictionaryWithKey<TKey>(this Type type) =>
             type.Name == "Dictionary`2" && type.IsGenericType &&
-            type.GetGenericArguments().First() == typeof(TKey);
+            type.GetGenericArguments()[0] == typeof(TKey);
     }
 }
