@@ -7,11 +7,6 @@ namespace Art.Replication.Replicators
 {
     public class DeepReplicator : ACachingReplicator<object>
     {
-        public override bool CanReplicate(object value, ReplicationProfile replicationProfile, Dictionary<int, object> idCache, Type baseType = null)
-        {
-            return true;
-        }
-
         public override void FillMap(Map snapshot, object instance, ReplicationProfile replicationProfile,
             Dictionary<object, int> idCache, Type baseType = null)
         {
@@ -36,10 +31,10 @@ namespace Art.Replication.Replicators
         }
 
         public override void FillInstance(Map snapshot, object replica, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache,
-            Type baseType = null)
+            Dictionary<int, object> idCache, Type baseType = null)
         {
             var type = replica.GetType();
+
             if (replica is IDictionary map && type.IsGenericDictionaryWithKey<string>())
             {
                 var items = (IDictionary) snapshot[replicationProfile.MapKey];

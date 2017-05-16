@@ -34,8 +34,7 @@ namespace Art.Replication
 
         public override bool CanReplicate(object value, ReplicationProfile replicationProfile,
             Dictionary<int, object> idCache, Type baseType = null) =>
-            value is Map map &&
-            (baseType == ActiveType || (baseType != null && baseType.IsSubclassOf(ActiveType)) ||
-            (map.TryGetValue(replicationProfile.TypeKey, out var v) && v == ActiveType));
+            ActiveType == typeof(object) || ActiveType == baseType || value is Map map &&
+            map.TryGetValue(replicationProfile.TypeKey, out var v) && v == ActiveType;
     }
 }
