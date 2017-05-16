@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Art.Replication.Replicators
@@ -10,8 +11,7 @@ namespace Art.Replication.Replicators
 
         public virtual void FillMap(Map map, T instance, ReplicationProfile replicationProfile,
             Dictionary<object, int> idCache, Type baseType = null)
-        {
-            
+        {         
         }
 
         public virtual void FillInstance(Map map, T instance, ReplicationProfile replicationProfile,
@@ -30,7 +30,8 @@ namespace Art.Replication.Replicators
             if (replicationProfile.AttachId) map.Add(replicationProfile.IdKey, id);
             if (replicationProfile.AttachType) map.Add(replicationProfile.TypeKey, value.GetType());
             FillMap(map, (T)value, replicationProfile, idCache, baseType);
-            return map;
+            var snapshot = Simplify(map, value, replicationProfile, baseType);
+            return snapshot;
         }
 
         public override object Replicate(object value, ReplicationProfile replicationProfile,
@@ -42,6 +43,20 @@ namespace Art.Replication.Replicators
             replica = idCache[id] = ActivateInstance(map, replicationProfile, idCache, baseType);
             FillInstance(map, (T)replica, replicationProfile, idCache, baseType);
             return replica;
+        }
+
+        protected object Simplify(Map map, object instance, ReplicationProfile replicationProfile, Type baseType)
+        {
+            var type = instance.GetType();
+            if (type != baseType) return map;
+
+            if (replicationProfile.SimplifyMaps && instance is IDictionary && type.IsGenericDictionaryWithKey<string>())
+                return map[replicationProfile.MapKey];
+
+            if (replicationProfile.SimplifySets && instance is IList)
+                return map[replicationProfile.SetKey];
+
+            return map;
         }
 
         protected Map CompleteMapIfRequried(object state, ReplicationProfile replicationProfile, Type baseType) =>

@@ -19,16 +19,14 @@ namespace Art.Replication.Replicators
 
             if (instance is IDictionary map && type.IsGenericDictionaryWithKey<string>())
             {
-                var m = new Map(map.Cast<DictionaryEntry>()
+                var items = new Map(map.Cast<DictionaryEntry>()
                     .ToDictionary(p => (string) p.Key, p => p.Value.RecursiveTranslate(replicationProfile, idCache)));
-                //if (replicationProfile.SimplifyMaps && type == baseType) return m;
-                snapshot.Add(replicationProfile.MapKey, m);
+                snapshot.Add(replicationProfile.MapKey, items);
             }
             else if (instance is IList set)
             {
-                var s = new Set(set.Cast<object>().Select(i => i.RecursiveTranslate(replicationProfile, idCache)));
-                //if (replicationProfile.SimplifySets && type == baseType) return s; /* todo? */
-                snapshot.Add(replicationProfile.SetKey, s);
+                var items = new Set(set.Cast<object>().Select(i => i.RecursiveTranslate(replicationProfile, idCache)));
+                snapshot.Add(replicationProfile.SetKey, items);
             }
 
             var memberProvider = replicationProfile.MemberProviders.First(p => p.CanApply(type));
@@ -53,7 +51,7 @@ namespace Art.Replication.Replicators
                 if (replica is Array array)
                 {
                     var source = items.Select(i => i.RecursiveReplicate(replicationProfile, idCache)).ToArray();
-                    Array.Copy(source, array, items.Count);
+                    Array.Copy(source, array, items.Count); /* array [replica] is cached instance */
                 }
                 else items.ForEach(i => set.Add(i.RecursiveReplicate(replicationProfile, idCache)));
             }

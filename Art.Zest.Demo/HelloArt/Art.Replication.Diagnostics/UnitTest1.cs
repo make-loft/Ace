@@ -113,7 +113,7 @@ namespace Art.Replication.Diagnostics
             for (int i = 0; i < 5000; i++)
             {
                 //var ert = xx.CreateInstance();
-                var dc = masterItem.CreateSnapshot().CreateInstance();//.ToString();
+                var dc = masterItem.CreateSnapshot().CreateInstance<ComplexData>();//.ToString();
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);
