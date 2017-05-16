@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace Art.Serialization.Converters
 {
@@ -132,7 +131,7 @@ namespace Art.Serialization.Converters
 
             var number = value.ToUpper();
             if (value.EndsWith("B") && byte.TryParse(number.Substring(0, number.Length - 1), out var b)) return b;
-            if (value.EndsWith("C") && byte.TryParse(number.Substring(0, number.Length - 1), out var c)) return c;
+            if (value.EndsWith("C") && int.TryParse(number.Substring(0, number.Length - 1), out var c)) return (char)c;
             if ((value.EndsWith("UL") || value.EndsWith("LU")) &&
                 ulong.TryParse(number.Substring(0, number.Length - 2), out var ul)) return ul;
             if (value.EndsWith("U") && uint.TryParse(number.Substring(0, number.Length - 1), out var u)) return u;
@@ -156,7 +155,6 @@ namespace Art.Serialization.Converters
                         ? DateTime.Parse(value, ActiveCulture, DateTimeStyles.AdjustToUniversal)
                         : DateTime.Parse(value, ActiveCulture);
                 default:
-                    var o = typeof(RegexOptions);
                     var type = Type.GetType(typeName) ?? Type.GetType("System." + typeName);
                     if (type != null && type.IsEnum) return Enum.Parse(type, value, true);
                     var parseMethod = type?.GetMethod("Parse", new[] {typeof(string)});
