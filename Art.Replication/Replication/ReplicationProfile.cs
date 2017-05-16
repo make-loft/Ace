@@ -19,7 +19,7 @@ namespace Art.Replication
 
         public List<MemberProvider> MemberProviders = new List<MemberProvider>
         {
-            new KeyValuePairCoreMemberProvider(),
+            new CoreMemberProviderForKeyValuePair(),
             new CoreMemberProvider(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, Member.CanReadWrite),
             new ContractMemberProvider(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, Member.CanReadWrite),
         };

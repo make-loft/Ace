@@ -8,6 +8,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using Art.Serialization.Serializers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace Art.Replication.Diagnostics
 {
@@ -58,7 +61,8 @@ namespace Art.Replication.Diagnostics
         public Regex Regex0 { get; set; } = new Regex("abc", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         [DataMember]
-        public object[] Objects { get; set; } = {"str", null, 123, 23u, 123L, 345f, 456.12d, DateTime.Now};
+        public object[] Objects { get; set; } =
+            {"str", null, 123, 23u, 123L, 345f, 456.12d, DateTime.Now, DateTime.Now.ToString(), Guid.NewGuid()};
 
         [DataMember]
         public int[] Ints = {1, 2, 3, 4, 5, 6, 7, 8, 7};
@@ -69,6 +73,21 @@ namespace Art.Replication.Diagnostics
     [TestClass]
     public class UnitTest1
     {
+        [TestMethod]
+        public void TestMethod2()
+        {
+
+            var masterItem = new ComplexData();
+            masterItem.Test = new object[] { masterItem, masterItem.Objects };
+            var masterSnaphot = masterItem.CreateSnapshot();
+            var replicationMatrix = masterSnaphot.ToString();
+            var clonedSnapshot = replicationMatrix.CreateSnapshot();
+            var clonedItem = clonedSnapshot.CreateInstance<ComplexData>();
+            var lastSnapshot = clonedItem.CreateSnapshot();
+            var results = masterSnaphot.GetResults(lastSnapshot, "").ToList();
+            results = results;
+        }
+
         [TestMethod]
         public void TestMethod1()
         {
@@ -81,7 +100,7 @@ namespace Art.Replication.Diagnostics
             var sw= new Stopwatch();
             sw.Reset();
             sw.Start();
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 var dc = masterItem.DeepClone();
             }
@@ -90,9 +109,31 @@ namespace Art.Replication.Diagnostics
 
             sw.Reset();
             sw.Start();
-            for (int i = 0; i < 10000; i++)
+            var xx = masterItem.CreateSnapshot();
+            for (int i = 0; i < 5000; i++)
             {
-                var dc = masterItem.CreateSnapshot().CreateInstance();
+                //var ert = xx.CreateInstance();
+                var dc = masterItem.CreateSnapshot().CreateInstance();//.ToString();
+            }
+            sw.Stop();
+            Debug.WriteLine(sw.ElapsedMilliseconds);
+
+
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                Formatting = Formatting.Indented
+            };
+            settings.Converters.Add(new StringEnumConverter());
+            //var json = JsonConvert.SerializeObject(collection, settings);
+            sw.Reset();
+            sw.Start();
+            //var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
+            for (int i = 0; i < 5000; i++)
+            {
+                var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
+                var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(x);
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);
@@ -112,12 +153,11 @@ namespace Art.Replication.Diagnostics
             var results = masterSnaphot.GetResults(lastSnapshot, "").ToList();
             results = results;
 
-            var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem);
-            var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(x);
+
             var s0 = masterItem.CreateSnapshot();
-            var s1 = y.CreateSnapshot();
-            var results0 = s0.GetResults(s1, "").ToList();
-            results0 = results0;
+            //var s1 = y.CreateSnapshot();
+            //var results0 = s0.GetResults(s1, "").ToList();
+            //results0 = results0;
         }
     }
 }

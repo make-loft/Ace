@@ -37,7 +37,7 @@ namespace Art.Replication
             ActiveKeepProfile = keepProfile ?? DefaultKeepProfile
         };
 
-        public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
+        public override string ToString() => MasterState.SnapshotToString1(ActiveKeepProfile);
 
         public object CreateInstance() => MasterState.RecursiveReplicate(ActiveReplicationProfile);
 

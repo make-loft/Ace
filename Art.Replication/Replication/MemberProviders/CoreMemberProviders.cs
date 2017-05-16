@@ -6,12 +6,11 @@ using System.Reflection;
 
 namespace Art.Replication.MemberProviders
 {
-    public class KeyValuePairCoreMemberProvider : MemberProvider
+    public class CoreMemberProviderForKeyValuePair : MemberProvider
     {
-        public override bool CanApply(Type type) =>
-            type.Name.StartsWith("KeyValuePair") || type == typeof(DictionaryEntry);
+        public override bool CanApply(Type type) => type == typeof(KeyValuePair<,>) || type == typeof(DictionaryEntry);
 
-        protected override IEnumerable<MemberInfo> GetDataMembersInternal(Type type) =>
+        protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
             type.GetMembers().Where(m => m is PropertyInfo);
     }
 
@@ -29,7 +28,7 @@ namespace Art.Replication.MemberProviders
 
         private static readonly Type EnumerableType = typeof(IEnumerable);
 
-        protected override IEnumerable<MemberInfo> GetDataMembersInternal(Type type) =>
+        protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
             type.GetMembers(BindingFlags)
                 .Where(Filter)
                 .Where(m => !EnumerableType.IsAssignableFrom(type) && m.Name != "Item");

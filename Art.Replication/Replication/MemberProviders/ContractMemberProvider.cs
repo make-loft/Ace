@@ -13,9 +13,9 @@ namespace Art.Replication.MemberProviders
         {
         }
 
-        protected override IEnumerable<MemberInfo> GetDataMembersInternal(Type type)
+        protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type)
         {
-            var members = base.GetDataMembersInternal(type);
+            var members = base.GetDataMembersForCaching(type);
             var hasContract = type.IsDefined(typeof(DataContractAttribute), true) ||
                               type.IsDefined(typeof(CollectionDataContractAttribute), true);
             return hasContract

@@ -11,13 +11,13 @@ namespace Art.Replication.MemberProviders
 
         public virtual string GetDataKey(MemberInfo member) => member.Name;
 
-        protected virtual IEnumerable<MemberInfo> GetDataMembersInternal(Type type) => type.GetMembers();
+        protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
 
         protected Dictionary<Type, List<MemberInfo>> TypeToMembers = new Dictionary<Type, List<MemberInfo>>();
 
         public virtual List<MemberInfo> GetDataMembers(Type type) =>
             TypeToMembers.TryGetValue(type, out var members)
                 ? members
-                : TypeToMembers[type] = GetDataMembersInternal(type).ToList();
+                : TypeToMembers[type] = GetDataMembersForCaching(type).ToList();
     }
 }

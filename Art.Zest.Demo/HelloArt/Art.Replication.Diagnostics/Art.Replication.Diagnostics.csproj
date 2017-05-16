@@ -47,9 +47,6 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.0.8-rc2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -64,6 +61,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.csproj">
+      <Project>{a97a4cb3-51ad-4605-ba9f-d6861e582c85}</Project>
+      <Name>Newtonsoft.Json</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Art.Replication\Art.Replication.Portable.csproj">
       <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
       <Name>Art.Replication.Portable</Name>
