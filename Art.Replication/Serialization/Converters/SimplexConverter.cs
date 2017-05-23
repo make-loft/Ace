@@ -1,63 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using Art.Serialization.Escapers;
 
 namespace Art.Serialization.Converters
 {
     public class Simplex : List<string>
     {
         public override string ToString() => this.Aggregate("", (a, b) => a + b);
+        
 
-        public Simplex Modify(EscapeProfile escapeProfile, int segmentIndex)
+        public static Dictionary<string, string> stringToEscape = new Dictionary<string, string>();
+        public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
+        public static StringBuilder builder = new StringBuilder();
+        
+        public Simplex Escape(EscapeProfile escaper, int segmentIndex)
         {
+            //return this;
             var segment = this[segmentIndex];
-            var useVerbatim = segment.Contains("\\") || segment.Contains("/");
-            var escapeChars = useVerbatim ? escapeProfile.VerbatimEscapeChars : escapeProfile.EscapeChars;
-            this[segmentIndex] = escapeProfile.AppendWithEscape(new StringBuilder(), segment, escapeChars, useVerbatim).ToString();
-            if (useVerbatim) Insert(segmentIndex - 1, "@");
+            //var useVerbatim = segment.Contains("\\") || segment.Contains("/");
+       
+            var useVerbatim = stringToVerbatim.TryGetValue(segment, out var v)
+                ? v
+                : stringToVerbatim[segment] = segment.Contains("\\") || segment.Contains("/");
+
+            var escapeChars = useVerbatim ? escaper.VerbatimEscapeChars : escaper.EscapeChars;
+
+            //hits = (useVerbatim ? hits.Where(h => h.Marker == "\"") : hits.Where(h => h.Marker != "\"")).ToArray();
+            //this[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
+                //new StringBuilder().Escape(segment, ProvideHits(segment), Escaper.EscapeRules, "\\").ToString();
+            this[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
+                escaper.AppendWithEscape(builder.Clear(), segment, escapeChars, useVerbatim).ToString();
+            if (useVerbatim) Insert(segmentIndex - 1, escaper.VerbatimPattern);
             return this;
+        }
+
+        private static List<Marker.Hit> ProvideHits(string segment)
+        {
+            var hits = new List<Marker.Hit>();
+            Escaper.EscapeRules.ForEach(r => hits.AddRange(Marker.GetHits(segment, r.Key)));
+            hits.Sort((x, y) => x.Offset - y.Offset);
+            return hits;
         }
     }
 
-    public class SimplexConverter : StringConverter, IConverter<Simplex, object>, IConverter<object, Simplex>
+    public class SimplexConverter : StringConverter, IConverter<Simplex, object>
     {
-        public EscapeProfile EscapeConverter { get; }
-
-        public SimplexConverter(EscapeProfile escapeConverter) =>
-            EscapeConverter = escapeConverter;
-
-        public string HeadQuote = "\"";
-        public string TailQuote = "\"";
         public bool AppendSyffixes = true;
+        public bool AppendTypeInfo = true;
+        public EscapeProfile Escaper { get; }
 
-        public new Simplex Convert(object value, params object[] args)
+        public SimplexConverter(EscapeProfile escaper) => Escaper = escaper;
+
+        public StringBuilder Convert(StringBuilder builder, object value, params object[] args)
         {
             if (value is string stringValue)
-                return new Simplex {HeadQuote, stringValue, TailQuote}.Modify(EscapeConverter, 1);
+            {
+                for (int i = 0; i < stringValue.Length; i++)
+                {
+                    var c = stringValue[i];
+                    c = c;
+                }
+                return builder.Append(Escaper.HeadPatterns[0]).Append(stringValue).Append(Escaper.TailPatterns[0]);
+            }
+            //else return builder.Append((value ?? NullLiteral));
 
             stringValue = base.Convert(value);
             if (stringValue != null)
                 return value != null && AppendSyffixes && TypeToSyffix.TryGetValue(value.GetType(), out var suffix)
-                    ? new Simplex {stringValue, suffix}
-                    : new Simplex {stringValue};
+                    ? builder.Append(stringValue).Append(suffix)
+                    : builder.Append(stringValue);
 
-            stringValue = ConvertComplex(value) ?? value.ToString();
+            stringValue = ConvertComplex(value) ?? 
+                          value.ToString();
+            
+            if (!AppendTypeInfo)
+                return builder.Append(Escaper.HeadPatterns[0]).Append(stringValue).Append(Escaper.TailPatterns[0]);
+            
             var type = value.GetType();
-            var typeName = type.Assembly == typeof(object).Assembly || type == typeof(Uri)
-                ? type.Name
-                : type.AssemblyQualifiedName;
-            return new Simplex
-                {
-                    HeadQuote,
-                    stringValue,
-                    TailQuote,
-                    "<",
-                    typeName,
-                    ">"
-                }.Modify(EscapeConverter, 4)
-                .Modify(EscapeConverter, 1);
+            var typeName = TypeToNameCache.TryGetValue(type, out var name)
+                ? name
+                : TypeToNameCache[type] = type.Assembly == SystemAssembly || type == typeof(Uri)
+                    ? type.Name
+                    : type.AssemblyQualifiedName;
+
+            return builder.Append(Escaper.HeadPatterns[0]) /* " */
+                .Append(stringValue) /* value */
+                .Append(Escaper.TailPatterns[0]) /* " */
+                .Append(Escaper.HeadPatterns[1]) /* < */
+                .Append(typeName) /* type */
+                .Append(Escaper.TailPatterns[1]); /* > */
+
         }
+
+        public readonly Assembly SystemAssembly = typeof(object).Assembly;
+        private Dictionary<Type, string> TypeToNameCache = new Dictionary<Type, string>();
 
         public object Convert(Simplex simplex, params object[] args)
         {

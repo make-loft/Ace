@@ -13,9 +13,6 @@ namespace Art.Serialization
         public char EscapeVerbatimChar = '\"';
 
         public string VerbatimPattern = "@";
-        //public string HeadPattern = "\"";
-        //public string TailPattern = "\"";
-
         public List<string> HeadPatterns = new List<string> {"\"", "<", "'"};
         public List<string> TailPatterns = new List<string> {"\"", ">", "'"};
 
@@ -165,55 +162,6 @@ namespace Art.Serialization
                 {
                     if (data.Match(breakPattern, offset)) break;
                     builder.Append(c);
-                }
-            }
-        }
-
-        public static IEnumerable<char> Escape(
-            string originalSequence, Dictionary<string, string> escapeRules, string escapeSequence, string breakSequence)
-        {
-            for (var i = 0; i < originalSequence.Length; i++)
-            {
-                var escapeRule = escapeRules.FirstOrDefault(r => originalSequence.Match(r.Key, i));
-                if (escapeRule.Key == null)
-                {
-                    if (originalSequence.Match(breakSequence, i)) yield break;
-                    yield return originalSequence[i];
-                }
-                else
-                {
-                    i += escapeRule.Value.Length;
-                    foreach (var c in escapeSequence) yield return c;
-                    foreach (var c in escapeRule.Value) yield return c;
-                }
-            }
-        }
-
-        public static IEnumerable<char> Unescape(
-            string originalSequence, int offset, Dictionary<string, string> escapeRules, string escapeSequence, string breakSequence)
-        {
-            for (var i = offset; i < originalSequence.Length; i++)
-            {
-                var escapeFlag = originalSequence.Match(escapeSequence, i);
-                if (escapeFlag)
-                {
-                    var escapeRule = escapeRules.FirstOrDefault(r => originalSequence.Match(r.Value, i + escapeSequence.Length));
-                    if (escapeRule.Key == null)
-                    {
-                        if (originalSequence.Match(breakSequence, i)) yield break;
-                        yield return originalSequence[i];
-                    }
-                    else
-                    {
-                        i += escapeSequence.Length;
-                        //foreach (var c in escapeSequence) yield return c;
-                        foreach (var c in escapeRule.Key) yield return c;
-                    }
-                }
-                else
-                {
-                    if (originalSequence.Match(breakSequence, i)) yield break;
-                    yield return originalSequence[i];
                 }
             }
         }

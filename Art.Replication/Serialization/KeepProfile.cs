@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Art.Replication;
 using Art.Serialization.Converters;
+using Art.Serialization.Serializers;
 
 namespace Art.Serialization
 {
@@ -59,6 +61,19 @@ namespace Art.Serialization
 
         public EscapeProfile EscapeProfile = new EscapeProfile();
         public SimplexConverter SimplexConverter;
+        
+        
+        public List<Serializer> Serializers = new List<Serializer>
+        {
+            new NullSerializer(),
+            new BooleanSerializer(),
+            new StringSerializer(),
+            new NumberSerializer(),
+            new DateTimeIsoFastConverter(),
+            new ComplexConverter(),
+            new DeepSerializer(),
+        };
+        
         public IBodyProfile<Map, bool> MapBody = new BodyProfile<Map> {Head = "{", Tail = "}"};
         public IBodyProfile<Set, bool> SetBody = new BodyProfile<Set> {Head = "[", Tail = "]"};
 
@@ -67,6 +82,19 @@ namespace Art.Serialization
         public bool UseTailDelimiter { get; set; } = true;
         public string IndentChars { get; set; } = " ";
         public string NewLineChars { get; set; } = Environment.NewLine;
+
+
+        public string GetHead(object body) => body is Map m
+            ? GetHead(m)
+            : body is Set s
+                ? GetHead(s)
+                : "\"";
+        
+        public string GetTail(object body) => body is Map m
+            ? GetTail(m)
+            : body is Set s
+                ? GetTail(s)
+                : "\"";
 
         public string GetHead(Map body) => MapBody.GetHead(body);
         public string GetTail(Map body) => MapBody.GetTail(body);

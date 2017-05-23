@@ -54,7 +54,9 @@ namespace Art.Serialization.Converters
                     ? booleanValue
                         ? TrueLiteral
                         : FalseLiteral
-                    : ConvertPrimitive(value);
+                    : value.GetType().IsPrimitive
+                        ? ConvertPrimitive(value)
+                        : null;
 
         public object Convert(string value, params object[] args) =>
             value == NullLiteral

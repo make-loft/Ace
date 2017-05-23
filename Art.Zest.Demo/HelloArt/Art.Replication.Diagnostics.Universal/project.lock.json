@@ -2139,9 +2139,6 @@
             "rid": "aot"
           }
         }
-      },
-      "Art.Replication.Portable/1.0.0": {
-        "type": "project"
       }
     },
     "UAP,Version=v10.0/win10-arm": {
@@ -4390,9 +4387,6 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Art.Replication.Portable/1.0.0": {
-        "type": "project"
       }
     },
     "UAP,Version=v10.0/win10-arm-aot": {
@@ -6680,9 +6674,6 @@
         "runtime": {
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Art.Replication.Portable/1.0.0": {
-        "type": "project"
       }
     },
     "UAP,Version=v10.0/win10-x64": {
@@ -8940,9 +8931,6 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Art.Replication.Portable/1.0.0": {
-        "type": "project"
       }
     },
     "UAP,Version=v10.0/win10-x64-aot": {
@@ -11239,9 +11227,6 @@
         "runtime": {
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Art.Replication.Portable/1.0.0": {
-        "type": "project"
       }
     },
     "UAP,Version=v10.0/win10-x86": {
@@ -13499,9 +13484,6 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Art.Replication.Portable/1.0.0": {
-        "type": "project"
       }
     },
     "UAP,Version=v10.0/win10-x86-aot": {
@@ -15798,9 +15780,6 @@
         "runtime": {
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Art.Replication.Portable/1.0.0": {
-        "type": "project"
       }
     }
   },
@@ -21970,11 +21949,6 @@
         "system.xml.xmlserializer.4.0.11.nupkg.sha512",
         "system.xml.xmlserializer.nuspec"
       ]
-    },
-    "Art.Replication.Portable/1.0.0": {
-      "type": "project",
-      "path": "../../../Art.Replication/Art.Replication.Portable.csproj",
-      "msbuildProject": "../../../Art.Replication/Art.Replication.Portable.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -21988,20 +21962,11 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "D:\\Makeloft\\Art\\Art.Zest.Demo\\HelloArt\\Art.Replication.Diagnostics.Universal\\Art.Replication.Diagnostics.Universal.csproj",
-      "projectName": "Art.Replication.Diagnostics.Universal",
-      "projectPath": "D:\\Makeloft\\Art\\Art.Zest.Demo\\HelloArt\\Art.Replication.Diagnostics.Universal\\Art.Replication.Diagnostics.Universal.csproj",
+      "projectUniqueName": "D:\\Makeloft\\Art\\Art.Zest.Demo\\HelloArt\\Art.Replication.Diagnostics.Universal",
+      "projectName": "Art.Replication.Diagnostics",
+      "projectPath": "D:\\Makeloft\\Art\\Art.Zest.Demo\\HelloArt\\Art.Replication.Diagnostics.Universal",
       "projectJsonPath": "D:\\Makeloft\\Art\\Art.Zest.Demo\\HelloArt\\Art.Replication.Diagnostics.Universal\\project.json",
-      "projectStyle": "ProjectJson",
-      "frameworks": {
-        "uap10.0": {
-          "projectReferences": {
-            "D:\\Makeloft\\Art\\Art.Replication\\Art.Replication.Portable.csproj": {
-              "projectPath": "D:\\Makeloft\\Art\\Art.Replication\\Art.Replication.Portable.csproj"
-            }
-          }
-        }
-      }
+      "projectStyle": "ProjectJson"
     },
     "dependencies": {
       "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2"

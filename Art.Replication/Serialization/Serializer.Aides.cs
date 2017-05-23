@@ -11,8 +11,9 @@ namespace Art.Serialization.Serializers
                 .Aggregate(new StringBuilder(), (sb, s) => sb.Append(s))
                 .ToString();
 
+        static StringBuilder b = new StringBuilder();
         internal static string SnapshotToString1(this object value, KeepProfile keepProfile, int indentLevel = 1) =>
-            new StringBuilder().Append(value, keepProfile)
+            b.Clear().AppendRecursive(value, keepProfile)
                 .ToString();
 
         public static Snapshot CreateSnapshot(

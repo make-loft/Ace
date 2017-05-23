@@ -18,6 +18,8 @@ namespace Art.Replication.Diagnostics
     {
         public static void Main()
         {
+            var t = new EscapeTests();
+            //t.TestSkipGeneralEscaper();
             var ut = new UnitTest1();
             ut.TestMethod1();
 
@@ -30,6 +32,9 @@ namespace Art.Replication.Diagnostics
     [Serializable]
     public class ComplexData
     {
+        [DataMember]
+        public int? P = 7;
+        
         [DataMember]
         public byte B = 44;
 
@@ -62,7 +67,7 @@ namespace Art.Replication.Diagnostics
 
         [DataMember]
         public object[] Objects { get; set; } =
-            {"str", null, 123, 23u, 123L, 345f, 456.12d, DateTime.Now, DateTime.Now.ToString(), Guid.NewGuid()};
+            {"str", null, 123, 23u, 123L, 345f, 456.12d, DateTime.Now, DateTime.Now.ToString(), Guid.NewGuid(), new int?(9)};
 
         [DataMember]
         public int[] Ints = {1, 2, 3, 4, 5, 6, 7, 8, 7};
@@ -100,24 +105,12 @@ namespace Art.Replication.Diagnostics
             var sw= new Stopwatch();
             sw.Reset();
             sw.Start();
-            for (int i = 0; i < 5000; i++)
+            for (int i = 0; i < 0000; i++)
             {
                 var dc = masterItem.DeepClone();
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);
-
-            sw.Reset();
-            sw.Start();
-            var xx = masterItem.CreateSnapshot();
-            for (int i = 0; i < 5000; i++)
-            {
-                //var ert = xx.CreateInstance();
-                var dc = masterItem.CreateSnapshot().CreateInstance<ComplexData>();//.ToString();
-            }
-            sw.Stop();
-            Debug.WriteLine(sw.ElapsedMilliseconds);
-
 
             var settings = new JsonSerializerSettings
             {
@@ -129,14 +122,30 @@ namespace Art.Replication.Diagnostics
             //var json = JsonConvert.SerializeObject(collection, settings);
             sw.Reset();
             sw.Start();
-            //var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
-            for (int i = 0; i < 5000; i++)
+            var cc = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
+            for (int i = 0; i < 20000; i++)
             {
                 var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
-                var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(x);
+                //var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(x);
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);
+            sw.Reset();
+            sw.Start();
+
+            Snapshot.DefaultKeepProfile.SimplexConverter.AppendSyffixes = false;
+            Snapshot.DefaultKeepProfile.SimplexConverter.AppendTypeInfo = false;
+            var xx = masterItem.CreateSnapshot().ToString();
+            for (int i = 0; i < 20000; i++)
+            {
+                //var ert = xx.CreateInstance();
+                //var dc = masterItem.CreateSnapshot().CreateInstance<ComplexData>();//.ToString();
+                var dc = masterItem.CreateSnapshot().ToString();
+            }
+            sw.Stop();
+            Debug.WriteLine(sw.ElapsedMilliseconds);
+
+
 
             var a0 = masterItem.CreateSnapshot();
             var b0 = masterItem.CreateSnapshot();

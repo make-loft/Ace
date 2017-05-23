@@ -5,28 +5,28 @@ using Art.Replication;
 namespace Art.Serialization.Serializers
 {
     public static partial class Serializer
-    {
+    {        
         public static IEnumerable<string> ToStringBeads(this object value, KeepProfile keepProfile, int indentLevel = 1)
         {
             switch (value)
             {
                 case Map map:
-                    yield return "/*" + map.Count + "*/ ";
+                    //yield return "/*" + map.Count + "*/ ";
                     yield return keepProfile.GetHead(map); /* "{" */
                     foreach (var bead in map.ConvertComplex(keepProfile, indentLevel))
                         yield return bead;
                     yield return keepProfile.GetTail(map); /* "}" */
                     yield break;
                 case Set set:
-                    yield return "/*" + set.Count + "*/ ";
+                    //yield return "/*" + set.Count + "*/ ";
                     yield return keepProfile.GetHead(set); /* "[" */
                     foreach (var bead in set.ConvertComplex(keepProfile, indentLevel))
                         yield return bead;
                     yield return keepProfile.GetTail(set); /* "]" */
                     yield break;
                 default: /* simplex value */
-                    foreach (var bead in keepProfile.SimplexConverter.Convert(value))
-                        yield return bead;
+                    //foreach (var bead in keepProfile.SimplexConverter.Convert(value))
+                      //  yield return bead;
                     yield break;
             }
         }
