@@ -9,6 +9,7 @@ PerformanceLogs
 PerfLogs
 Thumbs.db
 *.vs
+*.idea
 *.cachefile
 *.sap
 *.suo

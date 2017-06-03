@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 using Art.Replication;
-using Art.Serialization.Converters;
-using Art.Serialization.Serializers;
 
 namespace Art.Serialization
 {
@@ -35,18 +34,33 @@ namespace Art.Serialization
 
     public class KeepProfile : IBodyProfile<Map, string>, IBodyProfile<Set, string>
     {
+        public StringBuilder WriteKey(StringBuilder builder, string key, int indentLevel)
+        {
+            return builder
+                .Append(GetKeyHead(key))
+                .Append(key)
+                .Append(GetKeyTail(key))
+                .Append(MapPairSplitter);
+        }
+        
+        public static Assembly SystemAssembly = typeof(object).Assembly;
+        public static Assembly ExtendedAssembly = typeof(Uri).Assembly;
+
+        public string GetTypeName(Type type) =>
+            type.Assembly == SystemAssembly || type.Assembly == ExtendedAssembly
+                ? type.Name
+                : type.AssemblyQualifiedName;
+
+        public string GetHead(Type type) => type.IsPrimitive ? null : "<";
+        public string GetTail(Type type) => type.IsPrimitive ? null : ">";
+        
         public static KeepProfile GetFormatted()
         {
             var escapeProfile = new EscapeProfile();
             return new KeepProfile
             {
                 EscapeProfile = escapeProfile,
-                SimplexConverter = new SimplexConverter(escapeProfile)
-                {
-                    NullLiteral = "null",
-                    TrueLiteral = "true",
-                    FalseLiteral = "false",
-                },
+                SimplexConverter = new SimplexConverter(),
                 MapPairSplitter = ": ",
                 IndentChars = "  ",
                 NewLineChars = Environment.NewLine,
@@ -54,26 +68,12 @@ namespace Art.Serialization
             };
         }
 
-        public ReplicationProfile ReplicationProfile { get; set; }
-
         public const string Map = "Map";
         public const string Set = "Set";
 
         public EscapeProfile EscapeProfile = new EscapeProfile();
         public SimplexConverter SimplexConverter;
-        
-        
-        public List<Serializer> Serializers = new List<Serializer>
-        {
-            new NullSerializer(),
-            new BooleanSerializer(),
-            new StringSerializer(),
-            new NumberSerializer(),
-            new DateTimeIsoFastConverter(),
-            new ComplexConverter(),
-            new DeepSerializer(),
-        };
-        
+            
         public IBodyProfile<Map, bool> MapBody = new BodyProfile<Map> {Head = "{", Tail = "}"};
         public IBodyProfile<Set, bool> SetBody = new BodyProfile<Set> {Head = "[", Tail = "]"};
 
@@ -82,19 +82,26 @@ namespace Art.Serialization
         public bool UseTailDelimiter { get; set; } = true;
         public string IndentChars { get; set; } = " ";
         public string NewLineChars { get; set; } = Environment.NewLine;
+        public bool AppendCountComments = true; 
 
+        public string GetKeyHead(object key) => "\"";
+        public string GetKeyTail(object key) => "\"";
 
         public string GetHead(object body) => body is Map m
             ? GetHead(m)
             : body is Set s
                 ? GetHead(s)
-                : "\"";
+                : body == null || body.GetType().IsPrimitive
+                    ? null
+                    : "\"";
         
         public string GetTail(object body) => body is Map m
             ? GetTail(m)
             : body is Set s
                 ? GetTail(s)
-                : "\"";
+                : body == null || body.GetType().IsPrimitive
+                    ? null
+                    : "\"";
 
         public string GetHead(Map body) => MapBody.GetHead(body);
         public string GetTail(Map body) => MapBody.GetTail(body);
@@ -117,6 +124,12 @@ namespace Art.Serialization
             if (data.Match(MapPairSplitter, offset)) offset += MapPairSplitter.Length;
         }
 
+        public string CaptureKey(string data, ref int offset)
+        {
+            var simplex = CaptureSimplex(data, ref offset);
+            return simplex.Count > 1 ? simplex[1] : simplex[0];
+        }
+        
         public Simplex CaptureSimplex(string data, ref int offset)
         {
             MoveToSimplex(data, ref offset);

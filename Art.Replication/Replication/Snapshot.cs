@@ -1,6 +1,5 @@
 ﻿using System;
 using Art.Serialization;
-using Art.Serialization.Serializers;
 
 namespace Art.Replication
 {
@@ -22,7 +21,7 @@ namespace Art.Replication
             ReplicationProfile replicationProfile = null,
             KeepProfile keepProfile = null) => new Snapshot
         {
-            MasterState = master.RecursiveTranslate(replicationProfile ?? DefaultReplicationProfile),
+            MasterState = (replicationProfile ?? DefaultReplicationProfile).Translate(master),
             ActiveReplicationProfile = replicationProfile ?? DefaultReplicationProfile,
             ActiveKeepProfile = keepProfile ?? DefaultKeepProfile
         };
@@ -37,10 +36,10 @@ namespace Art.Replication
             ActiveKeepProfile = keepProfile ?? DefaultKeepProfile
         };
 
-        public override string ToString() => MasterState.SnapshotToString1(ActiveKeepProfile);
+        public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
 
-        public object CreateInstance() => MasterState.RecursiveReplicate(ActiveReplicationProfile);
+        public object CreateInstance() => ActiveReplicationProfile.Replicate(MasterState);
 
-        public T CreateInstance<T>() => (T)MasterState.RecursiveReplicate(ActiveReplicationProfile, null, typeof(T));
+        public T CreateInstance<T>() => (T)ActiveReplicationProfile.Replicate(MasterState, null, typeof(T));
     }
 }

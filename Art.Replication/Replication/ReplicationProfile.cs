@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Art.Replication.MemberProviders;
 using Art.Replication.Replicators;
+using Art.Serialization;
+using Art.Serialization.Converters;
 
 namespace Art.Replication
 {
@@ -36,5 +39,27 @@ namespace Art.Replication
             /* recomended position for cusom replicators */
             new DeepReplicator()
         };
+
+        public bool TryRestoreTypeInfoImplicitly = true;
+        public List<Converter> ImplicitConverters = new List<Converter>
+        {
+            new ComplexConverter()
+        };
+
+        public object Replicate(object graph, Dictionary<int, object> idCache = null, Type baseType = null)
+        {
+            idCache = idCache ?? new Dictionary<int, object>();
+            var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, this, idCache, baseType)) ??
+                             throw new Exception("Can not replicate " + graph);
+            return replicator.Replicate(graph, this, idCache, baseType);
+        }
+        
+        public object Translate(object graph, Dictionary<object, int> idCache = null, Type baseType = null)
+        {
+            idCache = idCache ?? new Dictionary<object, int>();
+            var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, this, idCache, baseType)) ??
+                             throw new Exception("Can not translate " + graph);
+            return replicator.Translate(graph, this, idCache, baseType);
+        }
     }
 }

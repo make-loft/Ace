@@ -94,10 +94,10 @@ namespace Art.Serialization.Escapers
         public string EscapeSequence = "\\";
         public string BreakSequence = "\"";
 
-        public string Escape(string originalSequence)
+        public string Escape(StringBuilder builder, string originalSequence)
         {
             return Escape(originalSequence, EscapeRules, EscapeSequence, BreakSequence)
-                .Aggregate(new StringBuilder(), (b, s) => b.Append(s)).ToString();
+                .Aggregate(builder, (b, s) => b.Append(s)).ToString();
         }
         
 

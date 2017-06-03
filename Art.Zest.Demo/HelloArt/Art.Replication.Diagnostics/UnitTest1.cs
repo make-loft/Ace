@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Text.RegularExpressions;
-using Art.Serialization.Serializers;
+using Art.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -93,6 +94,7 @@ namespace Art.Replication.Diagnostics
             results = results;
         }
 
+        public void Test(int i, int yi, int io, int ikj){}
         [TestMethod]
         public void TestMethod1()
         {
@@ -101,12 +103,13 @@ namespace Art.Replication.Diagnostics
             //var t = a == b;
 
             var masterItem = new ComplexData();
-            masterItem.Test = new object[] {masterItem, masterItem.Objects};
+            //masterItem.Test = new object[] {masterItem, masterItem.Objects};
             var sw= new Stopwatch();
             sw.Reset();
             sw.Start();
             for (int i = 0; i < 0000; i++)
             {
+                //Test(i, i, i, i);
                 var dc = masterItem.DeepClone();
             }
             sw.Stop();
@@ -125,26 +128,27 @@ namespace Art.Replication.Diagnostics
             var cc = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
             for (int i = 0; i < 20000; i++)
             {
-                var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
-                //var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(x);
+                //var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
+                var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(cc);
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);
             sw.Reset();
             sw.Start();
 
-            Snapshot.DefaultKeepProfile.SimplexConverter.AppendSyffixes = false;
+            //Snapshot.DefaultKeepProfile.SimplexConverter.AppendSyffixes = false;
             Snapshot.DefaultKeepProfile.SimplexConverter.AppendTypeInfo = false;
+            Snapshot.DefaultReplicationProfile.AttachId = false;
             var xx = masterItem.CreateSnapshot().ToString();
+            var sn = masterItem.CreateSnapshot();
             for (int i = 0; i < 20000; i++)
             {
-                //var ert = xx.CreateInstance();
-                //var dc = masterItem.CreateSnapshot().CreateInstance<ComplexData>();//.ToString();
-                var dc = masterItem.CreateSnapshot().ToString();
+                //var ert = masterItem.CreateSnapshot().ToString();
+                var dc = xx.CreateSnapshot().CreateInstance<ComplexData>();//.ToString();
+                //var dc = sn.ToString();
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);
-
 
 
             var a0 = masterItem.CreateSnapshot();

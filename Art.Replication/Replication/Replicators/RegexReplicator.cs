@@ -17,7 +17,14 @@ namespace Art.Replication.Replicators
         }
 
         public override Regex ActivateInstance(Map map, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null) => 
-            new Regex((string) map[PatternKey], (RegexOptions) map[OptionsKey]);
+            Dictionary<int, object> idCache, Type baseType = null) =>
+            new Regex((string) map[PatternKey], RestoreOptions(map[OptionsKey], replicationProfile));
+
+        private static RegexOptions RestoreOptions(object value, ReplicationProfile replicationProfile) =>
+            value is RegexOptions o
+                ? o
+                : replicationProfile.TryRestoreTypeInfoImplicitly
+                    ? (RegexOptions) Enum.Parse(typeof(RegexOptions), value.ToString(), true)
+                    : throw new Exception("Can not restore type info for value " + value);
     }
 }

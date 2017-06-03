@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.Enumeration;
-using Art.Serialization.Serializers;
+using Art.Serialization;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 

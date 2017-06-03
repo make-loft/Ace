@@ -2,36 +2,39 @@
 using System.Collections.Generic;
 using Art.Replication;
 
-namespace Art.Serialization.Serializers
+namespace Art.Serialization
 {
     public static partial class Serializer
-    {        
-        public static IEnumerable<string> ToStringBeads(this object value, KeepProfile keepProfile, int indentLevel = 1)
+    {
+        public static IEnumerable<string> ToStringBeads(this object value,
+            KeepProfile keepProfile, int indentLevel = 1)
         {
             switch (value)
             {
                 case Map map:
-                    //yield return "/*" + map.Count + "*/ ";
+                    if (keepProfile.AppendCountComments) yield return "/*" + map.Count + "*/ ";
                     yield return keepProfile.GetHead(map); /* "{" */
                     foreach (var bead in map.ConvertComplex(keepProfile, indentLevel))
                         yield return bead;
                     yield return keepProfile.GetTail(map); /* "}" */
                     yield break;
                 case Set set:
-                    //yield return "/*" + set.Count + "*/ ";
+                    if (keepProfile.AppendCountComments) yield return "/*" + set.Count + "*/ ";
                     yield return keepProfile.GetHead(set); /* "[" */
                     foreach (var bead in set.ConvertComplex(keepProfile, indentLevel))
                         yield return bead;
                     yield return keepProfile.GetTail(set); /* "]" */
                     yield break;
                 default: /* simplex value */
-                    //foreach (var bead in keepProfile.SimplexConverter.Convert(value))
-                      //  yield return bead;
+                    var simplex = keepProfile.SimplexConverter.Convert(value, keepProfile);
+                    foreach (var bead in simplex)
+                        yield return bead;
                     yield break;
             }
         }
 
-        private static IEnumerable<string> ConvertComplex(this ICollection items, KeepProfile keepProfile, int indentLevel = 1)
+        private static IEnumerable<string> ConvertComplex(this ICollection items,
+            KeepProfile keepProfile, int indentLevel = 1)
         {
             var counter = 0;
 
@@ -41,7 +44,10 @@ namespace Art.Serialization.Serializers
 
                 if (items is Map && item is KeyValuePair<string, object> pair)
                 {
-                    yield return pair.Key;
+                    var key = pair.Key;
+                    yield return keepProfile.GetKeyHead(key);
+                    yield return key;
+                    yield return keepProfile.GetKeyTail(key);
                     yield return keepProfile.MapPairSplitter;
                     foreach (var bead in pair.Value.ToStringBeads(keepProfile, indentLevel + 1))
                         yield return bead;

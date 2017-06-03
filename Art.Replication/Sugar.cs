@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Art
 {
@@ -22,6 +23,12 @@ namespace Art
             }
 
             return true;
+        }
+
+        public static StringBuilder Append(this StringBuilder builder, params string[] values)
+        {
+            foreach (var value in values) builder.Append(value);
+            return builder;
         }
     }
 }

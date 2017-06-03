@@ -53,12 +53,10 @@
     <Compile Include="Adapters\Adapters.cs" />
     <Compile Include="Art.Patterns.cs" />
     <Compile Include="Compare.cs" />
-    <Compile Include="Replication\DeepOperations.cs" />
     <Compile Include="Replication\MemberProviders\MemberProvider.cs" />
     <Compile Include="Replication\Replicator.cs" />
     <Compile Include="Replication\Replicators\ACachingReplicator.cs" />
     <Compile Include="Replication\Snapshot.cs" />
-    <Compile Include="Serialization\Converters\StringConverter.cs" />
     <Compile Include="Serialization\EscapeProfile.cs" />
     <Compile Include="Replication\Replicators\CoreReplicators.cs" />
     <Compile Include="Replication\Replicators\DeepReplicator.cs" />
@@ -68,13 +66,10 @@
     <Compile Include="Serialization\Serializer.Aides.cs" />
     <Compile Include="Serialization\Serializer.Capture.cs" />
     <Compile Include="Serialization\Serializer.Conversion.cs" />
-    <Compile Include="Serialization\Serializer.Conversion.StringBuilder.cs" />
-    <Compile Include="Serialization\Serializer.cs" />
-    <Compile Include="Serialization\Serializers\ComplexConverter.cs" />
-    <Compile Include="Serialization\Serializers\CoreSerializers.cs" />
-    <Compile Include="Serialization\Serializers\DateTimeIsoFastConverter.cs" />
-    <Compile Include="Serialization\Serializers\DeepSerializer.cs" />
-    <Compile Include="Serialization\Converters\SimplexConverter.cs" />
+    <Compile Include="Serialization\Converter.cs" />
+    <Compile Include="Serialization\Converters\ComplexConverter.cs" />
+    <Compile Include="Serialization\Converters\CoreConverters.cs" />
+    <Compile Include="Serialization\Converters\DateTimeIsoFastConverter.cs" />
     <Compile Include="Replication\MemberProviders\ContractMemberProvider.cs" />
     <Compile Include="Replication\MemberProviders\CoreMemberProviders.cs" />
     <Compile Include="Replication\ReplicationModels.cs" />
@@ -82,6 +77,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Replication\ReplicationProfile.cs" />
     <Compile Include="Replication\Sugar.Reflection.cs" />
+    <Compile Include="Serialization\Converters\NumberConverter.cs" />
+    <Compile Include="Serialization\Simplex.cs" />
+    <Compile Include="Serialization\SimplexConverter.cs" />
     <Compile Include="Sugar.cs" />
   </ItemGroup>
   <ItemGroup />

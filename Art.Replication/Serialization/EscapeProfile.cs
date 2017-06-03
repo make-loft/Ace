@@ -46,7 +46,7 @@ namespace Art.Serialization
 
 
         public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
-            bool verbatim, string escapeSequence = "\\")
+            bool verbatim, string escapeSequence = "\\", bool asciMode = false)
         {
             if (value == null) return builder;
 
@@ -57,7 +57,7 @@ namespace Art.Serialization
                     builder.Append(escapeSequence);
                     builder.Append(s);
                 }
-                else if (!verbatim)
+                else if (asciMode && !verbatim)
                 {
                     int i = c;
                     if (i < 32 || 127 < i) builder.AppendFormat("\\u{0:x04}", i);
@@ -139,7 +139,7 @@ namespace Art.Serialization
 
         public static void AppendEscapedLiteral(
             StringBuilder builder, string data, ref int offset,
-            Dictionary<char, char> unescapeStrategy, char escapeChar, string breakPattern, bool verbatim)
+            Dictionary<char, char> unescapeStrategy, char escapeChar, string breakPattern, bool verbatim, bool asciMode = false)
         {
             for (; offset < data.Length; offset++)
             {
@@ -149,7 +149,7 @@ namespace Art.Serialization
                 {
                     var d = data[offset + 1];
                     if (unescapeStrategy.TryGetValue(d, out var s)) builder.Append(s);
-                    else if (!verbatim && d == 'u')
+                    else if (asciMode && !verbatim && d == 'u')
                     {
                         c = (char) int.Parse(data.Substring(offset + 2, 4), NumberStyles.AllowHexSpecifier);
                         builder.Append(c);

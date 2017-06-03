@@ -1,6 +1,7 @@
-﻿using Art.Replication;
+﻿using System.Collections;
+using Art.Replication;
 
-namespace Art.Serialization.Serializers
+namespace Art.Serialization
 {
     public static partial class Serializer
     {
@@ -14,12 +15,12 @@ namespace Art.Serialization.Serializers
                     return new Set().CaptureComplex(keepProfile, matrix, ref offset);
                 default:
                     var simplex = keepProfile.CaptureSimplex(matrix, ref offset);
-                    var value = keepProfile.SimplexConverter.Convert(simplex);
+                    var value = keepProfile.SimplexConverter.Revert(simplex);
                     return value;
             }
         }
 
-        private static object CaptureComplex(this object items, KeepProfile keepProfile, string data, ref int offset)
+        private static object CaptureComplex(this ICollection items, KeepProfile keepProfile, string data, ref int offset)
         {
             while (!keepProfile.MatchTail(data, ref offset, items is Map)) /* "}" or "]" */
             {
@@ -27,7 +28,7 @@ namespace Art.Serialization.Serializers
 
                 if (items is Map map)
                 {
-                    var key = keepProfile.CaptureSimplex(data, ref offset).ToString();
+                    var key = keepProfile.CaptureKey(data, ref offset);
                     keepProfile.SkipMapPairSplitter(data, ref offset);
                     map.Add(key, data.Capture(keepProfile, ref offset));
                 }
