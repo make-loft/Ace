@@ -48,13 +48,11 @@ namespace Art.Replication.Diagnostics
             user1.Person.FirstName = "Mary";
             var snapshot1 = user1.CreateSnapshot();
 
-            var results = snapshot0.GetResults(snapshot1, "");
+            var results = snapshot0.Juxtapose(snapshot1);
 
             foreach (var result in results)
             {
-                Console.WriteLine(result.Path);
-                Console.WriteLine(result.State);
-                Console.WriteLine("~~~~~~~~~");
+                Console.WriteLine(result);
             }
 
 
@@ -130,7 +128,7 @@ namespace Art.Replication.Diagnostics
             var clonedSnapshot = replicationMatrix.CreateSnapshot();
             var clonedItem = clonedSnapshot.CreateInstance<ComplexData>();
             var lastSnapshot = clonedItem.CreateSnapshot();
-            var results = masterSnaphot.GetResults(lastSnapshot, "").ToList();
+            var results = masterSnaphot.Juxtapose(lastSnapshot, "").ToList();
             results = results;
         }
 
@@ -195,7 +193,7 @@ namespace Art.Replication.Diagnostics
             var a0 = masterItem.CreateSnapshot();
             var b0 = masterItem.CreateSnapshot();
 
-            var r = a0.GetResults(b0, "").ToList();
+            var r = a0.Juxtapose(b0, "").ToList();
             r = r;
            // dc = dc;
             
@@ -204,7 +202,7 @@ namespace Art.Replication.Diagnostics
             var clonedSnapshot = replicationMatrix.CreateSnapshot();
             var clonedItem = clonedSnapshot.CreateInstance();
             var lastSnapshot = clonedItem.CreateSnapshot();
-            var results = masterSnaphot.GetResults(lastSnapshot, "").ToList();
+            var results = masterSnaphot.Juxtapose(lastSnapshot, "").ToList();
             results = results;
 
 

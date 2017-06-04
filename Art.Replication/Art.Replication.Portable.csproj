@@ -52,7 +52,7 @@
   <ItemGroup>
     <Compile Include="Adapters\Adapters.cs" />
     <Compile Include="Art.Patterns.cs" />
-    <Compile Include="Compare.cs" />
+    <Compile Include="Etalon.cs" />
     <Compile Include="Replication\MemberProviders\MemberProvider.cs" />
     <Compile Include="Replication\Replicator.cs" />
     <Compile Include="Replication\Replicators\ACachingReplicator.cs" />
