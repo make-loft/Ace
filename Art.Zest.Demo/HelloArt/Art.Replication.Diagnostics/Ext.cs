@@ -3,6 +3,7 @@ using System.Reflection;
 using System.ArrayExtensions;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Json;
 
 namespace System
 {
@@ -23,6 +24,24 @@ namespace System
                 //ms.Position = 0;
                 return (T)formatter.Deserialize(ms);
                 //return default(T);
+            }
+        }
+        
+        public static T DeepClone1<T>(this T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new DataContractJsonSerializer(typeof(T));
+                formatter.WriteObject(ms, obj);
+                ms.Position = 0;
+                //using (var streamReader = new StreamReader(ms))
+                {
+                    //string result = streamReader.ReadToEnd();
+                    //result = result;
+                }
+                //ms.Position = 0;
+                //return (T)formatter.ReadObject(ms);
+                return default(T);
             }
         }
 

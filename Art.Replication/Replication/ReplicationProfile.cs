@@ -15,8 +15,8 @@ namespace Art.Replication
         public string SetKey = "#Set";
         public string MapKey = "#Map";
         public string TypeKey = "#Type";
-        public bool AttachType = false;
-        public bool AttachId = false;
+        public bool AttachType = true;
+        public bool AttachId = true;
         public bool SimplifySets = true;
         public bool SimplifyMaps = true;
 

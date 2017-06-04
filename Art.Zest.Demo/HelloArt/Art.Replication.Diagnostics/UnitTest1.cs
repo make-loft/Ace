@@ -17,8 +17,48 @@ namespace Art.Replication.Diagnostics
 {
     public static class Program
     {
+        public class User
+        {
+            public string Nickname = "admin";
+            public string Password = "123";
+            public DateTime LastOnline = DateTime.Now;
+
+            public Person Person;
+        }
+
+        public class Person
+        {
+            public string FirstName = "Bob";
+            public string LastName = "Smith";
+            public DateTime Birthday = DateTime.Now;
+
+            public List<User> Users = new List<User>();
+        }
+
+        
         public static void Main()
         {
+            var person0 = new Person();
+            var user0 = new User {Person = person0};
+            person0.Users.Add(user0);
+
+            var snapshot0 = user0.CreateSnapshot();
+            var user1 = snapshot0.CreateInstance<User>();
+
+            user1.Person.FirstName = "Mary";
+            var snapshot1 = user1.CreateSnapshot();
+
+            var results = snapshot0.GetResults(snapshot1, "");
+
+            foreach (var result in results)
+            {
+                Console.WriteLine(result.Path);
+                Console.WriteLine(result.State);
+                Console.WriteLine("~~~~~~~~~");
+            }
+
+
+            Console.ReadKey();
             var t = new EscapeTests();
             //t.TestSkipGeneralEscaper();
             var ut = new UnitTest1();
@@ -63,7 +103,7 @@ namespace Art.Replication.Diagnostics
         [DataMember]
         public Uri Property5 { get; set; } = new Uri("http://makeloft.xyz");
 
-        [DataMember]
+        //[DataMember]
         public Regex Regex0 { get; set; } = new Regex("abc", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         [DataMember]
@@ -98,6 +138,7 @@ namespace Art.Replication.Diagnostics
         [TestMethod]
         public void TestMethod1()
         {
+            
             //var a = new Regex("a");
             //var b = new Regex("a");
             //var t = a == b;
@@ -107,10 +148,10 @@ namespace Art.Replication.Diagnostics
             var sw= new Stopwatch();
             sw.Reset();
             sw.Start();
-            for (int i = 0; i < 0000; i++)
+            for (int i = 0; i < 20000; i++)
             {
                 //Test(i, i, i, i);
-                var dc = masterItem.DeepClone();
+                var dc = masterItem.DeepClone1();
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);
@@ -128,8 +169,8 @@ namespace Art.Replication.Diagnostics
             var cc = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
             for (int i = 0; i < 20000; i++)
             {
-                //var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
-                var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(cc);
+                var x = Newtonsoft.Json.JsonConvert.SerializeObject(masterItem, settings);
+                var y = Newtonsoft.Json.JsonConvert.DeserializeObject<ComplexData>(x);
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);

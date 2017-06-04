@@ -80,7 +80,7 @@ namespace Art.Replication.Replicators
 
         public override object ActivateInstance(Map snapshot, ReplicationProfile replicationProfile,
             Dictionary<int, object> idCache, Type baseType = null)
-        {
+        {        
             var type = snapshot.TryGetValue(replicationProfile.TypeKey, out var typeName)
                 ? Type.GetType(typeName.ToString(), true)
                 : baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");

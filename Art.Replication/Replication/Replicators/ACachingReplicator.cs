@@ -28,7 +28,7 @@ namespace Art.Replication.Replicators
 
             var map = new Map();
             if (replicationProfile.AttachId) map.Add(replicationProfile.IdKey, id);
-            if (replicationProfile.AttachType) map.Add(replicationProfile.TypeKey, value.GetType());
+            if (replicationProfile.AttachType) map.Add(replicationProfile.TypeKey, value.GetType().AssemblyQualifiedName);
             FillMap(map, (T)value, replicationProfile, idCache, baseType);
             var snapshot = Simplify(map, value, replicationProfile, baseType);
             return snapshot;
@@ -63,14 +63,14 @@ namespace Art.Replication.Replicators
             replicationProfile.SimplifySets && state is Set
                 ? new Map
                 {
-                    {replicationProfile.TypeKey, baseType ?? typeof(object[])},
+                    {replicationProfile.TypeKey, (baseType ?? typeof(object[])).AssemblyQualifiedName},
                     {replicationProfile.SetKey, state}
                 }
                 : replicationProfile.SimplifyMaps && state is Map &&
                   baseType != null && baseType.IsGenericDictionaryWithKey<string>()
                     ? new Map
                     {
-                        {replicationProfile.TypeKey, baseType},
+                        {replicationProfile.TypeKey, baseType.AssemblyQualifiedName},
                         {replicationProfile.MapKey, state}
                     }
                     : (Map)state;
