@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
+using Art.Replication.MemberProviders;
 using Art.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -17,36 +19,69 @@ namespace Art.Replication.Diagnostics
 {
     public static class Program
     {
-        public class User
+        [DataContract]
+        public class Role
         {
-            public string Nickname = "admin";
-            public string Password = "123";
-            public DateTime LastOnline = DateTime.Now;
-
-            public Person Person;
+            [DataMember] public string Name;           
+            public string CodePhrase;
+            [DataMember] public DateTime LastOnline = DateTime.Now;
+            
+            [DataMember] public Person Person;
         }
-
+        
         public class Person
         {
-            public string FirstName = "Bob";
-            public string LastName = "Smith";
-            public DateTime Birthday = DateTime.Now;
-
-            public List<User> Users = new List<User>();
+            public string FirstName;
+            public string LastName;
+            public DateTime Birthday;
+            
+            public List<Role> Roles = new List<Role>();
         }
 
         
         public static void Main()
         {
-            var person0 = new Person();
-            var user0 = new User {Person = person0};
-            person0.Users.Add(user0);
+            var person0 = new Person
+            {
+                FirstName = "Keanu",
+                LastName = "Reeves",
+                Birthday = new DateTime(1964, 9 ,2)
+            };
+                   
+            var roleA0 = new Role
+            {
+                Name = "Neo",
+                CodePhrase = "The Matrix has you...",
+                LastOnline = DateTime.Now,
+                Person = person0
+            };
+            
+            var roleB0 = new Role
+            {
+                Name = "Thomas Anderson",
+                CodePhrase = "Follow the White Rabbit.",
+                LastOnline = DateTime.Now,
+                Person = person0
+            };
+            
+            person0.Roles.Add(roleA0);
+            person0.Roles.Add(roleB0);
 
-            var snapshot0 = user0.CreateSnapshot();
-            var user1 = snapshot0.CreateInstance<User>();
+            var snapshot0 = person0.CreateSnapshot();
+            string rawSnapsot0 = snapshot0.ToString();
+            Console.WriteLine(rawSnapsot0);
+            //Console.ReadKey();
 
-            user1.Person.FirstName = "Mary";
-            var snapshot1 = user1.CreateSnapshot();
+            var snapshot1 = rawSnapsot0.CreateSnapshot();
+            var person1 = snapshot1.CreateInstance<Person>();
+            person1.Roles[1].Name = "Agent Smith";
+
+            var cache = new Dictionary<object, int>();
+            var s = person0.CreateSnapshot(cache);
+            person0.FirstName = "abc";
+            person0.Roles.RemoveAt(0);
+
+            var x = s.CreateInstance(cache);
 
             var results = snapshot0.Juxtapose(snapshot1);
 

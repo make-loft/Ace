@@ -79,13 +79,15 @@ namespace Art.Serialization
 
         public string MapPairSplitter { get; set; } = ": ";
         public string Delimiter { get; set; } = ",";
-        public bool UseTailDelimiter { get; set; } = true;
+        public bool UseTailDelimiter { get; set; } = false;
         public string IndentChars { get; set; } = " ";
         public string NewLineChars { get; set; } = Environment.NewLine;
-        public bool AppendCountComments = true; 
+        public bool AppendCountComments = false;
 
-        public string GetKeyHead(object key) => "\"";
-        public string GetKeyTail(object key) => "\"";
+        public string KeyHead = null; //"\"";
+        public string KeyTail = null; //"\"";
+        public string GetKeyHead(object key) => KeyHead;
+        public string GetKeyTail(object key) => KeyTail;
 
         public string GetHead(object body) => body is Map m
             ? GetHead(m)

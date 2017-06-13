@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Art.Serialization;
 
 namespace Art.Replication
@@ -18,10 +21,11 @@ namespace Art.Replication
 
         public static Snapshot Create(
             object master,
+            Dictionary<object, int> idCache,
             ReplicationProfile replicationProfile = null,
             KeepProfile keepProfile = null) => new Snapshot
         {
-            MasterState = (replicationProfile ?? DefaultReplicationProfile).Translate(master),
+            MasterState = (replicationProfile ?? DefaultReplicationProfile).Translate(master, idCache),
             ActiveReplicationProfile = replicationProfile ?? DefaultReplicationProfile,
             ActiveKeepProfile = keepProfile ?? DefaultKeepProfile
         };
@@ -37,9 +41,14 @@ namespace Art.Replication
         };
 
         public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
+        
+        public string ToString(StringBuilder builder) => 
+            MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
-        public object CreateInstance() => ActiveReplicationProfile.Replicate(MasterState);
+        public object CreateInstance(Dictionary<object, int> cache = null) => 
+            ActiveReplicationProfile.Replicate(MasterState, cache?.ToDictionary(p => p.Value, p => p.Key));
 
-        public T CreateInstance<T>() => (T)ActiveReplicationProfile.Replicate(MasterState, null, typeof(T));
+        public T CreateInstance<T>(Dictionary<object, int> cache = null) =>
+            (T)ActiveReplicationProfile.Replicate(MasterState, cache?.ToDictionary(p => p.Value, p => p.Key), typeof(T));
     }
 }

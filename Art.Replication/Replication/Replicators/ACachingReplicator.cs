@@ -39,8 +39,8 @@ namespace Art.Replication.Replicators
         {
             var map = CompleteMapIfRequried(value, replicationProfile, baseType);
             var id = map.TryGetValue(replicationProfile.IdKey, out var key) ? (int)key : idCache.Count;
-            if (idCache.TryGetValue(id, out object replica)) return replica;
-            replica = idCache[id] = ActivateInstance(map, replicationProfile, idCache, baseType);
+            if (idCache.TryGetValue(id, out object replica) && map.Count == 1) return replica;
+            replica = idCache[id] = replica ?? ActivateInstance(map, replicationProfile, idCache, baseType);
             FillInstance(map, (T)replica, replicationProfile, idCache, baseType);
             return replica;
         }

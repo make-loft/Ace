@@ -49,7 +49,11 @@ namespace Art.Replication.Replicators
                     var source = items.Select(i => replicationProfile.Replicate(i, idCache)).ToArray();
                     Array.Copy(source, array, items.Count); /* array [replica] is cached instance */
                 }
-                else items.ForEach(i => set.Add(replicationProfile.Replicate(i, idCache)));
+                else
+                {
+                    set.Clear();
+                    items.ForEach(i => set.Add(replicationProfile.Replicate(i, idCache)));
+                }
             }
 
             var memberProvider = replicationProfile.MemberProviders.First(p => p.CanApply(type));

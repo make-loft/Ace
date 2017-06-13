@@ -10,9 +10,8 @@ namespace Art
         public object Etalon { get; set; }
         public object Sample { get; set; }
         public string Path { get; set; }
-
         public Etalon.State State { get; set; }
-
+        
         public override string ToString() =>
             "<" + State + "> • [" + Path + "] " + Print(Etalon) + " " + Print(Sample);
 

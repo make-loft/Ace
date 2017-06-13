@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Art.Replication;
 
@@ -6,20 +7,17 @@ namespace Art.Serialization
 {
     public static partial class Serializer
     {
-        internal static string SnapshotToString(this object value, KeepProfile keepProfile, int indentLevel = 1) =>
+        internal static string SnapshotToString(this object value, KeepProfile keepProfile,
+            int indentLevel = 1, StringBuilder builder = null) =>
             value.ToStringBeads(keepProfile, indentLevel)
-                .Aggregate(new StringBuilder(), (sb, s) => sb.Append(s))
+                .Aggregate(builder ?? new StringBuilder(256), (sb, s) => sb.Append(s))
                 .ToString();
-
-        static StringBuilder b = new StringBuilder(256);
-       // internal static string SnapshotToString1(this object value, KeepProfile keepProfile, int indentLevel = 1) =>
-         //   keepProfile.Write(b.Clear(), value)
-           //     .ToString();
 
         public static Snapshot CreateSnapshot(
             this object master,
+            Dictionary<object, int> cache = null,
             ReplicationProfile replicationProfile = null,
-            KeepProfile keepProfile = null) => Snapshot.Create(master, replicationProfile, keepProfile);
+            KeepProfile keepProfile = null) => Snapshot.Create(master, cache, replicationProfile, keepProfile);
 
         public static Snapshot CreateSnapshot(
             this string matrix,

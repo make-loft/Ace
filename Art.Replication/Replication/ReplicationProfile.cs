@@ -17,13 +17,13 @@ namespace Art.Replication
         public string TypeKey = "#Type";
         public bool AttachType = true;
         public bool AttachId = true;
-        public bool SimplifySets = true;
-        public bool SimplifyMaps = true;
+        public bool SimplifySets = false;
+        public bool SimplifyMaps = false;
 
         public List<MemberProvider> MemberProviders = new List<MemberProvider>
         {
             new CoreMemberProviderForKeyValuePair(),
-            new CoreMemberProvider(BindingFlags.Public | BindingFlags.Instance, Member.CanReadWrite),
+            //new CoreMemberProvider(BindingFlags.Public | BindingFlags.Instance, Member.CanReadWrite),
             new ContractMemberProvider(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, Member.CanReadWrite),
         };
 
@@ -45,7 +45,7 @@ namespace Art.Replication
         {
             new ComplexConverter()
         };
-
+        
         public object Replicate(object graph, Dictionary<int, object> idCache = null, Type baseType = null)
         {
             idCache = idCache ?? new Dictionary<int, object>();
