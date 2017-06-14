@@ -13,7 +13,7 @@ namespace Art.Serialization
             new NullConverter(),
             new BooleanConverter(),
             new NumberConverter(),
-            new StringSerializer(),
+            new StringConverter(),
             new DateTimeIsoFastConverter(),
             new ComplexConverter(),
         };

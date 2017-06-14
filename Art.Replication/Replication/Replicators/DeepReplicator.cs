@@ -52,7 +52,9 @@ namespace Art.Replication.Replicators
                 else
                 {
                     set.Clear();
-                    items.ForEach(i => set.Add(replicationProfile.Replicate(i, idCache)));
+                    var subtype = type.GetInterfaces().FirstOrDefault(i => i.Name == typeof(IList<>).Name)?
+                        .GetGenericArguments().FirstOrDefault();
+                    items.ForEach(i => set.Add(replicationProfile.Replicate(i, idCache, subtype)));
                 }
             }
 

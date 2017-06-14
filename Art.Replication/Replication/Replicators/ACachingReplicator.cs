@@ -38,8 +38,9 @@ namespace Art.Replication.Replicators
             Dictionary<int, object> idCache, Type baseType = null)
         {
             var map = CompleteMapIfRequried(value, replicationProfile, baseType);
-            var id = map.TryGetValue(replicationProfile.IdKey, out var key) ? (int)key : idCache.Count;
-            if (idCache.TryGetValue(id, out object replica) && map.Count == 1) return replica;
+            var hasKey = map.TryGetValue(replicationProfile.IdKey, out var key);
+            var id = hasKey ? (int)key : idCache.Count;
+            if (idCache.TryGetValue(id, out object replica) && hasKey && map.Count == 1) return replica;
             replica = idCache[id] = replica ?? ActivateInstance(map, replicationProfile, idCache, baseType);
             FillInstance(map, (T)replica, replicationProfile, idCache, baseType);
             return replica;

@@ -27,7 +27,7 @@ namespace Art.Replication.Diagnostics.Universal
                 w.Start();
                 var j = s.ToString();
                 w.Stop();
-                var i = s.CreateInstance();
+                var i = s.ReplicateGraph();
                 i = i;
                 j = j;
             };

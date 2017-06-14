@@ -37,6 +37,8 @@ namespace Art.Replication
         }
 
         public static bool IsGenericDictionaryWithKey<TKey>(this Type type) =>
-            type == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(TKey);
+            type.Name == typeof(Dictionary<,>).Name &&
+            type.Assembly == typeof(Dictionary<,>).Assembly &&
+            type.GetGenericArguments()[0] == typeof(TKey);
     }
 }

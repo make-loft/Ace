@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Art.Serialization.Escapers;
 
 namespace Art.Serialization
@@ -9,13 +11,17 @@ namespace Art.Serialization
     {
         public override string ToString() => this.Aggregate("", (a, b) => a + b);
         
-
         public static Dictionary<string, string> stringToEscape = new Dictionary<string, string>();
         public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
-        public static StringBuilder builder = new StringBuilder();
+
+        public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new Dictionary<int, StringBuilder>();
         
         public Simplex Escape(EscapeProfile escaper, int segmentIndex)
         {
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            if (!ThreadIdToStringBuilder.TryGetValue(threadId, out var builder))
+                builder = ThreadIdToStringBuilder[threadId] = new StringBuilder(256);
+            
             //return this;
             var segment = this[segmentIndex];
             //var useVerbatim = segment.Contains("\\") || segment.Contains("/");

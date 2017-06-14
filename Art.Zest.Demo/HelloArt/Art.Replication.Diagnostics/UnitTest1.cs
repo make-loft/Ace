@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Text.RegularExpressions;
-using Art.Replication.MemberProviders;
 using Art.Serialization;
+using Art.Serialization.Converters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -19,70 +15,93 @@ namespace Art.Replication.Diagnostics
 {
     public static class Program
     {
-        [DataContract]
-        public class Role
-        {
-            [DataMember] public string Name;           
-            public string CodePhrase;
-            [DataMember] public DateTime LastOnline = DateTime.Now;
-            
-            [DataMember] public Person Person;
-        }
-        
-        public class Person
-        {
-            public string FirstName;
-            public string LastName;
-            public DateTime Birthday;
-            
-            public List<Role> Roles = new List<Role>();
-        }
 
-        
-        public static void Main()
+        public static void CreateAndSerializeSnapshot()
         {
-            var person0 = new Person
-            {
-                FirstName = "Keanu",
-                LastName = "Reeves",
-                Birthday = new DateTime(1964, 9 ,2)
-            };
-                   
-            var roleA0 = new Role
-            {
-                Name = "Neo",
-                CodePhrase = "The Matrix has you...",
-                LastOnline = DateTime.Now,
-                Person = person0
-            };
-            
-            var roleB0 = new Role
-            {
-                Name = "Thomas Anderson",
-                CodePhrase = "Follow the White Rabbit.",
-                LastOnline = DateTime.Now,
-                Person = person0
-            };
-            
-            person0.Roles.Add(roleA0);
-            person0.Roles.Add(roleB0);
-
+            var person0 = DiagnosticsGraph.Create();
             var snapshot0 = person0.CreateSnapshot();
             string rawSnapsot0 = snapshot0.ToString();
             Console.WriteLine(rawSnapsot0);
-            //Console.ReadKey();
+            Console.ReadKey();
+        }
 
-            var snapshot1 = rawSnapsot0.CreateSnapshot();
-            var person1 = snapshot1.CreateInstance<Person>();
+        public static void UseClassicalJsonSettings()
+        {
+            Snapshot.DefaultReplicationProfile.AttachId = false;
+            Snapshot.DefaultReplicationProfile.AttachType = false;
+            Snapshot.DefaultReplicationProfile.SimplifySets = true;
+            Snapshot.DefaultReplicationProfile.SimplifyMaps = true;
+            
+            Snapshot.DefaultKeepProfile.SimplexConverter.AppendTypeInfo = false;
+            Snapshot.DefaultKeepProfile.SimplexConverter.Converters
+                .OfType<NumberConverter>().First().AppendSyffixes = false;   
+        }
+
+        public static void CreateAndSerializeSnapshotToClassicJsonStyle()
+        {
+            
+            var person0 = DiagnosticsGraph.Create();
+            var snapshot0 = person0.CreateSnapshot();
+            string rawSnapsot0 = snapshot0.ToString();
+            Console.WriteLine(rawSnapsot0);
+            var person0A = rawSnapsot0.ParseSnapshot().ReplicateGraph<Person>();
+            Console.WriteLine(person0A.FirstName);
+            Console.ReadKey();
+        }
+
+        public static void Replicate()
+        {   
+            var person0 = DiagnosticsGraph.Create();
+            var snapshot0 = person0.CreateSnapshot();
+            var person1 = snapshot0.ReplicateGraph<Person>();
+            
+            Console.WriteLine(person0.Roles[1].Name); // old graph value: Thomas Anderson
+            Console.WriteLine(person1.Roles[1].Name); // new graph value: Thomas Anderson
             person1.Roles[1].Name = "Agent Smith";
-
+            
+            Console.WriteLine(person0.Roles[1].Name); // old graph value: Thomas Anderson
+            Console.WriteLine(person1.Roles[1].Name); // new graph value: Agent Smith
+            Console.ReadKey(); // result: both graphs are isolated from each other
+        }
+        
+        public static void Reconstract()
+        {   
+            var person0 = DiagnosticsGraph.Create();
+            
             var cache = new Dictionary<object, int>();
             var s = person0.CreateSnapshot(cache);
-            person0.FirstName = "abc";
+            
+            Console.WriteLine(person0.Roles[1].Name); // old graph value: Thomas Anderson
+            Console.WriteLine(person0.FirstName); // old graph value: Keanu
+            person0.Roles[1].Name = "Agent Smith";
+            person0.FirstName = "Zion";
             person0.Roles.RemoveAt(0);
 
-            var x = s.CreateInstance(cache);
+            var person1 = (Person)s.ReconstructGraph(cache);
+         
+            Console.WriteLine(person0.Roles[1].Name); // old graph value: Thomas Anderson
+            Console.WriteLine(person1.Roles[1].Name); // old graph value: Thomas Anderson
+            Console.WriteLine(person0.FirstName); // old graph value: Keanu
+            Console.WriteLine(person1.FirstName); // old graph value: Keanu
+            Console.ReadKey(); // result: person0 & person1 is the same one graph
+        }
 
+        public static void Justapose()
+        {
+            Snapshot.DefaultReplicationProfile.AttachId = false;
+            Snapshot.DefaultReplicationProfile.AttachType = false;
+            Snapshot.DefaultReplicationProfile.SimplifySets = true;
+            Snapshot.DefaultReplicationProfile.SimplifyMaps = true;
+
+            var person0 = DiagnosticsGraph.Create();
+            var person1 = DiagnosticsGraph.Create();
+            
+            person0.Roles[1].Name = "Agent Smith";
+            person0.FirstName = "Zion";
+            
+            var snapshot0 = person0.CreateSnapshot();
+            var snapshot1 = person1.CreateSnapshot();
+            
             var results = snapshot0.Juxtapose(snapshot1);
 
             foreach (var result in results)
@@ -90,6 +109,15 @@ namespace Art.Replication.Diagnostics
                 Console.WriteLine(result);
             }
 
+            Console.ReadKey();
+        }
+        
+        public static void Main()
+        {
+            Justapose();
+            Reconstract();
+            Replicate();
+            CreateAndSerializeSnapshotToClassicJsonStyle();
 
             Console.ReadKey();
             var t = new EscapeTests();
@@ -161,7 +189,7 @@ namespace Art.Replication.Diagnostics
             var masterSnaphot = masterItem.CreateSnapshot();
             var replicationMatrix = masterSnaphot.ToString();
             var clonedSnapshot = replicationMatrix.CreateSnapshot();
-            var clonedItem = clonedSnapshot.CreateInstance<ComplexData>();
+            var clonedItem = clonedSnapshot.ReplicateGraph<ComplexData>();
             var lastSnapshot = clonedItem.CreateSnapshot();
             var results = masterSnaphot.Juxtapose(lastSnapshot, "").ToList();
             results = results;
@@ -218,7 +246,7 @@ namespace Art.Replication.Diagnostics
             for (int i = 0; i < 20000; i++)
             {
                 //var ert = masterItem.CreateSnapshot().ToString();
-                var dc = xx.CreateSnapshot().CreateInstance<ComplexData>();//.ToString();
+                var dc = xx.CreateSnapshot().ReplicateGraph<ComplexData>();//.ToString();
                 //var dc = sn.ToString();
             }
             sw.Stop();
@@ -235,7 +263,7 @@ namespace Art.Replication.Diagnostics
             var masterSnaphot = masterItem.CreateSnapshot();
             var replicationMatrix = masterSnaphot.ToString();
             var clonedSnapshot = replicationMatrix.CreateSnapshot();
-            var clonedItem = clonedSnapshot.CreateInstance();
+            var clonedItem = clonedSnapshot.ReplicateGraph();
             var lastSnapshot = clonedItem.CreateSnapshot();
             var results = masterSnaphot.Juxtapose(lastSnapshot, "").ToList();
             results = results;

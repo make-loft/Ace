@@ -44,7 +44,7 @@ namespace Art
                     {
                         var data = File.ReadAllText(storageKey);
                         var snapshot = data.CreateSnapshot();
-                        var item = snapshot.CreateInstance<TValue>();
+                        var item = snapshot.ReplicateGraph<TValue>();
                         if (Equals(item, null)) throw new Exception();
                         return item;
                     }

@@ -30,7 +30,7 @@ namespace Art.Serialization.Converters
             bool.TryParse(value, out var b) ? b : NotParsed;
     }
 
-    public class StringSerializer : Converter
+    public class StringConverter : Converter
     {
         public override string Convert(object value) => value is string s ? s : null;
         public override object Revert(string value, string typeCode) => typeCode == null ? value : NotParsed;

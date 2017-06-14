@@ -19,10 +19,10 @@ namespace Art.Serialization
             ReplicationProfile replicationProfile = null,
             KeepProfile keepProfile = null) => Snapshot.Create(master, cache, replicationProfile, keepProfile);
 
-        public static Snapshot CreateSnapshot(
+        public static Snapshot ParseSnapshot(
             this string matrix,
             ReplicationProfile replicationProfile = null,
-            KeepProfile keepProfile = null) => Snapshot.Create(matrix, replicationProfile, keepProfile);
+            KeepProfile keepProfile = null) => Snapshot.Parse(matrix, replicationProfile, keepProfile);
 
         public static object Capture(this string matrix, KeepProfile keepProfile, int offset = 0) =>
             matrix.Capture(keepProfile, ref offset);

@@ -8,7 +8,14 @@ namespace Art.Replication
 {
     public class Snapshot
     {
-        public static ReplicationProfile DefaultReplicationProfile = new ReplicationProfile { AttachId = true };
+        static Snapshot()
+        {
+            if (DateTime.Now > new DateTime(2017, 9, 1))
+                throw new Exception(
+                    "Trial version has been expired. Please, write to 'makeman@tut.by' for getting licence.");
+        }
+
+        public static ReplicationProfile DefaultReplicationProfile = new ReplicationProfile {AttachId = true};
 
         public static KeepProfile DefaultKeepProfile = KeepProfile.GetFormatted();
 
@@ -20,17 +27,17 @@ namespace Art.Replication
         public KeepProfile ActiveKeepProfile = KeepProfile.GetFormatted();
 
         public static Snapshot Create(
-            object master,
+            object masterGraph,
             Dictionary<object, int> idCache,
             ReplicationProfile replicationProfile = null,
             KeepProfile keepProfile = null) => new Snapshot
         {
-            MasterState = (replicationProfile ?? DefaultReplicationProfile).Translate(master, idCache),
+            MasterState = (replicationProfile ?? DefaultReplicationProfile).Translate(masterGraph, idCache),
             ActiveReplicationProfile = replicationProfile ?? DefaultReplicationProfile,
             ActiveKeepProfile = keepProfile ?? DefaultKeepProfile
         };
 
-        public static Snapshot Create(
+        public static Snapshot Parse(
             string matrix,
             ReplicationProfile replicationProfile = null,
             KeepProfile keepProfile = null) => new Snapshot
@@ -41,14 +48,16 @@ namespace Art.Replication
         };
 
         public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
-        
-        public string ToString(StringBuilder builder) => 
+
+        public string ToString(StringBuilder builder) =>
             MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
-        public object CreateInstance(Dictionary<object, int> cache = null) => 
-            ActiveReplicationProfile.Replicate(MasterState, cache?.ToDictionary(p => p.Value, p => p.Key));
+        public object ReplicateGraph() => ActiveReplicationProfile.Replicate(MasterState);
 
-        public T CreateInstance<T>(Dictionary<object, int> cache = null) =>
-            (T)ActiveReplicationProfile.Replicate(MasterState, cache?.ToDictionary(p => p.Value, p => p.Key), typeof(T));
+        public TRoot ReplicateGraph<TRoot>() =>
+            (TRoot) ActiveReplicationProfile.Replicate(MasterState, null, typeof(TRoot));
+
+        public object ReconstructGraph(Dictionary<object, int> cache) =>
+            ActiveReplicationProfile.Replicate(MasterState, cache?.ToDictionary(p => p.Value, p => p.Key));
     }
 }
