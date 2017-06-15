@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <!-- Required elements-->
+    <id>Art.ReplicationFramework.Trial</id>
+    <version>0.1.0.0</version>
+    <authors>Makeloft Studio</authors>
+    <description>The purpose of the library is deep copying of any objects and arbitrarily complex graphs, their comparison, serialization and deserialization without distortion, tracking mutations and manipulating the state.</description>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes>Preview version</releaseNotes>
+    <copyright>Copyright 2017 (c) Makeloft Studio. All rights reserved.</copyright>
+    <tags>makeloft replication framework json deep copy clone coping cloning</tags>
+    <projectUrl>http://makeloft.xyz/workroom/replication-framework</projectUrl>
+  </metadata>
+    
+  <files>
+    <file src="lib/portable-net40+sl4+win8+wp75/Art.Replication.dll" target="lib/portable-net40+sl4+win8+wp75/Art.Replication.dll"/>
+  </files>
+    
+</package>

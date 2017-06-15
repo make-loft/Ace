@@ -11,7 +11,7 @@
     <RootNamespace>Art</RootNamespace>
     <AssemblyName>Art.Replication</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile88</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SccProjectName>SAK</SccProjectName>
@@ -63,7 +63,6 @@
     <Compile Include="Replication\Replicators\RegexReplicator.cs" />
     <Compile Include="Replication\Replicators\StringBuilderReplicator.cs" />
     <Compile Include="Serialization\Escapers\GeneralEscaper.cs" />
-    <Compile Include="Serialization\Serializer.Aides.cs" />
     <Compile Include="Serialization\Serializer.Capture.cs" />
     <Compile Include="Serialization\Serializer.Conversion.cs" />
     <Compile Include="Serialization\Converter.cs" />
@@ -80,9 +79,9 @@
     <Compile Include="Serialization\Converters\NumberConverter.cs" />
     <Compile Include="Serialization\Simplex.cs" />
     <Compile Include="Serialization\SimplexConverter.cs" />
+    <Compile Include="Aides.cs" />
     <Compile Include="Sugar.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
