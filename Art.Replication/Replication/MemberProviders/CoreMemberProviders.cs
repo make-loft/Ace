@@ -29,7 +29,7 @@ namespace Art.Replication.MemberProviders
         private static readonly Type EnumerableType = typeof(IEnumerable);
 
         protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
-            type.GetMembers(BindingFlags)
+            type.EnumerateMembers(BindingFlags)
                 .Where(Filter)
                 .Where(m => !EnumerableType.IsAssignableFrom(type) && m.Name != "Item");
     }

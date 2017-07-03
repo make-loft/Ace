@@ -42,7 +42,7 @@ namespace Art.Replication.Replicators
             var id = hasKey ? (int)key : idCache.Count;
             if (idCache.TryGetValue(id, out object replica) && hasKey && map.Count == 1) return replica;
             replica = idCache[id] = replica ?? ActivateInstance(map, replicationProfile, idCache, baseType);
-            FillInstance(map, (T)replica, replicationProfile, idCache, baseType);
+            if (replica != null) FillInstance(map, (T)replica, replicationProfile, idCache, baseType);
             return replica;
         }
 

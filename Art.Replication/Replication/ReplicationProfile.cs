@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Art.Comparers;
 using Art.Replication.MemberProviders;
 using Art.Replication.Replicators;
 using Art.Serialization;
@@ -15,10 +16,13 @@ namespace Art.Replication
         public string SetKey = "#Set";
         public string MapKey = "#Map";
         public string TypeKey = "#Type";
+        public string SetDimensionKey = "#SetDimension";
         public bool AttachType = true;
         public bool AttachId = true;
         public bool SimplifySets = false;
         public bool SimplifyMaps = false;
+        
+        public IEqualityComparer<object> Comparer = ReferenceComparer<object>.Default;
 
         public List<MemberProvider> MemberProviders = new List<MemberProvider>
         {
@@ -56,7 +60,7 @@ namespace Art.Replication
         
         public object Translate(object graph, Dictionary<object, int> idCache = null, Type baseType = null)
         {
-            idCache = idCache ?? new Dictionary<object, int>();
+            idCache = idCache ?? new Dictionary<object, int>(Comparer);
             var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, this, idCache, baseType)) ??
                              throw new Exception("Can not translate " + graph);
             return replicator.Translate(graph, this, idCache, baseType);

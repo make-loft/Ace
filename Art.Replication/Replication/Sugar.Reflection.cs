@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Art.Replication
@@ -40,5 +41,10 @@ namespace Art.Replication
             type.Name == typeof(Dictionary<,>).Name &&
             type.Assembly == typeof(Dictionary<,>).Assembly &&
             type.GetGenericArguments()[0] == typeof(TKey);
+
+        public static IEnumerable<MemberInfo> EnumerateMembers(this Type type, BindingFlags bindingFlags) =>
+            type.BaseType?.EnumerateMembers(bindingFlags)
+                .Concat(type.GetFields(bindingFlags | BindingFlags.DeclaredOnly)) ??
+            type.GetFields(bindingFlags);
     }
 }

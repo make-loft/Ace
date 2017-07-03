@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text.RegularExpressions;
 using Art.Serialization;
 using Art.Serialization.Converters;
@@ -52,6 +54,8 @@ namespace Art.Replication.Diagnostics
         public static void Replicate()
         {   
             var person0 = DiagnosticsGraph.Create();
+
+            var ppp = person0.MemberwiseClone(true);
             var snapshot0 = person0.CreateSnapshot();
             var person1 = snapshot0.ReplicateGraph<Person>();
             
@@ -112,8 +116,28 @@ namespace Art.Replication.Diagnostics
             Console.ReadKey();
         }
         
+        public class MyClassA
+        {
+            private int AF { get; set; }
+        }
+        
+        public class MyClassB : MyClassA
+        {
+            public int BF { get; set; }
+        }
+        
         public static void Main()
         {
+            var a = new ComplexData();
+            var pp = a.Ptr;
+            
+            var b = a.MemberwiseClone(true);
+            var aa = a.CreateSnapshot();
+            var s = aa.ToString().ParseSnapshot();
+            var c = aa.ReplicateGraph();
+            Replicate();
+            var rr = new [] {"abc"}.Aggregate((x, y) => x + Environment.NewLine + y);
+            
             Justapose();
             Reconstract();
             Replicate();
@@ -134,6 +158,14 @@ namespace Art.Replication.Diagnostics
     [Serializable]
     public class ComplexData
     {
+        [DataMember]
+        public IntPtr Ptr = new IntPtr(123);
+        
+        [DataMember]
+        public Action Ha = () => { };
+
+        [DataMember] public object[,,] Arr = {{{"abc", "x1", "asd"}, {"t", "d", "qwerty"}}};
+        
         [DataMember]
         public int? P = 7;
         
@@ -195,7 +227,6 @@ namespace Art.Replication.Diagnostics
             results = results;
         }
 
-        public void Test(int i, int yi, int io, int ikj){}
         [TestMethod]
         public void TestMethod1()
         {

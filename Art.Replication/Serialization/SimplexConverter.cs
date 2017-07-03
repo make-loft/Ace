@@ -17,13 +17,11 @@ namespace Art.Serialization
             new DateTimeIsoFastConverter(),
             new ComplexConverter(),
         };
-        
+
         public virtual string GetTypeCode(Type type) =>
-            type.IsPrimitive || type == typeof(string)
-                ? null
-                : type.Assembly == typeof(object).Assembly || type.Assembly == typeof(Uri).Assembly
-                    ? type.Name
-                    : type.AssemblyQualifiedName;
+            type.Assembly == typeof(object).Assembly || type.Assembly == typeof(Uri).Assembly
+                ? type.Name
+                : type.AssemblyQualifiedName;
         
         protected Simplex Simplex = new Simplex();
     

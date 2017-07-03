@@ -22,6 +22,12 @@ namespace Art.Replication.Replicators
             else if (instance is IList set)
             {
                 var items = new Set(set.Cast<object>().Select(i => replicationProfile.Translate(i, idCache)));
+                if (instance is Array array && array.Rank > 1)
+                {
+                    var dimensions = new Set();
+                    for (var i = 0; i < array.Rank; i++) dimensions.Add(array.GetLength(i));
+                    snapshot.Add(replicationProfile.SetDimensionKey, dimensions);
+                }
                 snapshot.Add(replicationProfile.SetKey, items);
             }
 
@@ -47,7 +53,12 @@ namespace Art.Replication.Replicators
                 if (replica is Array array)
                 {
                     var source = items.Select(i => replicationProfile.Replicate(i, idCache)).ToArray();
-                    Array.Copy(source, array, items.Count); /* array [replica] is cached instance */
+                    if (array.Rank == 1) Array.Copy(source, array, source.Length); /* array [replica] is cached */
+                    else
+                    {
+                        var dimensions = ((Set) snapshot[replicationProfile.SetDimensionKey]).Cast<int>().ToArray();
+                        CopyToMultidimensionArray(dimensions, array, source);
+                    }
                 }
                 else
                 {
@@ -72,6 +83,22 @@ namespace Art.Replication.Replicators
             });
         }
 
+        private static void CopyToMultidimensionArray(IList<int> dimensions, Array target, IList<object> source)
+        {
+            var indices = new int[dimensions.Count];
+            for (var i = 0; i < target.Length; i++)
+            {
+                var t = i;
+                for (var j = indices.Length - 1; j >= 0; j--)
+                {
+                    indices[j] = t % dimensions[j];
+                    t /= dimensions[j];
+                }
+                
+                target.SetValue(source[i], indices);
+            }
+        }
+
         private static object RestoreOriginalType(object value, Type memberType, ReplicationProfile replicationProfile)
         {
             if (value is string s)
@@ -86,13 +113,17 @@ namespace Art.Replication.Replicators
 
         public override object ActivateInstance(Map snapshot, ReplicationProfile replicationProfile,
             Dictionary<int, object> idCache, Type baseType = null)
-        {        
+        {
             var type = snapshot.TryGetValue(replicationProfile.TypeKey, out var typeName)
                 ? Type.GetType(typeName.ToString(), true)
                 : baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
 
+            if (typeof(Delegate).IsAssignableFrom(type)) return null;
+
             return type.IsArray
-                ? Array.CreateInstance(type.GetElementType(), ((Set) snapshot[replicationProfile.SetKey]).Count)
+                ? (snapshot.TryGetValue(replicationProfile.SetDimensionKey, out var dimensions)
+                    ? Array.CreateInstance(type.GetElementType(), ((Set) dimensions).Cast<int>().ToArray())
+                    : Array.CreateInstance(type.GetElementType(), ((Set) snapshot[replicationProfile.SetKey]).Count))
                 : Activator.CreateInstance(type);
         }
     }

@@ -4,6 +4,7 @@ using System.ArrayExtensions;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Json;
+using System.Text.RegularExpressions;
 
 namespace System
 {
@@ -76,6 +77,7 @@ namespace System
 
             }
             visited.Add(originalObject, cloneObject);
+            if (typeToReflect == typeof(Regex)) return cloneObject;
             CopyFields(originalObject, visited, cloneObject, typeToReflect);
             RecursiveCopyBaseTypePrivateFields(originalObject, visited, cloneObject, typeToReflect);
             return cloneObject;

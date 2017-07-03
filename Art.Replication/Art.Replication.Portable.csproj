@@ -52,6 +52,8 @@
   <ItemGroup>
     <Compile Include="Adapters\Adapters.cs" />
     <Compile Include="Art.Patterns.cs" />
+    <Compile Include="Cloning.cs" />
+    <Compile Include="Comparers\ReferenceComparer.cs" />
     <Compile Include="Etalon.cs" />
     <Compile Include="Replication\MemberProviders\MemberProvider.cs" />
     <Compile Include="Replication\Replicator.cs" />

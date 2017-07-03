@@ -8,7 +8,7 @@ namespace Art.Serialization.Converters
     {
         public string IntegerNumbersFormat = null; //"G"; /* 'null' for best performance */
         public string RealNumbersFormat = "G";
-        public bool AppendSyffixes = false;
+        public bool AppendSyffixes = true;
 
         public Dictionary<Type, string> TypeToSyffix = new Dictionary<Type, string>
         {
@@ -20,7 +20,9 @@ namespace Art.Serialization.Converters
             {typeof(ulong), "UL"},
             {typeof(float), "F"},
             {typeof(double), null}, /* "D" */
-            {typeof(decimal), "M"}
+            {typeof(decimal), "M"},
+            {typeof(IntPtr), "P"},
+            {typeof(UIntPtr), "UP"}
         };
 
         public override string Convert(object value)
@@ -62,6 +64,10 @@ namespace Art.Serialization.Converters
                     return n.ToString(RealNumbersFormat, ActiveCulture);
                 case decimal m:
                     return m.ToString(RealNumbersFormat, ActiveCulture);
+                case IntPtr i:
+                    return i.ToString();
+                case UIntPtr i:
+                    return i.ToString();
                 default:
                     return null;
             }
@@ -85,6 +91,10 @@ namespace Art.Serialization.Converters
             if (value.EndsWith("D") && double.TryParse(number.Substring(0, number.Length - 1), out var d)) return d;
             if (value.EndsWith("F") && float.TryParse(number.Substring(0, number.Length - 1), out var f)) return f;
             if (value.EndsWith("M") && decimal.TryParse(number.Substring(0, number.Length - 1), out var m)) return m;
+            if (value.EndsWith("P") && int.TryParse(number.Substring(0, number.Length - 1), out var p))
+                return new IntPtr(p);
+            if ((value.EndsWith("UP") || value.EndsWith("PU")) &&
+                ulong.TryParse(number.Substring(0, number.Length - 2), out var up)) return new UIntPtr(up);
             return NotParsed;
         }
     }

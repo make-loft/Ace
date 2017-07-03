@@ -51,8 +51,8 @@ namespace Art.Serialization
                 ? type.Name
                 : type.AssemblyQualifiedName;
 
-        public string GetHead(Type type) => type.IsPrimitive ? null : "<";
-        public string GetTail(Type type) => type.IsPrimitive ? null : ">";
+        public string GetHead(Type type) => "<";
+        public string GetTail(Type type) => ">";
         
         public static KeepProfile GetFormatted()
         {

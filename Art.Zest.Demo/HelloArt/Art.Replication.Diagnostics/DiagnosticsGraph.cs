@@ -13,14 +13,21 @@ namespace Art.Replication.Diagnostics
             
         [DataMember] public Person Person;
     }
-        
-    public class Person
+
+    public class Person : ICloneable
     {
         public string FirstName;
         public string LastName;
         public DateTime Birthday;
-            
+
         public List<Role> Roles = new List<Role>();
+
+        public object Clone()
+        {
+            var clone = (Person) MemberwiseClone();
+            clone.Roles = new List<Role>();
+            return clone;
+        }
     }
 
     public static class DiagnosticsGraph
