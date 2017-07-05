@@ -24,10 +24,12 @@ namespace Art.Replication.Replicators
                 var items = new Set(set.Cast<object>().Select(i => replicationProfile.Translate(i, idCache)));
                 if (instance is Array array && array.Rank > 1)
                 {
-                    var dimensions = new Set();
+                    var dimensions = new List<int>();
                     for (var i = 0; i < array.Rank; i++) dimensions.Add(array.GetLength(i));
-                    snapshot.Add(replicationProfile.SetDimensionKey, dimensions);
+                    items = items.BoxMultidimensionArray(dimensions, e => new Set(e));
+                    snapshot.Add(replicationProfile.SetDimensionKey, new Set(dimensions.Cast<object>()));
                 }
+
                 snapshot.Add(replicationProfile.SetKey, items);
             }
 
@@ -52,12 +54,19 @@ namespace Art.Replication.Replicators
                 var items = (Set) snapshot[replicationProfile.SetKey];
                 if (replica is Array array)
                 {
-                    var source = items.Select(i => replicationProfile.Replicate(i, idCache)).ToArray();
-                    if (array.Rank == 1) Array.Copy(source, array, source.Length); /* array [replica] is cached */
+                    var subtype = type.GetElementType();
+                    if (array.Rank > 1)
+                    {
+                        // var dimensions = ((Set) snapshot[replicationProfile.SetDimensionKey]).Cast<int>().ToArray();
+                        var dimensions = items.RestoreDimensions(array.Rank);
+                        var source = items.UnboxMultidimensionArray(array.Rank)
+                            .Select(i => replicationProfile.Replicate(i, idCache, subtype)).ToList();
+                        source.CopyToMultidimensionalArray(array, dimensions);
+                    }
                     else
                     {
-                        var dimensions = ((Set) snapshot[replicationProfile.SetDimensionKey]).Cast<int>().ToArray();
-                        CopyToMultidimensionArray(dimensions, array, source);
+                        var source = items.Select(i => replicationProfile.Replicate(i, idCache, subtype)).ToArray();
+                        Array.Copy(source, array, source.Length); /* array [replica] is cached */
                     }
                 }
                 else
@@ -76,55 +85,40 @@ namespace Art.Replication.Replicators
                 var memberType = m.GetMemberType();
                 var value = snapshot[memberProvider.GetDataKey(m)];
                 if (replicationProfile.TryRestoreTypeInfoImplicitly && value != null && memberType != value.GetType())
-                    value = RestoreOriginalType(value, memberType, replicationProfile);
+                    value = ChangeType(value, memberType, replicationProfile);
 
                 m.SetValueIfCanWrite(replica, /* should enumerate items at read-only members too */
-                    replicationProfile.Replicate(value, idCache, m.GetMemberType()));
+                    replicationProfile.Replicate(value, idCache, memberType));
             });
         }
 
-        private static void CopyToMultidimensionArray(IList<int> dimensions, Array target, IList<object> source)
-        {
-            var indices = new int[dimensions.Count];
-            for (var i = 0; i < target.Length; i++)
-            {
-                var t = i;
-                for (var j = indices.Length - 1; j >= 0; j--)
-                {
-                    indices[j] = t % dimensions[j];
-                    t /= dimensions[j];
-                }
-                
-                target.SetValue(source[i], indices);
-            }
-        }
+        private static object ChangeType(object value, Type targetType, ReplicationProfile replicationProfile) =>
+            value is string
+                ? Revert(replicationProfile, (string) value, targetType.Name)
+                : (targetType.IsPrimitive ? Convert.ChangeType(value, targetType, null) : value);
 
-        private static object RestoreOriginalType(object value, Type memberType, ReplicationProfile replicationProfile)
-        {
-            if (value is string s)
-            {
-                var typeCode = memberType.Name;
-                value = replicationProfile.ImplicitConverters.Select(c => c.Revert(s, typeCode))
-                    .First(v => v != Converter.NotParsed);
-            }
-            else if (memberType.IsPrimitive) value = Convert.ChangeType(value, memberType, null);
-            return value;
-        }
+        private static object Revert(ReplicationProfile replicationProfile, string s, string typeCode) =>
+            replicationProfile.ImplicitConverters.Select(c => c.Revert(s, typeCode))
+                .First(v => v != Converter.NotParsed);
 
-        public override object ActivateInstance(Map snapshot, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null)
-        {
-            var type = snapshot.TryGetValue(replicationProfile.TypeKey, out var typeName)
+        public override object ActivateInstance(Map snapshot,
+            ReplicationProfile replicationProfile, Dictionary<int, object> idCache, Type baseType = null) =>
+            CreateInstance(RestoreType(snapshot, replicationProfile, baseType), snapshot, replicationProfile);
+
+        private static Type RestoreType(Map snapshot, ReplicationProfile replicationProfile, Type baseType) =>
+            snapshot.TryGetValue(replicationProfile.TypeKey, out var typeName)
                 ? Type.GetType(typeName.ToString(), true)
                 : baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
 
-            if (typeof(Delegate).IsAssignableFrom(type)) return null;
-
-            return type.IsArray
-                ? (snapshot.TryGetValue(replicationProfile.SetDimensionKey, out var dimensions)
-                    ? Array.CreateInstance(type.GetElementType(), ((Set) dimensions).Cast<int>().ToArray())
-                    : Array.CreateInstance(type.GetElementType(), ((Set) snapshot[replicationProfile.SetKey]).Count))
-                : Activator.CreateInstance(type);
-        }
+        private static object CreateInstance(Type type, Map snapshot, ReplicationProfile replicationProfile) =>
+            typeof(Delegate).IsAssignableFrom(type)
+                ? null // Delegate.CreateDelegate(type, snapshot["MethodInfo"])
+                : type.IsArray
+                    ? (snapshot.TryGetValue(replicationProfile.SetDimensionKey, out var dimensions)
+                        ? Array.CreateInstance(type.GetElementType(), ((Set) dimensions).Cast<int>().ToArray())
+                        : Array.CreateInstance(type.GetElementType(),
+                            ((Set) snapshot[replicationProfile.SetKey]).Count))
+                    : Activator.CreateInstance(type);
     }
 }
+  

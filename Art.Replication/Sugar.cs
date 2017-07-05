@@ -47,5 +47,85 @@ namespace System.Linq
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (T item in dictionary) yield return item;
         }
+        
+        internal static void CopyToMultidimensionalArray(this IList<object> source, Array target, IList<int> dimensions)
+        {
+            var indices = new int[dimensions.Count];
+            for (var i = 0; i < source.Count; i++)
+            {
+                var t = i;
+                for (var j = indices.Length - 1; j >= 0; j--)
+                {
+                    indices[j] = t % dimensions[j];
+                    t /= dimensions[j];
+                }
+                
+                target.SetValue(source[i], indices);
+            }
+        }
+        
+        internal static int[] RestoreDimensions(this IList items, int rank)
+        {
+            var dimensions = new int[rank];
+ 
+            for (var i = 0; i < rank; i++)
+            {
+                items = items[0] is IList l ? l : items;
+                dimensions[i] = items.Count;
+            }
+            
+            return dimensions;
+        }
+
+        internal static T BoxMultidimensionArray<T>(this IEnumerable items, IList<int> dimensions,
+            Func<IEnumerable<object>, T> box)
+        {
+            var chunks = items.Cast<object>();
+            for (var i = dimensions.Count - 1; i >= 0; i--)
+            {
+                var dimension = dimensions[i];
+                chunks = chunks.Chunk(dimension).Select(box).Cast<object>();
+            }
+
+            return box(chunks);
+        }
+
+        internal static IEnumerable<object> UnboxMultidimensionArray(this IEnumerable items, int rank)
+        {
+            foreach (var item in items)
+            {
+                if (item is IEnumerable s && rank > 0)
+                {
+                    var subitems = UnboxMultidimensionArray(s, rank - 1);
+                    foreach (var subitem in subitems)
+                    {
+                        yield return subitem;
+                    }
+                }
+                else yield return item;
+            }
+        }
+
+        public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize)
+        {
+            using (var enumerator = source.GetEnumerator())
+            {
+                do
+                {
+                    if (!enumerator.MoveNext()) yield break;
+                    yield return ChunkSequence(enumerator, chunkSize);
+                } while (true);
+            }
+        }
+        
+        private static IEnumerable<T> ChunkSequence<T>(IEnumerator<T> enumerator, int chunkSize)
+        {
+            var count = 0;
+
+            do
+            {
+                yield return enumerator.Current;
+            } while (++count < chunkSize && enumerator.MoveNext());
+        }
     }
 }

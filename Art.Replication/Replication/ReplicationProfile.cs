@@ -16,7 +16,7 @@ namespace Art.Replication
         public string SetKey = "#Set";
         public string MapKey = "#Map";
         public string TypeKey = "#Type";
-        public string SetDimensionKey = "#SetDimension";
+        public string SetDimensionKey = "#Dimensions";
         public bool AttachType = true;
         public bool AttachId = true;
         public bool SimplifySets = false;

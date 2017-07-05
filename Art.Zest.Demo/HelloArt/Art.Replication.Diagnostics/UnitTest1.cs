@@ -128,7 +128,9 @@ namespace Art.Replication.Diagnostics
         
         public static void Main()
         {
+           // new UnitTest1().TestMethod1();
             var a = new ComplexData();
+            //a.Ha.Method
             var pp = a.Ptr;
             
             var b = a.MemberwiseClone(true);
@@ -164,7 +166,8 @@ namespace Art.Replication.Diagnostics
         [DataMember]
         public Action Ha = () => { };
 
-        [DataMember] public object[,,] Arr = {{{"abc", "x1", "asd"}, {"t", "d", "qwerty"}}};
+        [DataMember] public object[,,] Arr =
+            {{{"abc", "x1", "asd"}, {"t", "d", "qwerty"}}, {{"7abc", "7x1", "7asd"}, {"8t", "8d", "8qwerty"}}};
         
         [DataMember]
         public int? P = 7;
@@ -240,10 +243,10 @@ namespace Art.Replication.Diagnostics
             var sw= new Stopwatch();
             sw.Reset();
             sw.Start();
-            for (int i = 0; i < 20000; i++)
+            for (int i = 0; i < 0000; i++)
             {
                 //Test(i, i, i, i);
-                var dc = masterItem.DeepClone1();
+                var dc = masterItem.DeepClone();
             }
             sw.Stop();
             Debug.WriteLine(sw.ElapsedMilliseconds);
