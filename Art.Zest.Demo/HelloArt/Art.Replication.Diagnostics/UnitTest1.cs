@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Art.Serialization;
 using Art.Serialization.Converters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -132,7 +133,6 @@ namespace Art.Replication.Diagnostics
             var a = new ComplexData();
             //a.Ha.Method
             var pp = a.Ptr;
-            
             var b = a.MemberwiseClone(true);
             var aa = a.CreateSnapshot();
             var s = aa.ToString().ParseSnapshot();
@@ -160,6 +160,9 @@ namespace Art.Replication.Diagnostics
     [Serializable]
     public class ComplexData
     {
+        //[DataMember]
+        //public XElement Element = new XElement("qwe");
+        
         [DataMember]
         public IntPtr Ptr = new IntPtr(123);
         

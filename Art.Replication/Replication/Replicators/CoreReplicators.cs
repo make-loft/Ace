@@ -9,16 +9,16 @@ namespace Art.Replication.Replicators
             value == null || value is string || value.GetType().IsPrimitive;
 
         public override bool CanTranslate(object value, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache, Type baseType = null) => CanApply(value);
+            IDictionary<object, int> idCache, Type baseType = null) => CanApply(value);
 
         public override bool CanReplicate(object value, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null) => CanApply(value);
+            IDictionary<int, object> idCache, Type baseType = null) => CanApply(value);
 
         public override object Translate(object value, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache, Type baseType = null) => value;
+            IDictionary<object, int> idCache, Type baseType = null) => value;
 
         public override object Replicate(object value, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null) => value;
+            IDictionary<int, object> idCache, Type baseType = null) => value;
     }
 
     public class CoreReplicator<TValue> : CoreReplicator

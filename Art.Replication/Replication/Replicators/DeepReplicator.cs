@@ -9,7 +9,7 @@ namespace Art.Replication.Replicators
     public class DeepReplicator : ACachingReplicator<object>
     {
         public override void FillMap(Map snapshot, object instance, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache, Type baseType = null)
+            IDictionary<object, int> idCache, Type baseType = null)
         {
             var type = instance.GetType();
 
@@ -40,7 +40,7 @@ namespace Art.Replication.Replicators
         }
 
         public override void FillInstance(Map snapshot, object replica, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null)
+            IDictionary<int, object> idCache, Type baseType = null)
         {
             var type = replica.GetType();
 
@@ -102,7 +102,7 @@ namespace Art.Replication.Replicators
                 .First(v => v != Converter.NotParsed);
 
         public override object ActivateInstance(Map snapshot,
-            ReplicationProfile replicationProfile, Dictionary<int, object> idCache, Type baseType = null) =>
+            ReplicationProfile replicationProfile, IDictionary<int, object> idCache, Type baseType = null) =>
             CreateInstance(RestoreType(snapshot, replicationProfile, baseType), snapshot, replicationProfile);
 
         private static Type RestoreType(Map snapshot, ReplicationProfile replicationProfile, Type baseType) =>

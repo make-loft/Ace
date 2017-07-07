@@ -50,7 +50,7 @@ namespace Art.Replication
             new ComplexConverter()
         };
         
-        public object Replicate(object graph, Dictionary<int, object> idCache = null, Type baseType = null)
+        public object Replicate(object graph, IDictionary<int, object> idCache = null, Type baseType = null)
         {
             idCache = idCache ?? new Dictionary<int, object>();
             var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, this, idCache, baseType)) ??
@@ -58,7 +58,7 @@ namespace Art.Replication
             return replicator.Replicate(graph, this, idCache, baseType);
         }
         
-        public object Translate(object graph, Dictionary<object, int> idCache = null, Type baseType = null)
+        public object Translate(object graph, IDictionary<object, int> idCache = null, Type baseType = null)
         {
             idCache = idCache ?? new Dictionary<object, int>(Comparer);
             var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, this, idCache, baseType)) ??

@@ -44,7 +44,7 @@ namespace Art.Replication
 
         public static IEnumerable<MemberInfo> EnumerateMembers(this Type type, BindingFlags bindingFlags) =>
             type.BaseType?.EnumerateMembers(bindingFlags)
-                .Concat(type.GetFields(bindingFlags | BindingFlags.DeclaredOnly)) ??
-            type.GetFields(bindingFlags);
+                .Concat(type.GetMembers(bindingFlags | BindingFlags.DeclaredOnly)) ??
+            type.GetMembers(bindingFlags);
     }
 }

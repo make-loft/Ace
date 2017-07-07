@@ -10,14 +10,14 @@ namespace Art.Replication.Replicators
         public string OptionsKey = "#c_Options";
 
         public override void FillMap(Map map, Regex instance, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache, Type baseType = null)
+            IDictionary<object, int> idCache, Type baseType = null)
         {
             map.Add(PatternKey, instance.ToString());
             map.Add(OptionsKey, instance.Options);
         }
 
         public override Regex ActivateInstance(Map map, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null) =>
+            IDictionary<int, object> idCache, Type baseType = null) =>
             new Regex((string) map[PatternKey], RestoreOptions(map[OptionsKey], replicationProfile));
 
         private static RegexOptions RestoreOptions(object value, ReplicationProfile replicationProfile) =>

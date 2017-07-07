@@ -2,10 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Art.Comparers;
 using Art.Serialization;
 
 namespace Art.Replication
 {
+    public class ReconstructionCache : Dictionary<object, int>
+    {
+        public ReconstructionCache() : base(32, ReferenceComparer<object>.Default)
+        {
+        }
+
+        public ReconstructionCache(IEqualityComparer<object> comparer) : base(32, comparer)
+        {
+        }
+    }
+
     public class Snapshot
     {
         static Snapshot()
@@ -57,7 +69,7 @@ namespace Art.Replication
         public TRoot ReplicateGraph<TRoot>() =>
             (TRoot) ActiveReplicationProfile.Replicate(MasterState, null, typeof(TRoot));
 
-        public object ReconstructGraph(Dictionary<object, int> cache) =>
+        public object ReconstructGraph(IDictionary<object, int> cache) =>
             ActiveReplicationProfile.Replicate(MasterState, cache?.ToDictionary(p => p.Value, p => p.Key));
     }
 }

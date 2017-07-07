@@ -10,14 +10,14 @@ namespace Art.Replication.Replicators
         public string CapacityKey = "#c_Capacity";
 
         public override void FillMap(Map map, StringBuilder instance, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache, Type baseType = null)
+            IDictionary<object, int> idCache, Type baseType = null)
         {
             map.Add(ValueKey, instance.ToString());
             map.Add(CapacityKey, instance.Capacity);
         }
 
         public override StringBuilder ActivateInstance(Map map, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null) =>
+            IDictionary<int, object> idCache, Type baseType = null) =>
             new StringBuilder((string) map[ValueKey], (int) map[CapacityKey]);
     }
 }

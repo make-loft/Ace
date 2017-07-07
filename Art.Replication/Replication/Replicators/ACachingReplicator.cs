@@ -7,20 +7,20 @@ namespace Art.Replication.Replicators
     public abstract class ACachingReplicator<T> : Replicator<T>
     {
         public abstract T ActivateInstance(Map map, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null);
+            IDictionary<int, object> idCache, Type baseType = null);
 
         public virtual void FillMap(Map map, T instance, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache, Type baseType = null)
+            IDictionary<object, int> idCache, Type baseType = null)
         {         
         }
 
         public virtual void FillInstance(Map map, T instance, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null)
+            IDictionary<int, object> idCache, Type baseType = null)
         {
         }
 
         public override object Translate(object value, ReplicationProfile replicationProfile,
-            Dictionary<object, int> idCache, Type baseType = null)
+            IDictionary<object, int> idCache, Type baseType = null)
         {
             if (idCache.TryGetValue(value, out int id)) return new Map { { replicationProfile.IdKey, id } };
             id = idCache.Count;
@@ -35,7 +35,7 @@ namespace Art.Replication.Replicators
         }
 
         public override object Replicate(object value, ReplicationProfile replicationProfile,
-            Dictionary<int, object> idCache, Type baseType = null)
+            IDictionary<int, object> idCache, Type baseType = null)
         {
             var map = CompleteMapIfRequried(value, replicationProfile, baseType);
             var hasKey = map.TryGetValue(replicationProfile.IdKey, out var key);
