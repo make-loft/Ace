@@ -31,12 +31,13 @@ namespace Art.Serialization
                 : stringToVerbatim[segment] = segment.Contains("\\") || segment.Contains("/");
 
             var escapeChars = useVerbatim ? escaper.VerbatimEscapeChars : escaper.EscapeChars;
-
+            var escapeSequence = useVerbatim ? escaper.VerbatimEscapeSequence : escaper.EscapeSequence;
+            
             //hits = (useVerbatim ? hits.Where(h => h.Marker == "\"") : hits.Where(h => h.Marker != "\"")).ToArray();
             this[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
                 //builder.Clear().Escape(segment, ProvideHits(segment), Escaper.EscapeRules, "\\").ToString();
                 // this[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
-                escaper.AppendWithEscape(builder.Clear(), segment, escapeChars, useVerbatim).ToString();
+                escaper.AppendWithEscape(builder.Clear(), segment, escapeChars, useVerbatim, escapeSequence).ToString();
             if (useVerbatim) Insert(segmentIndex - 1, escaper.VerbatimPattern);
             return this;
         }

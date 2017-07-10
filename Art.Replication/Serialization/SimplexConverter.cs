@@ -34,20 +34,16 @@ namespace Art.Serialization
             Simplex.Add(keepProfile.GetHead(value));
             Simplex.Add(convertedValue);
             Simplex.Add(keepProfile.GetTail(value));
-            if (!AppendTypeInfo) return Simplex.Escape(keepProfile.EscapeProfile, 1);
             
             var type = value?.GetType();
-            if (type == null || type.IsPrimitive || type == typeof(string)) return Simplex;
+            if (type == null || type.IsPrimitive) return Simplex;
+            if (type == typeof(string)) return Simplex.Escape(keepProfile.EscapeProfile, 1);
+
+            if (!AppendTypeInfo) return Simplex.Escape(keepProfile.EscapeProfile, 1);
+            
             Simplex.Add(keepProfile.GetHead(type));
             Simplex.Add(GetTypeCode(type));
             Simplex.Add(keepProfile.GetTail(type));
-
-            if (type.IsPrimitive)
-            {
-                Simplex[0] = null;
-                Simplex[2] = null;
-            }
-            
             return Simplex.Escape(keepProfile.EscapeProfile, 1);
         }
 

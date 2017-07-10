@@ -9,14 +9,14 @@ namespace Art.Serialization
 {
     public class EscapeProfile
     {
-        public char EscapeChar = '\\';
-        public char EscapeVerbatimChar = '\"';
+        public char EscapeSequence = '\\';
+        public char VerbatimEscapeSequence = '\"';
 
         public string VerbatimPattern = "@";
         public List<string> HeadPatterns = new List<string> {"\"", "<", "'"};
         public List<string> TailPatterns = new List<string> {"\"", ">", "'"};
 
-        public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> {{'\"', "\"\""}};
+        public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> {{'\"', "\""}};
 
         public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
         {
@@ -46,7 +46,7 @@ namespace Art.Serialization
 
 
         public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
-            bool verbatim, string escapeSequence = "\\", bool asciMode = false)
+            bool verbatim, char escapeSequence, bool asciMode = false)
         {
             if (value == null) return builder;
 
@@ -62,10 +62,8 @@ namespace Art.Serialization
                     int i = c;
                     if (i < 32 || 127 < i) builder.AppendFormat("\\u{0:x04}", i);
                     else builder.Append(c);
-                    continue;
                 }
-
-                builder.Append(c);
+                else builder.Append(c);
             }
 
             return builder;
@@ -75,9 +73,10 @@ namespace Art.Serialization
         {
             var useVerbatim = value.Contains("\\") || value.Contains("/");
             var escapeChars = useVerbatim ? VerbatimEscapeChars : EscapeChars;
+            var escapeSequence = useVerbatim ? VerbatimEscapeSequence : EscapeSequence;
             var builder = new StringBuilder();
             if (useVerbatim) builder.Append(VerbatimPattern);
-            AppendWithEscape(builder, value, escapeChars, useVerbatim);
+            AppendWithEscape(builder, value, escapeChars, useVerbatim, escapeSequence);
             return builder.ToString();
         }
 
@@ -112,7 +111,7 @@ namespace Art.Serialization
                 var headPattern = HeadPatterns.FirstOrDefault(p => data.Match(p, o));
                 if (headPattern != null)
                 {
-                    var escapeChar = verbatimFlag ? EscapeVerbatimChar : EscapeChar;
+                    var escapeChar = verbatimFlag ? VerbatimEscapeSequence : EscapeSequence;
                     var unescapeStrategy = verbatimFlag ? VerbatimUnescapeChars : UnescapeChars;
                     simplex.Add(headPattern);
                     offset += headPattern.Length;
@@ -148,7 +147,11 @@ namespace Art.Serialization
                 if (escapeFlag)
                 {
                     var d = data[offset + 1];
-                    if (unescapeStrategy.TryGetValue(d, out var s)) builder.Append(s);
+                    if (unescapeStrategy.TryGetValue(d, out var s))
+                    {
+                        builder.Append(s);
+                        if (s == breakPattern[0]) offset++;
+                    }
                     else if (asciMode && !verbatim && d == 'u')
                     {
                         c = (char) int.Parse(data.Substring(offset + 2, 4), NumberStyles.AllowHexSpecifier);

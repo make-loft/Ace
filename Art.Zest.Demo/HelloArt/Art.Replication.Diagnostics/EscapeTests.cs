@@ -103,7 +103,7 @@ namespace Art.Replication.Diagnostics
             var escapeProfile = new EscapeProfile();
             var source = "http://makeloft.xyz/";
             var s = escapeProfile.AppendWithEscape(new StringBuilder(), source,
-                escapeProfile.VerbatimEscapeChars, true).ToString();
+                escapeProfile.VerbatimEscapeChars, true, '/').ToString();
             Assert.AreEqual(source, s);
         }
 

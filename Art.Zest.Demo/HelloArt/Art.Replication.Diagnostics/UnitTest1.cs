@@ -130,6 +130,8 @@ namespace Art.Replication.Diagnostics
         public static void Main()
         {
            // new UnitTest1().TestMethod1();
+            var xi = "abc/\"".CreateSnapshot().ToString();
+            Console.WriteLine(xi);
             var a = new ComplexData();
             //a.Ha.Method
             var pp = a.Ptr;
