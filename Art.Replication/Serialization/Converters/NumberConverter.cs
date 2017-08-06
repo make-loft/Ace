@@ -29,9 +29,10 @@ namespace Art.Serialization.Converters
         {
             var convertedValue = ToStringConvert(value);
             if (convertedValue == null) return null;
-            if (!AppendSyffixes && (value is float || value is double || value is decimal) &&
-                !convertedValue.Contains("."))
-                convertedValue += ".0";
+            var decimalSeparator = ActiveCulture.NumberFormat.NumberDecimalSeparator;
+            if ((value is double || value is float || value is decimal)
+                && convertedValue.IndexOf(decimalSeparator, StringComparison.OrdinalIgnoreCase) < 0)
+                convertedValue += decimalSeparator + "0";
             var suffix = AppendSyffixes && TypeToSyffix.TryGetValue(value.GetType(), out var s) ? s : null;
             return suffix == null ? convertedValue : convertedValue + suffix;
         }
