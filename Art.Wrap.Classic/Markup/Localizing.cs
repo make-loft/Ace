@@ -13,18 +13,13 @@ namespace Art.Markup
             Path = new PropertyPath(LocalizationSource.Wrap.ActivePath);
         }
 
-        public Localizing(string key) : this()
-        {
-            Key = key;
-        }
+        public Localizing(string key) : this() => Key = key;
 
         public string Key { get; set; }
 
         public Letter Case { get; set; }
 
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return LocalizationSource.Wrap[Key, culture].To(Case);
-        }
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+            LocalizationSource.Wrap[Key, culture].To(Case);
     }
 }

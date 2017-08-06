@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -7,64 +7,36 @@ namespace Art
 {
     public static class VisualTree
     {
-        public static IEnumerable<DependencyObject> GetVisualChildren(this DependencyObject dependencyObject)
+        public static IEnumerable<DependencyObject> GetVisualChildren(this DependencyObject current)
         {
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(dependencyObject); i++)
+            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(current); i++)
+                yield return VisualTreeHelper.GetChild(current, i);
+        }
+
+        public static DependencyObject GetVisualParent(this DependencyObject current) => 
+            VisualTreeHelper.GetParent(current);
+
+        public static IEnumerable<DependencyObject> GetVisualDescendants(this DependencyObject current) => 
+            current.GetVisualChildren().SelectMany(child => child.GetVisualDescendants());
+
+        public static IEnumerable<DependencyObject> GetVisualAncestors(this DependencyObject current)
+        {
+            while (true)
             {
-                yield return VisualTreeHelper.GetChild(dependencyObject, i);
+                var parent = VisualTreeHelper.GetParent(current);
+                if (parent == null) yield break;
+                yield return current = parent;
             }
         }
 
-        public static DependencyObject GetVisualParent(this DependencyObject dependencyObject)
+        public static TType GetDataContext<TType>(this DependencyObject current) where TType : class
         {
-            return VisualTreeHelper.GetParent(dependencyObject);
-        }
-
-        public static List<TType> GetVisualDescendants<TType>(this DependencyObject dependencyObject)
-            where TType : DependencyObject
-        {
-            var children = new List<TType>();
-            foreach (var child in dependencyObject.GetVisualChildren())
+            var element = current as FrameworkElement;
+            var context = element?.DataContext as TType;
+            while (context == null && current != null)
             {
-                children.AddRange(child.GetVisualDescendants<TType>());
-                var item = child as TType;
-                if (item != null) children.Add(item);
-            }
-
-            return children;
-        }
-
-        public static List<TType> GetVisualAncestors<TType>(this DependencyObject dependencyObject)
-            where TType : DependencyObject
-        {
-            var parants = new List<TType>();
-            var parent = VisualTreeHelper.GetParent(dependencyObject);
-            if (parent == null) return new List<TType>();
-            parants.AddRange(parent.GetVisualAncestors<TType>());
-            var item = parent as TType;
-            if (item != null) parants.Add(item);
-            return parants;
-        }
-
-        public static TType GetNearestVisualAncestor<TType>(this DependencyObject dependencyObject,
-            Func<TType, bool> condition = null)
-            where TType : DependencyObject
-        {
-            if (dependencyObject == null) return null;
-            var parent = VisualTreeHelper.GetParent(dependencyObject);
-            return parent is TType && (condition == null || condition((TType) parent))
-                ? (TType) parent
-                : GetNearestVisualAncestor<TType>(parent);
-        }
-
-        public static TType GetDataContext<TType>(this DependencyObject dependencyObject) where TType : class
-        {
-            var element = dependencyObject as FrameworkElement;
-            var context = element == null ? null : element.DataContext as TType;
-            while (context == null && dependencyObject != null)
-            {
-                dependencyObject = dependencyObject.GetVisualParent();
-                element = dependencyObject as FrameworkElement;
+                current = current.GetVisualParent();
+                element = current as FrameworkElement;
                 if (element != null) context = element.DataContext as TType;
             }
 

@@ -6,10 +6,7 @@ namespace Art.Markup.Patterns
 {
     public abstract class ABindingExtension : Binding, IValueConverter
     {
-        protected ABindingExtension()
-        {
-            Source = Converter = this;
-        }
+        protected ABindingExtension() => Source = Converter = this;
 
         protected ABindingExtension(object source) // Source, RelativeSource, null for DataContext
         {
@@ -21,9 +18,7 @@ namespace Art.Markup.Patterns
 
         public abstract object Convert(object value, Type targetType, object parameter, CultureInfo culture);
 
-        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
+        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
             throw new NotImplementedException();
-        }
     }
 }

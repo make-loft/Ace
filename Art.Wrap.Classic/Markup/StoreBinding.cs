@@ -9,7 +9,7 @@ namespace Art.Markup
         [TypeConverter(typeof(XamlTypeConverter))]
         public Type StoreKey
         {
-            get { return Source == null ? null : Source.GetType(); }
+            get => Source?.GetType();
             set
             {
                 var itemType = value;

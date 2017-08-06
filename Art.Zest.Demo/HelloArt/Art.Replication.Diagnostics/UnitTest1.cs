@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -129,6 +130,12 @@ namespace Art.Replication.Diagnostics
         
         public static void Main()
         {
+            var f = CultureInfo.CurrentCulture.NumberFormat;
+            Console.WriteLine(f);
+            Console.WriteLine(123.0.ToString());
+            Console.WriteLine(123.012345.ToString("N"));
+            var d = double.Parse("123.");
+            d = d;
             var r = typeof(MyClassB).GetProperty("BF", BindingFlags.NonPublic|BindingFlags.Instance);
 
             Console.WriteLine(r?.Name);

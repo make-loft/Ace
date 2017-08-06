@@ -12,8 +12,8 @@ namespace Art.Markup
 
         public ICommand Command
         {
-            get { return (ICommand) GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
+            get => (ICommand) GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
         public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register(
@@ -21,8 +21,8 @@ namespace Art.Markup
 
         public object CommandParameter
         {
-            get { return GetValue(CommandParameterProperty); }
-            set { SetValue(CommandParameterProperty, value); }
+            get => GetValue(CommandParameterProperty);
+            set => SetValue(CommandParameterProperty, value);
         }
 
 		public bool UseEventArgsAsCommandParameter { get; set; }
@@ -34,7 +34,7 @@ namespace Art.Markup
         public void ExecuteCommand(object sender, EventArgs eventArgs)
         {
             var mediator = Command as Mediator;
-            if (mediator != null) mediator.SetSender(sender);
+            mediator?.SetSender(sender);
             var parameter = UseEventArgsAsCommandParameter ? eventArgs : CommandParameter;
             Command.Execute(parameter);
         }

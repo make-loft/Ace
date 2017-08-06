@@ -14,10 +14,7 @@ namespace Art.Markup
         {
         }
 
-        public Context(string key) : base(new RelativeSource {Mode = RelativeSourceMode.Self})
-        {
-            Key = key;
-        }
+        public Context(string key) : base(new RelativeSource {Mode = RelativeSourceMode.Self}) => Key = key;
 
         [TypeConverter(typeof (XamlTypeConverter))]
         public Type StoreKey { get; set; }
