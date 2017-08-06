@@ -9,26 +9,16 @@ namespace Art
     {
         public static readonly LocalizationSource Wrap = new LocalizationSource();
 
-        public override string this[string key]
-        {
-            get
-            {
-                if (ActiveManager == null) return ":" + key + "•";
-                return ActiveManager.GetString(key) ??
-                       MergedManagers.Select(m => m.GetString(key)).FirstOrDefault() ??
-                       ":" + key + "•";
-            }
-        }
+        public override string this[string key] =>
+            ActiveManager?.GetString(key) ??
+            MergedManagers.Select(m => m.GetString(key)).FirstOrDefault() ??
+            GetDefault(key);
 
-        public override string this[string key, CultureInfo culture]
-        {
-            get
-            {
-                if (ActiveManager == null) return ":" + key + "•";
-                return ActiveManager.GetString(key, culture) ??
-                       MergedManagers.Select(m => m.GetString(key, culture)).FirstOrDefault() ??
-                       ":" + key + "•";
-            }
-        }
+        public override string this[string key, CultureInfo culture] =>
+            ActiveManager?.GetString(key, culture) ??
+            MergedManagers.Select(m => m.GetString(key, culture)).FirstOrDefault() ??
+            GetDefault(key, culture);
+
+        public virtual string GetDefault(string key, CultureInfo culture = null) => ":" + key + "•";
     }
 }

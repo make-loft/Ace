@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
+using Art.Replication;
 
 namespace Art
 {
@@ -18,11 +20,8 @@ namespace Art
 
         public SmartObject Smart
         {
-            set
-            {
-                if (Equals(this, value)) RaisePropertyChanged(SmartPropertyName);
-            }
             get => this;
+            set => RaisePropertyChanged(Equals(value) ? SmartPropertyName : null);
         }
 
         public object this[string key]
@@ -36,29 +35,28 @@ namespace Art
             }
         }
 
-        public object this[string key, object defaultValue] /* {Binding Path='Smart[Test,1]'} */
+        public object this[string key, object defaultValue] // {Binding Path='Smart[Test,1]'}
         {
             get => SmartContainer.TryGetValue(key, out var value) ? value : this[key] = defaultValue;
             set => this[key] = value;
         }
 
-        public object this[string key, object defaultValue, bool segregate] /* {Binding Path='Smart[Test,1,True].Value'} */
+        public object this[string key, object defaultValue, bool segregate] // {Binding Path='Smart[Test,1,True].Value'}
         {
             get => this[key, segregate ? new Segregator {Value = defaultValue} : defaultValue];
             set => this[key] = value;
         }
 
         [DataMember]
-        public Dictionary<string, object> SmartState
+        public virtual Dictionary<string, object> SmartState
         {
-            get
-            {
-                var thisType = GetType();
-                return SmartContainer.Where(p => thisType.GetProperty(p.Key) == null)
-                    .ToDictionary(p => p.Key, p => p.Value is ValueType ? p.Value.ToString() : p.Value);
-            }
+            get => GetSmartProperties(GetType(), SmartContainer).ToDictionary(p => p.Key, p => p.Value);
             set => value?.ForEach(pair => this[pair.Key] = pair.Value);
         }
+
+        protected static IEnumerable<KeyValuePair<string, object>> GetSmartProperties(
+            Type type, Dictionary<string, object> container, BindingFlags bindingFlags = Member.DefaultFlags) =>
+            container.Where(p => !type.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo));
 
         public void RaisePropertyChanging(string propertyName) =>
             PropertyChanging(this, new PropertyChangingEventArgs(propertyName));

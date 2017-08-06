@@ -111,14 +111,11 @@ namespace Art.Replication.Replicators
                 : baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
 
         private static object CreateInstance(Type type, Map snapshot, ReplicationProfile replicationProfile) =>
-            typeof(Delegate).IsAssignableFrom(type)
-                ? null // Delegate.CreateDelegate(type, snapshot["MethodInfo"])
-                : type.IsArray
-                    ? (snapshot.TryGetValue(replicationProfile.SetDimensionKey, out var dimensions)
-                        ? Array.CreateInstance(type.GetElementType(), ((Set) dimensions).Cast<int>().ToArray())
-                        : Array.CreateInstance(type.GetElementType(),
-                            ((Set) snapshot[replicationProfile.SetKey]).Count))
-                    : Activator.CreateInstance(type);
+            type.IsArray
+                ? (snapshot.TryGetValue(replicationProfile.SetDimensionKey, out var dimensions)
+                    ? Array.CreateInstance(type.GetElementType(), ((Set) dimensions).Cast<int>().ToArray())
+                    : Array.CreateInstance(type.GetElementType(), ((Set) snapshot[replicationProfile.SetKey]).Count))
+                : Activator.CreateInstance(type);
     }
 }
   

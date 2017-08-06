@@ -22,9 +22,9 @@ namespace Art.Replication
     {
         static Snapshot()
         {
-            if (DateTime.Now > new DateTime(2017, 9, 1))
-                throw new Exception(
-                    "Trial version has been expired. Please, write to 'makeman@tut.by' for getting licence.");
+            //if (DateTime.Now > new DateTime(2017, 9, 1))
+            //    throw new Exception(
+            //        "Trial version has been expired. Please, write to 'makeman@tut.by' for getting licence.");
         }
 
         public static ReplicationProfile DefaultReplicationProfile = new ReplicationProfile {AttachId = true};

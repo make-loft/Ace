@@ -7,6 +7,8 @@ namespace Art.Replication
 {
     public static class Member
     {
+        public const BindingFlags DefaultFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+        
         public static bool CanRead(this MemberInfo member) =>
             (member as PropertyInfo)?.CanRead ?? member is FieldInfo;
 
@@ -46,5 +48,10 @@ namespace Art.Replication
             type.BaseType?.EnumerateMembers(bindingFlags)
                 .Concat(type.GetMembers(bindingFlags | BindingFlags.DeclaredOnly)) ??
             type.GetMembers(bindingFlags);
+        
+        public static IEnumerable<MemberInfo> EnumerateMember(this Type type, string name, BindingFlags bindingFlags) =>
+            type.BaseType?.EnumerateMember(name, bindingFlags)
+                .Concat(type.GetMember(name, bindingFlags | BindingFlags.DeclaredOnly)) ??
+            type.GetMember(name, bindingFlags);
     }
 }

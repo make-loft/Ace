@@ -26,19 +26,17 @@ namespace Art.Markup
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var frameworkElement = value as FrameworkElement;
-            if (frameworkElement != null)
+            if (value is FrameworkElement frameworkElement)
             {
                 var mediator = new Mediator();
 
-                RoutedEventHandler onLoadedRefreshMediatorHandler = null;
-                onLoadedRefreshMediatorHandler = (sender, args) =>
+                void OnLoadedRefreshMediatorHandler(object sender, RoutedEventArgs args)
                 {
-                    frameworkElement.Loaded -= onLoadedRefreshMediatorHandler;
+                    frameworkElement.Loaded -= OnLoadedRefreshMediatorHandler;
                     RefreshMediator(mediator, frameworkElement, culture);
-                };
+                }
 
-                frameworkElement.Loaded += onLoadedRefreshMediatorHandler;
+                frameworkElement.Loaded += OnLoadedRefreshMediatorHandler;
                 if (Mode != BindingMode.OneTime)
                 {
 #if WINDOWS_PHONE

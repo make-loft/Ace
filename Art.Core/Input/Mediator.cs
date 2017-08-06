@@ -44,10 +44,12 @@ namespace Art.Input
 
         public void Initialize(object sender, CommandEvocator evocator)
         {
-            _weakSender = new WeakReference(sender);
-            _weakEvocator = new WeakReference(evocator);
-            _command = evocator.Command;
-            _weakListener = new WeakListener(_command, this); //_command.CanExecuteChanged += RaiseCanExecuteChanged;
+            _weakListener?.Dispose();
+            _weakSender = sender == null ? null : new WeakReference(sender);
+            _weakEvocator = evocator == null ? null : new WeakReference(evocator);
+            _command = evocator?.Command;
+            _weakListener = _command == null ? null : new WeakListener(_command, this);
+            //_command.CanExecuteChanged += RaiseCanExecuteChanged;
 
             var contextCommand = _command as Command;
             contextCommand?.RaiseCanExecuteChanged();

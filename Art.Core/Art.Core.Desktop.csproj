@@ -55,7 +55,7 @@
     <Compile Include="ContextSet.cs" />
     <Compile Include="Segregator.cs" />
     <Compile Include="SmartObject.cs" />
-    <Compile Include="Member.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="Store.cs" />
   </ItemGroup>

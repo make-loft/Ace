@@ -18,60 +18,45 @@ namespace Art
         public Dictionary<ICommand, CommandEvocator> CommandEvocators { get; private set; }
         public Dictionary<string, PropertyEvocator> PropertyEvocators { get; private set; }
 
-        public CommandEvocator this[ICommand command] =>
+        public CommandEvocator this[ICommand command] => GetEvocator(command);
+        public PropertyEvocator this[Expression<Func<object>> expression] => GetEvocator(expression.UnboxMemberName());
+
+        public CommandEvocator GetEvocator(ICommand command) =>
             CommandEvocators.TryGetValue(command, out var evocator)
                 ? evocator
                 : CommandEvocators[command] = new CommandEvocator(command);
 
-        public PropertyEvocator this[Expression<Func<object>> expression]
-        {
-            get
-            {
-                var propertyName = expression.ExtractName();
-                return PropertyEvocators.TryGetValue(propertyName, out var evocator)
-                    ? evocator
-                    : PropertyEvocators[propertyName] = new PropertyEvocator(propertyName);
-            }
-        }
+        public PropertyEvocator GetEvocator(string propertyName) =>
+            PropertyEvocators.TryGetValue(propertyName, out var evocator)
+                ? evocator
+                : PropertyEvocators[propertyName] = new PropertyEvocator(propertyName);
 
         public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default(TValue)) =>
-            (TValue) base[expression.ExtractName(), defaultValue];
+            (TValue) base[expression.UnboxMemberName(), defaultValue];
 
         public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool checkEquals = false)
         {
             if (checkEquals && Equals(Get(expression), value)) return;
-            var propertyName = expression.ExtractName();
+            var propertyName = expression.UnboxMemberName();
             RaisePropertyChanging(propertyName);
             base[propertyName] = value;
             RaisePropertyChanged(propertyName);
         }
 
         public void RaisePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
-            RaisePropertyChanging(expression.ExtractName());
+            RaisePropertyChanging(expression.UnboxMemberName());
 
         public void RaisePropertyChanged<TValue>(Expression<Func<TValue>> expression) =>
-            RaisePropertyChanged(expression.ExtractName());
+            RaisePropertyChanged(expression.UnboxMemberName());
 
         [OnDeserializing]
         public new void Initialize(StreamingContext context = default(StreamingContext))
         {
             CommandEvocators = new Dictionary<ICommand, CommandEvocator>();
             PropertyEvocators = new Dictionary<string, PropertyEvocator>();
-            PropertyChanging += OnPropertyChanging;
-            PropertyChanged += OnPropertyChanged;
-            ErrorsChanged += OnErrorsChanged;
-        }
-
-        private void OnPropertyChanging(object sender, PropertyChangingEventArgs args)
-        {
-            if (PropertyEvocators.TryGetValue(args.PropertyName, out var evocator))
-                evocator.EvokePropertyChanging(sender, args);
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            if (PropertyEvocators.TryGetValue(args.PropertyName, out var evocator))
-                evocator.EvokePropertyChanged(sender, args);
+            PropertyChanging += (sender, args) => GetEvocator(args.PropertyName).EvokePropertyChanging(sender, args);
+            PropertyChanged += (sender, args) => GetEvocator(args.PropertyName).EvokePropertyChanged(sender, args);
+            ErrorsChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeErrorsChanged(sender, args);
         }
 
         #region Validation Core
@@ -92,31 +77,18 @@ namespace Art
 
         public IEnumerable GetErrors(string propertyName) =>
             PropertyEvocators.TryGetValue(propertyName, out var evocator)
-                ? evocator.GetErrors(propertyName)
+                ? evocator.GetErrors(propertyName).Where(e => e != null)
                 : Enumerable.Empty<object>();
 
-        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs args)
-        {
-            if (PropertyEvocators.TryGetValue(args.PropertyName, out var evocator))
-                evocator.EvokeErrorsChanged(sender, args);
-        }
-
-        public void RaiseErrorsChanged<TValue>(Expression<Func<TValue>> expression) =>
-            ErrorsChanged(this, new DataErrorsChangedEventArgs(expression.ExtractName()));
+        public void RaiseErrorsChanged<TValue>(Expression<Func<TValue>> expression) => 
+            ErrorsChanged(this, new DataErrorsChangedEventArgs(expression.UnboxMemberName()));
 
         public void RaiseErrorsChanged(string propertyName) =>
             ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
 
-        string IDataErrorInfo.this[string propertyName]
-        {
-            get
-            {
-                var errors = GetErrors(propertyName).Cast<object>().ToList();
-                return errors.Any()
-                    ? errors.Select(e => (e ?? "").ToString()).Aggregate((x, y) => x + Environment.NewLine + y)
-                    : null;
-            }
-        }
+        string IDataErrorInfo.this[string propertyName] =>
+            GetErrors(propertyName).Cast<object>().Select(e => e.ToString())
+                .Aggregate((string) null, (x, y) => x + (x == null ? null : Environment.NewLine) + y);
 
         #endregion
     }

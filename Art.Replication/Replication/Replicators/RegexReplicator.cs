@@ -21,8 +21,8 @@ namespace Art.Replication.Replicators
             new Regex((string) map[PatternKey], RestoreOptions(map[OptionsKey], replicationProfile));
 
         private static RegexOptions RestoreOptions(object value, ReplicationProfile replicationProfile) =>
-            value is RegexOptions o
-                ? o
+            value is RegexOptions regexOptions
+                ? regexOptions
                 : replicationProfile.TryRestoreTypeInfoImplicitly
                     ? (RegexOptions) Enum.Parse(typeof(RegexOptions), value.ToString(), true)
                     : throw new Exception("Can not restore type info for value " + value);

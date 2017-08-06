@@ -129,6 +129,10 @@ namespace Art.Replication.Diagnostics
         
         public static void Main()
         {
+            var r = typeof(MyClassB).GetProperty("BF", BindingFlags.NonPublic|BindingFlags.Instance);
+
+            Console.WriteLine(r?.Name);
+            r = r;
            // new UnitTest1().TestMethod1();
             var xi = "abc/\"".CreateSnapshot().ToString();
             Console.WriteLine(xi);

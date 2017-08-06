@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading;
 using Art.Patterns;
-using Art.Replication;
-using Art.Serialization;
 
 namespace Art
 {
@@ -15,8 +10,8 @@ namespace Art
     {
         public static Memory ActiveBox { get; set; }
 
-        public IStorage Storage { get; private set; }
-        public string KeyFormat { get; private set; }
+        public IStorage Storage { get; }
+        public string KeyFormat { get; }
 
         public Memory(IStorage storage, string keyFormat = "{0}.json")
         {
@@ -24,44 +19,23 @@ namespace Art
             KeyFormat = keyFormat;
         }
 
+        protected static bool HasDataContract(Type type) =>
+            Attribute.IsDefined(type, typeof(DataContractAttribute)) ||
+            Attribute.IsDefined(type, typeof(CollectionDataContractAttribute));
+        
+        protected static TValue Activate<TValue>(params object[] constructorArgs) =>
+            (TValue) Activator.CreateInstance(typeof(TValue), constructorArgs);
+
         public TValue Revive<TValue>(string key = null, params object[] constructorArgs)
         {
             try
             {
-                var type = typeof (TValue);
-                var hasDataContract =
-                    Attribute.IsDefined(type, typeof (DataContractAttribute)) ||
-                    Attribute.IsDefined(type, typeof (CollectionDataContractAttribute));
-                if (!hasDataContract) return (TValue) Activator.CreateInstance(type, constructorArgs);
-
-                var storageKey = MakeStorageKey(key, typeof (TValue));
-                //using (var stream = Storage.GetReadStream(storageKey))
-                {
-                    var currentCulture = Thread.CurrentThread.CurrentCulture;
-                    Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-
-                    try
-                    {
-                        var data = File.ReadAllText(storageKey);
-                        var snapshot = data.ParseSnapshot();
-                        var item = snapshot.ReplicateGraph<TValue>();
-                        if (Equals(item, null)) throw new Exception();
-                        return item;
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.WriteLine(exception.ToString());
-                        return (TValue) Activator.CreateInstance(type, constructorArgs);
-                    }
-                    finally
-                    {
-                        Thread.CurrentThread.CurrentCulture = currentCulture;
-                    }
-                }
+                return HasDataContract(typeof(TValue)) ? Decode<TValue>(key) : Activate<TValue>(constructorArgs);
             }
-            catch
+            catch (Exception exception)
             {
-                return (TValue) Activator.CreateInstance(typeof (TValue), constructorArgs);
+                Debug.WriteLine(exception.ToString());
+                return Activate<TValue>(constructorArgs);
             }
         }
 
@@ -69,53 +43,32 @@ namespace Art
         {
             try
             {
-                var type = item.GetType();
-                var hasDataContract =
-                    Attribute.IsDefined(type, typeof (DataContractAttribute)) ||
-                    Attribute.IsDefined(type, typeof (CollectionDataContractAttribute));
-                if (!hasDataContract) return;
-
-                var storageKey = MakeStorageKey(key, type);
-                //using (var stream = Storage.GetWriteStream(storageKey))
-                {
-                    var currentCulture = Thread.CurrentThread.CurrentCulture;
-                    Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-
-                    try
-                    {
-                        var snapshot = item.CreateSnapshot();
-                        var data = snapshot.ToString();
-                        File.WriteAllText(storageKey, data);
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.WriteLine(exception.ToString());
-                    }
-                    finally
-                    {
-                        Thread.CurrentThread.CurrentCulture = currentCulture;
-                    }
-                }
+                if (HasDataContract(item.GetType())) Encode(item, key);
             }
             catch (Exception exception)
             {
                 Debug.WriteLine(exception.ToString());
             }
         }
-
-        public bool Check<TValue>(string key = null)
+        
+        private TValue Decode<TValue>(string key)
         {
-            return Storage.HasKey(MakeStorageKey(key, typeof (TValue)));
+            var storageKey = MakeStorageKey(key, typeof(TValue));
+            var data = File.ReadAllText(storageKey);
+            var snapshot = data.ParseSnapshot();
+            return snapshot.ReplicateGraph<TValue>();
         }
 
-        public void Destroy<TValue>(string key = null)
+        private void Encode<TValue>(TValue item, string key)
         {
-            Storage.DeleteKey(MakeStorageKey(key, typeof (TValue)));
+            var snapshot = item.CreateSnapshot();
+            var data = snapshot.ToString();
+            var storageKey = MakeStorageKey(key, item.GetType());
+            File.WriteAllText(storageKey, data);
         }
 
-        private string MakeStorageKey(string key, Type type)
-        {
-            return string.Format(KeyFormat ?? "{0}", key ?? type.Name);
-        }
+        public bool Check<TValue>(string key = null) => Storage.HasKey(MakeStorageKey(key, typeof(TValue)));
+        public void Destroy<TValue>(string key = null) => Storage.DeleteKey(MakeStorageKey(key, typeof(TValue)));
+        private string MakeStorageKey(string key, Type type) => string.Format(KeyFormat ?? "{0}", key ?? type.Name);
     }
 }

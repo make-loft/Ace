@@ -8,16 +8,13 @@ namespace Art.Patterns
         public readonly ObservableCollection<TManager> MergedManagers =
             new ObservableCollection<TManager>();
 
-        public virtual string ActivePath
-        {
-            get { return "ActiveManager"; }
-        }
+        public virtual string ActivePath => "ActiveManager";
 
         private TManager _activeManager;
 
         public TManager ActiveManager
         {
-            get { return _activeManager; }
+            get => _activeManager;
             set
             {
                 _activeManager = value;
@@ -31,10 +28,7 @@ namespace Art.Patterns
 
         public abstract TValue this[TKey key, TCulture culture] { get; }
 
-        public void Activate()
-        {
-            PropertyChanged(this, new PropertyChangedEventArgs(ActivePath));
-        }
+        public void Activate() => PropertyChanged(this, new PropertyChangedEventArgs(ActivePath));
 
         public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
     }

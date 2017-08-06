@@ -10,13 +10,33 @@ namespace Art.Markup
     {
         #region Declarations
 
+        public static void SetRow(DependencyObject element, int value)
+        {
+            element.SetValue(Grid.RowProperty, value);
+        }
+
+        public static int GetRow(DependencyObject element)
+        {
+            return (int)element.GetValue(Grid.RowProperty);
+        }
+
+        public static void SetColumn(DependencyObject element, int value)
+        {
+            element.SetValue(Grid.ColumnProperty, value);
+        }
+
+        public static int GetColumn(DependencyObject element)
+        {
+            return (int)element.GetValue(Grid.ColumnProperty);
+        }
+
         public static readonly DependencyProperty ShowLinesProperty = DependencyProperty.RegisterAttached(
-            "ShowLines", typeof (bool), typeof (Rack), new PropertyMetadata(default(bool), (o, args) =>
-            {
-                var grid = o as Grid;
-                if (grid == null) return;
-                grid.ShowGridLines = Equals(args.NewValue, true);
-            }));
+            "ShowLines", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, args) =>
+          {
+              var grid = o as Grid;
+              if (grid == null) return;
+              grid.ShowGridLines = Equals(args.NewValue, true);
+          }));
 
         public static void SetShowLines(DependencyObject element, bool value)
         {
@@ -25,18 +45,18 @@ namespace Art.Markup
 
         public static bool GetShowLines(DependencyObject element)
         {
-            return (bool) element.GetValue(ShowLinesProperty);
+            return (bool)element.GetValue(ShowLinesProperty);
         }
 
         public static readonly DependencyProperty RowsProperty = DependencyProperty.RegisterAttached(
-            "Rows", typeof (string), typeof (Rack), new PropertyMetadata("", OnRowsPropertyChanged));
+            "Rows", typeof(string), typeof(Rack), new PropertyMetadata("", OnRowsPropertyChanged));
 
         public static readonly DependencyProperty ColumnsProperty = DependencyProperty.RegisterAttached(
-            "Columns", typeof (string), typeof (Rack), new PropertyMetadata("", OnColumnsPropertyChanged));
+            "Columns", typeof(string), typeof(Rack), new PropertyMetadata("", OnColumnsPropertyChanged));
 
         public static string GetRows(DependencyObject d)
         {
-            return (string) d.GetValue(RowsProperty);
+            return (string)d.GetValue(RowsProperty);
         }
 
         public static void SetRows(DependencyObject d, string value)
@@ -46,7 +66,7 @@ namespace Art.Markup
 
         public static string GetColumns(DependencyObject d)
         {
-            return (string) d.GetValue(ColumnsProperty);
+            return (string)d.GetValue(ColumnsProperty);
         }
 
         public static void SetColumns(DependencyObject d, string value)
@@ -55,7 +75,7 @@ namespace Art.Markup
         }
 
         public static readonly DependencyProperty SetProperty = DependencyProperty.RegisterAttached(
-            "Set", typeof (string), typeof (Rack), new PropertyMetadata("", OnSetChangedCallback));
+            "Set", typeof(string), typeof(Rack), new PropertyMetadata("", OnSetChangedCallback));
 
         public static void SetSet(DependencyObject element, string value)
         {
@@ -64,7 +84,7 @@ namespace Art.Markup
 
         public static string GetSet(DependencyObject element)
         {
-            return (string) element.GetValue(SetProperty);
+            return (string)element.GetValue(SetProperty);
         }
 
         #endregion
@@ -75,7 +95,7 @@ namespace Art.Markup
             if (grid == null) return;
 
             grid.RowDefinitions.Clear();
-            var patterns = (e.NewValue as string ?? "").Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
+            var patterns = (e.NewValue as string ?? "").Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var pattern in patterns)
             {
                 var indexMin = pattern.IndexOf(@"\", StringComparison.Ordinal);
@@ -87,7 +107,7 @@ namespace Art.Markup
                 var start = hasMin ? indexMin + 1 : 0;
                 var finish = hasMax ? indexMax : pattern.Length;
                 var value = pattern.Substring(start, finish - start);
-                var definition = new RowDefinition {Height = value.ToGridLength()};
+                var definition = new RowDefinition { Height = value.ToGridLength() };
                 if (valueMin != "") definition.MinHeight = double.Parse(valueMin);
                 if (valueMax != "") definition.MaxHeight = double.Parse(valueMax);
                 grid.RowDefinitions.Add(definition);
@@ -100,7 +120,7 @@ namespace Art.Markup
             if (grid == null) return;
 
             grid.ColumnDefinitions.Clear();
-            var patterns = (e.NewValue as string ?? "").Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
+            var patterns = (e.NewValue as string ?? "").Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var pattern in patterns)
             {
                 var indexMin = pattern.IndexOf(@"\", StringComparison.Ordinal);
@@ -112,7 +132,7 @@ namespace Art.Markup
                 var start = hasMin ? indexMin + 1 : 0;
                 var finish = hasMax ? indexMax : pattern.Length;
                 var value = pattern.Substring(start, finish - start);
-                var definition = new ColumnDefinition {Width = value.ToGridLength()};
+                var definition = new ColumnDefinition { Width = value.ToGridLength() };
                 if (valueMin != "") definition.MinWidth = double.Parse(valueMin);
                 if (valueMax != "") definition.MaxWidth = double.Parse(valueMax);
                 grid.ColumnDefinitions.Add(definition);
@@ -123,7 +143,7 @@ namespace Art.Markup
         {
             var element = o as FrameworkElement;
             if (element == null) return;
-            var patterns = (e.NewValue as string ?? "").ToUpperInvariant().Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
+            var patterns = (e.NewValue as string ?? "").ToUpperInvariant().Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
             var columnPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && !p.StartsWith("CS")).With(p => p.Replace("C", ""));
             var rowPattern = patterns.FirstOrDefault(p => p.StartsWith("R") && !p.StartsWith("RS")).With(p => p.Replace("R", ""));
             var columnSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS")).With(p => p.Replace("CS", ""));

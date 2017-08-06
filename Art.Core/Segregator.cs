@@ -18,7 +18,7 @@ namespace Art
         [DataMember]
         public TValue Value
         {
-            get { return _value; }
+            get => _value;
             set
             {
                 PropertyChanging(this, new PropertyChangingEventArgs("Value"));
