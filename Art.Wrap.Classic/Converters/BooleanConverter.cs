@@ -25,26 +25,26 @@ namespace Art.Converters
 
         public object OnTrue
         {
-            get { return GetValue(OnTrueProperty); }
-            set { SetValue(OnTrueProperty, value); }
+            get => GetValue(OnTrueProperty);
+            set => SetValue(OnTrueProperty, value);
         }
 
         public object OnFalse
         {
-            get { return GetValue(OnFalseProperty); }
-            set { SetValue(OnFalseProperty, value); }
+            get => GetValue(OnFalseProperty);
+            set => SetValue(OnFalseProperty, value);
         }
 
         public object OnNull
         {
-            get { return GetValue(OnNullProperty); }
-            set { SetValue(OnNullProperty, value); }
+            get => GetValue(OnNullProperty);
+            set => SetValue(OnNullProperty, value);
         }
 
         public object OnNotNull
         {
-            get { return GetValue(OnNotNullProperty); }
-            set { SetValue(OnNotNullProperty, value); }
+            get => GetValue(OnNotNullProperty);
+            set => SetValue(OnNotNullProperty, value);
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -81,9 +81,6 @@ namespace Art.Converters
             return null;
         }
 
-        public static object Default(Type type)
-        {
-            return type.IsByRef ? null : Activator.CreateInstance(type);
-        }
+        public static object Default(Type type) => type.IsByRef ? null : Activator.CreateInstance(type);
     }
 }

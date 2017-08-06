@@ -14,24 +14,21 @@ namespace Art.Converters
         public static readonly DependencyProperty DefaultProperty = DependencyProperty.Register(
             "Default", typeof(object), typeof(SwitchConverter), new PropertyMetadata(CaseSet.UndefinedObject));
 
-        public SwitchConverter()
-        {
-            Cases = new CaseSet();
-        }
+        public SwitchConverter() => Cases = new CaseSet();
 
         public object Default
         {
-            get { return GetValue(DefaultProperty); }
-            set { SetValue(DefaultProperty, value); }
+            get => GetValue(DefaultProperty);
+            set => SetValue(DefaultProperty, value);
         }
 
-        public CaseSet Cases { get; private set; }
+        public CaseSet Cases { get; }
 
         public bool TypeMode { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (TypeMode) value = value == null ? null : value.GetType();
+            if (TypeMode) value = value?.GetType();
             var pair = Cases.FirstOrDefault(p => Equals(p.Key, value) || SafeCompareAsStrings(p.Key, value));
             var result = pair == null ? Default : pair.Value;
             value = result == CaseSet.UndefinedObject ? value : result;
@@ -42,7 +39,7 @@ namespace Art.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (TypeMode) value = value == null ? null : value.GetType();
+            if (TypeMode) value = value?.GetType();
             var pair = Cases.FirstOrDefault(p => Equals(p.Value, value) || SafeCompareAsStrings(p.Value, value));
             value = pair == null ? Default : pair.Key;
             return PostConverter == null

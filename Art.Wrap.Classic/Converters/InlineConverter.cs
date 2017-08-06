@@ -15,8 +15,7 @@ namespace Art.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var args = new ConverterEventArgs(value, targetType, parameter, culture);
-            var handler = Converting;
-            if (handler != null) handler(this, args);
+            Converting?.Invoke(this, args);
             return PostConverter == null
                 ? args.ConvertedValue
                 : PostConverter.Convert(args.ConvertedValue, targetType, PostConverterParameter, culture);
@@ -25,8 +24,7 @@ namespace Art.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var args = new ConverterEventArgs(value, targetType, parameter, culture);
-            var handler = ConvertingBack;
-            if (handler != null) handler(this, args);
+            ConvertingBack?.Invoke(this, args);
             return PostConverter == null
                 ? args.ConvertedValue
                 : PostConverter.ConvertBack(args.ConvertedValue, targetType, PostConverterParameter, culture);

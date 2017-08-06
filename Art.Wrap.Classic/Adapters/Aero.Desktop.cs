@@ -16,14 +16,13 @@ namespace Art
             if (element == null || context == null) return;
             element.CommandBindings.AddRange(context.CommandEvocators.Values.Select(ToRoutedCommandBinding).ToArray());
 
-            EventHandler eventHandler = null;
-            eventHandler += (sender, args) =>
+            void OnEventHandler(object sender, EventArgs args)
             {
                 element.DataContext = contextObject;
-                element.Initialized -= eventHandler;
-            };
+                element.Initialized -= OnEventHandler;
+            }
 
-            element.Initialized += eventHandler;
+            element.Initialized += OnEventHandler;
         }
 
         public static System.Windows.Input.CommandBinding ToRoutedCommandBinding(this CommandEvocator evocator)

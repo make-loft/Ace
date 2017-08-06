@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
 using Art.Patterns;
 
 namespace Art
@@ -22,7 +23,7 @@ namespace Art
         protected static bool HasDataContract(Type type) =>
             Attribute.IsDefined(type, typeof(DataContractAttribute)) ||
             Attribute.IsDefined(type, typeof(CollectionDataContractAttribute));
-        
+
         protected static TValue Activate<TValue>(params object[] constructorArgs) =>
             (TValue) Activator.CreateInstance(typeof(TValue), constructorArgs);
 
@@ -50,13 +51,14 @@ namespace Art
                 Debug.WriteLine(exception.ToString());
             }
         }
-        
+
         private TValue Decode<TValue>(string key)
         {
             var storageKey = MakeStorageKey(key, typeof(TValue));
-            var data = File.ReadAllText(storageKey);
-            var snapshot = data.ParseSnapshot();
-            return snapshot.ReplicateGraph<TValue>();
+            //var data = File.ReadAllText(storageKey);
+            using (var stream = Storage.GetReadStream(storageKey))
+            using (var streamReader = new StreamReader(stream, Encoding.UTF8))
+                return streamReader.ReadToEnd().ParseSnapshot().ReplicateGraph<TValue>();
         }
 
         private void Encode<TValue>(TValue item, string key)
@@ -64,7 +66,10 @@ namespace Art
             var snapshot = item.CreateSnapshot();
             var data = snapshot.ToString();
             var storageKey = MakeStorageKey(key, item.GetType());
-            File.WriteAllText(storageKey, data);
+            //File.WriteAllText(storageKey, data);
+            using (var stream = Storage.GetWriteStream(storageKey))
+            using (var streamWriter = new StreamWriter(stream, Encoding.UTF8))
+                streamWriter.Write(data);
         }
 
         public bool Check<TValue>(string key = null) => Storage.HasKey(MakeStorageKey(key, typeof(TValue)));
