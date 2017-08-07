@@ -53,26 +53,14 @@ namespace Art.Serialization
 
         public string GetHead(Type type) => "<";
         public string GetTail(Type type) => ">";
-        
-        public static KeepProfile GetFormatted()
-        {
-            var escapeProfile = new EscapeProfile();
-            return new KeepProfile
-            {
-                EscapeProfile = escapeProfile,
-                SimplexConverter = new SimplexConverter(),
-                MapPairSplitter = ": ",
-                IndentChars = "  ",
-                NewLineChars = Environment.NewLine,
-                Delimiter = ","
-            };
-        }
+
+        public static KeepProfile GetFormatted() => new KeepProfile();
 
         public const string Map = "Map";
         public const string Set = "Set";
 
         public EscapeProfile EscapeProfile = new EscapeProfile();
-        public SimplexConverter SimplexConverter;
+        public SimplexConverter SimplexConverter = new SimplexConverter();
             
         public IBodyProfile<Map, bool> MapBody = new BodyProfile<Map> {Head = "{", Tail = "}"};
         public IBodyProfile<Set, bool> SetBody = new BodyProfile<Set> {Head = "[", Tail = "]"};
@@ -80,7 +68,7 @@ namespace Art.Serialization
         public string MapPairSplitter { get; set; } = ": ";
         public string Delimiter { get; set; } = ",";
         public bool UseTailDelimiter { get; set; } = false;
-        public string IndentChars { get; set; } = " ";
+        public string IndentChars { get; set; } = "  ";
         public string NewLineChars { get; set; } = Environment.NewLine;
         public bool AppendCountComments = false;
 

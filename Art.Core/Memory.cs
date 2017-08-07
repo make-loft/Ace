@@ -4,6 +4,8 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using Art.Patterns;
+using Art.Replication;
+using Art.Serialization;
 
 namespace Art
 {
@@ -14,6 +16,10 @@ namespace Art
         public IStorage Storage { get; }
         public string KeyFormat { get; }
 
+        public KeepProfile KeepProfile = new KeepProfile {MapPairSplitter = "\t", Delimiter = ""};
+        public ReplicationProfile ReplicationProfile =
+            new ReplicationProfile {SimplifyMaps = true, SimplifySets = true};
+        
         public Memory(IStorage storage, string keyFormat = "{0}.json")
         {
             Storage = storage;
@@ -58,13 +64,13 @@ namespace Art
             //var data = File.ReadAllText(storageKey);
             using (var stream = Storage.GetReadStream(storageKey))
             using (var streamReader = new StreamReader(stream, Encoding.UTF8))
-                return streamReader.ReadToEnd().ParseSnapshot().ReplicateGraph<TValue>();
+                return streamReader.ReadToEnd().ParseSnapshot(ReplicationProfile, KeepProfile).ReplicateGraph<TValue>();
         }
 
         private void Encode<TValue>(TValue item, string key)
         {
-            var snapshot = item.CreateSnapshot();
-            var data = snapshot.ToString();
+            var snapshot = item.CreateSnapshot(ReplicationProfile);
+            var data = snapshot.ToString(KeepProfile);
             var storageKey = MakeStorageKey(key, item.GetType());
             //File.WriteAllText(storageKey, data);
             using (var stream = Storage.GetWriteStream(storageKey))

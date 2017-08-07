@@ -16,9 +16,9 @@ namespace Art
 
         public static Snapshot CreateSnapshot(
             this object master,
-            Dictionary<object, int> cache = null,
             ReplicationProfile replicationProfile = null,
-            KeepProfile keepProfile = null) => Snapshot.Create(master, cache, replicationProfile, keepProfile);
+            KeepProfile keepProfile = null,
+            Dictionary<object, int> cache = null) => Snapshot.Create(master, cache, replicationProfile, keepProfile);
 
         public static Snapshot ParseSnapshot(
             this string matrix,

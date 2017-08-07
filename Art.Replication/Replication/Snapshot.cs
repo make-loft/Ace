@@ -61,6 +61,8 @@ namespace Art.Replication
 
         public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
 
+        public string ToString(KeepProfile keepProfile) => MasterState.SnapshotToString(keepProfile);
+        
         public string ToString(StringBuilder builder) =>
             MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
