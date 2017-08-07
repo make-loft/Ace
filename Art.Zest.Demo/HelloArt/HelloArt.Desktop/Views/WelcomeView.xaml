@@ -152,13 +152,13 @@
                         Grid.Row="1"
                         Rack.ShowLines="True"
                         Rack.Rows="{Smart RackRows}" 
-                        Rack.Columns="{Smart RackColumns}">
-                        <TextBlock
+                        Rack.Columns="{Smart RackColumns}"
+                        Rack.TwoWayMode="True">
+                        <GridSplitter
                             Background="Plum"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
-                            Rack.Set="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1'}"
-                            Text="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1', StringFormat='TextBox Rack.Set={0}'}"/>
+                            Rack.Set="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1'}"/>
                     </Grid>
                 </Grid>
             </TabItem>
