@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,199 +24,179 @@ namespace Art.Markup
         public static string GetSet(DependencyObject d) => (string) d.GetValue(SetProperty);
         public static void SetShowLines(DependencyObject d, bool value) => d.SetValue(ShowLinesProperty, value);
         public static bool GetShowLines(DependencyObject d) => (bool) d.GetValue(ShowLinesProperty);
+        public static void SetTwoWayMode(DependencyObject d, bool value) => d.SetValue(TwoWayModeProperty, value);
+        public static bool GetTwoWayMode(DependencyObject d) => (bool) d.GetValue(TwoWayModeProperty);
 
         public static readonly DependencyProperty ShowLinesProperty = DependencyProperty.RegisterAttached(
-            "ShowLines", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, args) =>
+            "ShowLines", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, e) =>
             {
                 var grid = o as Grid;
                 if (grid == null) return;
-                grid.ShowGridLines = Equals(args.NewValue, true);
+                grid.ShowGridLines = Equals(e.NewValue, true);
             }));
 
         public static readonly DependencyProperty RowsProperty = DependencyProperty.RegisterAttached(
-            "Rows", typeof(string), typeof(Rack), new PropertyMetadata("", OnRowsPropertyChanged));
+            "Rows", typeof(string), typeof(Rack), new PropertyMetadata(default(string), (o, args) =>
+            {
+                var grid = o as Grid;
+                if (grid == null || args.NewValue == null) return;
+                if (grid.GetValue(UpdateTriggerProperty) != null) return;
+
+                UpdateDefinitions(grid, grid.RowDefinitions, args.NewValue.ToString(),
+                    ToRowDefinition, BindRowDefinitionWithUpdateTrigger);
+            }));
 
         public static readonly DependencyProperty ColumnsProperty = DependencyProperty.RegisterAttached(
-            "Columns", typeof(string), typeof(Rack), new PropertyMetadata("", OnColumnsPropertyChanged));
+            "Columns", typeof(string), typeof(Rack), new PropertyMetadata(default(string), (o, args) =>
+            {
+                var grid = o as Grid;
+                if (grid == null || args.NewValue == null) return;
+                if (grid.GetValue(UpdateTriggerProperty) != null) return;
+
+                UpdateDefinitions(grid, grid.ColumnDefinitions, args.NewValue.ToString(),
+                    ToColumnDefinition, BindColumnDefinitionWithUpdateTrigger);
+            }));
 
         public static readonly DependencyProperty SetProperty = DependencyProperty.RegisterAttached(
             "Set", typeof(string), typeof(Rack), new PropertyMetadata("", OnSetChangedCallback));
 
+        public static readonly DependencyProperty TwoWayModeProperty = DependencyProperty.RegisterAttached(
+            "TwoWayMode", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, e) =>
+            {
+                var grid = o as Grid;
+                if (grid == null) return;
+                if (Equals(e.NewValue, true))
+                {
+                    grid.RowDefinitions.ForEach(d => BindRowDefinitionWithUpdateTrigger(d, grid));
+                    grid.ColumnDefinitions.ForEach(d => BindColumnDefinitionWithUpdateTrigger(d, grid));
+                }
+                else
+                {
+                    UpdateDefinitions(grid, grid.RowDefinitions, grid.GetValue(RowsProperty) as string,
+                        ToRowDefinition, BindRowDefinitionWithUpdateTrigger);
+                    UpdateDefinitions(grid, grid.ColumnDefinitions, grid.GetValue(ColumnsProperty) as string,
+                        ToColumnDefinition, BindColumnDefinitionWithUpdateTrigger);
+                }
+            }));
+
+        public static readonly DependencyProperty UpdateTriggerProperty = DependencyProperty.RegisterAttached(
+            "UpdateTrigger", typeof(object), typeof(Rack), new PropertyMetadata(default(object), (o, e) =>
+            {
+                var grid = o as Grid;
+                if (grid == null) return;
+
+                var columnsPattern = grid.ColumnDefinitions.Select(ToPattern).GluePatterns();
+                var rowsPattern = grid.RowDefinitions.Select(ToPattern).GluePatterns();
+                grid.SetValue(ColumnsProperty, columnsPattern);
+                grid.SetValue(RowsProperty, rowsPattern);
+                grid.SetValue(UpdateTriggerProperty, null);
+            }));
+
         #endregion
-        
-                public static readonly DependencyProperty TwoWayModeProperty = DependencyProperty.RegisterAttached(
-            "TwoWayMode", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, args) =>
+
+        private static void BindRowDefinitionWithUpdateTrigger(RowDefinition definition, Grid grid) =>
+            BindingOperations.SetBinding(definition, RowDefinition.HeightProperty, new Binding
             {
-                var grid = o as Grid;
-                if (grid == null) return;
-                
-                //BindColumns(grid);
-               // BindRows(grid);
-            }));
+                Source = grid,
+                Path = new PropertyPath(UpdateTriggerProperty),
+                Mode = BindingMode.OneWayToSource,
+                FallbackValue = definition.Height
+            });
 
-        public static readonly DependencyProperty StabProperty = DependencyProperty.RegisterAttached(
-            "Stab", typeof(object), typeof(Rack), new PropertyMetadata(default(object), (o, args) =>
+        private static void BindColumnDefinitionWithUpdateTrigger(ColumnDefinition definition, Grid grid) =>
+            BindingOperations.SetBinding(definition, ColumnDefinition.WidthProperty, new Binding
             {
-                var grid = o as Grid;
-                if (grid == null) return;
-                
-                grid.SetValue(ColumnsProperty, GetColumnsValue(grid));
-                grid.SetValue(RowsProperty, GetRowsValue(grid));
-                grid.SetValue(StabProperty, null);
-            }));
+                Source = grid,
+                Path = new PropertyPath(UpdateTriggerProperty),
+                Mode = BindingMode.OneWayToSource,
+                FallbackValue = definition.Width
+            });
 
-        public static void SetStab(DependencyObject element, object value)
+        private static string ToPattern(GridLength gridLength, double minValue, double maxValue) =>
+            (Equals(minValue, .0) ? null : minValue + "\\") + gridLength +
+            (Equals(maxValue, double.PositiveInfinity) ? null : "/" + maxValue);
+
+        private static string ToPattern(this RowDefinition definition) =>
+            ToPattern(definition.Height, definition.MinHeight, definition.MaxHeight);
+
+        private static string ToPattern(this ColumnDefinition definition) =>
+            ToPattern(definition.Width, definition.MinWidth, definition.MaxWidth);
+
+        public static TDefinition ToDefinition<TDefinition>(this string pattern,
+            Func<string, string, string, TDefinition> definitionDecoder) where TDefinition : DefinitionBase
         {
-            element.SetValue(StabProperty, value);
+            var indexMin = pattern.IndexOf(@"\", StringComparison.Ordinal);
+            var indexMax = pattern.IndexOf(@"/", StringComparison.Ordinal);
+            var hasMin = indexMin >= 0;
+            var hasMax = indexMax >= 0;
+            var valueMin = hasMin ? pattern.Substring(0, indexMin) : "";
+            var valueMax = hasMax ? pattern.Substring(indexMax + 1, pattern.Length - indexMax - 1) : "";
+            var start = hasMin ? indexMin + 1 : 0;
+            var finish = hasMax ? indexMax : pattern.Length;
+            var value = pattern.Substring(start, finish - start);
+            return definitionDecoder(value, valueMin, valueMax);
         }
 
-        public static object GetStab(DependencyObject element)
-        {
-            return (object) element.GetValue(StabProperty);
-        }
-        
-        public static void SetTwoWayMode(DependencyObject d, bool value)
-        {
-            d.SetValue(TwoWayModeProperty, value);
-        }
-
-        public static bool GetTwoWayMode(DependencyObject d)
-        {
-            return (bool) d.GetValue(TwoWayModeProperty);
-        }
-
-        private static void BindRows(Grid grid)
-        {
-            foreach (var defenition in grid.RowDefinitions)
+        private static RowDefinition ToRowDefinition(string gridLength, string minValue, string maxValue) =>
+            new RowDefinition
             {
-                BindingOperations.SetBinding(defenition, RowDefinition.HeightProperty,
-                    new Binding
-                    {
-                        Source = grid,
-                        Path = new PropertyPath(StabProperty),
-                        Mode = BindingMode.OneWayToSource,
-                        FallbackValue = defenition.Height
-                    });
-            }
-        }
-        
-        private static void BindColumns(Grid grid)
-        {
-            foreach (var defenition in grid.ColumnDefinitions)
+                Height = gridLength.ToGridLength(),
+                MinHeight = double.TryParse(minValue, out var min) ? min : .0,
+                MaxHeight = double.TryParse(maxValue, out var max) ? max : double.PositiveInfinity
+            };
+
+        private static ColumnDefinition ToColumnDefinition(string gridLength, string minValue, string maxValue) =>
+            new ColumnDefinition
             {
-                BindingOperations.SetBinding(defenition, ColumnDefinition.WidthProperty,
-                    new Binding
-                    {
-                        Source = grid,
-                        Path = new PropertyPath(StabProperty),
-                        Mode = BindingMode.OneWayToSource,
-                        FallbackValue = defenition.Width
-                    });
-            }
-        }
+                Width = gridLength.ToGridLength(),
+                MinWidth = double.TryParse(minValue, out var min) ? min : .0,
+                MaxWidth = double.TryParse(maxValue, out var max) ? max : double.PositiveInfinity
+            };
 
-        private static string GetRowsValue(Grid grid) => 
-            grid.RowDefinitions.Aggregate("", (s, definition) => s + (s == "" ? null : " ") + definition.Height);
-        
-        private static string GetColumnsValue(Grid grid) => 
-            grid.ColumnDefinitions.Aggregate("", (s, definition) => s + (s == "" ? null : " ") + definition.Width);
+        private static string GluePatterns(this IEnumerable<string> patterns) =>
+            patterns.Aggregate(new StringBuilder(),
+                (builder, pattern) => builder.Append(builder.Length == 0 ? null : " ").Append(pattern)).ToString();
 
+        public static string[] SplitPaterns(string value) =>
+            value?.Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
 
-        private static void OnRowsPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
+        public static void UpdateDefinitions<T>(Grid grid, ICollection<T> definitionCollection, string pattern,
+            Func<string, string, string, T> definitionFactory, Action<T, Grid> definitionBinder)
+            where T : DefinitionBase
         {
-            var grid = o as Grid;
-            if (grid == null) return;
-            if (grid.GetValue(StabProperty) != null) return;
-
-            grid.RowDefinitions.Clear();
-            var patterns = (e.NewValue as string ?? "").Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var pattern in patterns)
-            {
-                var indexMin = pattern.IndexOf(@"\", StringComparison.Ordinal);
-                var indexMax = pattern.IndexOf(@"/", StringComparison.Ordinal);
-                var hasMin = indexMin >= 0;
-                var hasMax = indexMax >= 0;
-                var valueMin = hasMin ? pattern.Substring(0, indexMin) : "";
-                var valueMax = hasMax ? pattern.Substring(indexMax + 1, pattern.Length - indexMax - 1) : "";
-                var start = hasMin ? indexMin + 1 : 0;
-                var finish = hasMax ? indexMax : pattern.Length;
-                var value = pattern.Substring(start, finish - start);
-                var definition = new RowDefinition {Height = value.ToGridLength()};
-                if (valueMin != "") definition.MinHeight = double.Parse(valueMin);
-                if (valueMax != "") definition.MaxHeight = double.Parse(valueMax);
-                grid.RowDefinitions.Add(definition);
-            }
-            
-            if (grid.GetValue(TwoWayModeProperty).Equals(true)) BindRows(grid);
+            var patterns = SplitPaterns(pattern);
+            var definitions = patterns.Select(p => p.ToDefinition(definitionFactory));
+            definitionCollection.Clear();
+            definitions.ForEach(definitionCollection.Add);
+            if (grid.GetValue(TwoWayModeProperty).Equals(false)) return;
+            definitionCollection.ForEach(d => definitionBinder(d, grid));
         }
 
-        private static void OnColumnsPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
+        private static void OnSetChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs args)
         {
-            var grid = o as Grid;
-            if (grid == null) return;
-            if (grid.GetValue(StabProperty) != null) return;
+            var element = o as UIElement;
+            if (element == null) return;
 
-            grid.ColumnDefinitions.Clear();
-            var patterns = (e.NewValue as string ?? "").Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var pattern in patterns)
-            {
-                var indexMin = pattern.IndexOf(@"\", StringComparison.Ordinal);
-                var indexMax = pattern.IndexOf(@"/", StringComparison.Ordinal);
-                var hasMin = indexMin >= 0;
-                var hasMax = indexMax >= 0;
-                var valueMin = hasMin ? pattern.Substring(0, indexMin) : "";
-                var valueMax = hasMax ? pattern.Substring(indexMax + 1, pattern.Length - indexMax - 1) : "";
-                var start = hasMin ? indexMin + 1 : 0;
-                var finish = hasMax ? indexMax : pattern.Length;
-                var value = pattern.Substring(start, finish - start);
-                var definition = new ColumnDefinition {Width = value.ToGridLength()};
-                if (valueMin != "") definition.MinWidth = double.Parse(valueMin);
-                if (valueMax != "") definition.MaxWidth = double.Parse(valueMax);
-                grid.ColumnDefinitions.Add(definition);
-            }
-            
-            if (grid.GetValue(TwoWayModeProperty).Equals(true)) BindColumns(grid);
+            var patterns = SplitPaterns((args.NewValue as string ?? "").ToUpperInvariant());
+            var cPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && !p.StartsWith("CS"))?.Replace("C", "");
+            var rPattern = patterns.FirstOrDefault(p => p.StartsWith("R") && !p.StartsWith("RS"))?.Replace("R", "");
+            var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS")).With(p => p.Replace("SSS", ""));
+            var cSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "");
+            var rSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "");
+
+            if (bool.TryParse(sssPattern, out var sharedSizeScope)) Grid.SetIsSharedSizeScope(element, sharedSizeScope);
+            if (int.TryParse(cSpanPattern, out var columnSpan)) Grid.SetColumnSpan(element, columnSpan);
+            if (int.TryParse(rSpanPattern, out var rowSpan)) Grid.SetRowSpan(element, rowSpan);
+            if (int.TryParse(cPattern, out var column)) Grid.SetColumn(element, column);
+            if (int.TryParse(rPattern, out var row)) Grid.SetRow(element, row);
         }
 
-        private static void OnSetChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+        private static GridLength ToGridLength(this string pattern)
         {
-            var d = o as FrameworkElement;
-            if (d == null) return;
-            var patterns = (e.NewValue as string ?? "").ToUpperInvariant()
-                .Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
-            var columnPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && !p.StartsWith("CS"))
-                .With(p => p.Replace("C", ""));
-            var rowPattern = patterns.FirstOrDefault(p => p.StartsWith("R") && !p.StartsWith("RS"))
-                .With(p => p.Replace("R", ""));
-            var columnSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS")).With(p => p.Replace("CS", ""));
-            var rowSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS")).With(p => p.Replace("RS", ""));
-            //var sharedSizeGroupPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS")).With(p => p.Replace("SSS", ""));
-
-            //bool sharedSizeScope;
-            int column, row, columnSpan, rowSpan;
-            //if (bool.TryParse(sharedSizeGroupPattern, out sharedSizeScope)) Grid.SetIsSharedSizeScope(d, sharedSizeScope);
-            if (int.TryParse(columnSpanPattern, out columnSpan)) Grid.SetColumnSpan(d, columnSpan);
-            if (int.TryParse(rowSpanPattern, out rowSpan)) Grid.SetRowSpan(d, rowSpan);
-            if (int.TryParse(columnPattern, out column)) Grid.SetColumn(d, column);
-            if (int.TryParse(rowPattern, out row)) Grid.SetRow(d, row);
-        }
-
-        private static GridLength ToGridLength(this string length)
-        {
-            try
-            {
-                length = length.Trim();
-                if (length.ToLowerInvariant().Equals("auto")) return new GridLength(0, GridUnitType.Auto);
-                if (!length.Contains("*")) return new GridLength(double.Parse(length), GridUnitType.Pixel);
-                length = length.Replace("*", "");
-                if (string.IsNullOrEmpty(length)) length = "1";
-                return new GridLength(double.Parse(length), GridUnitType.Star);
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception.Message);
-                return new GridLength();
-            }
+            var unitType = pattern.Contains("*") ? GridUnitType.Star : GridUnitType.Pixel;
+            pattern = unitType == GridUnitType.Star ? pattern.Replace("*", "") : pattern;
+            pattern = unitType == GridUnitType.Star && string.IsNullOrWhiteSpace(pattern) ? "1" : pattern;
+            return double.TryParse(pattern, out var value) ? new GridLength(value, unitType) : new GridLength();
         }
     }
 }

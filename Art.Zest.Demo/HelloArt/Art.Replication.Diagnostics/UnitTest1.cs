@@ -75,7 +75,7 @@ namespace Art.Replication.Diagnostics
             var person0 = DiagnosticsGraph.Create();
             
             var cache = new Dictionary<object, int>();
-            var s = person0.CreateSnapshot(cache);
+            var s = person0.CreateSnapshot(null, null, cache);
             
             Console.WriteLine(person0.Roles[1].Name); // old graph value: Thomas Anderson
             Console.WriteLine(person0.FirstName); // old graph value: Keanu
@@ -130,6 +130,8 @@ namespace Art.Replication.Diagnostics
         
         public static void Main()
         {
+            Console.WriteLine(double.Parse("     123  "));
+            Console.ReadKey();
             var f = CultureInfo.CurrentCulture.NumberFormat;
             Console.WriteLine(f);
             Console.WriteLine(123.0.ToString());

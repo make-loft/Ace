@@ -47,7 +47,7 @@ namespace System.Linq
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (T item in dictionary) yield return item;
         }
-        
+
         internal static void CopyToMultidimensionalArray(this IList<object> source, Array target, IList<int> dimensions)
         {
             var indices = new int[dimensions.Count];
@@ -59,21 +59,21 @@ namespace System.Linq
                     indices[j] = t % dimensions[j];
                     t /= dimensions[j];
                 }
-                
+
                 target.SetValue(source[i], indices);
             }
         }
-        
+
         internal static int[] RestoreDimensions(this IList items, int rank)
         {
             var dimensions = new int[rank];
- 
+
             for (var i = 0; i < rank; i++)
             {
                 items = items[0] is IList l ? l : items;
                 dimensions[i] = items.Count;
             }
-            
+
             return dimensions;
         }
 
@@ -117,7 +117,7 @@ namespace System.Linq
                 } while (true);
             }
         }
-        
+
         private static IEnumerable<T> ChunkSequence<T>(IEnumerator<T> enumerator, int chunkSize)
         {
             var count = 0;
