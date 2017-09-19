@@ -26,11 +26,9 @@ namespace Art.Replication.MemberProviders
             Filter = filter;
         }
 
-        private static readonly Type EnumerableType = typeof(IEnumerable);
-
         protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
             type.EnumerateMembers(BindingFlags)
                 .Where(Filter)
-                .Where(m => !EnumerableType.IsAssignableFrom(type) && m.Name != "Item");
+                .Where(m => !typeof(IEnumerable).IsAssignableFrom(type) && m.Name != "Item");
     }
 }
