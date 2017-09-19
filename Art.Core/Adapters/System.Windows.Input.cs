@@ -1,5 +1,5 @@
-﻿using Aero;
-using Aero.Input;
+﻿using Art;
+using Art.Input;
 
 // ReSharper disable once CheckNamespace
 
@@ -7,94 +7,85 @@ namespace System.Windows.Input
 {
     public class ApplicationCommands
     {
-        public static Command Cut { get { return Get("Cut"); } }
-        public static Command Copy { get { return Get("Copy"); } }
-        public static Command Paste { get { return Get("Paste"); } }
-        public static Command Undo { get { return Get("Undo"); } }
-        public static Command Redo { get { return Get("Redo"); } }
-        public static Command Delete { get { return Get("Delete"); } }
-        public static Command Find { get { return Get("Find"); } }
-        public static Command Replace { get { return Get("Replace"); } }
-        public static Command Help { get { return Get("Help"); } }
-        public static Command SelectAll { get { return Get("SelectAll"); } }
-        public static Command New { get { return Get("New"); } }
-        public static Command Open { get { return Get("Open"); } }
-        public static Command Save { get { return Get("Save"); } }
-        public static Command SaveAs { get { return Get("SaveAs"); } }
-        public static Command Print { get { return Get("Print"); } }
-        public static Command CancelPrint { get { return Get("CancelPrint"); } }
-        public static Command PrintPreview { get { return Get("PrintPreview"); } }
-        public static Command Close { get { return Get("Close"); } }
-        public static Command Properties { get { return Get("Properties"); } }
-        public static Command ContextMenu { get { return Get("ContextMenu"); } }
-        public static Command CorrectionList { get { return Get("CorrectionList"); } }
-        public static Command Stop { get { return Get("Stop"); } }
-        public static Command NotACommand { get { return Get("NotACommand"); } }
-        public static Command Last { get { return Get("Last"); } }
+        public static Command Cut => Get("Cut");
+        public static Command Copy => Get("Copy");
+        public static Command Paste => Get("Paste");
+        public static Command Undo => Get("Undo");
+        public static Command Redo => Get("Redo");
+        public static Command Delete => Get("Delete");
+        public static Command Find => Get("Find");
+        public static Command Replace => Get("Replace");
+        public static Command Help => Get("Help");
+        public static Command SelectAll => Get("SelectAll");
+        public static Command New => Get("New");
+        public static Command Open => Get("Open");
+        public static Command Save => Get("Save");
+        public static Command SaveAs => Get("SaveAs");
+        public static Command Print => Get("Print");
+        public static Command CancelPrint => Get("CancelPrint");
+        public static Command PrintPreview => Get("PrintPreview");
+        public static Command Close => Get("Close");
+        public static Command Properties => Get("Properties");
+        public static Command ContextMenu => Get("ContextMenu");
+        public static Command CorrectionList => Get("CorrectionList");
+        public static Command Stop => Get("Stop");
+        public static Command NotACommand => Get("NotACommand");
+        public static Command Last => Get("Last");
 
-        public static Command Get(string key = null)
-        {
-            return Context.Get(key);
-        }
+        public static Command Get(string key = null) => Context.Get(key);
     }
 
     public class MediaCommands
     {
-        public static Command Play { get { return Get("Play"); } }
-        public static Command Pause { get { return Get("Pause"); } }
-        public static Command Stop { get { return Get("Stop"); } }
-        public static Command Record { get { return Get("Record"); } }
-        public static Command NextTrack { get { return Get("NextTrack"); } }
-        public static Command PreviousTrack { get { return Get("PreviousTrack"); } }
-        public static Command FastForward { get { return Get("FastForward"); } }
-        public static Command Rewind { get { return Get("Rewind"); } }
-        public static Command ChannelUp { get { return Get("ChannelUp"); } }
-        public static Command ChannelDown { get { return Get("ChannelDown"); } }
-        public static Command TogglePlayPause { get { return Get("TogglePlayPause"); } }
-        public static Command IncreaseVolume { get { return Get("IncreaseVolume"); } }
-        public static Command DecreaseVolume { get { return Get("DecreaseVolume"); } }
-        public static Command MuteVolume { get { return Get("MuteVolume"); } }
-        public static Command IncreaseTreble { get { return Get("IncreaseTreble"); } }
-        public static Command DecreaseTreble { get { return Get("DecreaseTreble"); } }
-        public static Command IncreaseBass { get { return Get("IncreaseBass"); } }
-        public static Command DecreaseBass { get { return Get("DecreaseBass"); } }
-        public static Command BoostBass { get { return Get("BoostBass"); } }
-        public static Command IncreaseMicrophoneVolume { get { return Get("IncreaseMicrophoneVolume"); } }
-        public static Command DecreaseMicrophoneVolume { get { return Get("DecreaseMicrophoneVolume"); } }
-        public static Command MuteMicrophoneVolume { get { return Get("MuteMicrophoneVolume"); } }
-        public static Command ToggleMicrophoneOnOff { get { return Get("ToggleMicrophoneOnOff"); } }
-        public static Command Select { get { return Get("Select"); } }
-        public static Command Last { get { return Get("Last"); } }
+        public static Command Play => Get("Play");
+        public static Command Pause => Get("Pause");
+        public static Command Stop => Get("Stop");
+        public static Command Record => Get("Record");
+        public static Command NextTrack => Get("NextTrack");
+        public static Command PreviousTrack => Get("PreviousTrack");
+        public static Command FastForward => Get("FastForward");
+        public static Command Rewind => Get("Rewind");
+        public static Command ChannelUp => Get("ChannelUp");
+        public static Command ChannelDown => Get("ChannelDown");
+        public static Command TogglePlayPause => Get("TogglePlayPause");
+        public static Command IncreaseVolume => Get("IncreaseVolume");
+        public static Command DecreaseVolume => Get("DecreaseVolume");
+        public static Command MuteVolume => Get("MuteVolume");
+        public static Command IncreaseTreble => Get("IncreaseTreble");
+        public static Command DecreaseTreble => Get("DecreaseTreble");
+        public static Command IncreaseBass => Get("IncreaseBass");
+        public static Command DecreaseBass => Get("DecreaseBass");
+        public static Command BoostBass => Get("BoostBass");
+        public static Command IncreaseMicrophoneVolume => Get("IncreaseMicrophoneVolume");
+        public static Command DecreaseMicrophoneVolume => Get("DecreaseMicrophoneVolume");
+        public static Command MuteMicrophoneVolume => Get("MuteMicrophoneVolume");
+        public static Command ToggleMicrophoneOnOff => Get("ToggleMicrophoneOnOff");
+        public static Command Select => Get("Select");
+        public static Command Last => Get("Last");
 
-        public static Command Get(string key = null)
-        {
-            return Context.Get(key);
-        }
+        public static Command Get(string key = null) => Context.Get(key);
     }
 
     public class NavigationCommands
     {
-        public static Command BrowseBack { get { return Get("BrowseBack"); } }
-        public static Command BrowseForward { get { return Get("BrowseForward"); } }
-        public static Command BrowseHome { get { return Get("BrowseHome"); } }
-        public static Command BrowseStop { get { return Get("BrowseStop"); } }
-        public static Command Refresh { get { return Get("Refresh"); } }
-        public static Command Favorites { get { return Get("Favorites"); } }
-        public static Command Search { get { return Get("Search"); } }
-        public static Command IncreaseZoom { get { return Get("IncreaseZoom"); } }
-        public static Command DecreaseZoom { get { return Get("DecreaseZoom"); } }
-        public static Command Zoom { get { return Get("Zoom"); } }
-        public static Command NextPage { get { return Get("NextPage"); } }
-        public static Command PreviousPage { get { return Get("PreviousPage"); } }
-        public static Command FirstPage { get { return Get("FirstPage"); } }
-        public static Command LastPage { get { return Get("LastPage"); } }
-        public static Command GoToPage { get { return Get("GoToPage"); } }
-        public static Command NavigateJournal { get { return Get("NavigateJournal"); } }
-        public static Command Last { get { return Get("Last"); } }
+        public static Command BrowseBack => Get("BrowseBack");
+        public static Command BrowseForward => Get("BrowseForward");
+        public static Command BrowseHome => Get("BrowseHome");
+        public static Command BrowseStop => Get("BrowseStop");
+        public static Command Refresh => Get("Refresh");
+        public static Command Favorites => Get("Favorites");
+        public static Command Search => Get("Search");
+        public static Command IncreaseZoom => Get("IncreaseZoom");
+        public static Command DecreaseZoom => Get("DecreaseZoom");
+        public static Command Zoom => Get("Zoom");
+        public static Command NextPage => Get("NextPage");
+        public static Command PreviousPage => Get("PreviousPage");
+        public static Command FirstPage => Get("FirstPage");
+        public static Command LastPage => Get("LastPage");
+        public static Command GoToPage => Get("GoToPage");
+        public static Command NavigateJournal => Get("NavigateJournal");
+        public static Command Last => Get("Last");
 
-        public static Command Get(string key = null)
-        {
-            return Context.Get(key);
-        }
+        public static Command Get(string key = null) => Context.Get(key);
     }
 }
