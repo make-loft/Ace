@@ -8,8 +8,8 @@
     <ProjectGuid>{306379DB-60E7-43BC-A6D9-A29B1CCC0057}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Aero</RootNamespace>
-    <AssemblyName>Aero.Core.Portable</AssemblyName>
+    <RootNamespace>Art</RootNamespace>
+    <AssemblyName>Art.Core.Portable</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -56,13 +56,17 @@
     <Compile Include="Context.cs" />
     <Compile Include="ContextObject.cs" />
     <Compile Include="ContextSet.cs" />
-    <Compile Include="IExposable.cs" />
     <Compile Include="Segregator.cs" />
     <Compile Include="SmartObject.cs" />
-    <Compile Include="Member.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="Store.cs" />
-    <Compile Include="Sugar.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Art.Replication\Art.Replication.Portable.csproj">
+      <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
+      <Name>Art.Replication.Portable</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
