@@ -1,4 +1,5 @@
-﻿using Ace;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using Xamarin.Forms;
 
 namespace System.Windows
@@ -13,6 +14,15 @@ namespace System.Windows
 
 namespace System.Windows.Data
 {
+    public class PathConverter : TypeConverter
+    {
+        public static readonly List<Assembly> RegisteredAssemblies = new List<Assembly>();
+
+        public override bool CanConvertFrom(Type sourceType) => sourceType == typeof(string);
+
+        public override object ConvertFromInvariantString(string value) => new PropertyPath(value);
+    }
+
     public interface IValueConverter : Xamarin.Forms.IValueConverter { }
 
     public enum RelativeSourceMode
@@ -30,10 +40,8 @@ namespace System.Windows.Data
 
     public static class BindingOperations
     {
-        public static void SetBinding(DependencyObject o, DependencyProperty p, Binding b)
-        {
+        public static void SetBinding(DependencyObject o, DependencyProperty p, Binding b) => 
             o.SetBinding(p.CoreProperty, b.CoreBinding);
-        }
     }
 
     public class Binding : Xamarin.Forms.Xaml.IMarkupExtension
@@ -51,6 +59,7 @@ namespace System.Windows.Data
             Path = new PropertyPath(path);
         }
 
+        [TypeConverter(typeof(PathConverter))]
         public PropertyPath Path
         {
             get => new PropertyPath(CoreBinding.Path);
