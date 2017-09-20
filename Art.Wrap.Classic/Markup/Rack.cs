@@ -24,8 +24,6 @@ namespace Art.Markup
         public static string GetSet(DependencyObject d) => (string) d.GetValue(SetProperty);
         public static void SetShowLines(DependencyObject d, bool value) => d.SetValue(ShowLinesProperty, value);
         public static bool GetShowLines(DependencyObject d) => (bool) d.GetValue(ShowLinesProperty);
-        public static void SetTwoWayMode(DependencyObject d, bool value) => d.SetValue(TwoWayModeProperty, value);
-        public static bool GetTwoWayMode(DependencyObject d) => (bool) d.GetValue(TwoWayModeProperty);
 
         public static readonly DependencyProperty ShowLinesProperty = DependencyProperty.RegisterAttached(
             "ShowLines", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, e) =>
@@ -43,7 +41,7 @@ namespace Art.Markup
                 if (grid.GetValue(UpdateTriggerProperty) != null) return;
 
                 UpdateDefinitions(grid, grid.RowDefinitions, args.NewValue.ToString(),
-                    ToRowDefinition, BindRowDefinitionWithUpdateTrigger);
+                    RowDefinition.HeightProperty, RowDefinition.MinHeightProperty, RowDefinition.MaxHeightProperty);
             }));
 
         public static readonly DependencyProperty ColumnsProperty = DependencyProperty.RegisterAttached(
@@ -54,30 +52,12 @@ namespace Art.Markup
                 if (grid.GetValue(UpdateTriggerProperty) != null) return;
 
                 UpdateDefinitions(grid, grid.ColumnDefinitions, args.NewValue.ToString(),
-                    ToColumnDefinition, BindColumnDefinitionWithUpdateTrigger);
+                    ColumnDefinition.WidthProperty, ColumnDefinition.MinWidthProperty,
+                    ColumnDefinition.MaxWidthProperty);
             }));
 
         public static readonly DependencyProperty SetProperty = DependencyProperty.RegisterAttached(
             "Set", typeof(string), typeof(Rack), new PropertyMetadata("", OnSetChangedCallback));
-
-        public static readonly DependencyProperty TwoWayModeProperty = DependencyProperty.RegisterAttached(
-            "TwoWayMode", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, e) =>
-            {
-                var grid = o as Grid;
-                if (grid == null) return;
-                if (Equals(e.NewValue, true))
-                {
-                    grid.RowDefinitions.ForEach(d => BindRowDefinitionWithUpdateTrigger(d, grid));
-                    grid.ColumnDefinitions.ForEach(d => BindColumnDefinitionWithUpdateTrigger(d, grid));
-                }
-                else
-                {
-                    UpdateDefinitions(grid, grid.RowDefinitions, grid.GetValue(RowsProperty) as string,
-                        ToRowDefinition, BindRowDefinitionWithUpdateTrigger);
-                    UpdateDefinitions(grid, grid.ColumnDefinitions, grid.GetValue(ColumnsProperty) as string,
-                        ToColumnDefinition, BindColumnDefinitionWithUpdateTrigger);
-                }
-            }));
 
         public static readonly DependencyProperty UpdateTriggerProperty = DependencyProperty.RegisterAttached(
             "UpdateTrigger", typeof(object), typeof(Rack), new PropertyMetadata(default(object), (o, e) =>
@@ -92,84 +72,112 @@ namespace Art.Markup
                 grid.SetValue(UpdateTriggerProperty, null);
             }));
 
+        public static readonly PropertyPath UpdateTriggerPropertyPath = new PropertyPath(UpdateTriggerProperty);
+
         #endregion
 
-        private static void BindRowDefinitionWithUpdateTrigger(RowDefinition definition, Grid grid) =>
-            BindingOperations.SetBinding(definition, RowDefinition.HeightProperty, new Binding
-            {
-                Source = grid,
-                Path = new PropertyPath(UpdateTriggerProperty),
-                Mode = BindingMode.OneWayToSource,
-                FallbackValue = definition.Height
-            });
+        private static string ToPattern(this RowDefinition definition) => definition.ToPattern(
+            RowDefinition.HeightProperty, RowDefinition.MinHeightProperty, RowDefinition.MaxHeightProperty);
 
-        private static void BindColumnDefinitionWithUpdateTrigger(ColumnDefinition definition, Grid grid) =>
-            BindingOperations.SetBinding(definition, ColumnDefinition.WidthProperty, new Binding
-            {
-                Source = grid,
-                Path = new PropertyPath(UpdateTriggerProperty),
-                Mode = BindingMode.OneWayToSource,
-                FallbackValue = definition.Width
-            });
+        private static string ToPattern(this ColumnDefinition definition) => definition.ToPattern(
+            ColumnDefinition.WidthProperty, ColumnDefinition.MinWidthProperty, ColumnDefinition.MaxWidthProperty);
+        
+        private static string ToPattern(this DefinitionBase definition,
+            DependencyProperty lengthProperty,
+            DependencyProperty minValueProperty,
+            DependencyProperty maxValueProperty)
+        {
+            var lengthBinding = BindingOperations.GetBinding(definition, lengthProperty);
+            var minValueBinding = BindingOperations.GetBinding(definition, minValueProperty);
+            var maxValueBinding = BindingOperations.GetBinding(definition, maxValueProperty);
 
-        private static string ToPattern(GridLength gridLength, double minValue, double maxValue) =>
-            (Equals(minValue, .0) ? null : minValue + "\\") + gridLength +
-            (Equals(maxValue, double.PositiveInfinity) ? null : "/" + maxValue);
+            var length = definition.GetValue(lengthProperty);
+            var minValue = definition.GetValue(minValueProperty);
+            var maxValue = definition.GetValue(maxValueProperty);
 
-        private static string ToPattern(this RowDefinition definition) =>
-            ToPattern(definition.Height, definition.MinHeight, definition.MaxHeight);
+            var builder = new StringBuilder();
 
-        private static string ToPattern(this ColumnDefinition definition) =>
-            ToPattern(definition.Width, definition.MinWidth, definition.MaxWidth);
+            var isDefaultMinValue = Equals(minValue, .0);
+            var hasMinValueBinding = minValueBinding?.Path == UpdateTriggerPropertyPath;
+            builder.Append(isDefaultMinValue && !hasMinValueBinding ? null : minValue);
+            builder.Append(hasMinValueBinding ? "W" : null);
+            builder.Append(isDefaultMinValue ? null : "\\");
 
-        public static TDefinition ToDefinition<TDefinition>(this string pattern,
-            Func<string, string, string, TDefinition> definitionDecoder) where TDefinition : DefinitionBase
+            var hasLengthBinding = lengthBinding?.Path == UpdateTriggerPropertyPath;
+            builder.Append(length);
+            builder.Append(hasLengthBinding ? "W" : null);
+
+            var isDefaultMaxValue = Equals(maxValue, double.PositiveInfinity);
+            var hasMaxValueBinding = maxValueBinding?.Path == UpdateTriggerPropertyPath;
+            builder.Append(isDefaultMaxValue ? null : "/");
+            builder.Append(isDefaultMaxValue && !hasMaxValueBinding ? null : minValue);
+            builder.Append(hasMaxValueBinding ? "W" : null);
+
+            return builder.ToString();
+        }
+
+        public static TDefinition ToDefinition<TDefinition>(this string pattern, Grid grid,
+            DependencyProperty lengthProperty,
+            DependencyProperty minValueProperty,
+            DependencyProperty maxValueProperty)
+            where TDefinition : DefinitionBase, new()
         {
             var indexMin = pattern.IndexOf(@"\", StringComparison.Ordinal);
             var indexMax = pattern.IndexOf(@"/", StringComparison.Ordinal);
             var hasMin = indexMin >= 0;
             var hasMax = indexMax >= 0;
-            var valueMin = hasMin ? pattern.Substring(0, indexMin) : "";
-            var valueMax = hasMax ? pattern.Substring(indexMax + 1, pattern.Length - indexMax - 1) : "";
+            var minValuePattern = hasMin ? pattern.Substring(0, indexMin) : "";
+            var maxValuePattern = hasMax ? pattern.Substring(indexMax + 1, pattern.Length - indexMax - 1) : "";
             var start = hasMin ? indexMin + 1 : 0;
             var finish = hasMax ? indexMax : pattern.Length;
-            var value = pattern.Substring(start, finish - start);
-            return definitionDecoder(value, valueMin, valueMax);
+            var lengthPattern = pattern.Substring(start, finish - start);
+            var bindMinValue = minValuePattern.EndsWith("W", StringComparison.OrdinalIgnoreCase);
+            var bindMaxValue = maxValuePattern.EndsWith("W", StringComparison.OrdinalIgnoreCase);
+            var bindLengthValue = lengthPattern.EndsWith("W", StringComparison.OrdinalIgnoreCase);
+
+            lengthPattern = lengthPattern.Trim('W', 'w');
+            minValuePattern = minValuePattern.Trim('W', 'w');
+            maxValuePattern = maxValuePattern.Trim('W', 'w');
+
+            var definition = new TDefinition();
+            definition.SetValue(lengthProperty, lengthPattern.ToGridLength());
+            definition.SetValue(minValueProperty, double.TryParse(minValuePattern, out var minValue) ? minValue : .0);
+            definition.SetValue(maxValueProperty,
+                double.TryParse(maxValuePattern, out var maxValue) ? maxValue : double.PositiveInfinity);
+
+            if (bindLengthValue) Bind(grid, definition, lengthProperty);
+            if (bindMinValue) Bind(grid, definition, minValueProperty);
+            if (bindMaxValue) Bind(grid, definition, maxValueProperty);
+
+            return definition;
         }
 
-        private static RowDefinition ToRowDefinition(string gridLength, string minValue, string maxValue) =>
-            new RowDefinition
+        private static void Bind(Grid grid, DefinitionBase definition, DependencyProperty property) =>
+            BindingOperations.SetBinding(definition, property, new Binding
             {
-                Height = gridLength.ToGridLength(),
-                MinHeight = double.TryParse(minValue, out var min) ? min : .0,
-                MaxHeight = double.TryParse(maxValue, out var max) ? max : double.PositiveInfinity
-            };
+                Source = grid,
+                Path = UpdateTriggerPropertyPath,
+                Mode = BindingMode.OneWayToSource,
+                FallbackValue = definition.GetValue(property)
+            });
 
-        private static ColumnDefinition ToColumnDefinition(string gridLength, string minValue, string maxValue) =>
-            new ColumnDefinition
-            {
-                Width = gridLength.ToGridLength(),
-                MinWidth = double.TryParse(minValue, out var min) ? min : .0,
-                MaxWidth = double.TryParse(maxValue, out var max) ? max : double.PositiveInfinity
-            };
-
-        private static string GluePatterns(this IEnumerable<string> patterns) =>
-            patterns.Aggregate(new StringBuilder(),
-                (builder, pattern) => builder.Append(builder.Length == 0 ? null : " ").Append(pattern)).ToString();
+        private static string GluePatterns(this IEnumerable<string> patterns) => patterns.Aggregate(new StringBuilder(),
+            (builder, pattern) => builder.Append(builder.Length == 0 ? null : " ").Append(pattern)).ToString();
 
         public static string[] SplitPaterns(string value) =>
             value?.Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
 
         public static void UpdateDefinitions<T>(Grid grid, ICollection<T> definitionCollection, string pattern,
-            Func<string, string, string, T> definitionFactory, Action<T, Grid> definitionBinder)
-            where T : DefinitionBase
+            DependencyProperty lengthProperty,
+            DependencyProperty minValueProperty,
+            DependencyProperty maxValueProperty)
+            where T : DefinitionBase, new()
         {
-            var patterns = SplitPaterns(pattern);
-            var definitions = patterns.Select(p => p.ToDefinition(definitionFactory));
             definitionCollection.Clear();
+            var patterns = SplitPaterns(pattern);
+            var definitions = patterns.Select(p =>
+                p.ToDefinition<T>(grid, lengthProperty, minValueProperty, maxValueProperty));   
             definitions.ForEach(definitionCollection.Add);
-            if (grid.GetValue(TwoWayModeProperty).Equals(false)) return;
-            definitionCollection.ForEach(d => definitionBinder(d, grid));
         }
 
         private static void OnSetChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs args)
