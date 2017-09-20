@@ -152,8 +152,7 @@
                         Grid.Row="1"
                         Rack.ShowLines="True"
                         Rack.Rows="{Smart RackRows}" 
-                        Rack.Columns="{Smart RackColumns}"
-                        Rack.TwoWayMode="True">
+                        Rack.Columns="{Smart RackColumns}">
                         <GridSplitter
                             Background="Plum"
                             VerticalAlignment="Stretch"
