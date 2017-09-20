@@ -20,9 +20,9 @@ namespace Art.Replication.MemberProviders
 
         public Func<MemberInfo, bool> Filter { get; }
 
-        public CoreMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter)
+        public CoreMemberProvider(Adapters.BindingFlags bindingFlags, Func<MemberInfo, bool> filter)
         {
-            BindingFlags = bindingFlags;
+            BindingFlags = (BindingFlags) bindingFlags;
             Filter = filter;
         }
 

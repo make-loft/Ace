@@ -8,7 +8,7 @@ namespace Art.Replication.MemberProviders
 {
     public class ContractMemberProvider : CoreMemberProvider
     {
-        public ContractMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter) :
+        public ContractMemberProvider(Adapters.BindingFlags bindingFlags, Func<MemberInfo, bool> filter) :
             base(bindingFlags, filter)
         {
         }

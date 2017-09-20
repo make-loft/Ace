@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 // ReSharper disable once CheckNamespace
 namespace System.Reflection
@@ -13,10 +14,27 @@ namespace System.Reflection
     }
 }
 
-namespace System
+namespace System.TypeInfoAdapter
 {
     public static class TypeInfo
     {
         public static Type GetTypeInfo(this Type type) => type;
+    }
+}
+
+namespace Art.Adapters
+{
+    [Flags]
+    public enum BindingFlags
+    {
+        DeclaredOnly = 2,
+        ExactBinding = 65536,
+        FlattenHierarchy = 64,
+        IgnoreCase = 1,
+        Instance = 4,
+        NonPublic = 32,
+        OptionalParamBinding = 262144,
+        Public = 16,
+        Static = 8,
     }
 }

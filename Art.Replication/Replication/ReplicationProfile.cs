@@ -28,7 +28,9 @@ namespace Art.Replication
         {
             new CoreMemberProviderForKeyValuePair(),
             //new CoreMemberProvider(BindingFlags.Public | BindingFlags.Instance, m => m.CanReadWrite() && !(m is EventInfo)),
-            new ContractMemberProvider(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, Member.CanReadWrite),
+            new ContractMemberProvider(
+                Adapters.BindingFlags.NonPublic | Adapters.BindingFlags.Public | Adapters.BindingFlags.Instance,
+                Member.CanReadWrite),
         };
 
         public List<Replicator> Replicators = new List<Replicator>
