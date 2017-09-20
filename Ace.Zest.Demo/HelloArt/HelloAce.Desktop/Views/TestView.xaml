@@ -1,0 +1,16 @@
+﻿<Window 
+    x:Class="HelloAceViews.TestView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModel="clr-namespace:HelloAce.ViewModel"
+    Title="Window1"        
+    DataContext="{Store Key=viewModel:AppViewModel}"
+    WindowStyle="{Smart WindowStyle, SingleBorderWindow}"
+    ResizeMode="{Binding 'Smart[ResizeMode, CanResizeWithGrip]', Mode=TwoWay}"
+    Height="{Binding 'Smart[Height, 600]', Mode=TwoWay}" 
+    Width="{Smart Width, 800}"
+    Left="{Smart Left, NaN}">
+    <Grid>
+        <TextBlock Text="Drag and Resize Me!" FontSize="32"/>
+    </Grid>
+</Window>
