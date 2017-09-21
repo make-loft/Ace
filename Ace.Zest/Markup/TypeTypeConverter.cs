@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Ace.Markup
 {
-    public class XamlTypeConverter : TypeConverter
+    public class TypeTypeConverter : TypeConverter
     {
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) =>
             sourceType == typeof(string);

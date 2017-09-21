@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using Ace.Input;
 using TypeConverter = Xamarin.Forms.TypeConverterAttribute;
+using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 
 namespace Ace.Markup
 {
@@ -16,7 +17,7 @@ namespace Ace.Markup
 
         public Context(string key) => Key = key;
 
-        [TypeConverter(typeof(XamlTypeConverter))]
+        [TypeConverter(typeof(TypeTypeConverter))]
         public Type StoreKey { get; set; }
 
         public string Key { get; set; }

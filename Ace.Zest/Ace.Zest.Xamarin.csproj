@@ -54,6 +54,7 @@
     <Compile Include="Markup\Patterns\ABindingExtension.cs" />
     <Compile Include="Adapters\System.Windows.Data.cs" />
     <Compile Include="Markup\Patterns\AMarkupExtension.cs" />
+    <Compile Include="Markup\ResourceDictionary.cs" />
     <Compile Include="Markup\Set.cs">
       <SubType>
       </SubType>
@@ -70,7 +71,6 @@
       <SubType>
       </SubType>
     </Compile>
-    <Compile Include="Markup\XamlTypeConverter.Xamarin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WrapLoader.cs" />
   </ItemGroup>

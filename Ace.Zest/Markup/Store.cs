@@ -1,8 +1,9 @@
-﻿// ReSharper disable once RedundantUsingDirective
+﻿// ReSharper disable RedundantUsingDirective
 using System;
 using System.ComponentModel;
 using Ace.Adapters;
 using TypeConverter = Xamarin.Forms.TypeConverterAttribute;
+using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 
 namespace Ace.Markup
 {
@@ -12,7 +13,7 @@ namespace Ace.Markup
 
         public Store(Type key) => Key = key;
 
-        [TypeConverter(typeof(XamlTypeConverter))]
+        [TypeConverter(typeof(TypeTypeConverter))]
         public Type Key { get; set; }
 
         public override object Provide(object targetObject, object targetProperty = null) =>

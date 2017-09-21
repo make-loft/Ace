@@ -5,5 +5,6 @@ namespace Xamarin.Forms
     namespace Xaml { }
     internal class ContentPropertyAttribute { }
     internal class TypeConverterAttribute { }
+    internal class TypeTypeConverter { }
     internal enum BindingMode { }
 }

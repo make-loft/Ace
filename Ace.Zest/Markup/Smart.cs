@@ -5,6 +5,7 @@ using IValueConverter = System.Windows.Data.IValueConverter;
 
 #if XAMARIN
 using Xamarin.Forms;
+using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 #else
 using System.ComponentModel;
 using System.Windows.Data;
@@ -50,7 +51,7 @@ namespace Ace.Markup
         public SmartObject SmartObject { get; private set; }
         public new object Source { get; set; }
 
-        [TypeConverter(typeof(XamlTypeConverter))]
+        [TypeConverter(typeof(TypeTypeConverter))]
         public Type StoreKey
         {
             get => Source?.GetType();
