@@ -8,8 +8,8 @@
     <ProjectGuid>{306379DB-60E7-43BC-A6D9-A29B1CCC0057}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Art</RootNamespace>
-    <AssemblyName>Art.Core.Portable</AssemblyName>
+    <RootNamespace>Ace</RootNamespace>
+    <AssemblyName>Ace.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
