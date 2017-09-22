@@ -6,14 +6,14 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 using System.Windows.Markup;
 
-[assembly: AssemblyTitle("AceDesktop")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AceDesktop")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyTitle("Ace.Zest")]
+[assembly: AssemblyDescription("http://makeloft.xyz")]
+//[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("Makeloft Studio")]
+[assembly: AssemblyProduct("Ace Framework")]
+[assembly: AssemblyCopyright("Copyright © Makeloft Studio")]
+[assembly: AssemblyTrademark("Ace Framework")]
+//[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

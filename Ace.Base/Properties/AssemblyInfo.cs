@@ -3,14 +3,14 @@
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Replication Framework")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyTitle("Ace.Base")]
+[assembly: AssemblyDescription("http://makeloft.xyz")]
+//[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Makeloft Studio")]
-[assembly: AssemblyProduct("Replication Framework")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyProduct("Ace Framework")]
+[assembly: AssemblyCopyright("Copyright © Makeloft Studio")]
+[assembly: AssemblyTrademark("Ace Framework")]
+//[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

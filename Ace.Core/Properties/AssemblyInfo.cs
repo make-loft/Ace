@@ -3,13 +3,13 @@
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AceCore")]
-[assembly: AssemblyDescription("http://makeloft.by/tools")]
+[assembly: AssemblyTitle("Ace.Core")]
+[assembly: AssemblyDescription("http://makeloft.xyz")]
 //[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Makeloft")]
-[assembly: AssemblyProduct("Art Framework")]
+[assembly: AssemblyCompany("Makeloft Studio")]
+[assembly: AssemblyProduct("Ace Framework")]
 [assembly: AssemblyCopyright("Copyright © Makeloft Studio")]
-[assembly: AssemblyTrademark("Art Framework")]
+[assembly: AssemblyTrademark("Ace Framework")]
 //[assembly: AssemblyCulture("")]
 
 // Version information for an assembly consists of the following four values:
