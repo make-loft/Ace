@@ -11,24 +11,24 @@ namespace System.ComponentModel
         string this[string columnName] { get; }
     }
 
-    public interface INotifyDataErrorInfo
-    {
-        bool HasErrors { get; }
+    //public interface INotifyDataErrorInfo
+    //{
+    //    bool HasErrors { get; }
 
-        event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+    //    event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        IEnumerable GetErrors(string propertyName);
-    }
+    //    IEnumerable GetErrors(string propertyName);
+    //}
 
-    public sealed class DataErrorsChangedEventArgs : EventArgs
-    {
-        public string PropertyName { get; private set; }
+    //public sealed class DataErrorsChangedEventArgs : EventArgs
+    //{
+    //    public string PropertyName { get; }
 
-        public DataErrorsChangedEventArgs(string propertyName)
-        {
-            PropertyName = propertyName;
-        }
-    }
+    //    public DataErrorsChangedEventArgs(string propertyName)
+    //    {
+    //        PropertyName = propertyName;
+    //    }
+    //}
 
     public class PropertyChangingEventArgs : EventArgs
     {
