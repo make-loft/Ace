@@ -49,9 +49,16 @@ namespace Ace.Serialization.Converters
                         : DateTimeOffset.Parse(value, ActiveCulture);
                 default:
                     var type = Type.GetType(typeCode) ?? Type.GetType("System." + typeCode);
-                    if (type != null && type.IsEnum) return Enum.Parse(type, value, true);
-                    var parseMethod = type?.GetMethod("Parse", new[] {typeof(string)});
-                    return parseMethod?.Invoke(null, new object[] {value});
+                    if (type == null) return null;
+                    if (type.IsEnum) return Enum.Parse(type, value, true);
+
+                    var parseMethodFormatted = type.GetMethod("Parse", new[] { typeof(string), typeof(IFormatProvider) });
+                    if (parseMethodFormatted != null) return parseMethodFormatted.Invoke(null, new object[] { value, ActiveCulture });
+
+                    var parseMethod = type?.GetMethod("Parse", new[] { typeof(string) });
+                    if (parseMethod != null) return parseMethod.Invoke(null, new object[] { value });
+
+                    return null;
             }
         }
     }
