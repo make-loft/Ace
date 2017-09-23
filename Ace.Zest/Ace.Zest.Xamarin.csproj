@@ -46,6 +46,7 @@
     <Compile Include="Converters\Patterns\IInlineConverter.cs" />
     <Compile Include="Converters\Patterns\ISwitchConverter.cs" />
     <Compile Include="Converters\SwitchConverter.cs" />
+    <Compile Include="Converters\ToStringConverter.cs" />
     <Compile Include="LocalizationSource.cs" />
     <Compile Include="Markup\Case.cs" />
     <Compile Include="Markup\Context.cs" />
@@ -71,6 +72,7 @@
       <SubType>
       </SubType>
     </Compile>
+    <Compile Include="Markup\TypeExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WrapLoader.cs" />
   </ItemGroup>
