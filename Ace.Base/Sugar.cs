@@ -48,6 +48,22 @@ namespace System.Linq
             foreach (T item in dictionary) yield return item;
         }
 
+        public static Dictionary<TKey,TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
+            items.ToDictionary(p => p.Key, p => p.Value);
+
+        public static IList<T> AppendRange<T>(this IList<T> target, IEnumerable<T> source)
+        {
+            foreach (var item in source) target.Add(item);
+            return target;
+        }
+
+        public static IDictionary<TKey, TValue> AppendRange<TKey, TValue>(this IDictionary<TKey, TValue> target,
+            IEnumerable<KeyValuePair<TKey, TValue>> source)
+        {
+            foreach (var item in source) target.Add(item);
+            return target;
+        }
+
         internal static void CopyToMultidimensionalArray(this IList<object> source, Array target, IList<int> dimensions)
         {
             var indices = new int[dimensions.Count];
