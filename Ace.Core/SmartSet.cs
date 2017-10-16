@@ -15,7 +15,7 @@ namespace Ace
         public SmartSet() => Initialize();
 
         [OnDeserialized]
-        public new void Initialize(StreamingContext context = default(StreamingContext))
+        public void Initialize(StreamingContext context = default(StreamingContext))
         {
             Source = Source ?? new List<T>();
             CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
@@ -167,6 +167,6 @@ namespace Ace
 
         public int Count => Source.Count;
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged = (sender, args) => { };
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 }

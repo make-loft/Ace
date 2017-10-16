@@ -31,26 +31,8 @@ namespace Ace
                 ? evocator
                 : PropertyEvocators[propertyName] = new PropertyEvocator(propertyName);
 
-        public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default(TValue)) =>
-            (TValue) base[expression.UnboxMemberName(), defaultValue];
-
-        public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool checkEquals = false)
-        {
-            if (checkEquals && Equals(Get(expression), value)) return;
-            var propertyName = expression.UnboxMemberName();
-            RaisePropertyChanging(propertyName);
-            base[propertyName] = value;
-            RaisePropertyChanged(propertyName);
-        }
-
-        public void RaisePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
-            RaisePropertyChanging(expression.UnboxMemberName());
-
-        public void RaisePropertyChanged<TValue>(Expression<Func<TValue>> expression) =>
-            RaisePropertyChanged(expression.UnboxMemberName());
-
         [OnDeserializing]
-        public new void Initialize(StreamingContext context = default(StreamingContext))
+        public void Initialize(StreamingContext context = default(StreamingContext))
         {
             CommandEvocators = new Dictionary<ICommand, CommandEvocator>();
             PropertyEvocators = new Dictionary<string, PropertyEvocator>();

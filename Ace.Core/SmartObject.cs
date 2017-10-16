@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Ace.Replication;
@@ -12,9 +13,9 @@ namespace Ace
     public class SmartObject : INotifyPropertyChanging, INotifyPropertyChanged
     {
         public static object UndefinedValue = null;
-        protected Dictionary<string, object> SmartContainer = new Dictionary<string, object>();
-        public event PropertyChangingEventHandler PropertyChanging = (sender, args) => { };
-        public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
+        private Dictionary<string, object> _smartContainer;
+        protected Dictionary<string, object> SmartContainer =>
+            _smartContainer ?? (_smartContainer = new Dictionary<string, object>());
 
         public const string SmartPropertyName = "Smart";
 
@@ -43,7 +44,7 @@ namespace Ace
 
         public object this[string key, object defaultValue, bool segregate] // {Binding Path='Smart[Test,1,True].Value'}
         {
-            get => this[key, segregate ? new Segregator {Value = defaultValue} : defaultValue];
+            get => this[key, segregate ? new Segregator { Value = defaultValue } : defaultValue];
             set => this[key] = value;
         }
 
@@ -55,21 +56,38 @@ namespace Ace
         }
 
         protected static IEnumerable<KeyValuePair<string, object>> GetSmartProperties(
-            Type type, Dictionary<string, object> container, BindingFlags bindingFlags = Member.DefaultFlags) =>
-            container.Where(p => !type.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo));
+            Type smartType, Dictionary<string, object> smartContainer, BindingFlags bindingFlags = Member.DefaultFlags) =>
+            smartContainer.Where(p => !smartType.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo));
+
+        #region Notification Core
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanging(string propertyName) =>
-            PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 
         public void RaisePropertyChanged(string propertyName) =>
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        [OnDeserializing]
-        public void Initialize(StreamingContext context = default(StreamingContext))
+        public void RaisePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
+            RaisePropertyChanging(expression.UnboxMemberName());
+
+        public void RaisePropertyChanged<TValue>(Expression<Func<TValue>> expression) =>
+            RaisePropertyChanged(expression.UnboxMemberName());
+
+        public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default(TValue)) =>
+            (TValue)this[expression.UnboxMemberName(), defaultValue];
+
+        public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool checkEquals = false)
         {
-            if (PropertyChanging == null) PropertyChanging = (sender, args) => { };
-            if (PropertyChanged == null) PropertyChanged = (sender, args) => { };
-            if (SmartContainer == null) SmartContainer = new Dictionary<string, object>();
+            if (checkEquals && Equals(Get(expression), value)) return;
+            var propertyName = expression.UnboxMemberName();
+            RaisePropertyChanging(propertyName);
+            this[propertyName] = value;
+            RaisePropertyChanged(propertyName);
         }
+
+        #endregion
     }
 }
