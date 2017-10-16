@@ -6,6 +6,7 @@ using System.Windows.Data;
 using Ace.Input;
 using TypeConverter = Xamarin.Forms.TypeConverterAttribute;
 using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
+using System.Reflection;
 
 namespace Ace.Markup
 {
@@ -28,7 +29,7 @@ namespace Ace.Markup
             if (targetObject is Xamarin.Forms.BindableObject bindableObject && StoreKey == null)
             {
                 bindableObject.BindingContextChanged += (sender, args) =>
-                    RefreshMediator(targetObject, bindableObject.BindingContext);
+                        RefreshMediator(targetObject);
             }
 #else
             if (targetObject is FrameworkElement frameworkElement && StoreKey == null)
@@ -36,14 +37,14 @@ namespace Ace.Markup
                 void OnLoadedRefreshMediatorHandler(object sender, RoutedEventArgs args)
                 {
                     frameworkElement.Loaded -= OnLoadedRefreshMediatorHandler;
-                    RefreshMediator(frameworkElement, frameworkElement.DataContext);
+                    RefreshMediator(frameworkElement);
                 }
 
                 frameworkElement.Loaded += OnLoadedRefreshMediatorHandler;
                 if (Mode != BindingMode.OneTime)
                 {
                     frameworkElement.GetDataContextWatcher().DataContextChanged += (sender, args) =>
-                        RefreshMediator(frameworkElement, frameworkElement.DataContext);
+                        RefreshMediator(frameworkElement);
                 }
             }
 #endif
@@ -52,11 +53,21 @@ namespace Ace.Markup
             return _mediator;
         }
 
-        private void RefreshMediator(object targetObject, object contex)
+        private void RefreshMediator(object targetObject, object context = null)
         {
             var command = Ace.Context.Get(Key);
-            var evocator = (contex as ContextObject)?[command];
-            _mediator.Initialize(targetObject, evocator);
+            var targetElement = targetObject as Xamarin.Forms.BindableObject;
+            while (targetElement != null)
+            {
+                if ((context != null && ((ContextObject)context).CommandEvocators.TryGetValue(command, out var evocator)) ||
+                    ((targetElement.BindingContext is ContextObject co) && co.CommandEvocators.TryGetValue(command, out evocator)))
+                {
+                    _mediator.Initialize(targetObject, evocator);
+                    return;
+                }
+                else targetElement = targetElement.GetType().
+                        GetRuntimeProperty("Parent")?.GetValue(targetElement) as Xamarin.Forms.BindableObject;
+            }
         }
     }
 }

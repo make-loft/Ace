@@ -55,7 +55,7 @@
     <Compile Include="Patterns\IStorage.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="ContextObject.cs" />
-    <Compile Include="ContextSet.cs" />
+    <Compile Include="SmartSet.cs" />
     <Compile Include="Segregator.cs" />
     <Compile Include="SmartObject.cs" />
     <Compile Include="Expression.cs" />

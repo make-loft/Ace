@@ -8,19 +8,12 @@ namespace Ace
     {
         private static readonly Dictionary<string, Command> Container = new Dictionary<string, Command>();
 
-        public static Command Get(string key)
-        {
-            if (!Container.ContainsKey(key))
-                Container.Add(key, new Command(key));
-            return Container[key];
-        }
+        public static Command Get(string key) =>
+            Container.TryGetValue(key, out var value) ? value : Container[key] = new Command(key);
 
         public static void UpdateCanExecuteState()
         {
-            foreach (var command in Container.Values)
-            {
-                command.RaiseCanExecuteChanged();
-            }
+            foreach (var command in Container.Values) command.RaiseCanExecuteChanged();
         }
 
         public static Command Make => Get("Make");
@@ -53,13 +46,13 @@ namespace Ace
             public static Command Clear => Get("Set.Clear");
         }
 
-        public static Mediator GetMediator(this ContextObject contextObject, string commandKey, object sender) => 
+        public static Mediator GetMediator(this ContextObject contextObject, string commandKey, object sender) =>
             new Mediator(sender, contextObject[Get(commandKey)]);
 
-        public static Mediator GetMediator(this ContextObject contextObject, ICommand command, object sender) => 
+        public static Mediator GetMediator(this ContextObject contextObject, ICommand command, object sender) =>
             new Mediator(sender, contextObject[command]);
 
-        public static ContextSet<T> ToSet<T>(this IEnumerable<T> collection) => 
-            new ContextSet<T>(collection);
+        public static SmartSet<T> ToSet<T>(this IEnumerable<T> collection) =>
+            new SmartSet<T>(collection);
     }
 }
