@@ -18,13 +18,15 @@ namespace Ace
         public void Initialize(StreamingContext context = default(StreamingContext))
         {
             Source = Source ?? new List<T>();
+	        CollectionChanged = null;
             CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
         }
 
         public SmartSet(IEnumerable<T> collection)
         {
             Source = new List<T>(collection);
-            CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
+	        CollectionChanged = null;
+			CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
         }
 
         public IEnumerator<T> GetEnumerator() => Source.GetEnumerator();
@@ -52,9 +54,9 @@ namespace Ace
             CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public bool Contains(object value) => Source.Contains((T)value);
+	    public bool Contains(object value) => Source.Contains((T) value);
 
-        public int IndexOf(object value) => Source.IndexOf((T)value);
+	    public int IndexOf(object value) => Source.IndexOf((T) value);
 
         public void Insert(int index, object value)
         {
@@ -101,7 +103,7 @@ namespace Ace
             set
             {
                 var oldValue = Source[index];
-                Source[index] = (T)value;
+	            Source[index] = (T) value;
                 CollectionChanged(this,
                     new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, oldValue, index));
             }
@@ -130,9 +132,9 @@ namespace Ace
 
         int ICollection.Count => Source.Count;
 
-        public bool IsSynchronized => ((ICollection)Source).IsSynchronized;
+	    public bool IsSynchronized => ((ICollection) Source).IsSynchronized;
 
-        public object SyncRoot => ((ICollection)Source).SyncRoot;
+	    public object SyncRoot => ((ICollection) Source).SyncRoot;
 
         int ICollection<T>.Count => Source.Count;
 
@@ -167,6 +169,6 @@ namespace Ace
 
         public int Count => Source.Count;
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        public event NotifyCollectionChangedEventHandler CollectionChanged = (sender, args) => { };
     }
 }

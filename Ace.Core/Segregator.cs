@@ -4,15 +4,13 @@ using System.Runtime.Serialization;
 namespace Ace
 {
     [DataContract]
-    public class Segregator : Segregator<object>
-    {
-    }
+    public class Segregator : Segregator<object> { }
 
     [DataContract]
     public class Segregator<TValue> : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        public event PropertyChangingEventHandler PropertyChanging = (sender, args) => { };
-        public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
+        public event PropertyChangingEventHandler PropertyChanging;
+        public event PropertyChangedEventHandler PropertyChanged;
         private TValue _value;
 
         [DataMember]
@@ -21,17 +19,10 @@ namespace Ace
             get => _value;
             set
             {
-                PropertyChanging(this, new PropertyChangingEventArgs("Value"));
+                PropertyChanging?.Invoke(this, new PropertyChangingEventArgs("Value"));
                 _value = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("Value"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
-        }
-
-        [OnDeserializing]
-        public void Initialize(StreamingContext context = default(StreamingContext))
-        {
-            PropertyChanging = (sender, args) => { };
-            PropertyChanged = (sender, args) => { };
         }
     }
 }

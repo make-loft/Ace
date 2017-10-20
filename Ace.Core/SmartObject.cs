@@ -42,22 +42,19 @@ namespace Ace
             set => this[key] = value;
         }
 
-        public object this[string key, object defaultValue, bool segregate] // {Binding Path='Smart[Test,1,True].Value'}
-        {
-            get => this[key, segregate ? new Segregator { Value = defaultValue } : defaultValue];
-            set => this[key] = value;
-        }
+        public object this[string key, object defaultValue, bool segregate] => // {Binding Path='Smart[Test,1,True].Value'}
+	        this[key, segregate ? new Segregator { Value = defaultValue } : defaultValue];
 
-        [DataMember]
+	    [DataMember]
         public virtual Dictionary<string, object> SmartState
         {
-            get => GetSmartProperties(GetType(), SmartContainer).ToDictionary(p => p.Key, p => p.Value);
+            get => GetSmartProperties(SmartContainer, GetType())?.ToDictionary(p => p.Key, p => p.Value);
             set => value?.ForEach(pair => this[pair.Key] = pair.Value);
         }
 
         protected static IEnumerable<KeyValuePair<string, object>> GetSmartProperties(
-            Type smartType, Dictionary<string, object> smartContainer, BindingFlags bindingFlags = Member.DefaultFlags) =>
-            smartContainer.Where(p => !smartType.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo));
+            Dictionary<string, object> smartContainer, Type smartType, BindingFlags bindingFlags = Member.DefaultFlags) =>
+            smartContainer?.Where(p => !smartType.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo));
 
         #region Notification Core
 
