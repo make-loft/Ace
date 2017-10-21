@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Adapters\RoutedCommandsAdapter.cs" />
     <Compile Include="Adapters\System.Windows.cs" />
+    <Compile Include="Adapters\System.Windows.Media.cs" />
     <Compile Include="Converters\AnyConverter.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\EqualsConverter.cs" />
@@ -74,6 +75,7 @@
     </Compile>
     <Compile Include="Markup\TypeExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VisualTree.Sugar.cs" />
     <Compile Include="WrapLoader.cs" />
   </ItemGroup>
   <ItemGroup>

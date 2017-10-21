@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using System.Windows.Media;
+#if XAMARIN
+using DependencyObject = Xamarin.Forms.Element;
+#endif
 
 namespace Ace
 {
@@ -29,18 +31,18 @@ namespace Ace
             }
         }
 
-        public static TType GetDataContext<TType>(this DependencyObject current) where TType : class
-        {
-            var element = current as FrameworkElement;
-            var context = element?.DataContext as TType;
-            while (context == null && current != null)
-            {
-                current = current.GetVisualParent();
-                element = current as FrameworkElement;
-                if (element != null) context = element.DataContext as TType;
-            }
+        //public static TType GetDataContext<TType>(this DependencyObject current) where TType : class
+        //{
+        //    var element = current as FrameworkElement;
+        //    var context = element?.DataContext as TType;
+        //    while (context == null && current != null)
+        //    {
+        //        current = current.GetVisualParent();
+        //        element = current as FrameworkElement;
+        //        if (element != null) context = element.DataContext as TType;
+        //    }
 
-            return context;
-        }
+        //    return context;
+        //}
     }
 }
