@@ -3,24 +3,39 @@
 // ReSharper disable once EmptyNamespace
 namespace System.Windows.Markup
 {
-
-
 }
 
 namespace System.Windows
 {
-    public class PropertyMetadata
+	public delegate void PropertyChangedCallback(BindableObject d, DependencyPropertyChangedEventArgs e);
+
+	public class PropertyMetadata
     {
         public object DefaultValue { get; }
+	    public PropertyChangedCallback PropertyChangedCallback;
 
-        public PropertyMetadata(object defaultValue) => DefaultValue = defaultValue;
+		public PropertyMetadata(object defaultValue) => DefaultValue = defaultValue;
+
+	    public PropertyMetadata(object defaultValue, PropertyChangedCallback propertyChangedCallback)
+	    {
+		    DefaultValue = defaultValue;
+		    PropertyChangedCallback = propertyChangedCallback;
+	    }
     }
 
-    public class DependencyPropertyChangedEventArgs : EventArgs
-    {
-    }
+	public class DependencyPropertyChangedEventArgs : EventArgs
+	{
+		public DependencyPropertyChangedEventArgs(object oldValue, object newValue)
+		{
+			OldValue = oldValue;
+			NewValue = newValue;
+		}
 
-    public class DependencyObject : BindableObject
+		public object OldValue { get; }
+		public object NewValue { get; }
+	}
+
+	public class DependencyObject : BindableObject
     {
         public object GetValue(DependencyProperty property) => GetValue(property.CoreProperty);
 
@@ -31,11 +46,16 @@ namespace System.Windows
     {
         public static readonly object UnsetValue = new object();
 
-        public static DependencyProperty Register(string name, Type type, Type decType, PropertyMetadata metadata) =>
-            new DependencyProperty {CoreProperty = BindableProperty.Create(name, type, decType, metadata.DefaultValue)};
+	    public static DependencyProperty Register(string name, Type type, Type decType, PropertyMetadata metadata) =>
+		    new DependencyProperty
+		    {
+			    CoreProperty = BindableProperty.Create(name, type, decType, metadata.DefaultValue, BindingMode.OneWay, null,
+				    (b, oldValue, newValue) =>
+					    metadata.PropertyChangedCallback?.Invoke(b, new DependencyPropertyChangedEventArgs(oldValue, newValue)))
+		    };
 
         public static DependencyProperty RegisterAttached(string name, Type type, Type decType, PropertyMetadata metadata) =>
-            new DependencyProperty {CoreProperty = BindableProperty.Create(name, type, decType, metadata.DefaultValue)};
+            Register(name, type, decType, metadata);
 
         public BindableProperty CoreProperty { get; set; }
     }

@@ -4,6 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+#if XAMARIN
+using FrameworkElement = Xamarin.Forms.Element;
+using BindingMode = Xamarin.Forms.BindingMode;
+using IValueConverter = System.Windows.Data.IValueConverter;
+#endif
 
 namespace Ace
 {

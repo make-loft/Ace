@@ -35,6 +35,7 @@ namespace Ace.Markup
 #if XAMARIN
 		public BindingMode Mode { get; set; }
 #endif
+		public bool TrackContextChanges { get; set; } = true;
 
 		public override object Provide(object targetObject, object targetProperty = null)
 		{
@@ -52,8 +53,12 @@ namespace Ace.Markup
 #if XAMARIN
 			if (targetObject is ContextElement element)
 			{
-				element.BindingContextChanged += (sender, args) =>
-					RefreshMediator(element, FindContextObject(element, RelativeContextType));
+				if (TrackContextChanges)
+				{
+					element.BindingContextChanged += (sender, args) =>
+						RefreshMediator(element, FindContextObject(element, RelativeContextType));
+				}
+				else RefreshMediator(element, FindContextObject(element, RelativeContextType));
 			}
 #else
 			if (targetObject is FrameworkElement element)
@@ -65,7 +70,7 @@ namespace Ace.Markup
 					RefreshMediator(element, FindContextObject(element, RelativeContextType));
 				}
 
-				if (Mode != BindingMode.OneTime)
+				if (TrackContextChanges)
 				{
 					element.GetDataContextWatcher().DataContextChanged += (sender, args) =>
 						RefreshMediator(element, FindContextObject(element, RelativeContextType));
