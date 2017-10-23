@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Ace.Input;
-using TypeConverter = Xamarin.Forms.TypeConverterAttribute;
-using System.Reflection;
+using System.Windows;
 #if XAMARIN
-using DependencyObject = Xamarin.Forms.Element;
+using Xamarin.Forms;
+using ContextElement = Xamarin.Forms.Element;
 using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 #else
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Data;
+using ContextElement = System.Windows.FrameworkElement;
 #endif
 
 namespace Ace.Markup
@@ -24,58 +26,76 @@ namespace Ace.Markup
 		[TypeConverter(typeof(TypeTypeConverter))]
 		public Type StoreKey { get; set; }
 
+		[TypeConverter(typeof(TypeTypeConverter))]
+		public Type RelativeContextType { get; set; }
+
 		public string Key { get; set; }
+
+		public PropertyPath SourcePath { get; set; }
+#if XAMARIN
+		public BindingMode Mode { get; set; }
+#endif
 
 		public override object Provide(object targetObject, object targetProperty = null)
 		{
-#if XAMARIN
-			if (targetObject is Xamarin.Forms.BindableObject bindableObject && StoreKey == null)
+			var source = StoreKey == null ? null : Ace.Store.Get(StoreKey);
+			if (source != null && SourcePath == null)
 			{
-				bindableObject.BindingContextChanged += (sender, args) =>
-						RefreshMediator(targetObject);
+				RefreshMediator(targetObject, source as ContextObject);
+			}
+			else if (SourcePath != null)
+			{
+				var watcher = new PropertyChangedWatcher(source, SourcePath.ToString(), Mode);
+				watcher.PropertyChanged += (sender, args) =>
+				   RefreshMediator(targetObject, watcher.GetWatchedProperty() as ContextObject);
+			}
+#if XAMARIN
+			if (targetObject is ContextElement element)
+			{
+				element.BindingContextChanged += (sender, args) =>
+					RefreshMediator(element, FindContextObject(element, RelativeContextType));
 			}
 #else
-			if (targetObject is FrameworkElement frameworkElement && StoreKey == null)
+			if (targetObject is FrameworkElement element)
 			{
+				element.Loaded += OnLoadedRefreshMediatorHandler;
 				void OnLoadedRefreshMediatorHandler(object sender, RoutedEventArgs args)
 				{
-					frameworkElement.Loaded -= OnLoadedRefreshMediatorHandler;
-					RefreshMediator(frameworkElement);
+					element.Loaded -= OnLoadedRefreshMediatorHandler;
+					RefreshMediator(element, FindContextObject(element, RelativeContextType));
 				}
 
-				frameworkElement.Loaded += OnLoadedRefreshMediatorHandler;
 				if (Mode != BindingMode.OneTime)
 				{
-					frameworkElement.GetDataContextWatcher().DataContextChanged += (sender, args) =>
-						RefreshMediator(frameworkElement);
+					element.GetDataContextWatcher().DataContextChanged += (sender, args) =>
+						RefreshMediator(element, FindContextObject(element, RelativeContextType));
 				}
 			}
 #endif
-			else if (StoreKey != null) RefreshMediator(targetObject, Ace.Store.Get(StoreKey));
 
 			return _mediator;
 		}
 
 #if XAMARIN
-		private static object GetDataContext(Xamarin.Forms.BindableObject dependencyObject) =>
-			dependencyObject?.BindingContext;
+		public static object GetContext(ContextElement element) => element.BindingContext;
 #else
-		private static object GetDataContext(DependencyObject dependencyObject) =>
-			(dependencyObject as FrameworkElement)?.DataContext;
+		public static object GetContext(FrameworkElement element) => element.DataContext;
 #endif
-		private void RefreshMediator(object targetObject, object context = null)
-		{
-			var command = Ace.Context.Get(Key);
 
-			for (var visual = targetObject as DependencyObject; visual != null; visual = visual.GetVisualParent())
-			{
-				if (context != null && ((ContextObject)context).CommandEvocators.TryGetValue(command, out var evocator) ||
-					GetDataContext(visual) is ContextObject co && co.CommandEvocators.TryGetValue(command, out evocator))
-				{
-					_mediator.Initialize(targetObject, evocator);
-					return;
-				}
-			}
-		}
+		private static ContextObject FindContextObject(ContextElement element, Type type) =>
+			type == null ? FindNearestContextObject(element) : FindRelativeContextObject(element, type);
+
+		private static ContextObject FindNearestContextObject(ContextElement element) =>
+			EnumerateContextObjects(element).FirstOrDefault();
+
+		private static ContextObject FindRelativeContextObject(ContextElement element, Type type) =>
+			EnumerateContextObjects(element).FirstOrDefault(c => c.GetType() == type);
+
+		// ReSharper disable once RedundantEnumerableCastCall
+		private static IEnumerable<ContextObject> EnumerateContextObjects(ContextElement target) =>
+			target.EnumerateVisualAncestors().OfType<ContextElement>().Select(GetContext).OfType<ContextObject>();
+
+		private void RefreshMediator(object targetObject, ContextObject targetContext) =>
+			_mediator.Initialize(targetObject, targetContext?[Ace.Context.Get(Key)]);
 	}
 }

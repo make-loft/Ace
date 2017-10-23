@@ -50,20 +50,25 @@ namespace Ace
 
         private static readonly DependencyProperty WatchedPropertyProperty =
             DependencyProperty.Register(WatchedPropertyName, typeof(object),
-                typeof(PropertyChangedWatcher), new PropertyMetadata(default(object), (o, args) =>
-                {
-                    var watcher = (PropertyChangedWatcher) o;
-                    watcher.PropertyChanged(watcher, new PropertyChangedEventArgs(watcher.PropertyName));
-                }));
+                typeof(PropertyChangedWatcher), new PropertyMetadata(default(object),
+                    (sender, args) => InvokePropertyChanged((PropertyChangedWatcher) sender)));
 
-        public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
+        public object GetWatchedProperty() => GetValue(WatchedPropertyProperty);
+        public void SetWatchedProperty(object value) => SetValue(WatchedPropertyProperty, value);
+
+        private static void InvokePropertyChanged(PropertyChangedWatcher watcher) =>
+            watcher.PropertyChanged?.Invoke(watcher, new PropertyChangedEventArgs(watcher.PropertyName));
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string PropertyName { get; }
 
-        internal PropertyChangedWatcher(object source, string path)
+        internal PropertyChangedWatcher(object source, string path = null, BindingMode mode = BindingMode.Default)
         {
             PropertyName = path?.Split('.').Last();
-            var binding = path == null ? new Binding {Source = source} : new Binding(path) {Source = source};
+            var binding = path == null
+                ? new Binding {Source = source, Mode = mode}
+                : new Binding(path) {Source = source, Mode = mode};
             BindingOperations.SetBinding(this, WatchedPropertyProperty, binding);
         }
     }

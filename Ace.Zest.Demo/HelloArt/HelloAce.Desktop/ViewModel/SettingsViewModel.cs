@@ -14,11 +14,11 @@ namespace HelloAce.ViewModel
             set { Set(() => Language, value); }
         }
 
-        public ContextSet<string> Languages { get; set; }
+        public SmartSet<string> Languages { get; set; }
 
         public void Expose()
         {
-            Languages = new ContextSet<string> {"Russian", "English"};
+            Languages = new SmartSet<string> {"Russian", "English"};
 
             this[Context.Get("SetLanguage")].CanExecute += (sender, args) =>
                 args.CanExecute = Language != args.Parameter.ToString();

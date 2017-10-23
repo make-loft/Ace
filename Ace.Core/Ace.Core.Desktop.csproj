@@ -52,11 +52,11 @@
     <Compile Include="Patterns\IStorage.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="ContextObject.cs" />
-    <Compile Include="ContextSet.cs" />
     <Compile Include="Segregator.cs" />
     <Compile Include="SmartObject.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Memory.cs" />
+    <Compile Include="SmartSet.cs" />
     <Compile Include="Store.cs" />
   </ItemGroup>
   <ItemGroup>
