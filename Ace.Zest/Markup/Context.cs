@@ -9,7 +9,6 @@ using ContextElement = Xamarin.Forms.Element;
 using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 #else
 using System.ComponentModel;
-using System.Windows.Data;
 using ContextElement = System.Windows.FrameworkElement;
 #endif
 
@@ -20,22 +19,16 @@ namespace Ace.Markup
 		private readonly Mediator _mediator = new Mediator();
 
 		public Context() => Key = null;
-
 		public Context(string key) => Key = key;
 
-		[TypeConverter(typeof(TypeTypeConverter))]
-		public Type StoreKey { get; set; }
-
-		[TypeConverter(typeof(TypeTypeConverter))]
-		public Type RelativeContextType { get; set; }
-
 		public string Key { get; set; }
-
 		public PropertyPath SourcePath { get; set; }
+		public bool TrackContextChanges { get; set; } = true;
+		[TypeConverter(typeof(TypeTypeConverter))] public Type StoreKey { get; set; }
+		[TypeConverter(typeof(TypeTypeConverter))] public Type RelativeContextType { get; set; }
 #if XAMARIN
 		public BindingMode Mode { get; set; }
 #endif
-		public bool TrackContextChanges { get; set; } = true;
 
 		public override object Provide(object targetObject, object targetProperty = null)
 		{
@@ -48,22 +41,21 @@ namespace Ace.Markup
 			{
 				var watcher = new PropertyChangedWatcher(source, SourcePath.ToString(), Mode);
 				watcher.PropertyChanged += (sender, args) =>
-				   RefreshMediator(targetObject, watcher.GetWatchedProperty() as ContextObject);
+					RefreshMediator(targetObject, watcher.GetWatchedProperty() as ContextObject);
 			}
-#if XAMARIN
+
 			if (targetObject is ContextElement element)
 			{
+#if XAMARIN
 				if (TrackContextChanges)
 				{
 					element.BindingContextChanged += (sender, args) =>
 						RefreshMediator(element, FindContextObject(element, RelativeContextType));
 				}
 				else RefreshMediator(element, FindContextObject(element, RelativeContextType));
-			}
 #else
-			if (targetObject is FrameworkElement element)
-			{
 				element.Loaded += OnLoadedRefreshMediatorHandler;
+
 				void OnLoadedRefreshMediatorHandler(object sender, RoutedEventArgs args)
 				{
 					element.Loaded -= OnLoadedRefreshMediatorHandler;
@@ -75,8 +67,8 @@ namespace Ace.Markup
 					element.GetDataContextWatcher().DataContextChanged += (sender, args) =>
 						RefreshMediator(element, FindContextObject(element, RelativeContextType));
 				}
-			}
 #endif
+			}
 
 			return _mediator;
 		}
@@ -84,7 +76,7 @@ namespace Ace.Markup
 #if XAMARIN
 		public static object GetContext(ContextElement element) => element.BindingContext;
 #else
-		public static object GetContext(FrameworkElement element) => element.DataContext;
+		public static object GetContext(ContextElement element) => element.DataContext;
 #endif
 
 		private static ContextObject FindContextObject(ContextElement element, Type type) =>
