@@ -43,8 +43,7 @@ namespace Ace.Markup
 				watcher.PropertyChanged += (sender, args) =>
 					RefreshMediator(targetObject, watcher.GetWatchedProperty() as ContextObject);
 			}
-
-			if (targetObject is ContextElement element)
+			else if (targetObject is ContextElement element)
 			{
 #if XAMARIN
 				if (TrackContextChanges)
