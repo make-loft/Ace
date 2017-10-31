@@ -48,7 +48,13 @@ namespace Ace
             return 1;
         }
 
-        void IList.Clear()
+	    public void AddRange(IEnumerable<T> collection)
+	    {
+		    Source.AddRange(collection);
+		    CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+		}
+
+		void IList.Clear()
         {
             Source.Clear();
             CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
