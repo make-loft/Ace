@@ -90,6 +90,12 @@ namespace System.Windows.Data
             set => CoreBinding.ConverterParameter = value;
         }
 
+        public string StringFormat
+        {
+            get => CoreBinding.StringFormat;
+            set => CoreBinding.StringFormat = value;
+        }
+
         public object RelativeSource { get; set; }
         public object FallbackValue { get; set; }
     }
