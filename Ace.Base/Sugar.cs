@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,8 +12,23 @@ namespace Ace
         public static T As<T>(this object o) where T : class => o as T;
     }
 
-    public static class SrtringExtensions
+    public static class Null
     {
+        public const object Value = null;
+        public static bool IsNull(this object value) => value == null;
+        public static bool IsNotNull(this object value) => value != null;
+    }
+
+    public static class String
+    {
+        public static bool IsNullOrEmpty(this string value) => string.IsNullOrEmpty(value);
+        public static bool IsNotNullOrEmpty(this string value) => !string.IsNullOrEmpty(value);
+        public static bool IsNullOrWhiteSpace(this string value) => string.IsNullOrWhiteSpace(value);
+        public static bool IsNotNullOrWhiteSpace(this string value) => !string.IsNullOrWhiteSpace(value);
+        public static string Format(this string value, string format, params object[] args) => string.Format(format, args);
+        public static string Format(this string value, IFormatProvider provider, string format, params object[] args) =>
+            string.Format(provider, format, args);
+
         public static bool Match(this string original, string pattern, int offset)
         {
             if (offset + pattern.Length > original.Length) return false;
@@ -47,6 +63,14 @@ namespace System.Linq
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (T item in dictionary) yield return item;
         }
+
+        public static IEnumerable<T> ToEnumerable<T>(this T singleItem)
+        {
+            yield return singleItem;
+        }
+
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T singleItem) =>
+            collection.Concat(singleItem.ToEnumerable());
 
         public static Dictionary<TKey,TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
             items.ToDictionary(p => p.Key, p => p.Value);
