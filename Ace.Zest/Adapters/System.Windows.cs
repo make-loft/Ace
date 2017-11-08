@@ -57,6 +57,17 @@ namespace System.Windows
         public static DependencyProperty RegisterAttached(string name, Type type, Type decType, PropertyMetadata metadata) =>
             Register(name, type, decType, metadata);
 
-        public BindableProperty CoreProperty { get; set; }
+        public BindableProperty CoreProperty { get; private set; }
+
+	    public BindableProperty Unbox() => CoreProperty;
     }
+
+	public static class ElementAdapters
+	{
+		public static void SetValue(this BindableObject item, DependencyProperty property, object value) =>
+			item.SetValue(property.CoreProperty, value);
+
+		public static object GetValue(this BindableObject item, DependencyProperty property) =>
+			item.GetValue(property.CoreProperty);
+	}
 }
