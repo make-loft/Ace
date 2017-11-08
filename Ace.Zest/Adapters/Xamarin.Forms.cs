@@ -8,3 +8,11 @@ namespace Xamarin.Forms
     internal class TypeTypeConverter { }
     internal enum BindingMode { }
 }
+
+namespace System.Windows
+{
+    internal static class DependancyAdapter
+    {
+        public static DependencyProperty Unbox(this DependencyProperty property) => property;
+    }
+}
