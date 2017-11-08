@@ -11,7 +11,7 @@ namespace Xamarin.Forms
 
 namespace System.Windows
 {
-    internal static class DependancyAdapter
+    internal static class DependencyAdapter
     {
         public static DependencyProperty Unbox(this DependencyProperty property) => property;
     }

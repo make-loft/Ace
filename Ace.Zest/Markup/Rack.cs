@@ -188,7 +188,7 @@ namespace Ace.Markup
             var patterns = SplitPaterns((args.NewValue as string ?? "").ToUpperInvariant());
             var cPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && !p.StartsWith("CS"))?.Replace("C", "");
             var rPattern = patterns.FirstOrDefault(p => p.StartsWith("R") && !p.StartsWith("RS"))?.Replace("R", "");
-            var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS")).With(p => p.Replace("SSS", ""));
+            var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "");
             var cSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "");
             var rSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "");
 
