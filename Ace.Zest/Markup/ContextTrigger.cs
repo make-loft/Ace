@@ -25,10 +25,9 @@ namespace Ace.Markup
             set => SetValue(CommandParameterProperty, value);
         }
 
+		public bool ForceExecute { get; set; }
 		public bool UseEventArgsAsCommandParameter { get; set; }
-
         public string EventName { get; set; }
-
         internal object Element { get; set; }
 
         public void ExecuteCommand(object sender, EventArgs eventArgs)
@@ -36,7 +35,7 @@ namespace Ace.Markup
             var mediator = Command as Mediator;
             mediator?.SetSender(sender);
             var parameter = UseEventArgsAsCommandParameter ? eventArgs : CommandParameter;
-            Command.Execute(parameter);
+	        if (ForceExecute || Command.CanExecute(parameter)) Command.Execute(parameter);
         }
     }
 }
