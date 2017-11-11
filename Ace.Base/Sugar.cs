@@ -5,21 +5,21 @@ using System.Text;
 
 namespace Ace
 {
-    public static class Cast
-    {
+    public static class CastExtensions
+	{
         public static T Of<T>(this object o) => (T) o;
         public static bool Is<T>(this object o) => o is T;
         public static T As<T>(this object o) where T : class => o as T;
     }
 
-    public static class Null
-    {
+    public static class NullExtensions
+	{
         public const object Value = null;
         public static bool IsNull(this object value) => value == null;
         public static bool IsNotNull(this object value) => value != null;
     }
 
-    public static class String
+    public static class StringExtensions
     {
         public static bool IsNullOrEmpty(this string value) => string.IsNullOrEmpty(value);
         public static bool IsNotNullOrEmpty(this string value) => !string.IsNullOrEmpty(value);
@@ -51,7 +51,7 @@ namespace Ace
 
 namespace System.Linq
 {
-    public static class EnumerableArt
+    public static class EnumerableExtensions
     {
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
