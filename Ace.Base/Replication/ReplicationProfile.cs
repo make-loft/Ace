@@ -46,10 +46,7 @@ namespace Ace.Replication
         };
 
         public bool TryRestoreTypeInfoImplicitly = true;
-        public List<Converter> ImplicitConverters = new List<Converter>
-        {
-            new ComplexConverter()
-        };
+        public List<Converter> ImplicitConverters = new List<Converter> {new ComplexConverter()};
         
         public object Replicate(object graph, IDictionary<int, object> idCache = null, Type baseType = null)
         {

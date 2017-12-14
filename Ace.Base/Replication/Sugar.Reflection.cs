@@ -28,15 +28,15 @@ namespace Ace.Replication
 
         public static void SetValue(this MemberInfo member, object obj, object value)
         {
-            if (member is PropertyInfo property) property.SetValue(obj, value, null);
-            else if (member is FieldInfo field) field.SetValue(obj, value);
-        }
-
-        public static void SetValueIfCanWrite(this MemberInfo member, object obj, object value)
-        {
-            if (!member.CanWrite()) return;
-            if (member is PropertyInfo property) property.SetValue(obj, value, null);
-            else if (member is FieldInfo field) field.SetValue(obj, value);
+            switch (member)
+            {
+                case PropertyInfo property:
+                    property.SetValue(obj, value, null);
+                    break;
+                case FieldInfo field:
+                    field.SetValue(obj, value);
+                    break;
+            }
         }
 
         public static bool IsGenericDictionaryWithKey<TKey>(this Type type) =>

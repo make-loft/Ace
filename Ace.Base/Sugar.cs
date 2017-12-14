@@ -8,7 +8,9 @@ namespace Ace
     public static class CastExtensions
 	{
         public static T Of<T>(this object o) => (T) o;
+        public static bool Is<T>(this T o) => o != null;
         public static bool Is<T>(this object o) => o is T;
+        public static bool IsNull(this object o) => o is null;
         public static T As<T>(this object o) where T : class => o as T;
     }
 
@@ -138,9 +140,7 @@ namespace System.Linq
                 {
                     var subitems = UnboxMultidimensionArray(s, rank - 1);
                     foreach (var subitem in subitems)
-                    {
                         yield return subitem;
-                    }
                 }
                 else yield return item;
             }

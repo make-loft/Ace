@@ -9,13 +9,8 @@ namespace Ace.Replication
 {
     public class ReconstructionCache : Dictionary<object, int>
     {
-        public ReconstructionCache() : base(32, ReferenceComparer<object>.Default)
-        {
-        }
-
-        public ReconstructionCache(IEqualityComparer<object> comparer) : base(32, comparer)
-        {
-        }
+        public ReconstructionCache() : base(32, ReferenceComparer<object>.Default) { }
+        public ReconstructionCache(IEqualityComparer<object> comparer) : base(32, comparer) { }
     }
 
     public class Snapshot

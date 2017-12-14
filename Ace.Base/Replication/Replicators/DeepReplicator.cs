@@ -83,12 +83,11 @@ namespace Ace.Replication.Replicators
             members.ForEach(m =>
             {
                 var memberType = m.GetMemberType();
-                var value = snapshot[memberProvider.GetDataKey(m)];
+                /* should enumerate items at read-only members too */
+                var value = replicationProfile.Replicate(snapshot[memberProvider.GetDataKey(m)], idCache, memberType);
                 if (replicationProfile.TryRestoreTypeInfoImplicitly && value != null && memberType != value.GetType())
                     value = ChangeType(value, memberType, replicationProfile);
-
-                m.SetValueIfCanWrite(replica, /* should enumerate items at read-only members too */
-                    replicationProfile.Replicate(value, idCache, memberType));
+                if (m.CanWrite()) m.SetValue(replica, value);
             });
         }
 
@@ -111,10 +110,10 @@ namespace Ace.Replication.Replicators
                 : baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
 
         private static object CreateInstance(Type type, Map snapshot, ReplicationProfile replicationProfile) =>
-            type.IsArray
+            type.IsArray && type.GetElementType() is Type elementType
                 ? (snapshot.TryGetValue(replicationProfile.SetDimensionKey, out var dimensions)
-                    ? Array.CreateInstance(type.GetElementType(), ((Set) dimensions).Cast<int>().ToArray())
-                    : Array.CreateInstance(type.GetElementType(), ((Set) snapshot[replicationProfile.SetKey]).Count))
+                    ? Array.CreateInstance(elementType, ((Set) dimensions).Cast<int>().ToArray())
+                    : Array.CreateInstance(elementType, ((Set) snapshot[replicationProfile.SetKey]).Count))
                 : Activator.CreateInstance(type);
     }
 }
