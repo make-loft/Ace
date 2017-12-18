@@ -1,24 +1,48 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Ace
 {
-    public static class CastExtensions
-	{
+    public static class LanguageExtensions
+    {
         public static T Of<T>(this object o) => (T) o;
-        public static bool Is<T>(this T o) => o != null;
-        public static bool Is<T>(this object o) => o is T;
-        public static bool IsNull(this object o) => o is null;
         public static T As<T>(this object o) where T : class => o as T;
-    }
+        
+        public static bool IsNull(this object o) => o is null;
+        public static bool IsNull<T>(this T o, out T x) => (x = o) == null;
+        public static bool IsNull<T>(this T o, out T x, Func<T, bool> condition) => 
+            (x = o) == null && condition(o);
+        
+        public static bool IsNullForAll<T>(this T o, out T x, params Func<T, bool>[] conditions) => 
+            (x = o) == null && conditions.All(c => c(o));
 
-    public static class NullExtensions
-	{
-        public const object Value = null;
-        public static bool IsNull(this object value) => value == null;
-        public static bool IsNotNull(this object value) => value != null;
+        public static bool IsNullForAny<T>(this T o, out T x, params Func<T, bool>[] conditions) => 
+            (x = o) == null && conditions.Any(c => c(o));
+        
+        public static bool Is<T>(this T o) => o != null; /* or same 'o is T' */
+        public static bool Is<T>(this object o) => o is T;
+        public static bool Is<T>(this T o, out T x) => (x = o) != null; /* or same '(x = o) is T' */
+
+        public static bool Is<T>(this T o, out T x, Func<T, bool> condition) =>
+            o.Is(out x) && condition(o);
+
+        public static bool IsForAll<T>(this T o, out T x, params Func<T, bool>[] conditions) =>
+            o.Is(out x) && conditions.All(c => c(o));
+        
+        public static bool IsForAny<T>(this T o, out T x, params Func<T, bool>[] conditions) =>
+            o.Is(out x) && conditions.Any(c => c(o));
+        
+        public static bool Is<T>(this T o, Func<T, bool> condition) =>
+            o.Is(out var _) && condition(o);
+
+        public static bool IsForAll<T>(this T o, params Func<T, bool>[] conditions) =>
+            o.Is(out var _) && conditions.All(c => c(o));
+        
+        public static bool IsForAny<T>(this T o, params Func<T, bool>[] conditions) =>
+            o.Is(out var _) && conditions.Any(c => c(o));
     }
 
     public static class StringExtensions
