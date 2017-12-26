@@ -9,40 +9,28 @@ namespace Ace
     public static class LanguageExtensions
     {
         public static T Of<T>(this object o) => (T) o;
+        public static T Of<T>(this T o, out T x) => x = o;
+        
         public static T As<T>(this object o) where T : class => o as T;
+        public static T As<T>(this object o, out T x) where T : class => x = o as T;
         
         public static bool IsNull(this object o) => o is null;
         public static bool IsNull<T>(this T o, out T x) => (x = o) == null;
-        public static bool IsNull<T>(this T o, out T x, Func<T, bool> condition) => 
-            (x = o) == null && condition(o);
-        
-        public static bool IsNullForAll<T>(this T o, out T x, params Func<T, bool>[] conditions) => 
-            (x = o) == null && conditions.All(c => c(o));
-
-        public static bool IsNullForAny<T>(this T o, out T x, params Func<T, bool>[] conditions) => 
-            (x = o) == null && conditions.Any(c => c(o));
         
         public static bool Is<T>(this T o) => o != null; /* or same 'o is T' */
         public static bool Is<T>(this object o) => o is T;
         public static bool Is<T>(this T o, out T x) => (x = o) != null; /* or same '(x = o) is T' */
+        public static bool Is<T>(this object o, out T x) => (x = o is T ? (T) o : default(T)) != null;
+        public static bool Is<T>(this T o, T z) => Equals(o, z);
 
-        public static bool Is<T>(this T o, out T x, Func<T, bool> condition) =>
-            o.Is(out x) && condition(o);
-
-        public static bool IsForAll<T>(this T o, out T x, params Func<T, bool>[] conditions) =>
-            o.Is(out x) && conditions.All(c => c(o));
+        public static TR Let<TR, T>(this object o, TR y, out T x) => o.Is(out x) ? y : y;
+        public static TR Let<TR, T>(this T o,TR y, out T x) => o.Is(out x) ? y : y;
         
-        public static bool IsForAny<T>(this T o, out T x, params Func<T, bool>[] conditions) =>
-            o.Is(out x) && conditions.Any(c => c(o));
+        public static bool LetTrue<T>(this object o, out T x) => o.Let(true, out x);
+        public static bool LetTrue<T>(this T o, out T x) => o.Let(true, out x);
         
-        public static bool Is<T>(this T o, Func<T, bool> condition) =>
-            o.Is(out var _) && condition(o);
-
-        public static bool IsForAll<T>(this T o, params Func<T, bool>[] conditions) =>
-            o.Is(out var _) && conditions.All(c => c(o));
-        
-        public static bool IsForAny<T>(this T o, params Func<T, bool>[] conditions) =>
-            o.Is(out var _) && conditions.Any(c => c(o));
+        public static bool LetFalse<T>(this object o, out T x) => o.Let(false, out x);
+        public static bool LetFalse<T>(this T o, out T x) => o.Let(false, out x);
     }
 
     public static class StringExtensions
