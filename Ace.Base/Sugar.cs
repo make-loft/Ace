@@ -8,15 +8,21 @@ namespace Ace
 {
     public static class LanguageExtensions
     {
-        public static T Of<T>(this object o) => (T) o;
-        public static T Of<T>(this T o, out T x) => x = o;
-        
+        public static T To<T>(this object o) => (T) o;
+        public static T To<T>(this T o, out T result) => result = o;
+
+        public static T To<T, TResult>(this T o, Func<T, TResult> decomposer, out TResult result)
+        {
+            result = o == null ? default(TResult) : decomposer(o);
+            return o;
+        }
+
         public static T As<T>(this object o) where T : class => o as T;
         public static T As<T>(this object o, out T x) where T : class => x = o as T;
         
         public static bool IsNull(this object o) => o is null;
         public static bool IsNull<T>(this T o, out T x) => (x = o) == null;
-        
+                
         public static bool Is<T>(this T o) => o != null; /* or same 'o is T' */
         public static bool Is<T>(this object o) => o is T;
         public static bool Is<T>(this T o, out T x) => (x = o) != null; /* or same '(x = o) is T' */
