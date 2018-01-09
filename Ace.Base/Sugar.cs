@@ -23,10 +23,10 @@ namespace Ace
         public static T As<T>(this object o) where T : class => o as T;
         public static T As<T>(this T o, out T x) where T : class => x = o;
         public static T As<T>(this object o, out T x) where T : class => x = o as T;
-        
+
         public static bool IsNull(this object o) => o is null;
         public static bool IsNull<T>(this T o, out T x) => (x = o) == null;
-                
+
         public static bool Is<T>(this T o) => o != null; /* or same 'o is T' */
         public static bool Is<T>(this object o) => o is T;
         public static bool Is<T>(this T o, out T x) => (x = o) != null; /* or same '(x = o) is T' */
@@ -36,21 +36,61 @@ namespace Ace
         public static bool Is<T>(this T? o, T x) where T : struct => Equals(o, x);
 
         public static bool Is<T>(this T o, Func<T, bool> checker) => o != null && checker(o);
-        public static bool Is<T>(this T o, Func<T, bool> checker, out T x) => 
+
+        public static bool Is<T>(this T o, Func<T, bool> checker, out T x) =>
             o != null ? checker(x = o) : (x = default(T)) != null;
 
         public static bool Is<T>(this object o, Func<T, bool> checker) => o is T && checker((T) o);
-        public static bool Is<T>(this object o, Func<T, bool> checker, out T x) => 
+
+        public static bool Is<T>(this object o, Func<T, bool> checker, out T x) =>
             o is T ? checker(x = (T) o) : (x = default(T)) != null;
 
         public static TR Let<TR, T>(this object o, TR y, out T x) => o.Is(out x) ? y : y;
-        public static TR Let<TR, T>(this T o,TR y, out T x) => o.Is(out x) ? y : y;
-        
+        public static TR Let<TR, T>(this T o, TR y, out T x) => o.Is(out x) ? y : y;
+
         public static bool LetTrue<T>(this object o, out T x) => o.Let(true, out x);
         public static bool LetTrue<T>(this T o, out T x) => o.Let(true, out x);
-        
+
         public static bool LetFalse<T>(this object o, out T x) => o.Let(false, out x);
         public static bool LetFalse<T>(this T o, out T x) => o.Let(false, out x);
+
+        public static Switch<T> Match<T>(this T value, params object[] pattern) =>
+            new Switch<T>(value, pattern);
+    }
+
+    public class Switch<T>
+    {
+        private readonly T _value;
+        private readonly object[] _pattern;
+
+        public Switch(T value, object[] pattern = null)
+        {
+            _value = value;
+            _pattern = pattern ?? new object[] {value};
+        }
+
+        public bool Case(params object[] pattern)
+        {
+            pattern = pattern ?? new object[] {null};
+            for (var i = 0; i < pattern.Length && i < _pattern.Length; i++)
+            {
+                var isMatch = Equals(pattern[i], _pattern[i]);
+                if (isMatch) continue;
+                return false;
+            }
+
+            return true;
+        }
+        
+        public bool Case(out T value) => Case<T>(out value);
+        
+        public bool Case<TValue>() => _value is TValue;
+
+        public bool Case<TValue>(out TValue value) where TValue : T
+        {
+            value = default(TValue);
+            return Case<TValue>() && (value = (TValue) _value) != null;
+        }
     }
 
     public static class StringExtensions
