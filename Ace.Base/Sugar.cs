@@ -8,16 +8,20 @@ namespace Ace
 {
     public static class LanguageExtensions
     {
+        public static T To<T>(this T o) => o;
         public static T To<T>(this object o) => (T) o;
-        public static T To<T>(this T o, out T result) => result = o;
+        public static T To<T>(this T o, out T x) => x = o;
+        public static T To<T>(this object o, out T x) => x = (T) o;
 
-        public static T To<T, TResult>(this T o, Func<T, TResult> decomposer, out TResult result)
+        public static T To<T, TR>(this T o, Func<T, TR> decomposer, out TR x)
         {
-            result = o == null ? default(TResult) : decomposer(o);
+            x = o == null ? default(TR) : decomposer(o);
             return o;
         }
 
+        public static T As<T>(this T o) where T : class => o;
         public static T As<T>(this object o) where T : class => o as T;
+        public static T As<T>(this T o, out T x) where T : class => x = o;
         public static T As<T>(this object o, out T x) where T : class => x = o as T;
         
         public static bool IsNull(this object o) => o is null;
@@ -27,7 +31,17 @@ namespace Ace
         public static bool Is<T>(this object o) => o is T;
         public static bool Is<T>(this T o, out T x) => (x = o) != null; /* or same '(x = o) is T' */
         public static bool Is<T>(this object o, out T x) => (x = o is T ? (T) o : default(T)) != null;
-        public static bool Is<T>(this T o, T z) => Equals(o, z);
+        public static bool Is<T>(this T o, T x) => Equals(o, x);
+        public static bool Is<T>(this object o, T x) => Equals(o, x);
+        public static bool Is<T>(this T? o, T x) where T : struct => Equals(o, x);
+
+        public static bool Is<T>(this T o, Func<T, bool> checker) => o != null && checker(o);
+        public static bool Is<T>(this T o, Func<T, bool> checker, out T x) => 
+            o != null ? checker(x = o) : (x = default(T)) != null;
+
+        public static bool Is<T>(this object o, Func<T, bool> checker) => o is T && checker((T) o);
+        public static bool Is<T>(this object o, Func<T, bool> checker, out T x) => 
+            o is T ? checker(x = (T) o) : (x = default(T)) != null;
 
         public static TR Let<TR, T>(this object o, TR y, out T x) => o.Is(out x) ? y : y;
         public static TR Let<TR, T>(this T o,TR y, out T x) => o.Is(out x) ? y : y;
