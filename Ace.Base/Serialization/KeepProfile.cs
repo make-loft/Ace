@@ -34,15 +34,12 @@ namespace Ace.Serialization
 
     public class KeepProfile : IBodyProfile<Map, string>, IBodyProfile<Set, string>
     {
-        public StringBuilder WriteKey(StringBuilder builder, string key, int indentLevel)
-        {
-            return builder
-                .Append(GetKeyHead(key))
-                .Append(key)
-                .Append(GetKeyTail(key))
-                .Append(MapPairSplitter);
-        }
-        
+        public StringBuilder WriteKey(StringBuilder builder, string key, int indentLevel) => builder
+            .Append(GetKeyHead(key))
+            .Append(key)
+            .Append(GetKeyTail(key))
+            .Append(MapPairSplitter);
+
         public static Assembly SystemAssembly = typeof(object).Assembly;
         public static Assembly ExtendedAssembly = typeof(Uri).Assembly;
 

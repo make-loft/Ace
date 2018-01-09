@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Ace
 {
     public static class LanguageExtensions
     {
+        public static TR Let<T, TR>(this T o, TR y) => y;
+        public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
+
         public static T To<T>(this T o) => o;
         public static T To<T>(this object o) => (T) o;
         public static T To<T>(this T o, out T x) => x = o;
         public static T To<T>(this object o, out T x) => x = (T) o;
 
-        public static T To<T, TR>(this T o, Func<T, TR> decomposer, out TR x)
-        {
-            x = o == null ? default(TR) : decomposer(o);
-            return o;
-        }
+        public static T To<T, TR>(this T o, Func<T, TR> decomposer, out TR x) =>
+            (x = o == null ? default(TR) : decomposer(o)).Let(o);
 
         public static T As<T>(this T o) where T : class => o;
         public static T As<T>(this object o) where T : class => o as T;
@@ -36,23 +35,13 @@ namespace Ace
         public static bool Is<T>(this T? o, T x) where T : struct => Equals(o, x);
 
         public static bool Is<T>(this T o, Func<T, bool> checker) => o != null && checker(o);
+        public static bool Is<T>(this object o, Func<T, bool> checker) => o is T && checker((T) o);
 
         public static bool Is<T>(this T o, Func<T, bool> checker, out T x) =>
             o != null ? checker(x = o) : (x = default(T)) != null;
 
-        public static bool Is<T>(this object o, Func<T, bool> checker) => o is T && checker((T) o);
-
         public static bool Is<T>(this object o, Func<T, bool> checker, out T x) =>
             o is T ? checker(x = (T) o) : (x = default(T)) != null;
-
-        public static TR Let<TR, T>(this object o, TR y, out T x) => o.Is(out x) ? y : y;
-        public static TR Let<TR, T>(this T o, TR y, out T x) => o.Is(out x) ? y : y;
-
-        public static bool LetTrue<T>(this object o, out T x) => o.Let(true, out x);
-        public static bool LetTrue<T>(this T o, out T x) => o.Let(true, out x);
-
-        public static bool LetFalse<T>(this object o, out T x) => o.Let(false, out x);
-        public static bool LetFalse<T>(this T o, out T x) => o.Let(false, out x);
 
         public static Switch<T> Match<T>(this T value, params object[] pattern) =>
             new Switch<T>(value, pattern);
@@ -61,36 +50,29 @@ namespace Ace
     public class Switch<T>
     {
         private readonly T _value;
-        private readonly object[] _pattern;
+        private object[] _pattern;
 
-        public Switch(T value, object[] pattern = null)
-        {
-            _value = value;
-            _pattern = pattern ?? new object[] {value};
-        }
+        public Switch(T value) => _value = value;
+        public Switch(T value, object[] pattern) : this(value) => _pattern = pattern;
 
         public bool Case(params object[] pattern)
         {
             pattern = pattern ?? new object[] {null};
+            _pattern = _pattern ?? new object[] {_value};
             for (var i = 0; i < pattern.Length && i < _pattern.Length; i++)
             {
-                var isMatch = Equals(pattern[i], _pattern[i]);
-                if (isMatch) continue;
+                if (Equals(pattern[i], _pattern[i])) continue;
                 return false;
             }
 
             return true;
         }
-        
-        public bool Case(out T value) => Case<T>(out value);
-        
-        public bool Case<TValue>() => _value is TValue;
 
-        public bool Case<TValue>(out TValue value) where TValue : T
-        {
-            value = default(TValue);
-            return Case<TValue>() && (value = (TValue) _value) != null;
-        }
+        public bool Case<TValue>() => _value is TValue;
+        public bool Case(out T value) => Case<T>(out value);
+
+        public bool Case<TValue>(out TValue value) where TValue : T =>
+            (value = (_value is TValue).To(out var b) ? (TValue) _value : default(TValue)).Let(b);
     }
 
     public static class StringExtensions
