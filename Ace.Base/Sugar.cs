@@ -7,6 +7,7 @@ namespace Ace
 {
     public static class LanguageExtensions
     {
+        public static void Let<T>(this T o) { }
         public static TR Let<T, TR>(this T o, TR y) => y;
         public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
 
@@ -23,7 +24,7 @@ namespace Ace
         public static T As<T>(this T o, out T x) where T : class => x = o;
         public static T As<T>(this object o, out T x) where T : class => x = o as T;
 
-        public static bool IsNull(this object o) => o is null;
+        public static bool IsNull<T>(this T o) => o == null;
         public static bool IsNull<T>(this T o, out T x) => (x = o) == null;
 
         public static bool Is<T>(this T o) => o != null; /* or same 'o is T' */
