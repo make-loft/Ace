@@ -36,10 +36,14 @@ namespace Ace
             (originToClone[origin] = MemberwiseCloneMethod.Invoke(origin, null))
             .MakeDeep(type, o => o.GetDeepClone(originToClone, likeImmutableTypes));
 
-        private static object MakeDeep(this object origin, Type type, Func<object, object> getDeepClone) =>
-            origin.CloneByFields(type, getDeepClone) is Array array ? array.CloneByIndices(getDeepClone) : origin;
-        
-        private static object CloneByFields(this object origin, Type type, Func<object, object> getDeepClone)
+        private static object MakeDeep(this object origin, Type type, Func<object, object> getDeepClone)
+        {
+            origin.CloneByFields(type, getDeepClone);
+            (origin as Array)?.CloneByIndices(getDeepClone);
+            return origin;
+        }
+
+        private static void CloneByFields(this object origin, Type type, Func<object, object> getDeepClone)
         {
             var fields = type.EnumerateFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             foreach (var field in fields)
@@ -47,11 +51,9 @@ namespace Ace
                 var deepClone = getDeepClone(field.GetValue(origin));
                 field.SetValue(origin, deepClone);
             }
-
-            return origin;
         }
 
-        private static Array CloneByIndices(this Array array, Func<object, object> getDeepClone)
+        private static void CloneByIndices(this Array array, Func<object, object> getDeepClone)
         {
             var indices = new int[array.Rank];
             var dimensions = new int[array.Rank];
@@ -68,8 +70,6 @@ namespace Ace
                 var deepClone = getDeepClone(array.GetValue(indices));
                 array.SetValue(deepClone, indices);
             }
-            
-            return array;
         }
     }
 }
