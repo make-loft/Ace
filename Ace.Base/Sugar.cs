@@ -12,9 +12,9 @@ namespace Ace
         public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
 
         public static T To<T>(this T o) => o;
-        public static T To<T>(this object o) => (T) o;
+        public static T To<T>(this object o) => (T) Convert.ChangeType(o, typeof(T), null);
         public static T To<T>(this T o, out T x) => x = o;
-        public static T To<T>(this object o, out T x) => x = (T) o;
+        public static T To<T>(this object o, out T x) => x = (T) Convert.ChangeType(o, typeof(T), null);
 
         public static T To<T, TR>(this T o, Func<T, TR> decomposer, out TR x) =>
             (x = o == null ? default(TR) : decomposer(o)).Let(o);
