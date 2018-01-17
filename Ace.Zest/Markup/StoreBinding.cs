@@ -6,13 +6,13 @@ using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 
 namespace Ace.Markup
 {
-    public class StoreBinding : System.Windows.Data.Binding
-    {
-        [TypeConverter(typeof(TypeTypeConverter))]
-        public Type StoreKey
-        {
-            get => Source?.GetType();
-            set => Source = Ace.Store.Get(value);
-        }
-    }
+	public class StoreBinding : System.Windows.Data.Binding
+	{
+		[TypeConverter(typeof(TypeTypeConverter))]
+		public Type StoreKey
+		{
+			get => Source?.GetType();
+			set => Source = Ace.Store.Get(value);
+		}
+	}
 }

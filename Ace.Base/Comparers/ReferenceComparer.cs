@@ -3,12 +3,12 @@ using System.Runtime.CompilerServices;
 
 namespace Ace.Comparers
 {
-    public class ReferenceComparer<T> : IEqualityComparer<T>
-    {
-        public static readonly ReferenceComparer<T> Default = new ReferenceComparer<T>();
-        
-        public int GetHashCode(T obj) => RuntimeHelpers.GetHashCode(obj);
-        
-        public bool Equals(T x, T y) => ReferenceEquals(x, y);
-    }
+	public class ReferenceComparer<T> : IEqualityComparer<T>
+	{
+		public static readonly ReferenceComparer<T> Default = new ReferenceComparer<T>();
+		
+		public int GetHashCode(T obj) => RuntimeHelpers.GetHashCode(obj);
+		
+		public bool Equals(T x, T y) => ReferenceEquals(x, y);
+	}
 }

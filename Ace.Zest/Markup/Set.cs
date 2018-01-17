@@ -2,7 +2,7 @@
 
 namespace Ace.Markup
 {
-    public class Set : ObservableCollection<object>
-    {
-    }
+	public class Set : ObservableCollection<object>
+	{
+	}
 }

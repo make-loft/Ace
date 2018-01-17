@@ -7,16 +7,16 @@ using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 
 namespace Ace.Markup
 {
-    public class Store : Patterns.AMarkupExtension
-    {
-        public Store() => Key = null;
+	public class Store : Patterns.AMarkupExtension
+	{
+		public Store() => Key = null;
 
-        public Store(Type key) => Key = key;
+		public Store(Type key) => Key = key;
 
-        [TypeConverter(typeof(TypeTypeConverter))]
-        public Type Key { get; set; }
+		[TypeConverter(typeof(TypeTypeConverter))]
+		public Type Key { get; set; }
 
-        public override object Provide(object targetObject, object targetProperty = null) =>
-            RoutedCommandsAdapter.SetCommandBindings(targetObject, Ace.Store.Get(Key));
-    }
+		public override object Provide(object targetObject, object targetProperty = null) =>
+			RoutedCommandsAdapter.SetCommandBindings(targetObject, Ace.Store.Get(Key));
+	}
 }

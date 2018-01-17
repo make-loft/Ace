@@ -1,10 +1,10 @@
 ﻿namespace HelloAceViews
 {
-    public partial class TestView
-    {
-        public TestView()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class TestView
+	{
+		public TestView()
+		{
+			InitializeComponent();
+		}
+	}
 }

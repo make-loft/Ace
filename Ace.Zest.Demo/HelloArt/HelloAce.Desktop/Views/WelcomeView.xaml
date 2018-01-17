@@ -1,181 +1,181 @@
 ﻿<Window 
-    x:Class="HelloAceViews.AppView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewModel="clr-namespace:HelloAce.ViewModel"
-    DataContext="{Store Key=viewModel:AppViewModel}"
-    WindowStyle="{Smart 'WindowStyle, SingleBorderWindow'}"
-    ResizeMode="{Smart 'ResizeMode, CanResizeWithGrip'}"
-    Height="{Smart 'Height, 600'}" 
-    Width="{Smart 'Width, 800'}"
-    Left="{Smart 'Left, NaN'}"
-    Top="{Binding 'Smart[Top, NaN]', Mode=TwoWay}"
-    Title="{Localizing Welcome, StringFormat='{}{0} :•)'}"
-    Rack.Rows="* 45\*/410">
+	x:Class="HelloAceViews.AppView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:viewModel="clr-namespace:HelloAce.ViewModel"
+	DataContext="{Store Key=viewModel:AppViewModel}"
+	WindowStyle="{Smart 'WindowStyle, SingleBorderWindow'}"
+	ResizeMode="{Smart 'ResizeMode, CanResizeWithGrip'}"
+	Height="{Smart 'Height, 600'}" 
+	Width="{Smart 'Width, 800'}"
+	Left="{Smart 'Left, NaN'}"
+	Top="{Binding 'Smart[Top, NaN]', Mode=TwoWay}"
+	Title="{Localizing Welcome, StringFormat='{}{0} :•)'}"
+	Rack.Rows="* 45\*/410">
 
-    <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
+	<Window.Resources>
+		<Style TargetType="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
 
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        
-        <Style x:Key="SampleTextBoxStyle" TargetType="TextBox">
-            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="MaxHeight" Value="300"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
+		<Style TargetType="TextBox">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+		
+		<Style x:Key="SampleTextBoxStyle" TargetType="TextBox">
+			<Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+			<Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+			<Setter Property="IsReadOnly" Value="True"/>
+			<Setter Property="MaxHeight" Value="300"/>
+			<Setter Property="Margin" Value="5"/>
+		</Style>
 
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-    </Window.Resources>
+		<Style TargetType="Button">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+	</Window.Resources>
 
-    <Grid Rack.Rows="5 * Auto">
-        <TabControl Grid.Row="1">
-            <TabItem Header="{Localizing Evocators}">
-                <StackPanel>
-                    <GroupBox Header="{Localizing PropertiesAndCommands}">
-                        <Attacher.ContextTriggers>
-                            <ContextTrigger
-                                EventName="Loaded"
-                                Command="{Context Hello, StoreKey=viewModel:AppViewModel}"/>
-                        </Attacher.ContextTriggers>
-                        <StackPanel>
-                            <TextBox Text="{Binding Mouse, Mode=TwoWay, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
-                            <Button Content="Make (Context Command)" Command="{Context Make}"/>
+	<Grid Rack.Rows="5 * Auto">
+		<TabControl Grid.Row="1">
+			<TabItem Header="{Localizing Evocators}">
+				<StackPanel>
+					<GroupBox Header="{Localizing PropertiesAndCommands}">
+						<Attacher.ContextTriggers>
+							<ContextTrigger
+								EventName="Loaded"
+								Command="{Context Hello, StoreKey=viewModel:AppViewModel}"/>
+						</Attacher.ContextTriggers>
+						<StackPanel>
+							<TextBox Text="{Binding Mouse, Mode=TwoWay, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+							<Button Content="Make (Context Command)" Command="{Context Make}"/>
 
-                            <TextBox Text="{Binding Rabbit, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
-                            <Button Content="GoToPage (Routed Command)" Command="GoToPage" CommandParameter="/Views/TextView.xaml"/>
-                        </StackPanel>
-                    </GroupBox>
-                </StackPanel>
-            </TabItem>
-            
-            <TabItem Header="{Localizing SmartState}">
-                <TextBox Style="{StaticResource SampleTextBoxStyle}" MaxHeight="800" Text="{Localizing SmartStateSample}"/>
-            </TabItem>
+							<TextBox Text="{Binding Rabbit, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+							<Button Content="GoToPage (Routed Command)" Command="GoToPage" CommandParameter="/Views/TextView.xaml"/>
+						</StackPanel>
+					</GroupBox>
+				</StackPanel>
+			</TabItem>
+			
+			<TabItem Header="{Localizing SmartState}">
+				<TextBox Style="{StaticResource SampleTextBoxStyle}" MaxHeight="800" Text="{Localizing SmartStateSample}"/>
+			</TabItem>
 
-            <TabItem Header="{Localizing Exposable}">
-                <Grid Rack.Rows="* Auto" Rack.Columns="* *">
-                    <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="{Localizing EquitableInjections}"/>
-                    
-                    <GroupBox Grid.Row="1" Grid.Column="0" Header="{Localizing Guy}">
-                        <StackPanel DataContext="{Store viewModel:GuyViewModel}">
-                            <TextBlock Text="{Binding Kisses, StringFormat='❤•{0}'}" HorizontalAlignment="Center" FontSize="24"/>
-                            <TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing GuySample}"/>
-                            <Button Command="{Context KissGirl}" Content="Kiss Girl 💋 👱"/>    
-                        </StackPanel>
-                    </GroupBox>
+			<TabItem Header="{Localizing Exposable}">
+				<Grid Rack.Rows="* Auto" Rack.Columns="* *">
+					<TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="{Localizing EquitableInjections}"/>
+					
+					<GroupBox Grid.Row="1" Grid.Column="0" Header="{Localizing Guy}">
+						<StackPanel DataContext="{Store viewModel:GuyViewModel}">
+							<TextBlock Text="{Binding Kisses, StringFormat='❤•{0}'}" HorizontalAlignment="Center" FontSize="24"/>
+							<TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing GuySample}"/>
+							<Button Command="{Context KissGirl}" Content="Kiss Girl 💋 👱"/>	
+						</StackPanel>
+					</GroupBox>
 
-                    <GroupBox Grid.Row="1" Grid.Column="1" Header="{Localizing Girl}">
-                        <StackPanel DataContext="{Store viewModel:GirlViewModel}">
-                            <TextBlock Text="{Binding Kisses, StringFormat='❤•{0}'}" HorizontalAlignment="Center" FontSize="24"/>                       
-                            <TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing GirlSample}"/>
-                            <Button Command="{Context KissGuy}" Content="Kiss Guy 💋 👮"/>                          
-                        </StackPanel>
-                    </GroupBox>
+					<GroupBox Grid.Row="1" Grid.Column="1" Header="{Localizing Girl}">
+						<StackPanel DataContext="{Store viewModel:GirlViewModel}">
+							<TextBlock Text="{Binding Kisses, StringFormat='❤•{0}'}" HorizontalAlignment="Center" FontSize="24"/>					   
+							<TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing GirlSample}"/>
+							<Button Command="{Context KissGuy}" Content="Kiss Guy 💋 👮"/>						  
+						</StackPanel>
+					</GroupBox>
 
-                    <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="💏" FontSize="32" HorizontalAlignment="Center"/>
-                </Grid>
-            </TabItem>
+					<TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="💏" FontSize="32" HorizontalAlignment="Center"/>
+				</Grid>
+			</TabItem>
 
-            <TabItem Header="{Localizing Converters}">
-                <Grid Rack.Rows="Auto * * *">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox MinWidth="20" Text="{Binding Number, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Text="try input numbers into the field 0, 1, etc..."/>
-                    </StackPanel>
-                                  
-                    <GroupBox Grid.Row="1" Header="{Localizing Inline}">
-                        <Grid Rack.Columns="* 200\Auto">
-                            <Grid.Resources>
-                                <InlineConverter x:Key="InlineConverter" Converting="InlineConverter_OnConverting"/>
-                            </Grid.Resources>
-                            <TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing InlineConverterSample}"/>
-                            <TextBlock Grid.Column="1" TextWrapping="Wrap" Text="{Binding Number, Converter={StaticResource InlineConverter}}" FontSize="10"/>
-                        </Grid>
-                    </GroupBox>
+			<TabItem Header="{Localizing Converters}">
+				<Grid Rack.Rows="Auto * * *">
+					<StackPanel Orientation="Horizontal">
+						<TextBox MinWidth="20" Text="{Binding Number, UpdateSourceTrigger=PropertyChanged}"/>
+						<TextBlock Text="try input numbers into the field 0, 1, etc..."/>
+					</StackPanel>
+								  
+					<GroupBox Grid.Row="1" Header="{Localizing Inline}">
+						<Grid Rack.Columns="* 200\Auto">
+							<Grid.Resources>
+								<InlineConverter x:Key="InlineConverter" Converting="InlineConverter_OnConverting"/>
+							</Grid.Resources>
+							<TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing InlineConverterSample}"/>
+							<TextBlock Grid.Column="1" TextWrapping="Wrap" Text="{Binding Number, Converter={StaticResource InlineConverter}}" FontSize="10"/>
+						</Grid>
+					</GroupBox>
 
-                    <GroupBox Grid.Row="2" Header="{Localizing Switch}">
-                        <Grid Rack.Columns="* 200\Auto">
-                            <Grid.Resources>
-                                <SwitchConverter x:Key="NumberSwitchConverter">
-                                    <Case Key="0" Value="{Localizing Zero}"/>
-                                    <Case Key="1" Value="{Localizing One}"/>
-                                </SwitchConverter>
-                            </Grid.Resources>
-                            <TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing SwitchConverterSample}"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Number, Converter={StaticResource NumberSwitchConverter}}" FontSize="22"/>
-                        </Grid>
-                    </GroupBox>
+					<GroupBox Grid.Row="2" Header="{Localizing Switch}">
+						<Grid Rack.Columns="* 200\Auto">
+							<Grid.Resources>
+								<SwitchConverter x:Key="NumberSwitchConverter">
+									<Case Key="0" Value="{Localizing Zero}"/>
+									<Case Key="1" Value="{Localizing One}"/>
+								</SwitchConverter>
+							</Grid.Resources>
+							<TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing SwitchConverterSample}"/>
+							<TextBlock Grid.Column="1" Text="{Binding Number, Converter={StaticResource NumberSwitchConverter}}" FontSize="22"/>
+						</Grid>
+					</GroupBox>
 
-                    <GroupBox Grid.Row="3" Header="{Localizing Composite}">
-                        <Grid Rack.Columns="* 200\Auto">
-                            <Grid.Resources>
-                                <BooleanConverter x:Key="YesNoConverter" OnTrue="Yes" OnFalse="No"/>
-                                <SwitchConverter 
-                                    x:Key="CompositeSwitchConverter"
-                                    Default="True"
-                                    PostConverter="{StaticResource YesNoConverter}">
-                                    <Case Key="0" Value="False"/>
-                                </SwitchConverter>
-                            </Grid.Resources>
-                            <TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing CompositeConverterSample}"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Number, Converter={StaticResource CompositeSwitchConverter}}" FontSize="22"/>
-                        </Grid>
-                    </GroupBox>
+					<GroupBox Grid.Row="3" Header="{Localizing Composite}">
+						<Grid Rack.Columns="* 200\Auto">
+							<Grid.Resources>
+								<BooleanConverter x:Key="YesNoConverter" OnTrue="Yes" OnFalse="No"/>
+								<SwitchConverter 
+									x:Key="CompositeSwitchConverter"
+									Default="True"
+									PostConverter="{StaticResource YesNoConverter}">
+									<Case Key="0" Value="False"/>
+								</SwitchConverter>
+							</Grid.Resources>
+							<TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing CompositeConverterSample}"/>
+							<TextBlock Grid.Column="1" Text="{Binding Number, Converter={StaticResource CompositeSwitchConverter}}" FontSize="22"/>
+						</Grid>
+					</GroupBox>
 
-                </Grid>
-            </TabItem>
-            
-            <TabItem Header="{Localizing Rack}">
-                <Grid Rack.Rows="Auto *">
-                    <StackPanel 
-                        Orientation="Horizontal" 
-                        ToolTip="{Localizing RackSample}"
-                        ToolTipService.ShowDuration="32000"
-                        ToolTipService.BetweenShowDelay="0">
-                        <!--<TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing RackSample}"/>-->
-                        <TextBlock Text="Rack.Rows="/>
-                        <TextBox Text="{Smart RackRows, DefaultValue='* 20\\Auto * 2* */100 * *', UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Text="Rack.Columns="/>
-                        <TextBox Text="{Smart RackColumns, DefaultValue='* 50\\*/100 *', UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Text="TextBox Rack.Set=" Background="Plum"/>
-                        <TextBox Text="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1', UpdateSourceTrigger=PropertyChanged}"/>
-                    </StackPanel>
-                    <Grid
-                        Grid.Row="1"
-                        Rack.ShowLines="True"
-                        Rack.Rows="{Smart RackRows}" 
-                        Rack.Columns="{Smart RackColumns}">
-                        <GridSplitter
-                            Background="Plum"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
-                            Rack.Set="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1'}"/>
-                    </Grid>
-                </Grid>
-            </TabItem>
-        </TabControl>
+				</Grid>
+			</TabItem>
+			
+			<TabItem Header="{Localizing Rack}">
+				<Grid Rack.Rows="Auto *">
+					<StackPanel 
+						Orientation="Horizontal" 
+						ToolTip="{Localizing RackSample}"
+						ToolTipService.ShowDuration="32000"
+						ToolTipService.BetweenShowDelay="0">
+						<!--<TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing RackSample}"/>-->
+						<TextBlock Text="Rack.Rows="/>
+						<TextBox Text="{Smart RackRows, DefaultValue='* 20\\Auto * 2* */100 * *', UpdateSourceTrigger=PropertyChanged}"/>
+						<TextBlock Text="Rack.Columns="/>
+						<TextBox Text="{Smart RackColumns, DefaultValue='* 50\\*/100 *', UpdateSourceTrigger=PropertyChanged}"/>
+						<TextBlock Text="TextBox Rack.Set=" Background="Plum"/>
+						<TextBox Text="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1', UpdateSourceTrigger=PropertyChanged}"/>
+					</StackPanel>
+					<Grid
+						Grid.Row="1"
+						Rack.ShowLines="True"
+						Rack.Rows="{Smart RackRows}" 
+						Rack.Columns="{Smart RackColumns}">
+						<GridSplitter
+							Background="Plum"
+							VerticalAlignment="Stretch"
+							HorizontalAlignment="Stretch"
+							Rack.Set="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1'}"/>
+					</Grid>
+				</Grid>
+			</TabItem>
+		</TabControl>
 
-        <StackPanel 
-            Grid.RowSpan="2" 
-            VerticalAlignment="Top" 
-            HorizontalAlignment="Right" 
-            Orientation="Horizontal" 
-            DataContext="{Store viewModel:SettingsViewModel}">
-            <TextBlock Text="{Localizing Localizing, StringFormat='{}{0}: '}"/>
-            <ComboBox SelectedItem="{Binding Language, Mode=TwoWay}" ItemsSource="{Binding Languages}"/>
-            <Button Content="En" Command="{Context SetLanguage}" CommandParameter="English" Margin="5 0"/>
-        </StackPanel>
-    
-        <StatusBar Grid.Row="2">
-            <StatusBarItem Content="👌"/>
-        </StatusBar>    
-    </Grid>
+		<StackPanel 
+			Grid.RowSpan="2" 
+			VerticalAlignment="Top" 
+			HorizontalAlignment="Right" 
+			Orientation="Horizontal" 
+			DataContext="{Store viewModel:SettingsViewModel}">
+			<TextBlock Text="{Localizing Localizing, StringFormat='{}{0}: '}"/>
+			<ComboBox SelectedItem="{Binding Language, Mode=TwoWay}" ItemsSource="{Binding Languages}"/>
+			<Button Content="En" Command="{Context SetLanguage}" CommandParameter="English" Margin="5 0"/>
+		</StackPanel>
+	
+		<StatusBar Grid.Row="2">
+			<StatusBarItem Content="👌"/>
+		</StatusBar>	
+	</Grid>
 </Window>
