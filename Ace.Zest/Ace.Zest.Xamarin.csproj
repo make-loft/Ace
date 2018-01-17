@@ -48,6 +48,7 @@
     <Compile Include="Converters\Patterns\ISwitchConverter.cs" />
     <Compile Include="Converters\SwitchConverter.cs" />
     <Compile Include="Converters\ToStringConverter.cs" />
+    <Compile Include="Dictionaries\AppConverters.cs" />
     <Compile Include="LocalizationSource.cs" />
     <Compile Include="Markup\Attacher.cs" />
     <Compile Include="Markup\Case.cs" />

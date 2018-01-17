@@ -63,6 +63,7 @@
     <Compile Include="Converters\Patterns\IInlineConverter.cs" />
     <Compile Include="Converters\Patterns\ISwitchConverter.cs" />
     <Compile Include="Converters\SwitchConverter.cs" />
+    <Compile Include="Dictionaries\AppConverters.cs" />
     <Compile Include="LocalizationSource.cs" />
     <Compile Include="Markup\Attacher.cs" />
     <Compile Include="Markup\Patterns\ABindingExtension.cs" />
