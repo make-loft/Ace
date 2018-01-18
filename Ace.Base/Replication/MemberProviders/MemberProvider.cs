@@ -9,7 +9,10 @@ namespace Ace.Replication.MemberProviders
 	{
 		public virtual bool CanApply(Type type) => true;
 
-		public virtual string GetDataKey(MemberInfo member) => member.Name;
+		public virtual string GetCustomKey(MemberInfo member) => member.Name;
+
+		public string GetDataKey(MemberInfo member, Type activeType) =>
+			(member.DeclaringType != activeType ? member.DeclaringType?.Name + "." : null) + GetCustomKey(member);
 
 		protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
 

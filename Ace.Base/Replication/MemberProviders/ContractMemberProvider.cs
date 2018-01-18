@@ -29,7 +29,7 @@ namespace Ace.Replication.MemberProviders
 
 		protected readonly Dictionary<MemberInfo, string> MemberToKey = new Dictionary<MemberInfo, string>();
 
-		public override string GetDataKey(MemberInfo member) =>
+		public override string GetCustomKey(MemberInfo member) =>
 			MemberToKey.TryGetValue(member, out var key)
 				? key
 				: MemberToKey[member] = member.GetCustomAttribute<DataMemberAttribute>()?.Name ?? member.Name;

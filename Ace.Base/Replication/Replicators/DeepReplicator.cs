@@ -35,8 +35,12 @@ namespace Ace.Replication.Replicators
 
 			var memberProvider = replicationProfile.MemberProviders.First(p => p.CanApply(type));
 			var members = memberProvider.GetDataMembers(type);
-			members.ForEach(m => snapshot.Add(memberProvider.GetDataKey(m),
-				replicationProfile.Translate(m.GetValue(instance), idCache, m.GetMemberType())));
+			members.ForEach(m =>
+			{
+				var key = memberProvider.GetDataKey(m, type);
+				var value = replicationProfile.Translate(m.GetValue(instance), idCache, m.GetMemberType());
+				snapshot.Add(key, value);
+			});
 		}
 
 		public override void FillInstance(Map snapshot, object replica, ReplicationProfile replicationProfile,
@@ -84,7 +88,8 @@ namespace Ace.Replication.Replicators
 			{
 				var memberType = m.GetMemberType();
 				/* should enumerate items at read-only members too */
-				var value = replicationProfile.Replicate(snapshot[memberProvider.GetDataKey(m)], idCache, memberType);
+				var key = memberProvider.GetDataKey(m, type);
+				var value = replicationProfile.Replicate(snapshot[key], idCache, memberType);
 				if (replicationProfile.TryRestoreTypeInfoImplicitly && value != null && memberType != value.GetType())
 					value = ChangeType(value, memberType, replicationProfile);
 				if (m.CanWrite()) m.SetValue(replica, value);
@@ -101,8 +106,20 @@ namespace Ace.Replication.Replicators
 				.First(v => v != Converter.NotParsed);
 
 		public override object ActivateInstance(Map snapshot,
-			ReplicationProfile replicationProfile, IDictionary<int, object> idCache, Type baseType = null) =>
-			CreateInstance(RestoreType(snapshot, replicationProfile, baseType), snapshot, replicationProfile);
+			ReplicationProfile replicationProfile, IDictionary<int, object> idCache, Type baseType = null)
+		{
+			Type type = null;
+
+			try
+			{
+				type = RestoreType(snapshot, replicationProfile, baseType);
+				return CreateInstance(type, snapshot, replicationProfile);
+			}
+			catch (Exception e)
+			{
+				throw new Exception($"{e.Message}\n{type?.FullName}\n{snapshot.SnapshotToString(Snapshot.DefaultKeepProfile)}", e);
+			}
+		}
 
 		private static Type RestoreType(Map snapshot, ReplicationProfile replicationProfile, Type baseType) =>
 			snapshot.TryGetValue(replicationProfile.TypeKey, out var typeName)

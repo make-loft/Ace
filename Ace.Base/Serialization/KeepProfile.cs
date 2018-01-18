@@ -67,12 +67,13 @@ namespace Ace.Serialization
 		public bool UseTailDelimiter { get; set; } = false;
 		public string IndentChars { get; set; } = "  ";
 		public string NewLineChars { get; set; } = Environment.NewLine;
-		public bool AppendCountComments = false;
+		public bool AppendCountComments { get; set; } = false;
+		public bool TrimKeys { get; set; } = true;
 
-		public string KeyHead = null; //"\"";
-		public string KeyTail = null; //"\"";
-		public string GetKeyHead(object key) => KeyHead;
-		public string GetKeyTail(object key) => KeyTail;
+		public string KeyHead = "\"";
+		public string KeyTail = "\"";
+		public string GetKeyHead(object key) => key is "" || !TrimKeys ? KeyHead : null;
+		public string GetKeyTail(object key) => key is "" || !TrimKeys ? KeyTail : null;
 
 		public string GetHead(object body) => body is Map m
 			? GetHead(m)
