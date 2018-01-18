@@ -17,9 +17,9 @@ namespace Ace.Markup
 
 		public string Key { get; set; }
 
-		public Letter Case { get; set; }
-
+		public Modifier Modifiers { get; set; }
+		
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			LocalizationSource.Wrap[Key, culture].To(Case);
+			LocalizationSource.Wrap[Key, culture].Modify(Modifiers);
 	}
 }

@@ -34,7 +34,7 @@ namespace Ace.Adapters
 			var routedCommandBinding = new System.Windows.Input.CommandBinding(evocator.Command);
 			routedCommandBinding.Executed += (sender, args) =>
 			{
-				var e = new ExecutedEventArgs(args.Command, args.Parameter);
+				var e = new ExecutedEventArgs(args.Command, args.Parameter, args.Handled);
 				evocator.EvokeExecuted(sender, e);
 				args.Handled = e.Handled;
 			};
@@ -42,25 +42,25 @@ namespace Ace.Adapters
 			routedCommandBinding.CanExecute += (sender, args) =>
 			{
 				if (!args.Handled) continueExecution = true;
-				var e = new CanExecuteEventArgs(args.Command, args.Parameter);
+				var e = new CanExecuteEventArgs(args.Command, args.Parameter, args.Handled);
 				evocator.EvokeCanExecute(sender, e);
-				args.Handled = e.Handled;
 				args.CanExecute = e.CanExecute;
+				args.Handled = e.Handled;
 			};
 
 			routedCommandBinding.PreviewExecuted += (sender, args) =>
 			{
-				var e = new ExecutedEventArgs(args.Command, args.Parameter);
+				var e = new ExecutedEventArgs(args.Command, args.Parameter, args.Handled);
 				evocator.EvokePreviewExecuted(sender, e);
 				args.Handled = e.Handled;
 				if (!continueExecution) return;
 				continueExecution = false;
-				evocator.EvokeExecuted(sender, new ExecutedEventArgs(e.Command, e.Parameter));
+				evocator.EvokeExecuted(sender, new ExecutedEventArgs(e.Command, e.Parameter, e.Handled));
 			};
 
 			routedCommandBinding.PreviewCanExecute += (sender, args) =>
 			{
-				var e = new CanExecuteEventArgs(args.Command, args.Parameter);
+				var e = new CanExecuteEventArgs(args.Command, args.Parameter, args.Handled);
 				evocator.EvokePreviewCanExecute(sender, e);
 				args.CanExecute = e.CanExecute;
 				args.Handled = e.Handled;

@@ -7,6 +7,8 @@ namespace Ace
 {
 	public static class LanguageExtensions
 	{
+		public static bool Not(this bool b) => !b;
+		
 		public static void Let<T>(this T o) { }
 		public static TR Let<T, TR>(this T o, TR y) => y;
 		public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);

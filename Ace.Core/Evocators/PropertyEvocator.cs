@@ -5,26 +5,26 @@ using System.Linq;
 
 namespace Ace.Evocators
 {
-	public class PropertyEvocator
+	public class PropertyEvocator<TPropertyChanging, TPropertyChanged, TErrorsChanged>
 	{
-		public PropertyEvocator(string propertyName) => PropertyName = propertyName;
-		public event EventHandler<PropertyChangingEventArgs> PropertyChanging = (sender, args) => { };
-		public event EventHandler<PropertyChangedEventArgs> PropertyChanged = (sender, args) => { };
-		public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = (sender, args) => { };
+		public event EventHandler<TPropertyChanging> PropertyChanging = (sender, args) => { };
+		public event EventHandler<TPropertyChanged> PropertyChanged = (sender, args) => { };
+		public event EventHandler<TErrorsChanged> ErrorsChanged = (sender, args) => { };
 		public event Func<string, object> ValidationRules = propertyName => null;
-		public string PropertyName { get; }
 
-		public void EvokePropertyChanging(object sender, PropertyChangingEventArgs args) =>
-			PropertyChanging(sender, new PropertyChangingEventArgs(PropertyName));
-
-		public void EvokePropertyChanged(object sender, PropertyChangedEventArgs args) =>
-			PropertyChanged(sender, new PropertyChangedEventArgs(PropertyName));
-
-		public void EvokeErrorsChanged(object sender, DataErrorsChangedEventArgs args) =>
-			ErrorsChanged(sender, new DataErrorsChangedEventArgs(PropertyName));
-
+		public void EvokePropertyChanging(object sender, TPropertyChanging args) => PropertyChanging(sender, args);
+		public void EvokePropertyChanged(object sender, TPropertyChanged args) => PropertyChanged(sender, args);
+		public void EvokeErrorsChanged(object sender, TErrorsChanged args) => ErrorsChanged(sender, args);
+		
 		public IEnumerable<object> GetErrors(string propertyName) =>
 			ValidationRules.GetInvocationList().OfType<Func<string, object>>()
 				.Select(validationHandler => validationHandler(propertyName));
+	}
+
+	public class PropertyEvocator : 
+		PropertyEvocator<PropertyChangingEventArgs, PropertyChangedEventArgs, DataErrorsChangedEventArgs>
+	{
+		public PropertyEvocator(string propertyName) => PropertyName = propertyName;
+		public string PropertyName { get; }
 	}
 }

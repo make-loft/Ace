@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ace.Input;
 using System.Windows;
+using Ace.Evocators;
 #if XAMARIN
 using Xamarin.Forms;
 using ContextElement = Xamarin.Forms.Element;
@@ -16,8 +17,6 @@ namespace Ace.Markup
 {
 	public class Context : Patterns.AMarkupExtension
 	{
-		private readonly Mediator _mediator = new Mediator();
-
 		public Context() => Key = null;
 		public Context(string key) => Key = key;
 
@@ -32,16 +31,17 @@ namespace Ace.Markup
 
 		public override object Provide(object targetObject, object targetProperty = null)
 		{
+			var mediator = new Mediator();
 			var source = StoreKey == null ? null : Ace.Store.Get(StoreKey);
 			if (source != null && SourcePath == null)
 			{
-				RefreshMediator(targetObject, source as ContextObject);
+				mediator.Set(targetObject, GetCommandEvocator(source));
 			}
 			else if (SourcePath != null)
 			{
 				var watcher = new PropertyChangedWatcher(source, SourcePath.ToString(), Mode);
 				watcher.PropertyChanged += (sender, args) =>
-					RefreshMediator(targetObject, watcher.GetWatchedProperty() as ContextObject);
+					mediator.Set(targetObject, GetCommandEvocator(watcher.GetWatchedProperty()));
 			}
 			else if (targetObject is ContextElement element)
 			{
@@ -58,18 +58,18 @@ namespace Ace.Markup
 				void OnLoadedRefreshMediatorHandler(object sender, RoutedEventArgs args)
 				{
 					element.Loaded -= OnLoadedRefreshMediatorHandler;
-					RefreshMediator(element, FindContextObject(element, RelativeContextType));
+					mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 				}
 
 				if (TrackContextChanges)
 				{
 					element.GetDataContextWatcher().DataContextChanged += (sender, args) =>
-						RefreshMediator(element, FindContextObject(element, RelativeContextType));
+						mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 				}
 #endif
 			}
 
-			return _mediator;
+			return mediator;
 		}
 
 #if XAMARIN
@@ -91,7 +91,7 @@ namespace Ace.Markup
 		private static IEnumerable<ContextObject> EnumerateContextObjects(ContextElement target) =>
 			target.EnumerateVisualAncestors().OfType<ContextElement>().Select(GetContext).OfType<ContextObject>();
 
-		private void RefreshMediator(object targetObject, ContextObject targetContext) =>
-			_mediator.Initialize(targetObject, targetContext?[Ace.Context.Get(Key)]);
+		private CommandEvocator GetCommandEvocator(object target) => 
+			target is ContextObject contextObject ? contextObject[Ace.Context.Get(Key)] : null;
 	}
 }

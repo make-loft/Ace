@@ -31,7 +31,7 @@ namespace Ace
 			Attribute.IsDefined(type, typeof(CollectionDataContractAttribute));
 
 		public object Revive(string key, Type type, params object[] constructorArgs) =>
-			(HasDataContract(type) ? Decode(key, type) : null)
+			(HasDataContract(type) && Storage.HasKey(MakeStorageKey(key, type)) ? Decode(key, type) : null)
 			?? ActivationRequired?.Invoke(key, type, constructorArgs)
 			?? Activator.CreateInstance(type, constructorArgs);
 

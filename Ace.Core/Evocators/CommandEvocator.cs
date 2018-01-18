@@ -3,12 +3,13 @@ using System.Windows.Input;
 
 namespace Ace.Evocators
 {
-	public class ExecutedEventArgs : EventArgs
+	public abstract class CommandEventArgs : EventArgs
 	{
-		public ExecutedEventArgs(ICommand command, object parameter)
+		protected CommandEventArgs(ICommand command, object parameter, bool handled)
 		{
 			Command = command;
 			Parameter = parameter;
+			Handled = handled;
 		}
 
 		public ICommand Command { get; }
@@ -16,46 +17,38 @@ namespace Ace.Evocators
 		public bool Handled { get; set; }
 	}
 
-	public class CanExecuteEventArgs : EventArgs
+	public class ExecutedEventArgs : CommandEventArgs
 	{
-		public CanExecuteEventArgs(ICommand command, object parameter)
+		public ExecutedEventArgs(ICommand command, object parameter, bool handled) :
+			base(command, parameter, handled)
 		{
-			Command = command;
-			Parameter = parameter;
-			CanExecute = true;
 		}
+	}
 
-		public ICommand Command { get; }
-		public object Parameter { get; }
+	public class CanExecuteEventArgs : CommandEventArgs
+	{
+		public CanExecuteEventArgs(ICommand command, object parameter, bool handled, bool canExecute = true) :
+			base(command, parameter, handled) => CanExecute = canExecute;
+
 		public bool CanExecute { get; set; }
-		public bool Handled { get; set; }
 	}
 
-	public class CommandEvocator
+	public class CommandEvocator<TE, TC>
+	{
+		public event EventHandler<TE> Executed;
+		public event EventHandler<TC> CanExecute;
+		public event EventHandler<TE> PreviewExecuted;
+		public event EventHandler<TC> PreviewCanExecute;
+
+		public void EvokeExecuted(object sender, TE args) => Executed?.Invoke(sender, args);
+		public void EvokeCanExecute(object sender, TC args) => CanExecute?.Invoke(sender, args);
+		public void EvokePreviewExecuted(object sender, TE args) => PreviewExecuted?.Invoke(sender, args);
+		public void EvokePreviewCanExecute(object sender, TC args) => PreviewCanExecute?.Invoke(sender, args);
+	}
+
+	public class CommandEvocator : CommandEvocator<ExecutedEventArgs, CanExecuteEventArgs>
 	{
 		public CommandEvocator(ICommand command) => Command = command;
 		public ICommand Command { get; }
-		public event EventHandler<ExecutedEventArgs> Executed;
-		public event EventHandler<CanExecuteEventArgs> CanExecute;
-		public event EventHandler<ExecutedEventArgs> PreviewExecuted;
-		public event EventHandler<CanExecuteEventArgs> PreviewCanExecute;
-
-		public void EvokeExecuted(object sender, ExecutedEventArgs args) =>
-			Executed?.Invoke(sender, args);
-
-		public void EvokeCanExecute(object sender, CanExecuteEventArgs args)
-		{
-			args.CanExecute = Executed != null;
-			CanExecute?.Invoke(sender, args);
-		}
-
-		public void EvokePreviewExecuted(object sender, ExecutedEventArgs args) =>
-			PreviewExecuted?.Invoke(sender, args);
-
-		public void EvokePreviewCanExecute(object sender, CanExecuteEventArgs args)
-		{
-			args.CanExecute = PreviewExecuted != null;
-			PreviewCanExecute?.Invoke(sender, args);
-		}
 	}
 }

@@ -63,6 +63,7 @@
     <Compile Include="Markup\Localizing.cs" />
     <Compile Include="Markup\Patterns\AMarkupExtension.cs" />
     <Compile Include="Markup\Rack.cs" />
+    <Compile Include="Markup\SelfBinding.cs" />
     <Compile Include="Markup\Set.cs" />
     <Compile Include="Markup\Smart.cs" />
     <Compile Include="Markup\Store.cs" />

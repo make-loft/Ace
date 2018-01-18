@@ -8,7 +8,7 @@ namespace Ace.Dictionaries
 {
     public class AppConverters : ResourceDictionary
     {
-        public static readonly KeyToConverterMap KeyToConverterMap = new KeyToConverterMap
+        public static readonly KeyToConverterMap DefaultKeyToConverterMap = new KeyToConverterMap
         {
             {"NullToTrueConverter", new Booler {OnNull = true, OnNotNull = false}},
             {"NullToFalseConverter", new Booler {OnNull = false, OnNotNull = true}},
@@ -32,7 +32,7 @@ namespace Ace.Dictionaries
         
         public AppConverters()
         {
-            foreach (var pair in KeyToConverterMap) Add(pair.Key, pair.Value);
+            foreach (var pair in DefaultKeyToConverterMap) Add(pair.Key, pair.Value);
         }
     }
 }

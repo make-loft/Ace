@@ -23,7 +23,7 @@ namespace Ace.Markup
 			{
 				var types = assembly.GetTypes();
 				var type = types.FirstOrDefault(t =>
-					(t.DeclaringType != null && t.DeclaringType.Name == typeName) || t.Name == typeName);
+					t.DeclaringType != null && t.DeclaringType.Name == typeName || t.Name == typeName);
 				if (type != null)
 					return type;
 			}
