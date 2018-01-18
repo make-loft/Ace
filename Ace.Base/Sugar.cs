@@ -6,9 +6,7 @@ using System.Text;
 namespace Ace
 {
 	public static class LanguageExtensions
-	{
-		public static bool Not(this bool b) => !b;
-		
+	{		
 		public static void Let<T>(this T o) { }
 		public static TR Let<T, TR>(this T o, TR y) => y;
 		public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
@@ -36,6 +34,10 @@ namespace Ace
 		public static bool Is<T>(this T o, T x) => Equals(o, x);
 		public static bool Is<T>(this object o, T x) => Equals(o, x);
 		public static bool Is<T>(this T? o, T x) where T : struct => Equals(o, x);
+		public static bool IsNot<T>(this T o, T x) => !Equals(o, x);
+		public static bool IsNot<T>(this object o, T x) => !Equals(o, x);
+		public static bool IsNot<T>(this T? o, T x) where T : struct => !Equals(o, x);
+		public static bool Not(this bool b) => !b;
 
 		public static bool Is<T>(this T o, Func<T, bool> checker) => o != null && checker(o);
 		public static bool Is<T>(this object o, Func<T, bool> checker) => o is T && checker((T) o);
