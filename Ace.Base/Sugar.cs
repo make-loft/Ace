@@ -8,7 +8,7 @@ namespace Ace
 	public static class LanguageExtensions
 	{
 		public static object ChangeType(this object o, Type type) =>
-			o == null || o is ValueType || o is IConvertible ? Convert.ChangeType(o, type, null) : o;
+			o == null || type.IsValueType || o is IConvertible ? Convert.ChangeType(o, type, null) : o;
 		
 		public static void Let<T>(this T o) { }
 		public static TR Let<T, TR>(this T o, TR y) => y;
