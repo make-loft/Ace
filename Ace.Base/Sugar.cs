@@ -6,19 +6,25 @@ using System.Text;
 namespace Ace
 {
 	public static class LanguageExtensions
-	{		
+	{
+		public static object ChangeType(this object o, Type type) =>
+			o == null || o is ValueType || o is IConvertible ? Convert.ChangeType(o, type, null) : o;
+		
 		public static void Let<T>(this T o) { }
 		public static TR Let<T, TR>(this T o, TR y) => y;
 		public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
 
 		public static T To<T>(this T o) => o;
-		public static T To<T>(this object o) => (T) Convert.ChangeType(o, typeof(T), null);
+		public static T To<T>(this object o) => (T) ChangeType(o, typeof(T));
 		public static T To<T>(this T o, out T x) => x = o;
-		public static T To<T>(this object o, out T x) => x = (T) Convert.ChangeType(o, typeof(T), null);
+		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
 		public static T To<T>(this T o, Func<T, T> setter) => setter(o);
 		
 		public static T To<T, TR>(this T o, Func<T, TR> decomposer, out TR x) =>
 			(x = o == null ? default(TR) : decomposer(o)).Let(o);
+
+		public static string ToStr(this object o) => o?.ToString();
+		public static string ToStr(this string o) => o;
 
 		public static T As<T>(this T o) where T : class => o;
 		public static T As<T>(this object o) where T : class => o as T;
