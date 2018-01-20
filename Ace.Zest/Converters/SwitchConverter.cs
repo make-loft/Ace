@@ -1,22 +1,22 @@
 ﻿// ReSharper disable RedundantUsingDirective
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 using Ace.Converters.Patterns;
+using Ace.Markup;
 using ContentProperty = Xamarin.Forms.ContentPropertyAttribute;
 
 namespace Ace.Converters
-{
+{	
 	[ContentProperty("Cases")]
-	public class SwitchConverter : DependencyObject, ISwitchConverter, ICompositeConverter
+	public class SwitchConverter : DependencyObject, ICompositeConverter
 	{
 		public static readonly DependencyProperty DefaultProperty = DependencyProperty.Register(
-			"Default", typeof(object), typeof(SwitchConverter), new PropertyMetadata(CaseSet.UndefinedObject));
-
-		public SwitchConverter() => Cases = new CaseSet();
+			"Default", typeof(object), typeof(SwitchConverter), new PropertyMetadata(Case.UndefinedValue));
 
 		public object Default
 		{
@@ -24,16 +24,22 @@ namespace Ace.Converters
 			set => SetValue(DefaultProperty, value);
 		}
 
-		public CaseSet Cases { get; }
+		public static readonly DependencyProperty DefaultBackProperty = DependencyProperty.Register(
+			"DefaultBack", typeof(object), typeof(SwitchConverter), new PropertyMetadata(default(object)));
 
-		public bool TypeMode { get; set; }
+		public object DefaultBack
+		{
+			get => GetValue(DefaultBackProperty);
+			set => SetValue(DefaultBackProperty, value);
+		}
+
+		public List<ICase<object, object>> Cases { get; } = new List<ICase<object, object>>();
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (TypeMode) value = value?.GetType();
-			var pair = Cases.FirstOrDefault(p => Equals(p.Key, value) || SafeCompareAsStrings(p.Key, value));
-			var result = pair == null ? Default : pair.Value;
-			value = result == CaseSet.UndefinedObject ? value : result;
+			var @case = Cases.FirstOrDefault(c => c.MatchByKey(value));
+			var activeValue = @case == null ? Default : @case.Value;
+			value = activeValue == Case.UndefinedValue ? value : activeValue;
 			return PostConverter == null
 				? value
 				: PostConverter.Convert(value, targetType, PostConverterParameter, culture);
@@ -41,19 +47,12 @@ namespace Ace.Converters
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (TypeMode) value = value?.GetType();
-			var pair = Cases.FirstOrDefault(p => Equals(p.Value, value) || SafeCompareAsStrings(p.Value, value));
-			value = pair == null ? Default : pair.Key;
+			var @case = Cases.FirstOrDefault(c => c.MatchByValue(value));
+			var activeValue = @case == null ? DefaultBack : @case.Key;
+			value = activeValue == Case.UndefinedValue ? value : activeValue;
 			return PostConverter == null
 				? value
-				: PostConverter.ConvertBack(value, targetType, PostConverterParameter, culture);
-		}
-
-		private static bool SafeCompareAsStrings(object a, object b)
-		{
-			if (a == null && b == null) return true;
-			if (a == null || b == null) return false;
-			return string.Compare(a.ToString(), b.ToString(), StringComparison.OrdinalIgnoreCase) == 0;
+				: PostConverter.Convert(value, targetType, PostConverterParameter, culture);
 		}
 
 		public IValueConverter PostConverter { get; set; }

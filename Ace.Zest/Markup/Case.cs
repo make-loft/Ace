@@ -8,17 +8,12 @@ using ContentProperty = Xamarin.Forms.ContentPropertyAttribute;
 namespace Ace.Markup
 {
 	[ContentProperty("Value")]
-	public class Case : DependencyObject, ICase
+	public class Case : DependencyObject, ICase<object, object>
 	{
-		public Type KeyType
-		{
-			get => Key as Type;
-			set => Key = value;
-		}
-
+		public static readonly object UndefinedValue = new object();
+		
 		public static readonly DependencyProperty KeyProperty =
-			DependencyProperty.Register("Key", typeof(object), typeof(Case),
-				new PropertyMetadata(CaseSet.UndefinedObject));
+			DependencyProperty.Register("Key", typeof(object), typeof(Case), new PropertyMetadata(UndefinedValue));
 
 		public object Key
 		{
@@ -27,13 +22,28 @@ namespace Ace.Markup
 		}
 
 		public static readonly DependencyProperty ValueProperty =
-			DependencyProperty.Register("Value", typeof(object), typeof(Case),
-				new PropertyMetadata(CaseSet.UndefinedObject));
+			DependencyProperty.Register("Value", typeof(object), typeof(Case), new PropertyMetadata(UndefinedValue));
 
 		public object Value
 		{
 			get => GetValue(ValueProperty);
 			set => SetValue(ValueProperty, value);
+		}
+
+		public bool MatchByKey(object key) =>
+			key == Key || key == UndefinedValue ||
+			string.Compare(key?.ToString(), Key?.ToString(), StringComparison.OrdinalIgnoreCase) == 0;
+
+		public bool MatchByValue(object key) => key == Key;
+	}
+
+	[ContentProperty("Value")]
+	public class TypedCase : Case
+	{
+		public new Type Key
+		{
+			get => (Type) GetValue(KeyProperty);
+			set => SetValue(KeyProperty, value);
 		}
 	}
 }
