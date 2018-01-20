@@ -30,11 +30,11 @@ namespace Ace.Markup
 			set => SetValue(ValueProperty, value);
 		}
 
-		public bool MatchByKey(object key) =>
-			key == Key || key == UndefinedValue ||
-			string.Compare(key?.ToString(), Key?.ToString(), StringComparison.OrdinalIgnoreCase) == 0;
+		public virtual bool MatchByKey(object value) =>
+			value == Key || value == UndefinedValue ||
+			string.Compare(value?.ToString(), Key?.ToString(), StringComparison.OrdinalIgnoreCase) == 0;
 
-		public bool MatchByValue(object key) => key == Key;
+		public virtual bool MatchByValue(object key) => key == Value;
 	}
 
 	[ContentProperty("Value")]
@@ -45,5 +45,7 @@ namespace Ace.Markup
 			get => (Type) GetValue(KeyProperty);
 			set => SetValue(KeyProperty, value);
 		}
+
+		public override bool MatchByKey(object value) => value?.GetType() == Key;
 	}
 }
