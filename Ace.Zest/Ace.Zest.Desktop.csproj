@@ -55,8 +55,9 @@
     <Compile Include="Converters\SwitchConverter.cs" />
     <Compile Include="Dictionaries\AppConverters.cs" />
     <Compile Include="LocalizationSource.cs" />
-    <Compile Include="Markup\Attacher.cs" />
+    <Compile Include="Markup\Behaviour.cs" />
     <Compile Include="Markup\Enum.cs" />
+    <Compile Include="Markup\NullExtension.cs" />
     <Compile Include="Markup\Patterns\ABindingExtension.cs" />
     <Compile Include="Markup\Case.cs" />
     <Compile Include="Markup\Context.cs" />
