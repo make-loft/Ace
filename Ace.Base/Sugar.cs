@@ -49,8 +49,8 @@ namespace Ace
 		public static bool IsNot<T>(this T? o, T x) where T : struct => !Equals(o, x);
 		public static bool Not(this bool b) => !b;
 
-		public static bool ForAll(this bool o, params bool[] checker) => checker.All(b => b);
-		public static bool ForAny(this bool o, params bool[] checker) => checker.Any(b => b);
+		public static bool ForAll(this bool o, params bool[] checker) => o && checker.All(b => b);
+		public static bool ForAny(this bool o, params bool[] checker) => o && checker.Any(b => b);
 		
 		public static T With<T>(this T o, params object[] pattern) => o;
 		
