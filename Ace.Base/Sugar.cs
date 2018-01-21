@@ -21,11 +21,6 @@ namespace Ace
 		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
 		public static T To<T>(this T o, Func<T, T> setter) => setter(o);
 
-		public static T To<T>(this T o, Func<Array> deconstructor) => deconstructor().Let(o.To(out var _));
-		public static T To<T>(this object o, Func<Array> deconstructor) => deconstructor().Let(o.To(out T _));
-		public static T To<T>(this T o, Func<Array> deconstructor, out T x) => deconstructor().Let(o.To(out x));
-		public static T To<T>(this object o, Func<Array> deconstructor, out T x) => deconstructor().Let(o.To(out x));
-
 		public static string ToStr(this object o) => o?.ToString();
 		public static string ToStr(this string o) => o;
 
@@ -49,10 +44,13 @@ namespace Ace
 		public static bool IsNot<T>(this T? o, T x) where T : struct => !Equals(o, x);
 		public static bool Not(this bool b) => !b;
 
-		public static bool ForAll(this bool o, params bool[] checker) => o && checker.All(b => b);
-		public static bool ForAny(this bool o, params bool[] checker) => o && checker.Any(b => b);
-		
 		public static T With<T>(this T o, params object[] pattern) => o;
+		public static bool AndAll(this bool o, params bool[] checker) => o && checker.All(b => b);
+		public static bool AndAny(this bool o, params bool[] checker) => o && checker.Any(b => b);
+		public static bool OrAll(this bool o, params bool[] checker) => o || checker.All(b => b);
+		public static bool OrAny(this bool o, params bool[] checker) => o || checker.Any(b => b);
+		public static bool XorAll(this bool o, params bool[] checker) => o ^ checker.All(b => b);
+		public static bool XorAny(this bool o, params bool[] checker) => o ^ checker.Any(b => b);
 		
 		public static Switch<T> Match<T>(this T value, params object[] pattern) =>
 			new Switch<T>(value, pattern);
