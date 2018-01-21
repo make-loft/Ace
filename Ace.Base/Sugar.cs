@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Ace
@@ -19,9 +20,11 @@ namespace Ace
 		public static T To<T>(this T o, out T x) => x = o;
 		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
 		public static T To<T>(this T o, Func<T, T> setter) => setter(o);
-		
-		public static T To<T, TR>(this T o, Func<T, TR> decomposer, out TR x) =>
-			(x = o == null ? default(TR) : decomposer(o)).Let(o);
+
+		public static T To<T>(this T o, Func<Array> deconstructor) => deconstructor().Let(o.To(out var _));
+		public static T To<T>(this object o, Func<Array> deconstructor) => deconstructor().Let(o.To(out T _));
+		public static T To<T>(this T o, Func<Array> deconstructor, out T x) => deconstructor().Let(o.To(out x));
+		public static T To<T>(this object o, Func<Array> deconstructor, out T x) => deconstructor().Let(o.To(out x));
 
 		public static string ToStr(this object o) => o?.ToString();
 		public static string ToStr(this string o) => o;
@@ -46,17 +49,15 @@ namespace Ace
 		public static bool IsNot<T>(this T? o, T x) where T : struct => !Equals(o, x);
 		public static bool Not(this bool b) => !b;
 
-		public static bool Is<T>(this T o, Func<T, bool> checker) => o != null && checker(o);
-		public static bool Is<T>(this object o, Func<T, bool> checker) => o is T && checker((T) o);
-
-		public static bool Is<T>(this T o, Func<T, bool> checker, out T x) =>
-			o != null ? checker(x = o) : (x = default(T)) != null;
-
-		public static bool Is<T>(this object o, Func<T, bool> checker, out T x) =>
-			o is T ? checker(x = (T) o) : (x = default(T)) != null;
-
+		public static bool ForAll(this bool o, params bool[] checker) => checker.All(b => b);
+		public static bool ForAny(this bool o, params bool[] checker) => checker.Any(b => b);
+		
+		public static T With<T>(this T o, params object[] pattern) => o;
+		
 		public static Switch<T> Match<T>(this T value, params object[] pattern) =>
 			new Switch<T>(value, pattern);
+
+		public static TR Switch<T, TR>(this Switch<T> m, Func<Switch<T>, TR> matcher) => matcher(m);
 	}
 
 	public class Switch<T>
