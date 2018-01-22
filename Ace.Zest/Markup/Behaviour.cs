@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using Ace.Adapters;
 using static System.Windows.DependencyProperty;
 #if XAMARIN
@@ -62,11 +62,34 @@ namespace Ace.Markup
 		public static readonly DependencyProperty UpdateHeaderOnLanguageChangeProperty = RegisterAttached(
 			"UpdateHeaderOnLanguageChange", typeof(object), typeof(Behaviour),
 			new PropertyMetadata(default(object), null, CoerceValueCallback));
-
+		
 		private static object CoerceValueCallback(DependencyObject dependencyObject, object baseValue)
 		{
 			BindingOperations.GetBindingExpression(dependencyObject, HeaderedItemsControl.HeaderProperty)?.UpdateTarget();
 			return baseValue;
+		}
+
+		public static readonly DependencyProperty DragMoveProperty =
+			RegisterAttached("DragMove", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool), DragMoveChangedCallback));
+
+		private static void DragMoveChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs args)
+		{
+			var element = o as FrameworkElement ?? throw new ArgumentException("Expected FrameworkElement");
+			var lastPosition = new Point();
+			
+			if (args.NewValue.Is(true))
+				element.MouseMove += OnWindowOnPreviewMouseMove;
+			else if (args.NewValue.Is(false))
+				element.MouseMove -= OnWindowOnPreviewMouseMove;		
+			
+			void OnWindowOnPreviewMouseMove(object sender, MouseEventArgs e)
+			{
+				var window = sender as Window ?? o.EnumerateVisualAncestors().OfType<Window>().FirstOrDefault();
+				if (window == null) return;
+				var currentPosition = e.GetPosition(element);
+				if (e.LeftButton == MouseButtonState.Pressed && lastPosition != currentPosition) window.DragMove();
+				lastPosition = currentPosition;
+			}
 		}
 
 		public static void SetUpdateHeaderOnLanguageChange(DependencyObject element, object value) =>
@@ -74,5 +97,9 @@ namespace Ace.Markup
 
 		public static object GetUpdateHeaderOnLanguageChange(DependencyObject element) =>
 			element.GetValue(UpdateHeaderOnLanguageChangeProperty);
+
+		public static bool GetDragMove(UIElement element) { return (bool) element.GetValue(DragMoveProperty); }
+
+		public static void SetDragMove(UIElement element, bool value) { element.SetValue(DragMoveProperty, value); }
 	}
 }
