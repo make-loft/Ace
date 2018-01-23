@@ -19,7 +19,6 @@ namespace Ace
 		public static T To<T>(this object o) => (T) ChangeType(o, typeof(T));
 		public static T To<T>(this T o, out T x) => x = o;
 		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
-		public static T To<T>(this T o, Func<T, T> setter) => setter(o);
 
 		public static string ToStr(this object o) => o?.ToString();
 		public static string ToStr(this string o) => o;
@@ -45,6 +44,21 @@ namespace Ace
 		public static bool Not(this bool b) => !b;
 
 		public static T With<T>(this T o, params object[] pattern) => o;
+
+		public static TCollection WithRange<TCollection, T>(this TCollection collection, params T[] items)
+			where TCollection : ICollection<T>
+		{
+			//foreach (var item in items) collection.Add(item);
+			items.ForEach(collection.Add);
+			return collection;
+		}
+
+		public static KeyValuePair<TKey, TValue> To<TKey, TValue>(this TKey key, TValue value) =>
+			new KeyValuePair<TKey, TValue>(key, value);
+
+		public static KeyValuePair<TKey, TValue> By<TKey, TValue>(this TValue value, TKey key) =>
+			new KeyValuePair<TKey, TValue>(key, value);
+
 		public static bool AndAll(this bool o, params bool[] checker) => o && checker.All(b => b);
 		public static bool AndAny(this bool o, params bool[] checker) => o && checker.Any(b => b);
 		public static bool OrAll(this bool o, params bool[] checker) => o || checker.All(b => b);
