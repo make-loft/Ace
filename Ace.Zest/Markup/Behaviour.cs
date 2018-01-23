@@ -72,6 +72,21 @@ namespace Ace.Markup
 		public static readonly DependencyProperty DragMoveProperty =
 			RegisterAttached("DragMove", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool), DragMoveChangedCallback));
 
+		public static readonly DependencyProperty DragMoveHandleProperty =
+			RegisterAttached("DragMoveHandle", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool),
+				(o, args) =>
+				{
+					var element = o as FrameworkElement ?? throw new ArgumentException("Expected FrameworkElement");
+					var lastPosition = new Point();
+			
+					if (args.NewValue.Is(true))
+						element.MouseMove += OnWindowOnPreviewMouseMove;
+					else if (args.NewValue.Is(false))
+						element.MouseMove -= OnWindowOnPreviewMouseMove;		
+			
+					void OnWindowOnPreviewMouseMove(object sender, MouseEventArgs e) { e.Handled = true; }	
+				}));
+
 		private static void DragMoveChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs args)
 		{
 			var element = o as FrameworkElement ?? throw new ArgumentException("Expected FrameworkElement");
@@ -84,10 +99,15 @@ namespace Ace.Markup
 			
 			void OnWindowOnPreviewMouseMove(object sender, MouseEventArgs e)
 			{
+				if (e.Handled) return;
 				var window = sender as Window ?? o.EnumerateVisualAncestors().OfType<Window>().FirstOrDefault();
 				if (window == null) return;
 				var currentPosition = e.GetPosition(element);
-				if (e.LeftButton == MouseButtonState.Pressed && lastPosition != currentPosition) window.DragMove();
+				var dx = currentPosition.X - lastPosition.X;
+				var dy = currentPosition.Y - lastPosition.Y;
+				var delta = dx * dx + dy * dy;
+				if (e.LeftButton == MouseButtonState.Pressed && lastPosition != currentPosition && delta > 25)
+					window.DragMove();
 				lastPosition = currentPosition;
 			}
 		}
@@ -101,5 +121,8 @@ namespace Ace.Markup
 		public static bool GetDragMove(UIElement element) { return (bool) element.GetValue(DragMoveProperty); }
 
 		public static void SetDragMove(UIElement element, bool value) { element.SetValue(DragMoveProperty, value); }
+		public static object GetDragMoveHandle(UIElement element) { return (object) element.GetValue(DragMoveHandleProperty); }
+
+		public static void SetDragMoveHandle(UIElement element, object value) { element.SetValue(DragMoveHandleProperty, value); }
 	}
 }

@@ -30,8 +30,10 @@ namespace Ace
 			get => SmartContainer.TryGetValue(key, out var value) ? value : UndefinedValue;
 			set
 			{
+				RaiseSmartPropertyChanging(key);
 				RaisePropertyChanging(SmartPropertyName);
 				SmartContainer[key] = value;
+				RaiseSmartPropertyChanged(key);
 				RaisePropertyChanged(SmartPropertyName);
 			}
 		}
@@ -59,7 +61,9 @@ namespace Ace
 		#region Notification Core
 
 		public event PropertyChangingEventHandler PropertyChanging;
+		public event PropertyChangingEventHandler SmartPropertyChanging;
 		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler SmartPropertyChanged;
 
 		public void RaisePropertyChanging(string propertyName) =>
 			PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
@@ -67,6 +71,12 @@ namespace Ace
 		public void RaisePropertyChanged(string propertyName) =>
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+		public void RaiseSmartPropertyChanging(string propertyName) =>
+			SmartPropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+
+		public void RaiseSmartPropertyChanged(string propertyName) =>
+			SmartPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		
 		public void RaisePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
 			RaisePropertyChanging(expression.UnboxMemberName());
 
