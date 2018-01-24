@@ -72,19 +72,18 @@ namespace Ace.Markup
 		public static readonly DependencyProperty DragMoveProperty =
 			RegisterAttached("DragMove", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool), DragMoveChangedCallback));
 
-		public static readonly DependencyProperty DragMoveHandleProperty =
-			RegisterAttached("DragMoveHandle", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool),
+		public static readonly DependencyProperty DragMoveHandlerProperty =
+			RegisterAttached("DragMoveHandler", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool),
 				(o, args) =>
 				{
 					var element = o as FrameworkElement ?? throw new ArgumentException("Expected FrameworkElement");
-					var lastPosition = new Point();
-			
+
 					if (args.NewValue.Is(true))
-						element.MouseMove += OnWindowOnPreviewMouseMove;
+						element.MouseMove += OnMouseMove;
 					else if (args.NewValue.Is(false))
-						element.MouseMove -= OnWindowOnPreviewMouseMove;		
+						element.MouseMove -= OnMouseMove;		
 			
-					void OnWindowOnPreviewMouseMove(object sender, MouseEventArgs e) { e.Handled = true; }	
+					void OnMouseMove(object sender, MouseEventArgs e) => e.Handled = true;
 				}));
 
 		private static void DragMoveChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs args)
@@ -93,11 +92,11 @@ namespace Ace.Markup
 			var lastPosition = new Point();
 			
 			if (args.NewValue.Is(true))
-				element.MouseMove += OnWindowOnPreviewMouseMove;
+				element.MouseMove += OnMouseMove;
 			else if (args.NewValue.Is(false))
-				element.MouseMove -= OnWindowOnPreviewMouseMove;		
+				element.MouseMove -= OnMouseMove;		
 			
-			void OnWindowOnPreviewMouseMove(object sender, MouseEventArgs e)
+			void OnMouseMove(object sender, MouseEventArgs e)
 			{
 				if (e.Handled) return;
 				var window = sender as Window ?? o.EnumerateVisualAncestors().OfType<Window>().FirstOrDefault();
@@ -118,11 +117,10 @@ namespace Ace.Markup
 		public static object GetUpdateHeaderOnLanguageChange(DependencyObject element) =>
 			element.GetValue(UpdateHeaderOnLanguageChangeProperty);
 
-		public static bool GetDragMove(UIElement element) { return (bool) element.GetValue(DragMoveProperty); }
-
-		public static void SetDragMove(UIElement element, bool value) { element.SetValue(DragMoveProperty, value); }
-		public static object GetDragMoveHandle(UIElement element) { return (object) element.GetValue(DragMoveHandleProperty); }
-
-		public static void SetDragMoveHandle(UIElement element, object value) { element.SetValue(DragMoveHandleProperty, value); }
+		public static bool GetDragMove(UIElement element) => (bool) element.GetValue(DragMoveProperty);
+		public static void SetDragMove(UIElement element, bool value) => element.SetValue(DragMoveProperty, value);
+		public static object GetDragMoveHandler(UIElement element) => element.GetValue(DragMoveHandlerProperty);
+		public static void SetDragMoveHandler(UIElement element, object value) => 
+			element.SetValue(DragMoveHandlerProperty, value);
 	}
 }
