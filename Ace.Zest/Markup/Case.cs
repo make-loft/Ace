@@ -1,8 +1,9 @@
-﻿// ReSharper disable RedundantUsingDirective
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Markup;
 using Ace.Converters.Patterns;
+using static System.Windows.DependencyProperty;
+using static Ace.Converters.Patterns.AValueConverter;
 using ContentProperty = Xamarin.Forms.ContentPropertyAttribute;
 
 namespace Ace.Markup
@@ -10,10 +11,8 @@ namespace Ace.Markup
 	[ContentProperty("Value")]
 	public class Case : DependencyObject, ICase<object, object>
 	{
-		public static readonly object UndefinedValue = new object();
-		
 		public static readonly DependencyProperty KeyProperty =
-			DependencyProperty.Register("Key", typeof(object), typeof(Case), new PropertyMetadata(UndefinedValue));
+			Register("Key", typeof(object), typeof(Case), new PropertyMetadata(UndefinedValue));
 
 		public object Key
 		{
@@ -22,7 +21,7 @@ namespace Ace.Markup
 		}
 
 		public static readonly DependencyProperty ValueProperty =
-			DependencyProperty.Register("Value", typeof(object), typeof(Case), new PropertyMetadata(UndefinedValue));
+			Register("Value", typeof(object), typeof(Case), new PropertyMetadata(UndefinedValue));
 
 		public object Value
 		{
@@ -30,11 +29,8 @@ namespace Ace.Markup
 			set => SetValue(ValueProperty, value);
 		}
 
-		public virtual bool MatchByKey(object key) =>
-			key == Key || Key == UndefinedValue ||
-			string.Compare(key?.ToString(), Key?.ToString(), StringComparison.OrdinalIgnoreCase) == 0;
-
-		public virtual bool MatchByValue(object value) => value == Value || Equals(value, UndefinedValue);
+		public virtual bool MatchByKey(object key, StringComparison comparison) =>
+			key == Key || UndefinedValue == Key || EqualsAsStrings(key, Key, comparison);
 	}
 
 	[ContentProperty("Value")]
@@ -46,6 +42,7 @@ namespace Ace.Markup
 			set => SetValue(KeyProperty, value);
 		}
 
-		public override bool MatchByKey(object key) => base.Key == UndefinedValue || key?.GetType() == Key;
+		public override bool MatchByKey(object key, StringComparison comparison) =>
+			base.Key == UndefinedValue || key?.GetType() == Key;
 	}
 }

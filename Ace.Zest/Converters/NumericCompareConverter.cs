@@ -1,23 +1,13 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
 
 namespace Ace.Converters
 {
-	public class NumericCompareConverter : DependencyObject, IValueConverter
+	public class NumericCompareConverter : EqualsConverter
 	{
-		public static readonly DependencyProperty OnEqualsProperty = DependencyProperty.Register(
-			"OnEquals", typeof(object), typeof(NumericCompareConverter), new PropertyMetadata(default(object)));
-
-		public object OnEquals
-		{
-			get => GetValue(OnEqualsProperty);
-			set => SetValue(OnEqualsProperty, value);
-		}
-
-		public static readonly DependencyProperty OnGreateProperty = DependencyProperty.Register(
-			"OnGreate", typeof(object), typeof(NumericCompareConverter), new PropertyMetadata(default(object)));
+		public static readonly DependencyProperty OnGreateProperty = Register("OnGreate");
+		public static readonly DependencyProperty OnLessProperty = Register("OnLess");
 
 		public object OnGreate
 		{
@@ -25,23 +15,18 @@ namespace Ace.Converters
 			set => SetValue(OnGreateProperty, value);
 		}
 
-		public static readonly DependencyProperty OnLessProperty = DependencyProperty.Register(
-			"OnLess", typeof(object), typeof(NumericCompareConverter), new PropertyMetadata(default(object)));
-
 		public object OnLess
 		{
 			get => GetValue(OnLessProperty);
 			set => SetValue(OnLessProperty, value);
 		}
 
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var v = decimal.Parse((value ?? 0).ToString(), culture);
-			var p = decimal.Parse((parameter ?? 0).ToString(), culture);
-			return v < p ? OnLess : v > p ? OnGreate : OnEquals;
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			throw new NotImplementedException();
+		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+			value == null || parameter == null ||
+			!decimal.TryParse(value.ToString(), out var v) ||
+			!decimal.TryParse(value.ToString(), out var p) ? GetDefined(ByDefault, value) :
+			v > p ? GetDefined(OnGreate, value) :
+			v < p ? GetDefined(OnLess, value) :
+			GetDefined(OnEquals, value);
 	}
 }

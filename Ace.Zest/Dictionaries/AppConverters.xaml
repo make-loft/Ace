@@ -3,23 +3,23 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:c="clr-namespace:Ace.Converters">
 	
-	<c:BooleanConverter x:Key="NullToTrueConverter" OnNull="True" OnNotNull="False"/>
-	<c:BooleanConverter x:Key="NullToFalseConverter" OnNull="False" OnNotNull="True"/>
-	<c:BooleanConverter x:Key="NullToVisibleConverter" OnNull="Visible" OnNotNull="Collapsed"/>
-	<c:BooleanConverter x:Key="NullToCollapsedConverter" OnNull="Collapsed" OnNotNull="Visible"/>
+	<c:BooleanConverter x:Key="NullToTrueConverter" OnNull="True" ByDefault="False"/>
+	<c:BooleanConverter x:Key="NullToFalseConverter" OnNull="False" ByDefault="True"/>
+	<c:BooleanConverter x:Key="NullToVisibleConverter" OnNull="Visible" ByDefault="Collapsed"/>
+	<c:BooleanConverter x:Key="NullToCollapsedConverter" OnNull="Collapsed" ByDefault="Visible"/>
 	<c:BooleanConverter x:Key="TrueToFalseConverter" OnTrue="False" OnFalse="True" OnNull="True"/>
 	<c:BooleanConverter x:Key="FalseToTrueConverter" OnTrue="False" OnFalse="True" OnNull="False"/>
 	<c:BooleanConverter x:Key="TrueToVisibleConverter" OnTrue="Visible" OnFalse="Collapsed" OnNull="Collapsed"/>
 	<c:BooleanConverter x:Key="TrueToCollapsedConverter" OnTrue="Collapsed" OnFalse="Visible" OnNull="Visible"/>
 	<c:BooleanConverter x:Key="FalseToVisibleConverter" OnTrue="Collapsed" OnFalse="Visible" OnNull="Collapsed"/>
 	<c:BooleanConverter x:Key="FalseToCollapsedConverter" OnTrue="Visible" OnFalse="Collapsed" OnNull="Visible"/>
-	<c:EqualsConverter x:Key="EqualsToCollapsedConverter" OnEqual="Collapsed" OnNotEqual="Visible"/>
-	<c:EqualsConverter x:Key="EqualsToVisibleConverter" OnEqual="Visible" OnNotEqual="Collapsed"/>
-	<c:EqualsConverter x:Key="EqualsToFalseConverter" OnEqual="False" OnNotEqual="True"/>
-	<c:EqualsConverter x:Key="EqualsToTrueConverter" OnEqual="True" OnNotEqual="False"/>
-	<c:AnyConverter x:Key="AnyToCollapsedConverter" OnAny="Collapsed" OnNotAny="Visible"/>
-	<c:AnyConverter x:Key="AnyToVisibleConverter" OnAny="Visible" OnNotAny="Collapsed"/>
-	<c:AnyConverter x:Key="AnyToFalseConverter" OnAny="False" OnNotAny="True"/>
-	<c:AnyConverter x:Key="AnyToTrueConverter" OnAny="True" OnNotAny="False"/>
+	<c:EqualsConverter x:Key="EqualsToCollapsedConverter" OnEquals="Collapsed" ByDefault="Visible"/>
+	<c:EqualsConverter x:Key="EqualsToVisibleConverter" OnEquals="Visible" ByDefault="Collapsed"/>
+	<c:EqualsConverter x:Key="EqualsToFalseConverter" OnEquals="False" ByDefault="True"/>
+	<c:EqualsConverter x:Key="EqualsToTrueConverter" OnEquals="True" ByDefault="False"/>
+	<c:AnyConverter x:Key="AnyToCollapsedConverter" OnAny="Collapsed" ByDefault="Visible"/>
+	<c:AnyConverter x:Key="AnyToVisibleConverter" OnAny="Visible" ByDefault="Collapsed"/>
+	<c:AnyConverter x:Key="AnyToFalseConverter" OnAny="False" ByDefault="True"/>
+	<c:AnyConverter x:Key="AnyToTrueConverter" OnAny="True" ByDefault="False"/>
 	
 </ResourceDictionary>

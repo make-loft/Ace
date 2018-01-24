@@ -12,7 +12,7 @@ namespace Ace
 	[DataContract]
 	public class SmartObject : INotifyPropertyChanging, INotifyPropertyChanged
 	{
-		public static object UndefinedValue = null;
+		public static object UndefinedSmartValue = null;
 		private Dictionary<string, object> _smartContainer;
 		protected Dictionary<string, object> SmartContainer =>
 			_smartContainer ?? (_smartContainer = new Dictionary<string, object>());
@@ -27,7 +27,7 @@ namespace Ace
 
 		public object this[string key]
 		{
-			get => SmartContainer.TryGetValue(key, out var value) ? value : UndefinedValue;
+			get => SmartContainer.TryGetValue(key, out var value) ? value : UndefinedSmartValue;
 			set
 			{
 				RaiseSmartPropertyChanging(key);

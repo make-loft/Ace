@@ -1,41 +1,26 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Windows;
-using System.Windows.Data;
+using Ace.Converters.Patterns;
 
 namespace Ace.Converters
 {
-	public class EqualsConverter : DependencyObject, IValueConverter
+	public class EqualsConverter : AValueConverter
 	{
-		public static readonly DependencyProperty OnEqualProperty = DependencyProperty.Register(
-			"OnEqual", typeof(object), typeof(EqualsConverter), new PropertyMetadata(default(object)));
+		public static readonly DependencyProperty OnEqualsProperty = Register("OnEquals");
 
-		public object OnEqual
+		public object OnEquals
 		{
-			get => GetValue(OnEqualProperty);
-			set => SetValue(OnEqualProperty, value);
+			get => GetValue(OnEqualsProperty);
+			set => SetValue(OnEqualsProperty, value);
 		}
 
-		public static readonly DependencyProperty OnNotEqualProperty = DependencyProperty.Register(
-			"OnNotEqual", typeof(object), typeof(EqualsConverter), new PropertyMetadata(default(object)));
+		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+			EqualsAsStrings(value, parameter, StringComparison)
+				? GetDefined(OnEquals, value)
+				: GetDefined(ByDefault, value);
 
-		public object OnNotEqual
-		{
-			get => GetValue(OnNotEqualProperty);
-			set => SetValue(OnNotEqualProperty, value);
-		}
-
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			parameter is string
-				? parameter.ToString().Split().Contains(value)
-					? OnEqual
-					: OnNotEqual
-				: Equals(value, parameter)
-					? OnEqual
-					: OnNotEqual;
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			Equals(value, true) ? parameter : null;
+		public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+			Equals(value, true) ? parameter : UndefinedValue;
 	}
 }

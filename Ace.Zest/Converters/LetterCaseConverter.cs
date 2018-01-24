@@ -5,7 +5,8 @@ using System.Windows.Data;
 
 namespace Ace.Converters
 {
-	[Flags] public enum Modifier
+	[Flags]
+	public enum Modifier
 	{
 		Original = 0,
 		ToLower = 1,
@@ -18,18 +19,10 @@ namespace Ace.Converters
 		private static readonly Modifier[] Modifiers =
 			Enum.GetValues(typeof(Modifier)).Cast<Modifier>().Skip(1).ToArray();
 
-		public static string Modify(this string text, Modifier modifiers)
-		{
-			if (modifiers == Modifier.Original) return text;
-
-			foreach (var modifier in Modifiers)
-			{
-				if ((modifiers & modifier) == modifier)
-					text = text.Apply(modifier);
-			}
-
-			return text;
-		}
+		public static string Modify(this string text, Modifier modifiers) =>
+			modifiers == Modifier.Original
+				? text
+				: Modifiers.Where(m => (modifiers & m) == m).Aggregate(text, (t, m) => t.Apply(m));
 
 		private static string Apply(this string text, Modifier modifier) =>
 			modifier == Modifier.Original ? text :

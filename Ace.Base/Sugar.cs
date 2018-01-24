@@ -110,6 +110,12 @@ namespace Ace
 		public static string Format(this string value, IFormatProvider provider, string format, params object[] args) =>
 			string.Format(provider, format, args);
 
+		public static bool EqualsAsStrings(this object a, object b,
+			StringComparison comparison = StringComparison.CurrentCultureIgnoreCase) =>
+			a == b
+			|| string.Compare(a as string, b?.ToString(), comparison) == 0
+			|| string.Compare(a?.ToString(), b as string, comparison) == 0;
+		
 		public static bool Match(this string original, string pattern, int offset)
 		{
 			if (offset + pattern.Length > original.Length) return false;
