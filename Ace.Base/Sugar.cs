@@ -10,7 +10,7 @@ namespace Ace
 	{
 		public static object ChangeType(this object o, Type type) =>
 			o == null || type.IsValueType || o is IConvertible ? Convert.ChangeType(o, type, null) : o;
-		
+
 		public static void Let<T>(this T o) { }
 		public static TR Let<T, TR>(this T o, TR y) => y;
 		public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
@@ -45,19 +45,13 @@ namespace Ace
 
 		public static T With<T>(this T o, params object[] pattern) => o;
 
-		public static TCollection WithRange<TCollection, T>(this TCollection collection, params T[] items)
-			where TCollection : ICollection<T>
+		public static TCollection Merge<TCollection, T>(this TCollection collection, params T[] items)
+			where TCollection : ICollection<T>, ICollection
 		{
 			//foreach (var item in items) collection.Add(item);
 			items.ForEach(collection.Add);
 			return collection;
 		}
-
-		public static KeyValuePair<TKey, TValue> To<TKey, TValue>(this TKey key, TValue value) =>
-			new KeyValuePair<TKey, TValue>(key, value);
-
-		public static KeyValuePair<TKey, TValue> By<TKey, TValue>(this TValue value, TKey key) =>
-			new KeyValuePair<TKey, TValue>(key, value);
 
 		public static bool AndAll(this bool o, params bool[] checker) => o && checker.All(b => b);
 		public static bool AndAny(this bool o, params bool[] checker) => o && checker.Any(b => b);
@@ -65,7 +59,13 @@ namespace Ace
 		public static bool OrAny(this bool o, params bool[] checker) => o || checker.Any(b => b);
 		public static bool XorAll(this bool o, params bool[] checker) => o ^ checker.All(b => b);
 		public static bool XorAny(this bool o, params bool[] checker) => o ^ checker.Any(b => b);
-		
+
+		public static KeyValuePair<TKey, TValue> To<TKey, TValue>(this TKey key, TValue value) =>
+			new KeyValuePair<TKey, TValue>(key, value);
+
+		public static KeyValuePair<TKey, TValue> By<TKey, TValue>(this TValue value, TKey key) =>
+			new KeyValuePair<TKey, TValue>(key, value);
+
 		public static Switch<T> Match<T>(this T value, params object[] pattern) =>
 			new Switch<T>(value, pattern);
 
@@ -98,6 +98,20 @@ namespace Ace
 
 		public bool Case<TValue>(out TValue value) where TValue : T =>
 			(value = (_value is TValue).To(out var b) ? (TValue) _value : default(TValue)).Let(b);
+	}
+
+	public static class New
+	{
+		public static T[] Array<T>(params T[] items) => items;
+		public static T Value<T>() where T : struct => new T();
+		public static T Value<T>(T v) where T : struct => v;
+		public static T Object<T>() where T : new() => new T();
+
+		public static T Object<T>(params object[] constructorArgs) =>
+			(T) Activator.CreateInstance(typeof(T), constructorArgs);
+
+		public static object Object(Type type, params object[] constructorArgs) =>
+			Activator.CreateInstance(type, constructorArgs);
 	}
 
 	public static class StringExtensions

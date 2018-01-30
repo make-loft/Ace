@@ -37,15 +37,13 @@ namespace Ace
 		public void Add(T item)
 		{
 			Source.Add(item);
-			CollectionChanged(this,
-				new Args(NotifyCollectionChangedAction.Add, item, Source.Count - 1));
+			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Add, item, Source.Count - 1));
 		}
 
 		public int Add(object value)
 		{
 			Source.Add((T) value);
-			CollectionChanged(this,
-				new Args(NotifyCollectionChangedAction.Add, value, Source.Count - 1));
+			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Add, value, Source.Count - 1));
 			return 1;
 		}
 
@@ -84,8 +82,7 @@ namespace Ace
 		{
 			var value = Source[index];
 			Source.RemoveAt(index);
-			CollectionChanged(this,
-				new Args(NotifyCollectionChangedAction.Remove, value, index));
+			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Remove, value, index));
 		}
 
 		public void Clear()
