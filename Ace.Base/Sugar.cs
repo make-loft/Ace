@@ -28,13 +28,16 @@ namespace Ace
 		public static T As<T>(this T o, out T x) where T : class => x = o;
 		public static T As<T>(this object o, out T x) where T : class => x = o as T;
 
-		public static bool IsNull<T>(this T o) => o == null;
-		public static bool IsNull<T>(this T o, out T x) => (x = o) == null;
+		public static bool IsNull<T>(this T o) => o == null; // is null
+		public static bool IsNull<T>(this T o, out T x) => (x = o) == null; // is null
 
 		public static bool Is<T>(this T o) => o != null; /* or same 'o is T' */
 		public static bool Is<T>(this object o) => o is T;
-		public static bool Is<T>(this T o, out T x) => (x = o) != null; /* or same '(x = o) is T' */
-		public static bool Is<T>(this object o, out T x) => (x = o is T ? (T) o : default(T)) != null;
+		public static bool Is<T>(this T o, out T x) => (x = o) is T; // != null;
+
+		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
+			(x = o is T ? (T) o : fallbackValue) is T; // != null
+
 		public static bool Is<T>(this T o, T x) => Equals(o, x);
 		public static bool Is<T>(this object o, T x) => Equals(o, x);
 		public static bool Is<T>(this T? o, T x) where T : struct => Equals(o, x);
