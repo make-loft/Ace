@@ -6,7 +6,9 @@ using System.Text;
 
 namespace Ace
 {
-	public static class LanguageExtensions
+	/* LanguageExtensions */
+	// ReSharper disable once InconsistentNaming
+	public static class LE
 	{
 		public static object ChangeType(this object o, Type type) =>
 			o == null || type.IsValueType || o is IConvertible ? Convert.ChangeType(o, type, null) : o;
@@ -14,6 +16,9 @@ namespace Ace
 		public static void Let<T>(this T o) { }
 		public static TR Let<T, TR>(this T o, TR y) => y;
 		public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
+
+		public static T Dec<T>(out T x, T value = default(T)) => x = value;
+		public static TL Dec<TL, T>(this TL o, out T x, T value = default(T)) => (x = value).Let(o);
 
 		public static T To<T>(this T o) => o;
 		public static T To<T>(this object o) => (T) ChangeType(o, typeof(T));
@@ -31,12 +36,12 @@ namespace Ace
 		public static bool IsNull<T>(this T o) => o == null; // is null
 		public static bool IsNull<T>(this T o, out T x) => (x = o) == null; // is null
 
-		public static bool Is<T>(this T o) => o != null; /* or same 'o is T' */
+		public static bool Is<T>(this T o) => o != null; // is T
 		public static bool Is<T>(this object o) => o is T;
-		public static bool Is<T>(this T o, out T x) => (x = o) is T; // != null;
+		public static bool Is<T>(this T o, out T x) => (x = o) != null; // is T	
 
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
-			(x = o is T ? (T) o : fallbackValue) is T; // != null
+			(x = o is T ? (T) o : fallbackValue) != null; // is null
 
 		public static bool Is<T>(this T o, T x) => Equals(o, x);
 		public static bool Is<T>(this object o, T x) => Equals(o, x);
@@ -51,28 +56,21 @@ namespace Ace
 		public static TCollection Merge<TCollection, T>(this TCollection collection, params T[] items)
 			where TCollection : ICollection<T>, ICollection
 		{
-			//foreach (var item in items) collection.Add(item);
-			items.ForEach(collection.Add);
+			items.ForEach(collection.Add); // foreach (var item in items) collection.Add(item);
 			return collection;
 		}
 
-		public static bool AndAll(this bool o, params bool[] checker) => o && checker.All(b => b);
-		public static bool AndAny(this bool o, params bool[] checker) => o && checker.Any(b => b);
-		public static bool OrAll(this bool o, params bool[] checker) => o || checker.All(b => b);
-		public static bool OrAny(this bool o, params bool[] checker) => o || checker.Any(b => b);
-		public static bool XorAll(this bool o, params bool[] checker) => o ^ checker.All(b => b);
-		public static bool XorAny(this bool o, params bool[] checker) => o ^ checker.Any(b => b);
+		public static bool AndAll(this bool o, params bool[] pattern) => o && pattern.All(b => b);
+		public static bool AndAny(this bool o, params bool[] pattern) => o && pattern.Any(b => b);
+		public static bool OrAll(this bool o, params bool[] pattern) => o || pattern.All(b => b);
+		public static bool OrAny(this bool o, params bool[] pattern) => o || pattern.Any(b => b);
+		public static bool XorAll(this bool o, params bool[] pattern) => o ^ pattern.All(b => b);
+		public static bool XorAny(this bool o, params bool[] pattern) => o ^ pattern.Any(b => b);
 
-		public static KeyValuePair<TKey, TValue> To<TKey, TValue>(this TKey key, TValue value) =>
-			new KeyValuePair<TKey, TValue>(key, value);
+		public static KeyValuePair<TK, TV> To<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
+		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new KeyValuePair<TK, TV>(key, value);
 
-		public static KeyValuePair<TKey, TValue> By<TKey, TValue>(this TValue value, TKey key) =>
-			new KeyValuePair<TKey, TValue>(key, value);
-
-		public static Switch<T> Match<T>(this T value, params object[] pattern) =>
-			new Switch<T>(value, pattern);
-
-		public static TR Switch<T, TR>(this Switch<T> m, Func<Switch<T>, TR> matcher) => matcher(m);
+		public static Switch<T> Match<T>(this T value, params object[] pattern) => new Switch<T>(value, pattern);
 	}
 
 	public class Switch<T>
@@ -99,8 +97,8 @@ namespace Ace
 		public bool Case<TValue>() => _value is TValue;
 		public bool Case(out T value) => Case<T>(out value);
 
-		public bool Case<TValue>(out TValue value) where TValue : T =>
-			(value = (_value is TValue).To(out var b) ? (TValue) _value : default(TValue)).Let(b);
+		public bool Case<TValue>(out TValue value, TValue fallbackValue = default(TValue)) where TValue : T =>
+			(value = (_value is TValue).To(out var b) ? (TValue) _value : fallbackValue).Let(b);
 	}
 
 	public static class New
@@ -164,7 +162,6 @@ namespace System.Linq
 
 		public static IEnumerable<T> Cast<T>(this IDictionary dictionary)
 		{
-			// ReSharper disable once LoopCanBeConvertedToQuery
 			foreach (T item in dictionary) yield return item;
 		}
 
