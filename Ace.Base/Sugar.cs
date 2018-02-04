@@ -41,7 +41,7 @@ namespace Ace
 		public static bool Is<T>(this T o, out T x) => (x = o) != null; // is T	
 
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
-			(x = o is T ? (T) o : fallbackValue) != null; // is null
+			(x = o is T ? (T) o : fallbackValue) != null; // is T
 
 		public static bool Is<T>(this T o, T x) => Equals(o, x);
 		public static bool Is<T>(this object o, T x) => Equals(o, x);
