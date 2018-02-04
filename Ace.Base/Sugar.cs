@@ -15,6 +15,7 @@ namespace Ace
 
 		public static void Let<T>(this T o) { }
 		public static TR Let<T, TR>(this T o, TR y) => y;
+		public static TR Let<T, TR>(this T o, ref TR y) => y;
 		public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
 
 		public static T Dec<T>(out T x, T value = default(T)) => x = value;
