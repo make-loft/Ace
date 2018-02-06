@@ -53,6 +53,15 @@ namespace Ace
 		public static bool Not(this bool b) => !b;
 
 		public static T With<T>(this T o, params object[] pattern) => o;
+		public static T With<T, T0>(this T o, T0 a) => o;
+		public static T With<T, T0, T1>(this T o, T0 a, T1 b) => o;
+		public static T With<T, T0, T1, T2>(this T o, T0 a, T1 b, T2 c) => o;
+		public static T With<T, T0, T1, T2, T3>(this T o, T0 a, T1 b, T2 c, T3 d) => o;
+		public static T With<T, T0, T1, T2, T3, T4>(this T o, T0 a, T1 b, T2 c, T3 d, T4 e) => o;
+		public static T With<T, T0, T1, T2, T3, T4, T5>(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f) => o;
+		public static T With<T, T0, T1, T2, T3, T4, T5, T6>(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f, T6 g) => o;
+		public static T With<T, T0, T1, T2, T3, T4, T5, T6, T7>
+			(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f, T6 g, T7 h) => o;
 
 		public static TCollection Merge<TCollection, T>(this TCollection collection, params T[] items)
 			where TCollection : ICollection<T>, ICollection
@@ -173,6 +182,9 @@ namespace System.Linq
 
 		public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T singleItem) =>
 			collection.Concat(singleItem.ToEnumerable());
+
+		public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, params T[] items) =>
+			Enumerable.Concat(collection, items);
 
 		public static Dictionary<TKey,TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
 			items.ToDictionary(p => p.Key, p => p.Value);
