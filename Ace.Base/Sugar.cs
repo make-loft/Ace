@@ -34,22 +34,31 @@ namespace Ace
 		public static T As<T>(this T o, out T x) where T : class => x = o;
 		public static T As<T>(this object o, out T x) where T : class => x = o as T;
 
-		public static bool IsNull<T>(this T o) => o == null; // is null
-		public static bool IsNull<T>(this T o, out T x) => (x = o) == null; // is null
+		public static bool IsNull<T>(this T o) => !typeof(T).IsValueType && o == null; // is null
+		public static bool IsNull<T>(this T? o) where T: struct => !o.HasValue; // is null
+		public static bool IsNull<T>(this T o, out T x) => (x = o).IsNull();
 
-		public static bool Is<T>(this T o) => o != null; // is T
+		public static bool Is<T>(this T o) => typeof(T).IsValueType || o != null; // is T
+		public static bool Is<T>(this T? o) where T: struct => o.HasValue; // is T
 		public static bool Is<T>(this object o) => o is T;
-		public static bool Is<T>(this T o, out T x) => (x = o) != null; // is T	
-
+	
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
-			(x = o is T ? (T) o : fallbackValue) != null; // is T
+			(x = o is T ? (T) o : fallbackValue).Is(); // is T
 
-		public static bool Is<T>(this T o, T x) => Equals(o, x);
-		public static bool Is<T>(this object o, T x) => Equals(o, x);
-		public static bool Is<T>(this T? o, T x) where T : struct => Equals(o, x);
-		public static bool IsNot<T>(this T o, T x) => !Equals(o, x);
-		public static bool IsNot<T>(this object o, T x) => !Equals(o, x);
-		public static bool IsNot<T>(this T? o, T x) where T : struct => !Equals(o, x);
+		public static bool Is<T>(this T o, T x) => EqualityComparer<T>.Default.Equals(o, x);
+		public static bool Is<T>(this T o, object x) => x is T && EqualityComparer<T>.Default.Equals(o, (T) x);
+		public static bool Is<T>(this object o, T x) => o is T && EqualityComparer<T>.Default.Equals((T) o, x);
+
+		public static bool Is<T>(this T? o, T x) where T : struct =>
+			o.HasValue && EqualityComparer<T>.Default.Equals(o.Value, x);
+
+		public static bool Is<T>(this T o, T? x) where T : struct =>
+			x.HasValue && EqualityComparer<T>.Default.Equals(o, x.Value);
+		
+		public static bool IsNot<T>(this T o, T x) => !o.Is(x);
+		public static bool IsNot<T>(this object o, T x) => !o.Is(x);
+		public static bool IsNot<T>(this T o, object x) => !o.Is(x);
+		public static bool IsNot<T>(this T? o, T x) where T : struct => !o.Is(x);
 		public static bool Not(this bool b) => !b;
 
 		public static T With<T>(this T o, params object[] pattern) => o;
@@ -85,7 +94,7 @@ namespace Ace
 
 	public class Switch<T>
 	{
-		private readonly T _value;
+		private readonly object _value;
 		private object[] _pattern;
 
 		public Switch(T value) => _value = value;
@@ -93,8 +102,8 @@ namespace Ace
 
 		public bool Case(params object[] pattern)
 		{
-			pattern = pattern ?? new object[] {null};
-			_pattern = _pattern ?? new object[] {_value};
+			pattern = pattern ?? new[] {(object) null};
+			_pattern = _pattern ?? new[] {_value};
 			for (var i = 0; i < pattern.Length && i < _pattern.Length; i++)
 			{
 				if (Equals(pattern[i], _pattern[i])) continue;
@@ -104,18 +113,16 @@ namespace Ace
 			return true;
 		}
 
-		public bool Case<TValue>() => _value is TValue;
+		public bool Case<TValue>() where TValue : T => _value.Is<TValue>();
 		public bool Case(out T value) => Case<T>(out value);
 
 		public bool Case<TValue>(out TValue value, TValue fallbackValue = default(TValue)) where TValue : T =>
-			(value = (_value is TValue).To(out var b) ? (TValue) _value : fallbackValue).Let(b);
+			_value.Is(out value, fallbackValue);
 	}
 
 	public static class New
 	{
 		public static T[] Array<T>(params T[] items) => items;
-		public static T Value<T>() where T : struct => new T();
-		public static T Value<T>(T v) where T : struct => v;
 		public static T Object<T>() where T : new() => new T();
 
 		public static T Object<T>(params object[] constructorArgs) =>
@@ -186,7 +193,8 @@ namespace System.Linq
 		public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, params T[] items) =>
 			Enumerable.Concat(collection, items);
 
-		public static Dictionary<TKey,TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
+		public static Dictionary<TKey, TValue>
+			ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
 			items.ToDictionary(p => p.Key, p => p.Value);
 
 		public static IList<T> AppendRange<T>(this IList<T> target, IEnumerable<T> source)
