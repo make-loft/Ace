@@ -15,12 +15,23 @@ namespace Ace
 
 		public static IEnumerable<DependencyObject> EnumerateVisualChildren(this DependencyObject current)
 		{
-			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(current); i++)
+			var n = VisualTreeHelper.GetChildrenCount(current);
+			for (var i = 0; i < n; i++)
 				yield return VisualTreeHelper.GetChild(current, i);
 		}
 
-		public static IEnumerable<DependencyObject> EnumerateVisualDescendants(this DependencyObject current) =>
-			current.EnumerateVisualChildren().SelectMany(child => child.EnumerateVisualDescendants());
+		public static IEnumerable<DependencyObject> EnumerateVisualDescendants(this DependencyObject current)
+		{
+			foreach (var child in current.EnumerateVisualChildren())
+			{
+				yield return child;
+				
+				foreach (var descendant in child.EnumerateVisualDescendants())
+				{
+					yield return descendant;
+				}
+			}
+		}
 
 		public static IEnumerable<DependencyObject> EnumerateVisualAncestors(this DependencyObject current)
 		{
