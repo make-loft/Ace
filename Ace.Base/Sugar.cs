@@ -73,7 +73,7 @@ namespace Ace
 			(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f, T6 g, T7 h) => o;
 
 		public static TCollection Merge<TCollection, T>(this TCollection collection, params T[] items)
-			where TCollection : ICollection<T>, ICollection
+			where TCollection : ICollection<T>
 		{
 			items.ForEach(collection.Add); // foreach (var item in items) collection.Add(item);
 			return collection;
@@ -123,6 +123,7 @@ namespace Ace
 	public static class New
 	{
 		public static T[] Array<T>(params T[] items) => items;
+		
 		public static T Object<T>() where T : new() => new T();
 
 		public static T Object<T>(params object[] constructorArgs) =>
@@ -130,6 +131,9 @@ namespace Ace
 
 		public static object Object(Type type, params object[] constructorArgs) =>
 			Activator.CreateInstance(type, constructorArgs);
+
+		public static Dictionary<TK, TV> Dictionary<TK, TV>(params KeyValuePair<TK, TV>[] items) =>
+			new Dictionary<TK, TV>().Merge(items);
 	}
 
 	public static class StringExtensions
