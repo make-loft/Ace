@@ -20,34 +20,35 @@ namespace Ace
 
 		public static T Dec<T>(out T x, T value = default(T)) => x = value;
 		public static TL Dec<TL, T>(this TL o, out T x, T value = default(T)) => (x = value).Let(o);
-
-		public static T To<T>(this T o) => o;
-		public static T To<T>(this object o) => (T) ChangeType(o, typeof(T));
-		public static T To<T>(this T o, out T x) => x = o;
-		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
-
+		
 		public static string ToStr(this object o) => o?.ToString();
 		public static string ToStr(this string o) => o;
 
-		public static T As<T>(this T o) where T : class => o;
-		public static T As<T>(this object o) where T : class => o as T;
-		public static T As<T>(this T o, out T x) where T : class => x = o;
-		public static T As<T>(this object o, out T x) where T : class => x = o as T;
+		public static T To<T>(this T o) => o;
+		public static T To<T>(this T o, out T x) => x = o;
+		public static T To<T>(this object o) => (T) ChangeType(o, typeof(T));
+		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
 
+		public static T As<T>(this T o) => o;
+		public static T As<T>(this T o, out T x) => x = o;
+		public static T As<T>(this object o, T fallbackValue = default(T)) => o is T ? (T) o : fallbackValue;
+		public static T As<T>(this object o, out T x, T fallbackValue = default(T)) => x = o.As(fallbackValue);
+
+		public static bool Is<T>(this T o) => typeof(T).IsValueType || o != null; // o is T
+		public static bool Is<T>(this T? o) where T: struct => o.HasValue; // o is T
+		public static bool Is<T>(this object o) => o is T; // o != null && typeof(T).IsAssignableFrom(o.GetType());
+		
 		public static bool IsNull<T>(this T o) => !typeof(T).IsValueType && o == null; // is null
 		public static bool IsNull<T>(this T? o) where T: struct => !o.HasValue; // is null
 		public static bool IsNull<T>(this T o, out T x) => (x = o).IsNull();
 
-		public static bool Is<T>(this T o) => typeof(T).IsValueType || o != null; // is T
-		public static bool Is<T>(this T? o) where T: struct => o.HasValue; // is T
-		public static bool Is<T>(this object o) => o is T;
-	
+		public static bool Is<T>(this T o, out T x) => o.To(out x).Is(); // is T	
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
-			(x = o is T ? (T) o : fallbackValue).Is(); // is T
+			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Let(b); // is T
 
 		public static bool Is<T>(this T o, T x) => EqualityComparer<T>.Default.Equals(o, x);
-		public static bool Is<T>(this T o, object x) => x is T && EqualityComparer<T>.Default.Equals(o, (T) x);
-		public static bool Is<T>(this object o, T x) => o is T && EqualityComparer<T>.Default.Equals((T) o, x);
+		public static bool Is<T>(this T o, object x) => x.Is<T>() && EqualityComparer<T>.Default.Equals(o, (T) x);
+		public static bool Is<T>(this object o, T x) => o.Is<T>() && EqualityComparer<T>.Default.Equals((T) o, x);
 
 		public static bool Is<T>(this T? o, T x) where T : struct =>
 			o.HasValue && EqualityComparer<T>.Default.Equals(o.Value, x);
@@ -178,6 +179,18 @@ namespace System.Linq
 {
 	public static class EnumerableExtensions
 	{
+		public static IList<T> ForEach<T>(this IList<T> collection, Action<T> action)
+		{
+			foreach (var item in collection) action(item);
+			return collection;
+		}
+
+		public static IList<T> ForEach<T, TR>(this IList<T> collection, Func<T, TR> action)
+		{
+			foreach (var item in collection) action(item);
+			return collection;
+		}
+
 		public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
 		{
 			foreach (var item in collection) action(item);
@@ -188,10 +201,7 @@ namespace System.Linq
 			foreach (T item in dictionary) yield return item;
 		}
 
-		public static IEnumerable<T> ToEnumerable<T>(this T singleItem)
-		{
-			yield return singleItem;
-		}
+		public static IEnumerable<T> ToEnumerable<T>(this T singleItem) { yield return singleItem; }
 
 		public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T singleItem) =>
 			collection.Concat(singleItem.ToEnumerable());
