@@ -33,7 +33,7 @@ namespace Ace.Evocators
 		public bool CanExecute { get; set; }
 	}
 
-	public class CommandEvocator<TE, TC>
+	public class CommandEvocator<TE, TC> where TE : EventArgs where TC : EventArgs
 	{
 		public event EventHandler<TE> Executed;
 		public event EventHandler<TC> CanExecute;

@@ -80,6 +80,7 @@
     <Compile Include="Specific\KeyFileStorage.Desktop.cs" />
     <Compile Include="Sugar.cs" />
     <Compile Include="VisualTree.Sugar.cs" />
+    <Compile Include="WildThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ace.Base\Ace.Base.Profile158.csproj">
