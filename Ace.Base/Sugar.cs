@@ -203,7 +203,17 @@ namespace System.Linq
 			
 			return indexes.Length;
 		}
-		
+
+		public static IList<T> Trim<T>(this IList<T> collection, int index)
+		{
+			for (var i = collection.Count - 1; i >= index; i--)
+			{
+				collection.RemoveAt(i);
+			}
+
+			return collection;
+		}
+
 		public static IList<T> ForEach<T>(this IList<T> collection, Action<T> action)
 		{
 			foreach (var item in collection) action(item);

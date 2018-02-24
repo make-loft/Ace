@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.Serialization;
+using Action = System.Collections.Specialized.NotifyCollectionChangedAction;
 using Args = System.Collections.Specialized.NotifyCollectionChangedEventArgs;
 
 namespace Ace
@@ -14,9 +15,10 @@ namespace Ace
 		public SmartSet(IEnumerable<T> collection) => Initialize(collection);
 		[OnDeserialized] public void OnDeserialized(StreamingContext context) => Initialize();
 		
-		public event NotifyCollectionChangedEventHandler CollectionChanged = (sender, args) => { };
-		public void RaiseCollectionChanged(object sender, Args args) => CollectionChanged(sender, args);
-		public void RaiseCollectionChanged() => CollectionChanged(this, new Args(NotifyCollectionChangedAction.Reset));
+		public event NotifyCollectionChangedEventHandler CollectionChanged;
+		public event NotifyCollectionChangedEventHandler CollectionChangeCompleted;
+		public void RaiseCollectionChanged(object sender, Args args) => CollectionChanged?.Invoke(sender, args);
+		public void RaiseCollectionChanged() => CollectionChanged?.Invoke(this, new Args(Action.Reset));
 		
 		private void Initialize(IEnumerable<T> collection = null)
 		{
@@ -41,19 +43,19 @@ namespace Ace
 		public bool Contains(object value) => Source.Contains((T) value);
 		public int IndexOf(T value) => Source.IndexOf(value);	
 		public int IndexOf(object value) => Source.IndexOf((T) value);
-		public void Add(T value) => Do(NotifyCollectionChangedAction.Add, value);
-		public int Add(object value) => Do(NotifyCollectionChangedAction.Add, (T)value);
-		public void Insert(int index, T value) => Do(NotifyCollectionChangedAction.Add, value, index);
-		public void Insert(int index, object value) => Do(NotifyCollectionChangedAction.Add, (T)value, index);
-		public bool Remove(T value) => Do(NotifyCollectionChangedAction.Remove, value) == 1;
-		public void Remove(object value) => Do(NotifyCollectionChangedAction.Remove, (T)value);
-		public void RemoveAt(int index) => Do(NotifyCollectionChangedAction.Remove, Source[index], index);
-		public void Clear() => Do(NotifyCollectionChangedAction.Reset, default(T));
+		public void Add(T value) => Change(Action.Add, value);
+		public int Add(object value) => Change(Action.Add, (T)value);
+		public void Insert(int index, T value) => Change(Action.Add, value, index);
+		public void Insert(int index, object value) => Change(Action.Add, (T)value, index);
+		public bool Remove(T value) => Change(Action.Remove, value) == 1;
+		public void Remove(object value) => Change(Action.Remove, (T)value);
+		public void RemoveAt(int index) => Change(Action.Remove, Source[index], index);
+		public void Clear() => Change(Action.Reset, default(T));
 		
 		public T this[int index]
 		{
 			get => Source[index];
-			set => Do(NotifyCollectionChangedAction.Replace, value, index);
+			set => Change(Action.Replace, value, index);
 		}
 
 		object IList.this[int index]
@@ -62,34 +64,40 @@ namespace Ace
 			set => this[index] = (T) value;
 		}
 
-		private int Do(NotifyCollectionChangedAction action, T value, int index = -1)
+		private int Change(Action action, T value, int index = -1)
 		{
+			Args args = null;
 			switch (action)
 			{
-				case NotifyCollectionChangedAction.Add:
+				case Action.Add:
 					if (index < 0) Source.Add(value);
 					else Source.Insert(index, value);
-					CollectionChanged(this, new Args(action, value, index));
+					index = index < 0 ? Source.Count - 1 : index;
+					args = new Args(action, new[] {value}, index);
 					break;
-				case NotifyCollectionChangedAction.Remove:
+				case Action.Remove:
 					index = index < 0 ? Source.IndexOf(value) : index;
 					if (index < 0) return 0;
 					Source.RemoveAt(index);
-					CollectionChanged(this, new Args(action, value, index));
+					args = new Args(action, new[] {value}, index);
 					break;
-				case NotifyCollectionChangedAction.Replace:
+				case Action.Replace:
 					var oldValue = Source[index];
 					Source[index] = value;
-					CollectionChanged(this, new Args(action, value, oldValue, index));
+					args = new Args(action, new[] {value}, new[] {oldValue}, index);
 					break;
-				case NotifyCollectionChangedAction.Move:
+				case Action.Move:
 					break;
-				case NotifyCollectionChangedAction.Reset:
+				case Action.Reset:
 					Source.Clear();
-					CollectionChanged(this, new Args(action));
+					args = new Args(action);
 					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(action), action, null);
 			}
-			
+
+			CollectionChanged?.Invoke(this, args);
+			CollectionChangeCompleted?.Invoke(this, args);
 			return 1;
 		}
 	}
