@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ace;
 
 namespace Ace
 {
@@ -179,6 +180,30 @@ namespace System.Linq
 {
 	public static class EnumerableExtensions
 	{
+		public static int[] IndexesOf<T>(this IEnumerable<T> collection, T value)
+		{
+			var indexes = new List<int>();
+			var i = 0;
+			foreach (var item in collection)
+			{
+				if (item.Is(value)) indexes.Add(i);
+				i++;
+			}
+			
+			return indexes.ToArray();
+		}
+		
+		public static int ClearFrom<T>(this IList<T> collection, T value)
+		{
+			var indexes = collection.IndexesOf(value);
+			for (var i = indexes.Length - 1; i >= 0; i--)
+			{
+				collection.RemoveAt(indexes[i]);
+			}
+			
+			return indexes.Length;
+		}
+		
 		public static IList<T> ForEach<T>(this IList<T> collection, Action<T> action)
 		{
 			foreach (var item in collection) action(item);

@@ -10,168 +10,87 @@ namespace Ace
 	[DataContract]
 	public class SmartSet<T> : SmartObject, IList<T>, IList, INotifyCollectionChanged
 	{
+		public SmartSet() => Initialize();	
+		public SmartSet(IEnumerable<T> collection) => Initialize(collection);
+		[OnDeserialized] public void OnDeserialized(StreamingContext context) => Initialize();
+		
+		public event NotifyCollectionChangedEventHandler CollectionChanged = (sender, args) => { };
+		public void RaiseCollectionChanged(object sender, Args args) => CollectionChanged(sender, args);
+		public void RaiseCollectionChanged() => CollectionChanged(this, new Args(NotifyCollectionChangedAction.Reset));
+		
+		private void Initialize(IEnumerable<T> collection = null)
+		{
+			Source = Source ?? (collection == null ? new List<T>() : new List<T>(collection));
+			CollectionChanged = null;
+			CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
+		}
+			
 		[DataMember]
 		public List<T> Source { get; set; }
-
-		public SmartSet() => Initialize();
-
-		[OnDeserialized]
-		public void Initialize(StreamingContext context = default(StreamingContext))
-		{
-			Source = Source ?? new List<T>();
-			CollectionChanged = null;
-			CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
-		}
-
-		public SmartSet(IEnumerable<T> collection)
-		{
-			Source = new List<T>(collection);
-			CollectionChanged = null;
-			CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
-		}
-
-		public IEnumerator<T> GetEnumerator() => Source.GetEnumerator();
-
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-		public void Add(T item)
-		{
-			Source.Add(item);
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Add, item, Source.Count - 1));
-		}
-
-		public int Add(object value)
-		{
-			Source.Add((T) value);
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Add, value, Source.Count - 1));
-			return 1;
-		}
-
-		public void AddRange(IEnumerable<T> collection)
-		{
-			Source.AddRange(collection);
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Reset));
-		}
-
-		void IList.Clear()
-		{
-			Source.Clear();
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Reset));
-		}
-
-		public bool Contains(object value) => Source.Contains((T) value);
-
-		public int IndexOf(object value) => Source.IndexOf((T) value);
-
-		public void Insert(int index, object value)
-		{
-			Source.Insert(index, (T) value);
-			CollectionChanged(this,
-				new Args(NotifyCollectionChangedAction.Add, value, Source.Count - 1));
-		}
-
-		public void Remove(object value)
-		{
-			var index = Source.IndexOf((T) value);
-			Source.Remove((T) value);
-			CollectionChanged(this,
-				new Args(NotifyCollectionChangedAction.Remove, value, index));
-		}
-
-		void IList.RemoveAt(int index)
-		{
-			var value = Source[index];
-			Source.RemoveAt(index);
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Remove, value, index));
-		}
-
-		public void Clear()
-		{
-			Source.Clear();
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Reset));
-		}
-
+	
+		public int Count => Source.Count;
+		public object SyncRoot => ((IList) Source).SyncRoot;
+		public bool IsReadOnly => ((IList) Source).IsReadOnly;
 		public bool IsFixedSize => ((IList) Source).IsFixedSize;
-
-		bool IList.IsReadOnly => ((IList) Source).IsReadOnly;
-
+		public bool IsSynchronized => ((IList) Source).IsSynchronized;
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();		
+		public IEnumerator<T> GetEnumerator() => Source.GetEnumerator();
+		public void CopyTo(T[] array, int arrayIndex) => Source.CopyTo(array, arrayIndex);
+		public void CopyTo(Array array, int index) => ((ICollection) Source).CopyTo(array, index);
+		public bool Contains(T value) => Source.Contains(value);
+		public bool Contains(object value) => Source.Contains((T) value);
+		public int IndexOf(T value) => Source.IndexOf(value);	
+		public int IndexOf(object value) => Source.IndexOf((T) value);
+		public void Add(T value) => Do(NotifyCollectionChangedAction.Add, value);
+		public int Add(object value) => Do(NotifyCollectionChangedAction.Add, (T)value);
+		public void Insert(int index, T value) => Do(NotifyCollectionChangedAction.Add, value, index);
+		public void Insert(int index, object value) => Do(NotifyCollectionChangedAction.Add, (T)value, index);
+		public bool Remove(T value) => Do(NotifyCollectionChangedAction.Remove, value) == 1;
+		public void Remove(object value) => Do(NotifyCollectionChangedAction.Remove, (T)value);
+		public void RemoveAt(int index) => Do(NotifyCollectionChangedAction.Remove, Source[index], index);
+		public void Clear() => Do(NotifyCollectionChangedAction.Reset, default(T));
+		
 		public T this[int index]
 		{
 			get => Source[index];
-			set => Source[index] = value;
+			set => Do(NotifyCollectionChangedAction.Replace, value, index);
 		}
 
 		object IList.this[int index]
 		{
-			get => Source[index];
-			set
+			get => this[index];
+			set => this[index] = (T) value;
+		}
+
+		private int Do(NotifyCollectionChangedAction action, T value, int index = -1)
+		{
+			switch (action)
 			{
-				var oldValue = Source[index];
-				Source[index] = (T) value;
-				CollectionChanged(this, new Args(NotifyCollectionChangedAction.Replace, value, oldValue, index));
+				case NotifyCollectionChangedAction.Add:
+					if (index < 0) Source.Add(value);
+					else Source.Insert(index, value);
+					CollectionChanged(this, new Args(action, value, index));
+					break;
+				case NotifyCollectionChangedAction.Remove:
+					index = index < 0 ? Source.IndexOf(value) : index;
+					if (index < 0) return 0;
+					Source.RemoveAt(index);
+					CollectionChanged(this, new Args(action, value, index));
+					break;
+				case NotifyCollectionChangedAction.Replace:
+					var oldValue = Source[index];
+					Source[index] = value;
+					CollectionChanged(this, new Args(action, value, oldValue, index));
+					break;
+				case NotifyCollectionChangedAction.Move:
+					break;
+				case NotifyCollectionChangedAction.Reset:
+					Source.Clear();
+					CollectionChanged(this, new Args(action));
+					break;
 			}
+			
+			return 1;
 		}
-
-		void ICollection<T>.Clear()
-		{
-			Source.Clear();
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Reset));
-		}
-
-		public bool Contains(T item) => Source.Contains(item);
-
-		public void CopyTo(T[] array, int arrayIndex) => Source.CopyTo(array, arrayIndex);
-
-		public bool Remove(T item)
-		{
-			var index = Source.IndexOf(item);
-			var result = Source.Remove(item);
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Remove, item, index));
-			return result;
-		}
-
-		public void CopyTo(Array array, int index) => ((ICollection) Source).CopyTo(array, index);
-
-		int ICollection.Count => Source.Count;
-
-		public bool IsSynchronized => ((ICollection) Source).IsSynchronized;
-
-		public object SyncRoot => ((ICollection) Source).SyncRoot;
-
-		int ICollection<T>.Count => Source.Count;
-
-		bool ICollection<T>.IsReadOnly => ((ICollection<T>) Source).IsReadOnly;
-
-		public int IndexOf(T item) => Source.IndexOf(item);
-
-		public void Insert(int index, T item)
-		{
-			Source.Insert(index, item);
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Add, item, index));
-		}
-
-		void IList<T>.RemoveAt(int index)
-		{
-			var item = Source[index];
-			Source.RemoveAt(index);
-			CollectionChanged(this, new Args(NotifyCollectionChangedAction.Remove, item, index));
-		}
-
-		T IList<T>.this[int index]
-		{
-			get => Source[index];
-			set
-			{
-				Source[index] = value;
-				CollectionChanged(this, new Args(NotifyCollectionChangedAction.Replace));
-			}
-		}
-
-		public int Count => Source.Count;
-
-		public void RaiseCollectionChanged() => CollectionChanged(this, new Args(NotifyCollectionChangedAction.Reset));
-		public void RaiseCollectionChanged(object sender, Args args) => CollectionChanged(sender, args);
-
-		public event NotifyCollectionChangedEventHandler CollectionChanged = (sender, args) => { };
 	}
 }
