@@ -63,6 +63,21 @@ namespace Ace
 		public static bool IsNot<T>(this T? o, T x) where T : struct => !o.Is(x);
 		public static bool Not(this bool b) => !b;
 
+		public delegate void WithAction();
+		public delegate void WithAction<in T>(T o);
+
+		public static T With<T>(this T o, WithAction action)
+		{
+			action();
+			return o;
+		}
+		
+		public static T With<T>(this T o, WithAction<T> action)
+		{
+			action(o);
+			return o;
+		}
+
 		public static T With<T>(this T o, params object[] pattern) => o;
 		public static T With<T, T0>(this T o, T0 a) => o;
 		public static T With<T, T0, T1>(this T o, T0 a, T1 b) => o;
