@@ -35,6 +35,7 @@ namespace Ace.Replication
 		public List<Replicator> Replicators = new List<Replicator>
 		{
 			new CoreReplicator(),
+			new CoreReplicator<Enum>(),
 			new CoreReplicator<Type>(),
 			new CoreReplicator<Guid>(),
 			new CoreReplicator<Uri>(),
