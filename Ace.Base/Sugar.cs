@@ -89,6 +89,13 @@ namespace Ace
 		public static T With<T, T0, T1, T2, T3, T4, T5, T6, T7>
 			(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f, T6 g, T7 h) => o;
 
+		public static TCollection Merge<TCollection, T>(this TCollection collection, IEnumerable<T> items)
+			where TCollection : ICollection<T>
+		{
+			items.ForEach(collection.Add); // foreach (var item in items) collection.Add(item);
+			return collection;
+		}
+		
 		public static TCollection Merge<TCollection, T>(this TCollection collection, params T[] items)
 			where TCollection : ICollection<T>
 		{
