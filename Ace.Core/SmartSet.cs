@@ -86,14 +86,14 @@ namespace Ace
 					Source[index] = value;
 					args = new Args(action, new[] {value}, new[] {oldValue}, index);
 					break;
-				case Action.Move:
-					break;
+				//case Action.Move:
+					//break;
 				case Action.Reset:
 					Source.Clear();
 					args = new Args(action);
 					break;
 				default:
-					throw new ArgumentOutOfRangeException(nameof(action), action, null);
+                    throw new ArgumentOutOfRangeException(nameof(action), action.ToString());
 			}
 
 			CollectionChanged?.Invoke(this, args);

@@ -35,6 +35,7 @@ namespace System.Windows.Data
 
     public class RelativeSource
     {
+        public RelativeSource(RelativeSourceMode mode) => Mode = mode;
         public RelativeSourceMode Mode { get; set; }
     }
 

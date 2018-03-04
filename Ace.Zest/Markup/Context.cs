@@ -49,9 +49,9 @@ namespace Ace.Markup
 				if (TrackContextChanges)
 				{
 					element.BindingContextChanged += (sender, args) =>
-						RefreshMediator(element, FindContextObject(element, RelativeContextType));
+                        mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 				}
-				else RefreshMediator(element, FindContextObject(element, RelativeContextType));
+				else mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 #else
 				element.Loaded += OnLoadedRefreshMediatorHandler;
 

@@ -42,15 +42,17 @@
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\EqualsConverter.cs" />
     <Compile Include="Converters\LetterCaseConverter.cs" />
+    <Compile Include="Converters\NullConverter.cs" />
     <Compile Include="Converters\NumericCompareConverter.cs" />
+    <Compile Include="Converters\Patterns\AValueConverter.cs" />
+    <Compile Include="Converters\Patterns\ICase.cs" />
     <Compile Include="Converters\Patterns\ICompositeConverter.cs" />
     <Compile Include="Converters\Patterns\IInlineConverter.cs" />
-    <Compile Include="Converters\Patterns\ISwitchConverter.cs" />
+    <Compile Include="Converters\Patterns\ITwoWayConverter.cs" />
     <Compile Include="Converters\SwitchConverter.cs" />
     <Compile Include="Converters\ToStringConverter.cs" />
-    <Compile Include="Dictionaries\AppConverters.cs" />
     <Compile Include="LocalizationSource.cs" />
-    <Compile Include="Markup\Attacher.cs" />
+    <Compile Include="Markup\Behaviour.cs" />
     <Compile Include="Markup\Case.cs" />
     <Compile Include="Markup\Context.cs" />
     <Compile Include="Markup\ContextTrigger.cs" />
@@ -93,6 +95,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Dictionaries\" />
     <Folder Include="Specific\" />
   </ItemGroup>
   <ItemGroup>
