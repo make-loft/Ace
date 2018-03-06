@@ -56,6 +56,7 @@
     <Compile Include="Markup\Case.cs" />
     <Compile Include="Markup\Context.cs" />
     <Compile Include="Markup\ContextTrigger.cs" />
+    <Compile Include="Markup\MarkupWrappers.cs" />
     <Compile Include="Markup\Localizing.cs" />
     <Compile Include="Markup\Patterns\ABindingExtension.cs" />
     <Compile Include="Adapters\System.Windows.Data.cs" />
