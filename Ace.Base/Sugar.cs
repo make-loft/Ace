@@ -119,7 +119,72 @@ namespace Ace
 
 		public static KeyValuePair<TK, TV> To<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
 		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new KeyValuePair<TK, TV>(key, value);
+		
+		
+		// ReSharper disable InconsistentNaming
+		public static TOut Match<TIn, TOut, A>(this TIn context,
+			Func<A, TOut> a)
+			where A : TIn
+			=> context.Match(a, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null,
+				(Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null);
 
+		public static TOut Match<TIn, TOut, A, B>(this TIn context,
+			Func<A, TOut> a, Func<B, TOut> b)
+			where A : TIn where B : TIn
+			=> context.Match(a, b, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null,
+				(Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null);
+
+		public static TOut Match<TIn, TOut, A, B, C>(this TIn context,
+			Func<A, TOut> a, Func<B, TOut> b, Func<C, TOut> c)
+			where A : TIn where B : TIn where C : TIn
+			=> context.Match(a, b, c, (Func<TIn, TOut>) null,
+				(Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null);
+
+		public static TOut Match<TIn, TOut, A, B, C, D>(this TIn context,
+			Func<A, TOut> a, Func<B, TOut> b, Func<C, TOut> c, Func<D, TOut> d)
+			where A : TIn where B : TIn where C : TIn where D : TIn
+			=> context.Match(a, b, c, d,
+				(Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null);
+
+		public static TOut Match<TIn, TOut, A, B, C, D, E>(this TIn context,
+			Func<A, TOut> a, Func<B, TOut> b, Func<C, TOut> c, Func<D, TOut> d,
+			Func<E, TOut> e)
+			where A : TIn where B : TIn where C : TIn where D : TIn where E : TIn
+			=> context.Match(a, b, c, d, e, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null);
+
+		public static TOut Match<TIn, TOut, A, B, C, D, E, F>(this TIn context,
+			Func<A, TOut> a, Func<B, TOut> b, Func<C, TOut> c, Func<D, TOut> d,
+			Func<E, TOut> e, Func<F, TOut> f)
+			where A : TIn where B : TIn where C : TIn where D : TIn where E : TIn where F : TIn
+			=> context.Match(a, b, c, d, e, f, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null);
+
+		public static TOut Match<TIn, TOut, A, B, C, D, E, F, G>(this TIn context,
+			Func<A, TOut> a, Func<B, TOut> b, Func<C, TOut> c, Func<D, TOut> d,
+			Func<E, TOut> e, Func<F, TOut> f, Func<G, TOut> g)
+			where A : TIn where B : TIn where C : TIn where D : TIn where E : TIn where F : TIn where G : TIn
+			=> context.Match(a, b, c, d, e, f, g, (Func<TIn, TOut>) null);
+
+		public static TOut Match<TIn, TOut, A, B, C, D, E, F, G, H>(this TIn context,
+			Func<A, TOut> a, Func<B, TOut> b, Func<C, TOut> c, Func<D, TOut> d,
+			Func<E, TOut> e, Func<F, TOut> f, Func<G, TOut> g, Func<H, TOut> h)
+			where A : TIn where B : TIn where C : TIn where D : TIn where E : TIn where F : TIn where G : TIn where H : TIn
+		{
+			switch (context)
+			{
+				case A aa: return a.Invoke(aa);
+				case B bb: return b.Invoke(bb);
+				case C cc: return c.Invoke(cc);
+				case D dd: return d.Invoke(dd);
+				case E ee: return e.Invoke(ee);
+				case F ff: return f.Invoke(ff);
+				case G gg: return g.Invoke(gg);
+				case H hh: return h.Invoke(hh);
+			}
+
+			return default(TOut);
+		}
+		// ReSharper enable InconsistentNaming
+		
 		public static Switch<T> Match<T>(this T value, params object[] pattern) => new Switch<T>(value, pattern);
 	}
 
