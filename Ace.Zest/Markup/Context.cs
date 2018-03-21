@@ -49,7 +49,7 @@ namespace Ace.Markup
 				if (TrackContextChanges)
 				{
 					element.BindingContextChanged += (sender, args) =>
-                        mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
+						mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 				}
 				else mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 #else

@@ -89,14 +89,14 @@ namespace Ace
 		public static T With<T, T0, T1, T2, T3, T4, T5, T6, T7>
 			(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f, T6 g, T7 h) => o;
 
-        public static TCollection Merge<TCollection, T>(this TCollection collection, IOrderedEnumerable<T> items)
-            where TCollection : ICollection<T>
-        {
-            items.ForEach(collection.Add); // foreach (var item in items) collection.Add(item);
-            return collection;
-        }
+		public static TCollection Merge<TCollection, T>(this TCollection collection, IOrderedEnumerable<T> items)
+			where TCollection : ICollection<T>
+		{
+			items.ForEach(collection.Add); // foreach (var item in items) collection.Add(item);
+			return collection;
+		}
 
-        public static TCollection Merge<TCollection, T>(this TCollection collection, IEnumerable<T> items)
+		public static TCollection Merge<TCollection, T>(this TCollection collection, IEnumerable<T> items)
 			where TCollection : ICollection<T>
 		{
 			items.ForEach(collection.Add); // foreach (var item in items) collection.Add(item);
@@ -171,17 +171,16 @@ namespace Ace
 		{
 			switch (context)
 			{
-				case A aa: return a.Invoke(aa);
-				case B bb: return b.Invoke(bb);
-				case C cc: return c.Invoke(cc);
-				case D dd: return d.Invoke(dd);
-				case E ee: return e.Invoke(ee);
-				case F ff: return f.Invoke(ff);
-				case G gg: return g.Invoke(gg);
-				case H hh: return h.Invoke(hh);
+				case A aa when a != null: return a.Invoke(aa);
+				case B bb when b != null: return b.Invoke(bb);
+				case C cc when c != null: return c.Invoke(cc);
+				case D dd when d != null: return d.Invoke(dd);
+				case E ee when e != null: return e.Invoke(ee);
+				case F ff when f != null: return f.Invoke(ff);
+				case G gg when g != null: return g.Invoke(gg);
+				case H hh when h != null: return h.Invoke(hh);
+				default: throw new ArgumentException($"Undefined case for '{context}'");
 			}
-
-			return default(TOut);
 		}
 		// ReSharper enable InconsistentNaming
 		

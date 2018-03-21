@@ -93,7 +93,7 @@ namespace Ace
 					args = new Args(action);
 					break;
 				default:
-                    throw new ArgumentOutOfRangeException(nameof(action), action.ToString());
+					throw new ArgumentOutOfRangeException(nameof(action), action.ToString());
 			}
 
 			CollectionChanged?.Invoke(this, args);

@@ -2,8 +2,8 @@
 
 namespace Ace.Converters.Patterns
 {
-    public interface ITwoWayConverter : IValueConverter
-    {
-        IValueConverter BackConverter { get; set; }
-    }
+	public interface ITwoWayConverter : IValueConverter
+	{
+		IValueConverter BackConverter { get; set; }
+	}
 }
