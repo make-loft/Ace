@@ -15,5 +15,5 @@
     public class Line : Shape { public double Length; }
     public class Circle : Shape { public double Radius; }
     public class Triangle : Shape {}
-    public class Rectangle : Shape { public double Widh, Heidth; }
+    public class Rectangle : Shape { public double Width, Height; }
 }

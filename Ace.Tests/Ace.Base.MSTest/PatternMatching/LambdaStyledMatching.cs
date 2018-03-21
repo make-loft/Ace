@@ -8,11 +8,11 @@ namespace Ace.Base.MSTest.PatternMatching
         public static void Test()
         {
             var c = new Circle {Radius = 9};
-            var r = new Rectangle {Widh = 3, Heidth = 4};
+            var r = new Rectangle {Width = 3, Height = 4};
             var t = new Triangle();
             Assert.AreEqual(0d, new Line().CalculateSquare());
             Assert.AreEqual(Math.PI * c.Radius * c.Radius, c.CalculateSquare());
-            Assert.AreEqual(r.Widh * r.Heidth, r.CalculateSquare());
+            Assert.AreEqual(r.Width * r.Height, r.CalculateSquare());
 			
             try
             {
@@ -28,7 +28,7 @@ namespace Ace.Base.MSTest.PatternMatching
             shape.Match(
                 (Line _) => 0,
                 (Circle c) => Math.PI * c.Radius * c.Radius,
-                (Rectangle r) => r.Widh * r.Heidth
+                (Rectangle r) => r.Width * r.Height
             );
     }
 }

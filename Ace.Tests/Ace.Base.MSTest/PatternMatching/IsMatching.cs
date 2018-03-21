@@ -18,33 +18,36 @@ namespace Ace.Base.MSTest.PatternMatching
             TestIs((Line) null, circle);
         }
 
-        private static void TestIs<TShapeA>(TShapeA shapeALikeA)
+        private static void TestIs<TShapeA>(TShapeA shapeA)
             where TShapeA : Shape
         {
-            var shapeALikeShape = (Shape) shapeALikeA;
-
-            var isNull = shapeALikeA is null;
-			
-            Assert.AreEqual(true, shapeALikeA.Is(shapeALikeA));
-            Assert.AreEqual(true, shapeALikeA.Is<Shape>(shapeALikeA));
-            Assert.AreEqual(true, shapeALikeShape.Is<Shape>(shapeALikeA));
-            Assert.AreEqual(!isNull, shapeALikeShape.Is<TShapeA>(shapeALikeA));
+            var shapeALikeShape = (Shape) shapeA;
+		
+            Assert.AreEqual(shapeALikeShape.Is(), shapeA.Is());
+            Assert.AreEqual(shapeALikeShape.IsNull(), shapeA.IsNull());
+            Assert.AreEqual(shapeALikeShape != null, shapeALikeShape.Is());
+            Assert.AreEqual(shapeALikeShape == null, shapeALikeShape.IsNull());
+            
+            Assert.AreEqual(true, shapeA.Is(shapeA));
+            Assert.AreEqual(true, shapeA.Is<Shape>(shapeA));
+            Assert.AreEqual(true, shapeALikeShape.Is<Shape>(shapeA));
+            Assert.AreEqual(shapeALikeShape.Is(), shapeALikeShape.Is<TShapeA>(shapeA));
         }
 		
-        private static void TestIs<TShapeA, TShapeB>(TShapeA shapeALikeA, TShapeB shapeBLikeB)
+        private static void TestIs<TShapeA, TShapeB>(TShapeA shapeA, TShapeB shapeB)
             where TShapeA : Shape where TShapeB : Shape
         {
-            var shapeALikeShape = (Shape) shapeALikeA;
-            var shapeBLikeShape = (Shape) shapeBLikeB;
+            var shapeALikeShape = (Shape) shapeA;
+            var shapeBLikeShape = (Shape) shapeB;
 
-            var isNulls = shapeALikeA == null && shapeBLikeB == null;
+            var isNulls = shapeA == null && shapeB == null;
 			
-            Assert.AreEqual(false, shapeALikeA.Is<TShapeB>(shapeBLikeB));
-            Assert.AreEqual(isNulls, shapeALikeA.Is<Shape>(shapeBLikeB));
-            Assert.AreEqual(isNulls, shapeALikeA.Is<Shape>(shapeBLikeShape));
+            Assert.AreEqual(false, shapeA.Is<TShapeB>(shapeB));
+            Assert.AreEqual(isNulls, shapeA.Is<Shape>(shapeB));
+            Assert.AreEqual(isNulls, shapeA.Is<Shape>(shapeBLikeShape));
 			
-            Assert.AreEqual(false, shapeALikeShape.Is<TShapeB>(shapeBLikeB));
-            Assert.AreEqual(isNulls, shapeALikeShape.Is<Shape>(shapeBLikeB));
+            Assert.AreEqual(false, shapeALikeShape.Is<TShapeB>(shapeB));
+            Assert.AreEqual(isNulls, shapeALikeShape.Is<Shape>(shapeB));
             Assert.AreEqual(isNulls, shapeALikeShape.Is(shapeBLikeShape));
         }
     }
