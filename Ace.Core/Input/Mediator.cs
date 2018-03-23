@@ -61,11 +61,15 @@ namespace Ace.Input
 				return false;
 
 			var sender = _weakSender.Target;
-			var canExecuteEventArgs = new CanExecuteEventArgs(evocator.Command, parameter, false);
-			evocator.EvokePreviewCanExecute(sender, canExecuteEventArgs);
-			if (!canExecuteEventArgs.CanExecute && canExecuteEventArgs.Handled) return false;
-			evocator.EvokeCanExecute(sender, canExecuteEventArgs);
-			return canExecuteEventArgs.CanExecute;
+			var args = new CanExecuteEventArgs(evocator.Command, parameter, false);
+			if (evocator.HasPreviewCanExecute())
+			{
+				evocator.EvokePreviewCanExecute(sender, args);
+				args.Handled = args.Handled || args.CanExecute;
+			}
+
+			if (evocator.HasCanExecute() && !args.Handled) evocator.EvokeCanExecute(sender, args);
+			return args.CanExecute;
 		}
 
 		public void Execute(object parameter)
@@ -76,8 +80,14 @@ namespace Ace.Input
 
 			var sender = _weakSender.Target;
 			var contextCommand = _command as Command;
-			evocator.EvokePreviewExecuted(sender, new ExecutedEventArgs(_command, parameter, false));
-			evocator.EvokeExecuted(sender, new ExecutedEventArgs(_command, parameter, false));
+			var args = new ExecutedEventArgs(_command, parameter, false);
+			if (evocator.HasPreviewExecuted())
+			{
+				evocator.EvokePreviewExecuted(sender, args);
+				args.Handled = true;
+			}
+			else if (evocator.HasExecuted()) evocator.EvokeExecuted(sender, args);
+
 			contextCommand?.RaiseCanExecuteChanged();
 		}
 

@@ -332,6 +332,11 @@ namespace System.Linq
 		{
 			foreach (var item in collection) action(item);
 		}
+		
+		public static void ForEach<T, TR>(this IEnumerable<T> collection, Func<T, TR> action)
+		{
+			foreach (var item in collection) action(item);
+		}
 
 		public static IEnumerable<T> Cast<T>(this IDictionary dictionary)
 		{

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using Ace.Evocators;
 
 namespace Ace.Adapters
@@ -15,8 +16,8 @@ namespace Ace.Adapters
 	{
 		public static object SetCommandBindings(object frameworkElement, object contextObject)
 		{
-			if (!(frameworkElement is FrameworkElement element) || !(contextObject is ContextObject context)) return contextObject;
-			element.CommandBindings.AddRange(context.CommandEvocators.Values.Select(ToRoutedCommandBinding).ToArray());
+			if (!frameworkElement.Is(out FrameworkElement element) || !contextObject.Is(out ContextObject context))
+				return contextObject;
 
 			void OnEventHandler(object sender, EventArgs args)
 			{
@@ -24,49 +25,35 @@ namespace Ace.Adapters
 				element.Initialized -= OnEventHandler;
 			}
 
+			context.CommandEvocators.Values.Select(ToRoutedCommandBinding).ForEach(element.CommandBindings.Add);
 			element.Initialized += OnEventHandler;
 			return contextObject;
 		}
 
-		public static System.Windows.Input.CommandBinding ToRoutedCommandBinding(this CommandEvocator evocator)
+		public static CommandBinding ToRoutedCommandBinding(this CommandEvocator evocator)
 		{
-			var continueExecution = false;
-			var routedCommandBinding = new System.Windows.Input.CommandBinding(evocator.Command);
-			routedCommandBinding.Executed += (sender, args) =>
+			void OnExecuted(object sender, ExecutedRoutedEventArgs args)
 			{
 				var e = new ExecutedEventArgs(args.Command, args.Parameter, args.Handled);
 				evocator.EvokeExecuted(sender, e);
 				args.Handled = e.Handled;
-			};
+			}
 
-			routedCommandBinding.CanExecute += (sender, args) =>
+			void OnCanExecute(object sender, CanExecuteRoutedEventArgs args)
 			{
-				if (!args.Handled) continueExecution = true;
 				var e = new CanExecuteEventArgs(args.Command, args.Parameter, args.Handled);
 				evocator.EvokeCanExecute(sender, e);
 				args.CanExecute = e.CanExecute;
 				args.Handled = e.Handled;
-			};
+			}
 
-			routedCommandBinding.PreviewExecuted += (sender, args) =>
-			{
-				var e = new ExecutedEventArgs(args.Command, args.Parameter, args.Handled);
-				evocator.EvokePreviewExecuted(sender, e);
-				args.Handled = e.Handled;
-				if (!continueExecution) return;
-				continueExecution = false;
-				evocator.EvokeExecuted(sender, new ExecutedEventArgs(e.Command, e.Parameter, e.Handled));
-			};
+			var commandBinding = new CommandBinding(evocator.Command);
+			commandBinding.Executed += OnExecuted;
+			commandBinding.CanExecute += OnCanExecute;
+			commandBinding.PreviewExecuted += OnExecuted;
+			commandBinding.PreviewCanExecute += OnCanExecute;
 
-			routedCommandBinding.PreviewCanExecute += (sender, args) =>
-			{
-				var e = new CanExecuteEventArgs(args.Command, args.Parameter, args.Handled);
-				evocator.EvokePreviewCanExecute(sender, e);
-				args.CanExecute = e.CanExecute;
-				args.Handled = e.Handled;
-			};
-
-			return routedCommandBinding;
+			return commandBinding;
 		}
 	}
 #endif
