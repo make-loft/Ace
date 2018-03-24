@@ -38,6 +38,7 @@ namespace Ace
 		public static Command Move => Get("Move");
 		public static Command Rotate => Get("Rotate");
 		public static Command Navigate => Get("Navigate");
+		public static Command Activate => Get("Activate");
 
 		public class Set
 		{
@@ -49,8 +50,20 @@ namespace Ace
 		public static Mediator GetMediator(this ContextObject contextObject, string commandKey, object sender) =>
 			new Mediator(sender, contextObject[Get(commandKey)]);
 
+		public static Mediator GetMediator(this ContextObject contextObject, string commandKey) =>
+			new Mediator(contextObject, contextObject[Get(commandKey)]);
+
 		public static Mediator GetMediator(this ContextObject contextObject, ICommand command, object sender) =>
 			new Mediator(sender, contextObject[command]);
+
+		public static Mediator GetMediator(this ContextObject contextObject, ICommand command) =>
+			new Mediator(contextObject, contextObject[command]);
+
+		public static Mediator GetMediator(this ICommand command, ContextObject contextObject, object sender) =>
+			new Mediator(sender, contextObject[command]);
+
+		public static Mediator GetMediator(this ICommand command, ContextObject contextObject) =>
+			new Mediator(contextObject, contextObject[command]);
 
 		public static SmartSet<T> ToSet<T>(this IEnumerable<T> collection) =>
 			new SmartSet<T>(collection);
