@@ -10,7 +10,7 @@ namespace Ace.Input
 
 		public string Name { get; internal set; }
 		public Command(string name) => Name = name;
-		public new string ToString() => "[" + Name + "]";
+		public override string ToString() => "[" + Name + "]";
 		public void RaiseCanExecuteChanged() => CanExecuteChanged(this, EventArgs.Empty);
 		bool ICommand.CanExecute(object parameter) => throw new Exception(UsingMessage);
 		void ICommand.Execute(object parameter) => throw new Exception(UsingMessage);

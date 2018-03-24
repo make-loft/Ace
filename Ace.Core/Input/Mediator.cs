@@ -32,6 +32,7 @@ namespace Ace.Input
 		private WeakReference _weakSender;
 		private WeakReference _weakEvocator;
 		private WeakListener _weakListener;
+		private bool _canExecuteState = true;
 
 		~Mediator() => _weakListener?.Dispose();
 
@@ -58,7 +59,7 @@ namespace Ace.Input
 		{
 			if (_weakEvocator == null) return true;
 			if (_weakEvocator.Target.To(out CommandEvocator evocator) is null || _command is null)
-				return false;
+				return _canExecuteState = false;
 
 			var sender = _weakSender.Target;
 			var args = new CanExecuteEventArgs(evocator.Command, parameter, false);
@@ -69,7 +70,7 @@ namespace Ace.Input
 			}
 
 			if (evocator.HasCanExecute() && !args.Handled) evocator.EvokeCanExecute(sender, args);
-			return args.CanExecute;
+			return _canExecuteState = args.CanExecute;
 		}
 
 		public void Execute(object parameter)
@@ -86,7 +87,7 @@ namespace Ace.Input
 				evocator.EvokePreviewExecuted(sender, args);
 				args.Handled = true;
 			}
-			else if (evocator.HasExecuted()) evocator.EvokeExecuted(sender, args);
+			else if (evocator.HasExecuted() && _canExecuteState) evocator.EvokeExecuted(sender, args);
 
 			contextCommand?.RaiseCanExecuteChanged();
 		}
