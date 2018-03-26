@@ -14,13 +14,13 @@ namespace Ace
 		public static object ChangeType(this object o, Type type) =>
 			o == null || type.IsValueType || o is IConvertible ? Convert.ChangeType(o, type, null) : o;
 
-		public static void Let<T>(this T o) { }
-		public static TR Let<T, TR>(this T o, TR y) => y;
-		public static TR Let<T, TR>(this T o, ref TR y) => y;
-		public static TR Let<T, TR>(this T o, TR y, out T x) => (x = o).Let(y);
+		public static void Like<T>(this T o) { }
+		public static TR Like<T, TR>(this T o, TR y) => y;
+		public static TR Like<T, TR>(this T o, ref TR y) => y;
+		public static TR Like<T, TR>(this T o, TR y, out T x) => (x = o).Like(y);
 
 		public static T Dec<T>(out T x, T value = default(T)) => x = value;
-		public static TL Dec<TL, T>(this TL o, out T x, T value = default(T)) => (x = value).Let(o);
+		public static TL Dec<TL, T>(this TL o, out T x, T value = default(T)) => (x = value).Like(o);
 		
 		public static string ToStr(this object o) => o?.ToString();
 		public static string ToStr(this string o) => o;
@@ -45,7 +45,7 @@ namespace Ace
 
 		public static bool Is<T>(this T o, out T x) => o.To(out x).Is(); // is T	
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
-			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Let(b); // is T
+			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Like(b); // is T
 
 		public static bool Is<T>(this T o, T x) => EqualityComparer<T>.Default.Equals(o, x);
 		public static bool Is<T>(this T o, object x) => x.Is<T>() && EqualityComparer<T>.Default.Equals(o, (T) x);
