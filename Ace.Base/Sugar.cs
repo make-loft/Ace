@@ -110,12 +110,19 @@ namespace Ace
 			return collection;
 		}
 
-		public static bool AndAll(this bool o, params bool[] pattern) => o && pattern.All(b => b);
-		public static bool AndAny(this bool o, params bool[] pattern) => o && pattern.Any(b => b);
-		public static bool OrAll(this bool o, params bool[] pattern) => o || pattern.All(b => b);
-		public static bool OrAny(this bool o, params bool[] pattern) => o || pattern.Any(b => b);
-		public static bool XorAll(this bool o, params bool[] pattern) => o ^ pattern.All(b => b);
-		public static bool XorAny(this bool o, params bool[] pattern) => o ^ pattern.Any(b => b);
+		public static bool All(params bool[] conditions) => conditions.All(b => b);
+		public static bool Any(params bool[] conditions) => conditions.Any(b => b);
+
+		public static bool And(this bool b, bool condition) => b && condition;
+		public static bool Xor(this bool b, bool condition) => b ^ condition;
+		public static bool Or(this bool b, bool condition) => b || condition;
+		
+		public static bool AndAll(this bool b, params bool[] conditions) => b && All(conditions);
+		public static bool AndAny(this bool b, params bool[] conditions) => b && Any(conditions);
+		public static bool XorAll(this bool b, params bool[] conditions) => b ^ All(conditions);
+		public static bool XorAny(this bool b, params bool[] conditions) => b ^ Any(conditions);
+		public static bool OrAll(this bool b, params bool[] conditions) => b || All(conditions);
+		public static bool OrAny(this bool b, params bool[] conditions) => b || Any(conditions);
 
 		public static KeyValuePair<TK, TV> To<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
 		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new KeyValuePair<TK, TV>(key, value);
