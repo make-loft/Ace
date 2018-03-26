@@ -187,7 +187,6 @@ namespace Ace
 			Func<E, TOut> e, Func<F, TOut> f, Func<G, TOut> g, Func<H, TOut> h, Func<TOut> nullCase = null)
 			where A : TIn where B : TIn where C : TIn where D : TIn where E : TIn where F : TIn where G : TIn where H : TIn
 		{
-			if (nullCase != null && context.IsNull()) return nullCase.Invoke();
 			switch (context)
 			{
 				case A aa when a != null: return a.Invoke(aa);
@@ -198,7 +197,10 @@ namespace Ace
 				case F ff when f != null: return f.Invoke(ff);
 				case G gg when g != null: return g.Invoke(gg);
 				case H hh when h != null: return h.Invoke(hh);
-				default: throw new ArgumentException($"Undefined case for '{context}'");
+				default:
+					return nullCase != null && context.IsNull()
+						? nullCase.Invoke()
+						: throw new ArgumentException($"Undefined case for '{context}'");
 			}
 		}
 		// ReSharper enable InconsistentNaming
