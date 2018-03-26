@@ -13,9 +13,12 @@ namespace Ace.Base.MSTest.PatternMatching
 
 		private static void TestTypeMatching()
 		{
-			Assert.AreEqual("A", Match(new ModelA()));
-			Assert.AreEqual("B", Match(new ModelB()));
-			Assert.AreEqual("C", Match(new ModelC()));
+			new ModelA().To(out var modelA);
+			new ModelB().To(out var modelB);
+			new ModelC().To(out var modelC);
+			Assert.AreEqual($"A {modelA}", Match(modelA));
+			Assert.AreEqual("B", Match(modelB));
+			Assert.AreEqual($"C {modelC}", Match(modelC));
 			Assert.AreEqual("null", Match((IModel) null));
 		}
 
