@@ -13,6 +13,7 @@ namespace Ace.Base.MSTest.PatternMatching
 			Assert.AreEqual(0d, new Line().CalculateSquare());
 			Assert.AreEqual(Math.PI * c.Radius * c.Radius, c.CalculateSquare());
 			Assert.AreEqual(r.Width * r.Height, r.CalculateSquare());
+			Assert.AreEqual(double.NaN, ((Shape) null).CalculateSquare());
 			
 			try
 			{
@@ -28,7 +29,8 @@ namespace Ace.Base.MSTest.PatternMatching
 			shape.Match(
 				(Line _) => 0,
 				(Circle c) => Math.PI * c.Radius * c.Radius,
-				(Rectangle r) => r.Width * r.Height
+				(Rectangle r) => r.Width * r.Height,
+				() => double.NaN
 			);
 	}
 }
