@@ -42,5 +42,11 @@ namespace Ace
 				yield return current = parent;
 			}
 		}
+
+		public static IEnumerable<DependencyObject> EnumerateSelfAndVisualAncestors(this DependencyObject current) =>
+			current.ToEnumerable().Concat(current.EnumerateVisualAncestors());
+		
+		public static IEnumerable<DependencyObject> EnumerateSelfAndVisualDescendants(this DependencyObject current) =>
+			current.ToEnumerable().Concat(current.EnumerateVisualDescendants());
 	}
 }

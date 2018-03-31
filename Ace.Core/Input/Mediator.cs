@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 using Ace.Evocators;
 
@@ -42,6 +43,7 @@ namespace Ace.Input
 
 		public void Set(object sender, CommandEvocator evocator)
 		{
+			if (evocator == null) Debug.WriteLine($"Can not get command evocator for {sender}");
 			_weakListener?.Dispose();
 			_weakSender = sender == null ? null : new WeakReference(sender);
 			_weakEvocator = evocator == null ? null : new WeakReference(evocator);
@@ -57,7 +59,7 @@ namespace Ace.Input
 
 		public bool CanExecute(object parameter)
 		{
-			if (_weakEvocator == null) return true;
+			if (_weakEvocator is null) return true;
 			if (_weakEvocator.Target.To(out CommandEvocator evocator) is null || _command is null)
 				return _canExecuteState = false;
 
@@ -75,7 +77,7 @@ namespace Ace.Input
 
 		public void Execute(object parameter)
 		{
-			if (_weakSender == null) return;
+			if (_weakEvocator is null) return;
 			if (_weakEvocator.Target.To(out CommandEvocator evocator) is null || _command is null)
 				return;
 

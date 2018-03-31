@@ -87,9 +87,8 @@ namespace Ace.Markup
 		private static ContextObject FindRelativeContextObject(ContextElement element, Type type) =>
 			EnumerateContextObjects(element).FirstOrDefault(c => c.GetType() == type);
 
-		// ReSharper disable once RedundantEnumerableCastCall
 		private static IEnumerable<ContextObject> EnumerateContextObjects(ContextElement target) =>
-			target.EnumerateVisualAncestors().OfType<ContextElement>().Select(GetContext).OfType<ContextObject>();
+			target.EnumerateSelfAndVisualAncestors().OfType<ContextElement>().Select(GetContext).OfType<ContextObject>();
 
 		private CommandEvocator GetCommandEvocator(object target) => 
 			target is ContextObject contextObject ? contextObject[Ace.Context.Get(Key)] : null;
