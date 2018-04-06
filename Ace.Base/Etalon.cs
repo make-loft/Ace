@@ -12,8 +12,7 @@ namespace Ace
 		public string Path { get; set; }
 		public Etalon.State State { get; set; }
 
-		public override string ToString() =>
-			"<" + State + "> • [" + Path + "] " + Print(Etalon) + " " + Print(Sample);
+		public override string ToString() => $"<{State}> • [{Path}] {Print(Etalon)} {Print(Sample)}";
 
 		private static string Print(object item) => item is Map || item is Set
 			? "<instance>"
