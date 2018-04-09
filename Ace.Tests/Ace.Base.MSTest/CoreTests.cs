@@ -11,6 +11,8 @@ namespace Ace.Base.MSTest
 		[TestMethod] public void TestNewExtension() => NewExtension.Test();
 		[TestMethod] public void TestToExtension() => ToExtension.Test();
 		[TestMethod] public void TestWithExtension() => WithExtension.Test();
+		[TestMethod] public void TestWithLikeExtension() => WithLikeExtensions.Test();
+		[TestMethod] public void TestBooleanLogicExtension() => BooleanLogicExtensions.Test();
 		
 		[TestMethod] public void TestIsMatching() => IsMatching.Test();
 		[TestMethod] public void TestSwithLikeMatching() => SwithLikeMatching.Test();

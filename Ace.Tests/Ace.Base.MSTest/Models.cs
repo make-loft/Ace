@@ -1,9 +1,19 @@
-﻿namespace Ace.Base.MSTest
+﻿using System;
+
+namespace Ace.Base.MSTest
 {
 	public class Point
 	{
 		public int? X { get; set; }
 		public int? Y { get; set; }
+	}
+
+	public class Person
+	{
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
+		public int? Age { get; set; }
+		public DateTime Birthday { get; set; }
 	}
 	
 	public interface IModel {}
