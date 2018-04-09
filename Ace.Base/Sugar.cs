@@ -78,16 +78,24 @@ namespace Ace
 			return o;
 		}
 
+		// ReSharper disable InconsistentNaming
+		
 		public static T With<T>(this T o, params object[] pattern) => o;
-		public static T With<T, T0>(this T o, T0 a) => o;
-		public static T With<T, T0, T1>(this T o, T0 a, T1 b) => o;
-		public static T With<T, T0, T1, T2>(this T o, T0 a, T1 b, T2 c) => o;
-		public static T With<T, T0, T1, T2, T3>(this T o, T0 a, T1 b, T2 c, T3 d) => o;
-		public static T With<T, T0, T1, T2, T3, T4>(this T o, T0 a, T1 b, T2 c, T3 d, T4 e) => o;
-		public static T With<T, T0, T1, T2, T3, T4, T5>(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f) => o;
-		public static T With<T, T0, T1, T2, T3, T4, T5, T6>(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f, T6 g) => o;
-		public static T With<T, T0, T1, T2, T3, T4, T5, T6, T7>
-			(this T o, T0 a, T1 b, T2 c, T3 d, T4 e, T5 f, T6 g, T7 h) => o;
+		
+		public static T With<T>(this T o) => o;
+		public static T With<T, A>(this T o, A a) => o;
+		public static T With<T, A, B>(this T o, A a, B b) => o;
+		public static T With<T, A, B, C>(this T o, A a, B b, C c) => o;
+		public static T With<T, A, B, C, D>(this T o, A a, B b, C c, D d) => o;
+		public static T With<T, A, B, C, D, E>(this T o, A a, B b, C c, D d, E e) => o;
+		public static T With<T, A, B, C, D, E, F>(this T o, A a, B b, C c, D d, E e, F f) => o;
+		public static T With<T, A, B, C, D, E, F, G>(this T o, A a, B b, C c, D d, E e, F f, G g) => o;
+		public static T With<T, A, B, C, D, E, F, G, H>(this T o, A a, B b, C c, D d, E e, F f, G g, H h) => o;
+		
+		public const object Null = null;
+		public static object With() => Null.With();
+		
+		// ReSharper enable InconsistentNaming
 
 		public static TCollection Merge<TCollection, T>(this TCollection collection, IOrderedEnumerable<T> items)
 			where TCollection : ICollection<T>
@@ -112,17 +120,12 @@ namespace Ace
 
 		public static bool All(params bool[] conditions) => conditions.All(b => b);
 		public static bool Any(params bool[] conditions) => conditions.Any(b => b);
+		public static bool All<T>(this T o, params bool[] conditions) => conditions.All(b => b);
+		public static bool Any<T>(this T o, params bool[] conditions) => conditions.Any(b => b);
 
-		public static bool And(this bool b, bool condition) => b && condition;
+		public static bool And(this bool b, bool condition) => b & condition;
 		public static bool Xor(this bool b, bool condition) => b ^ condition;
-		public static bool Or(this bool b, bool condition) => b || condition;
-		
-		public static bool AndAll(this bool b, params bool[] conditions) => b && All(conditions);
-		public static bool AndAny(this bool b, params bool[] conditions) => b && Any(conditions);
-		public static bool XorAll(this bool b, params bool[] conditions) => b ^ All(conditions);
-		public static bool XorAny(this bool b, params bool[] conditions) => b ^ Any(conditions);
-		public static bool OrAll(this bool b, params bool[] conditions) => b || All(conditions);
-		public static bool OrAny(this bool b, params bool[] conditions) => b || Any(conditions);
+		public static bool Or(this bool b, bool condition) => b | condition;
 
 		public static KeyValuePair<TK, TV> To<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
 		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new KeyValuePair<TK, TV>(key, value);
