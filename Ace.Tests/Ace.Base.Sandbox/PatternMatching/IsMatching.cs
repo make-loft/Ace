@@ -1,6 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Ace.Base.MSTest;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Ace.Base.MSTest.PatternMatching
+namespace Ace.Base.Sandbox.PatternMatching
 {
 	public static class IsMatching
 	{

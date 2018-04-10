@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Ace.Base.MSTest.Sugar
+namespace Ace.Base.Sandbox.Sugar
 {
     public static class BooleanLogicExtensions
     {

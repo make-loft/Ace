@@ -10,6 +10,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ace.Base\Ace.Base.Profile158.csproj" />
-    <ProjectReference Include="..\Ace.Base.Sandbox\Ace.Base.Sandbox.csproj" />
   </ItemGroup>
 </Project>

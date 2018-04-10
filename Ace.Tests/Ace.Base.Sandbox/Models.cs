@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Ace.Base.MSTest
+namespace Ace.Base.Sandbox
 {
 	public class Point
 	{

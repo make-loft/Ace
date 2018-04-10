@@ -22,7 +22,7 @@ namespace Ace.Replication.Replicators
 		public override object Translate(object value, ReplicationProfile replicationProfile,
 			IDictionary<object, int> idCache, Type baseType = null)
 		{
-			if (idCache.TryGetValue(value, out int id)) return new Map { { replicationProfile.IdKey, id } };
+			if (idCache.TryGetValue(value, out var id)) return new Map { { replicationProfile.IdKey, id } };
 			id = idCache.Count;
 			idCache.Add(value, id);
 
@@ -40,7 +40,7 @@ namespace Ace.Replication.Replicators
 			var map = CompleteMapIfRequried(value, replicationProfile, baseType);
 			var hasKey = map.TryGetValue(replicationProfile.IdKey, out var key);
 			var id = hasKey ? (int)key : idCache.Count;
-			if (idCache.TryGetValue(id, out object replica) && hasKey && map.Count == 1) return replica;
+			if (idCache.TryGetValue(id, out var replica) && hasKey && map.Count == 1) return replica;
 			replica = idCache[id] = replica ?? ActivateInstance(map, replicationProfile, idCache, baseType);
 			if (replica != null) FillInstance(map, (T)replica, replicationProfile, idCache, baseType);
 			return replica;
