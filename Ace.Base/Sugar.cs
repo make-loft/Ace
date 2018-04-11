@@ -118,6 +118,8 @@ namespace Ace
 			return collection;
 		}
 
+		public static bool[] Check<T>(this T o, params bool[] pattern) => pattern;
+		
 		public static bool IsTrue(this bool b) => b;
 		public static bool IsFalse(this bool b) => !b;
 
@@ -127,8 +129,7 @@ namespace Ace
 		public static bool All(this bool[] conditions, bool value) => conditions.All(value ? IsTrueFunc : IsFalseFunc);
 		public static bool Any(this bool[] conditions, bool value) => conditions.Any(value ? IsTrueFunc : IsFalseFunc);
 		public static int Count(this bool[] pattern, bool value) => pattern.Count(value ? IsTrueFunc : IsFalseFunc);
-		public static bool[] Check<T>(this T o, params bool[] pattern) => pattern;
-
+		
 		public static KeyValuePair<TK, TV> To<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
 		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new KeyValuePair<TK, TV>(key, value);
 
