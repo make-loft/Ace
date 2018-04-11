@@ -118,14 +118,10 @@ namespace Ace
 			return collection;
 		}
 
-		public static bool All(params bool[] conditions) => conditions.All(b => b);
-		public static bool Any(params bool[] conditions) => conditions.Any(b => b);
-		public static bool All<T>(this T o, params bool[] conditions) => conditions.All(b => b);
-		public static bool Any<T>(this T o, params bool[] conditions) => conditions.Any(b => b);
-
-		public static bool And(this bool b, bool condition) => b & condition;
-		public static bool Xor(this bool b, bool condition) => b ^ condition;
-		public static bool Or(this bool b, bool condition) => b | condition;
+		public static bool All(this bool[] pattern, bool value) => value ? pattern.All(b => b) : pattern.All(b => !b);
+		public static bool Any(this bool[] pattern, bool value) => value ? pattern.Any(b => b) : pattern.Any(b => !b);
+		public static int Count(this bool[] pattern, bool value) => value ? pattern.Count(b => b) : pattern.Count(b => !b);
+		public static bool[] Check<T>(this T o, params bool[] pattern) => pattern;
 
 		public static KeyValuePair<TK, TV> To<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
 		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new KeyValuePair<TK, TV>(key, value);

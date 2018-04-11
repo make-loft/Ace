@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Reflection;
-using Ace.Base.MSTest.Sugar;
 using Ace.Base.Sandbox.GraphStateManagement;
 using Ace.Base.Sandbox.PatternMatching;
 using Ace.Base.Sandbox.Sugar;
@@ -14,7 +13,6 @@ namespace Ace.Base.MSTest
 		[TestMethod] public void TestToExtension() => ToExtension.Test();
 		[TestMethod] public void TestWithExtension() => WithExtension.Test();
 		[TestMethod] public void TestWithLikeExtension() => WithLikeExtensions.Test();
-		[TestMethod] public void TestBooleanLogicExtension() => BooleanLogicExtensions.Test();
 		
 		[TestMethod] public void TestJuxtoposition() => Justaposition.Test();
 		[TestMethod] public void TestReconstruction() => Reconstruction.Test();

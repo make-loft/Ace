@@ -1,8 +1,7 @@
 ﻿using System;
-using Ace.Base.Sandbox;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Ace.Base.MSTest.Sugar
+namespace Ace.Base.Sandbox.Sugar
 {
     public static class WithLikeExtensions
     {
@@ -30,14 +29,24 @@ namespace Ace.Base.MSTest.Sugar
 
         public static void Test(Func<Person> getPerson)
         {
-            if (getPerson().Is(out var p) && p.All
+            if (getPerson().Is(out var p) && p.Check
                 (
                     p.FirstName.Is("Abc"),
                     p.LastName.Is(out var lastName),
                     p.Age > 9
-                ))
+                ).All(true))
             {
                 Assert.AreEqual("Xyz", lastName);
+
+                if (
+                    p.Check(
+                        p.FirstName.To(out var name).Is("a"),
+                        p.Age.To(out var age) > 5
+                    ).Any(true))
+                {
+                    Assert.IsTrue(name.IsNot("a"));
+                    Assert.IsTrue(age > 5);
+                }
             }
             else
             {
@@ -49,17 +58,19 @@ namespace Ace.Base.MSTest.Sugar
         {
             switch (o)
             {
-                case Person p when p.Any(
+                case Person p when p.Check(
                     p.FirstName.Is("Aaaa"),
                     p.LastName.Is("Bbbb"),
-                    p.Age > 5):
+                    p.Age > 5)
+                    .All(true):
                         
                     Assert.IsTrue(p.FirstName == "Aaaa" || p.LastName == "Bbbb" || p.Age > 5);
                     break;
                     
-                case Point p when p.All(
+                case Point p when p.Check(
                     p.X > 9 && p.X < 16,
-                    p.Y < 28):
+                    p.Y < 28)
+                    .All(true):
                     
                     Assert.IsTrue(p.X > 9 && p.X < 16 && p.Y < 28);
                     break;
