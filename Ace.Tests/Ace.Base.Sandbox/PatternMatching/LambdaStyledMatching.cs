@@ -1,5 +1,4 @@
 ﻿using System;
-using Ace.Base.MSTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Ace.Base.Sandbox.PatternMatching

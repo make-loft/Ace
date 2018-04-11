@@ -59,12 +59,12 @@ namespace Ace.Base.Sandbox.Sugar
             switch (o)
             {
                 case Person p when p.Check(
-                    p.FirstName.Is("Aaaa"),
-                    p.LastName.Is("Bbbb"),
+                    p.FirstName.Is("Abc"),
+                    p.LastName.Is("Xyz"),
                     p.Age > 5)
                     .All(true):
                         
-                    Assert.IsTrue(p.FirstName == "Aaaa" || p.LastName == "Bbbb" || p.Age > 5);
+                    Assert.IsTrue(p.FirstName == "Abc" || p.LastName == "Xyz" || p.Age > 5);
                     break;
                     
                 case Point p when p.Check(
