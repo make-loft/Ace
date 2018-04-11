@@ -118,9 +118,12 @@ namespace Ace
 			return collection;
 		}
 
-		public static bool All(this bool[] pattern, bool value) => value ? pattern.All(b => b) : pattern.All(b => !b);
-		public static bool Any(this bool[] pattern, bool value) => value ? pattern.Any(b => b) : pattern.Any(b => !b);
-		public static int Count(this bool[] pattern, bool value) => value ? pattern.Count(b => b) : pattern.Count(b => !b);
+		public static bool IsTrue(this bool b) => b;
+		public static bool IsFalse(this bool b) => !b;
+		
+		public static bool All(this bool[] conditions, bool value) => value ? conditions.All(IsTrue) : conditions.All(IsFalse);
+		public static bool Any(this bool[] conditions, bool value) => value ? conditions.Any(IsTrue) : conditions.Any(IsFalse);
+		public static int Count(this bool[] pattern, bool value) => value ? pattern.Count(IsTrue) : pattern.Count(IsFalse);
 		public static bool[] Check<T>(this T o, params bool[] pattern) => pattern;
 
 		public static KeyValuePair<TK, TV> To<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
