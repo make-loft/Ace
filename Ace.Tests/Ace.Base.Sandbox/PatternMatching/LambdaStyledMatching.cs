@@ -25,7 +25,7 @@ namespace Ace.Base.Sandbox.PatternMatching
 			}
 		}
 
-		private static double CalculateSquare(this Shape shape) =>
+		public static double CalculateSquare(this Shape shape) =>
 			shape.Match(
 				(Line _) => 0,
 				(Circle c) => Math.PI * c.Radius * c.Radius,

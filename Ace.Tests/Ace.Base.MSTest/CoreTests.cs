@@ -20,6 +20,7 @@ namespace Ace.Base.MSTest
 		[TestMethod] public void TestReplication() => Sandbox.GraphStateManagement.Replication.Test();
 		
 		[TestMethod] public void TestIsMatching() => IsMatching.Test();
+		[TestMethod] public void TestCombinedMatching() => CombinedMatching.Test();
 		[TestMethod] public void TestSwithLikeMatching() => SwithLikeMatching.Test();
 		[TestMethod] public void TestLambdaStyledPatternMatching() => LambdaStyledMatching.Test();
 

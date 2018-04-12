@@ -23,7 +23,7 @@ namespace Ace.Base.Sandbox.PatternMatching
 		}
 
 		private static string Match(IModel model) =>
-			model.Match().Is(out var s) &&
+			model.ToSwitch().Is(out var s) &&
 
 			s.Case(out ModelA a) ? $"A {a}" :	// s.Case<ModelA>(out var a) ? $"A {a}" :
 			s.Case(out ModelB _) ? "B" :		// s.Case<ModelB>() ? "B" :
@@ -42,7 +42,7 @@ namespace Ace.Base.Sandbox.PatternMatching
 		}
 
 		private static string Match(Point point) =>
-			point.Match(
+			point.ToSwitch(
 				point.X.To(out object x),
 				point.Y.To(out object y)
 			).Is(out var s) &&

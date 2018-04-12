@@ -6,6 +6,8 @@ namespace Ace.Base.Console
 {
 	static class Program
 	{
+		
+		
 		static void Main(string[] args)
 		{
 			try
