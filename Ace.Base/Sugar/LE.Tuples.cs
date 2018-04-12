@@ -2,9 +2,9 @@
 // ReSharper disable once CheckNamespace
 namespace Ace
 {
-    // ReSharper disable InconsistentNaming
-    public static partial class LE
-    {	    
+	// ReSharper disable InconsistentNaming
+	public static partial class LE
+	{		
 		public static bool[] Check<A, B, C, D, E, F, G, H>(this Tuple<A, B, C, D, E, F, G, H> t,
 			A a, B b, C c, D d, E e, F f, G g, H h) => t.Check(
 			t.Item1.Is(a), t.Item2.Is(b), t.Item3.Is(c), t.Item4.Is(d), 
@@ -41,31 +41,31 @@ namespace Ace
 			A a) => t.Check(
 			t.Item1.Is(a));
 
-	    public static Tuple<A, B, C, D, E, F, G, Tuple<H>> ToTuple<T, A, B, C, D, E, F, G, H>(this T o,
-		    A a, B b, C c, D d, E e, F f, G g, H h) => Tuple.Create(a, b, c, d, e, f, g, h);
+		public static Tuple<A, B, C, D, E, F, G, H> ToTuple<T, A, B, C, D, E, F, G, H>(this T o,
+			A a, B b, C c, D d, E e, F f, G g, H h) => New.Tuple(a, b, c, d, e, f, g, h);
 		
-	    public static Tuple<A, B, C, D, E, F, G> ToTuple<T, A, B, C, D, E, F, G>(this T o,
-		    A a, B b, C c, D d, E e, F f, G g) => Tuple.Create(a, b, c, d, e, f, g);
-	    
-	    public static Tuple<A, B, C, D, E, F> ToTuple<T, A, B, C, D, E, F>(this T o,
-		    A a, B b, C c, D d, E e, F f) => Tuple.Create(a, b, c, d, e, f);
-	    
-	    public static Tuple<A, B, C, D, E> ToTuple<T, A, B, C, D, E>(this T o,
-		    A a, B b, C c, D d, E e) => Tuple.Create(a, b, c, d, e);
-	    
-	    public static Tuple<A, B, C, D> ToTuple<T, A, B, C, D>(this T o,
-		    A a, B b, C c, D d) => Tuple.Create(a, b, c, d);
-	    
-	    public static Tuple<A, B, C> ToTuple<T, A, B, C>(this T o,
-		    A a, B b, C c) => Tuple.Create(a, b, c);
-	    
-	    public static Tuple<A, B> ToTuple<T, A, B>(this T o,
-		    A a, B b) => Tuple.Create(a, b);
-	    
-	    public static Tuple<A> ToTuple<T, A>(this T o,
-		    A a) => Tuple.Create(a);
-	    
-	    public static Tuple<T> ToTuple<T>(this T o) => Tuple.Create(o);
+		public static Tuple<A, B, C, D, E, F, G> ToTuple<T, A, B, C, D, E, F, G>(this T o,
+			A a, B b, C c, D d, E e, F f, G g) => New.Tuple(a, b, c, d, e, f, g);
+		
+		public static Tuple<A, B, C, D, E, F> ToTuple<T, A, B, C, D, E, F>(this T o,
+			A a, B b, C c, D d, E e, F f) => New.Tuple(a, b, c, d, e, f);
+		
+		public static Tuple<A, B, C, D, E> ToTuple<T, A, B, C, D, E>(this T o,
+			A a, B b, C c, D d, E e) => New.Tuple(a, b, c, d, e);
+		
+		public static Tuple<A, B, C, D> ToTuple<T, A, B, C, D>(this T o,
+			A a, B b, C c, D d) => New.Tuple(a, b, c, d);
+		
+		public static Tuple<A, B, C> ToTuple<T, A, B, C>(this T o,
+			A a, B b, C c) => New.Tuple(a, b, c);
+		
+		public static Tuple<A, B> ToTuple<T, A, B>(this T o,
+			A a, B b) => New.Tuple(a, b);
+		
+		public static Tuple<A> ToTuple<T, A>(this T o,
+			A a) => New.Tuple(a);
+		
+		public static Tuple<T> ToTuple<T>(this T o) => New.Tuple(o);
 
 		public static Tuple<A, B, C, D, E, F, G, H> To<A, B, C, D, E, F, G, H>(this Tuple<A, B, C, D, E, F, G, H> t,
 			out A a, out B b, out C c, out D d, out E e, out F f, out G g, out H h) => t.With(
@@ -98,5 +98,5 @@ namespace Ace
 		public static Tuple<A> To<A>(this Tuple<A> t,
 			out A a) => t.With(
 			a = t.Item1);
-    }
+	}
 }

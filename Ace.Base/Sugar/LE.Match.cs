@@ -3,8 +3,8 @@
 namespace Ace
 {
 	// ReSharper disable InconsistentNaming
-    public static partial class LE
-    {
+	public static partial class LE
+	{
 		public static TOut Match<TIn, TOut>(this TIn context, Func<TOut> nullCase = null)
 			=> context.InvokeMatcher((Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null,
 				(Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, (Func<TIn, TOut>) null, nullCase);
@@ -78,5 +78,5 @@ namespace Ace
 						: throw new ArgumentException($"Undefined case for '{context}'");
 			}
 		}
-    }
+	}
 }
