@@ -78,8 +78,12 @@ namespace System.Linq
 
 		public static Dictionary<TKey, TValue>
 			ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
-			items.ToDictionary(p => p.Key, p => p.Value);
+			items.ToDictionary(Pair<TKey, TValue>.Key, Pair<TKey, TValue>.Value);
 
+		public static Dictionary<TValue, TKey>
+			ToMirrorDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
+			items.ToDictionary(Pair<TKey, TValue>.Value, Pair<TKey, TValue>.Key);
+		
 		public static IList<T> AppendRange<T>(this IList<T> target, IEnumerable<T> source)
 		{
 			foreach (var item in source) target.Add(item);

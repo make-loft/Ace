@@ -57,7 +57,7 @@ namespace Ace.Replication
 		public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
 
 		public string ToString(KeepProfile keepProfile) => MasterState.SnapshotToString(keepProfile);
-		
+
 		public string ToString(StringBuilder builder) =>
 			MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
@@ -67,6 +67,6 @@ namespace Ace.Replication
 			(TRoot) ActiveReplicationProfile.Replicate(MasterState, null, typeof(TRoot));
 
 		public object ReconstructGraph(IDictionary<object, int> cache) =>
-			ActiveReplicationProfile.Replicate(MasterState, cache?.ToDictionary(p => p.Value, p => p.Key));
+			ActiveReplicationProfile.Replicate(MasterState, cache?.ToMirrorDictionary());
 	}
 }

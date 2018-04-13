@@ -50,7 +50,7 @@ namespace Ace
 		[DataMember]
 		public virtual Dictionary<string, object> SmartState
 		{
-			get => GetSmartProperties(SmartContainer, GetType())?.ToDictionary(p => p.Key, p => p.Value);
+			get => GetSmartProperties(SmartContainer, GetType())?.ToDictionary();
 			set => value?.ForEach(pair => this[pair.Key] = pair.Value);
 		}
 

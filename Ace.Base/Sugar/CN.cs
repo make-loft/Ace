@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 // ReSharper disable once CheckNamespace
 namespace Ace
 {
@@ -20,5 +22,11 @@ namespace Ace
 	{
 		public static readonly Func<T, bool> IsNull = LE.IsNull;
 		public static readonly Func<T, bool> Is = LE.Is;
+	}
+
+	public static class Pair<TKey, TValue>
+	{
+		public static readonly Func<KeyValuePair<TKey, TValue>, TKey> Key = p => p.Key;
+		public static readonly Func<KeyValuePair<TKey, TValue>, TValue> Value = p => p.Value;
 	}
 }
