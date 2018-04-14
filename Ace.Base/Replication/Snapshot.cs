@@ -23,11 +23,9 @@ namespace Ace.Replication
 		}
 
 		public static ReplicationProfile DefaultReplicationProfile = new ReplicationProfile {AttachId = true};
-
 		public static KeepProfile DefaultKeepProfile = KeepProfile.GetFormatted();
 
 		public object MasterState { get; set; }
-
 		public DateTime Timestamp { get; } = DateTime.Now;
 
 		public ReplicationProfile ActiveReplicationProfile = new ReplicationProfile();

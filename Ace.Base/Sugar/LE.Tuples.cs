@@ -4,7 +4,7 @@ namespace Ace
 {
 	// ReSharper disable InconsistentNaming
 	public static partial class LE
-	{		
+	{	
 		public static bool[] Check<A, B, C, D, E, F, G, H>(this Tuple<A, B, C, D, E, F, G, H> t,
 			A a, B b, C c, D d, E e, F f, G g, H h) => t.Check(
 			t.Item1.Is(a), t.Item2.Is(b), t.Item3.Is(c), t.Item4.Is(d), 
