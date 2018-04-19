@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Reflection;
 using Ace.Base.Sandbox.GraphStateManagement;
-using Ace.Base.Sandbox.PatternMatching;
 using Ace.Base.Sandbox.Sugar;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

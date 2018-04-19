@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Ace.Base.Sandbox.PatternMatching
+namespace Ace.Base.Sandbox.Sugar
 {
 	public static class IsMatching
 	{
