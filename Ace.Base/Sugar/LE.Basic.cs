@@ -7,7 +7,10 @@ namespace Ace
 	/* LanguageExtensions */
 	public static partial class LE
 	{
-		private static object ChangeType(this object o, Type type) =>
+		public static TX Put<T, TX>(this T o, TX x) => x;
+		public static TX Put<T, TX>(this T o, ref TX x) => x;
+		
+		public static object ChangeType(this object o, Type type) =>
 			o == null || type.IsValueType || o is IConvertible ? Convert.ChangeType(o, type, null) : o;
 
 		public static T To<T>(this T o) => o;
@@ -15,9 +18,6 @@ namespace Ace
 		public static T To<T>(this object o) => (T) ChangeType(o, typeof(T));
 		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
 		public static T? To<T>(this object o, out T? x) where T : struct => x = (T?) o;
-
-		public static TX Put<T, TX>(this T o, TX x) => x;
-		public static TX Put<T, TX>(this T o, ref TX x) => x;
 
 		public static T As<T>(this T o) => o;
 		public static T As<T>(this T o, out T x) => x = o;
