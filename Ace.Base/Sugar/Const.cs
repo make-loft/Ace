@@ -5,8 +5,7 @@ using System.Collections.Generic;
 namespace Ace
 {
 	// ReSharper disable InconsistentNaming
-	/* Constants */
-	public static class CN
+	public static class Const
 	{
 		public const object Null = null;
 		public static readonly Func<bool, bool> Not = LE.Not;
@@ -18,7 +17,7 @@ namespace Ace
 		public static readonly Action Stub = () => { };
 	}
 	
-	public static class CN<T>
+	public static class Const<T>
 	{
 		public static readonly Func<T, bool> IsNull = LE.IsNull;
 		public static readonly Func<T, bool> Is = LE.Is;

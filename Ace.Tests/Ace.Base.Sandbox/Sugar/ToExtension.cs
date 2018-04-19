@@ -21,5 +21,7 @@ namespace Ace.Base.Sandbox.Sugar
 			Assert.AreEqual(i, j);
 			Assert.AreEqual(l, m);
 		}
+
+		public static void TesPut() => int.TryParse("123", out var i).Put(i).Use(System.Console.WriteLine);
 	}
 }

@@ -55,10 +55,8 @@ namespace Ace.Serialization.Converters
 					var parseMethodFormatted = type.GetMethod("Parse", new[] { typeof(string), typeof(IFormatProvider) });
 					if (parseMethodFormatted != null) return parseMethodFormatted.Invoke(null, new object[] { value, ActiveCulture });
 
-					var parseMethod = type?.GetMethod("Parse", new[] { typeof(string) });
-					if (parseMethod != null) return parseMethod.Invoke(null, new object[] { value });
-
-					return null;
+					var parseMethod = type.GetMethod("Parse", new[] { typeof(string) });
+					return parseMethod?.Invoke(null, new object[] { value });
 			}
 		}
 	}

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 namespace Ace
 {
 	// ReSharper disable once InconsistentNaming
-	public static partial class LE
+	/* Short forms of New */
+	public static class NE
 	{
 		public static T O<T>() where T : new() => new T();
 

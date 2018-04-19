@@ -19,6 +19,7 @@ namespace Ace
 		public static TR Put<T, TR>(this T o, ref TR y) => y;
 		public static TR Put<T, TR>(this T o, TR y, out T x) => (x = o).Put(y);
 		public static TR Put<T, TR>(this T o, ref TR y, out T x) => (x = o).Put(y);
+		public static TR Put<TR>(out TR x, TR a = default(TR)) => x = a;
 
 		public static T As<T>(this T o) => o;
 		public static T As<T>(this T o, out T x) => x = o;

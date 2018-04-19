@@ -82,10 +82,11 @@
     <Compile Include="Serialization\Simplex.cs" />
     <Compile Include="Serialization\SimplexConverter.cs" />
     <Compile Include="Aides.cs" />
-    <Compile Include="Sugar\CN.cs" />
+    <Compile Include="Sugar\Const.cs" />
+    <Compile Include="Sugar\LE.Use.cs" />
     <Compile Include="Sugar\LE.Deconstruct.cs" />
     <Compile Include="Sugar\LE.Experimental.cs" />
-    <Compile Include="Sugar\LE.New.cs" />
+    <Compile Include="Sugar\NE.cs" />
     <Compile Include="Sugar\LE.Tuples.cs" />
     <Compile Include="Sugar\New.Tuples.cs" />
     <Compile Include="Sugar\LE.Basic.cs" />

@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using IBooleans = System.Collections.Generic.IEnumerable<bool>;
+using IBools = System.Collections.Generic.IEnumerable<bool>;
 // ReSharper disable once CheckNamespace
 namespace Ace
 {
@@ -8,8 +8,8 @@ namespace Ace
 	{
 		public static bool[] Check<T>(this T o, params bool[] pattern) => pattern;
 
-		public static bool All(this IBooleans pattern, bool value) => pattern.All(value ? CN.IsTrue : CN.IsFalse);
-		public static bool Any(this IBooleans pattern, bool value) => pattern.Any(value ? CN.IsTrue : CN.IsFalse);
-		public static int Count(this IBooleans pattern, bool value) => pattern.Count(value ? CN.IsTrue : CN.IsFalse);
+		public static bool All(this IBools pattern, bool value) => pattern.All(value ? Const.IsTrue : Const.IsFalse);
+		public static bool Any(this IBools pattern, bool value) => pattern.Any(value ? Const.IsTrue : Const.IsFalse);
+		public static int Count(this IBools pattern, bool value) => pattern.Count(value ? Const.IsTrue : Const.IsFalse);
 	}
 }
