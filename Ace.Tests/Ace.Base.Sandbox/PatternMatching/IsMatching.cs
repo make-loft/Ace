@@ -16,6 +16,11 @@ namespace Ace.Base.Sandbox.PatternMatching
 			TestIs((Line) null, (Circle) null);
 			TestIs(line, (Circle) null);
 			TestIs((Line) null, circle);
+			
+			Assert.IsTrue(1.To(out int? nl).Is());
+			Assert.AreEqual(1, nl);
+			TestIsNull();
+			TestIsNot();
 		}
 
 		private static void TestIs<TShapeA>(TShapeA shapeA)
@@ -49,6 +54,48 @@ namespace Ace.Base.Sandbox.PatternMatching
 			Assert.AreEqual(false, shapeALikeShape.Is<TShapeB>(shapeB));
 			Assert.AreEqual(isNulls, shapeALikeShape.Is<Shape>(shapeB));
 			Assert.AreEqual(isNulls, shapeALikeShape.Is(shapeBLikeShape));
+		}
+
+		private static void TestIsNull()
+		{
+			Assert.IsTrue(Const.Null.IsNull());
+			Assert.IsTrue(Const.Null.To(out int? _).IsNull());
+			
+			Assert.IsTrue(Const.Null.IsNull(out var nl));
+			Assert.AreEqual(null, nl);
+			
+			Assert.IsFalse(new object().IsNull(out var x, 9));
+			Assert.AreEqual(x, 9);
+		}
+		
+		private static void TestIsNot()
+		{
+			new object().To(out var a);
+			new object().To(out var b);
+			
+			Assert.IsTrue(a.Is(a));
+			Assert.IsTrue(b.Is(b));
+			Assert.IsFalse(a.Is(b));
+			
+			var mA = new ModelA();
+			var mB = new ModelB();
+			var mALikeObject = (object) mA;
+
+			Assert.IsTrue(mA.Is(mALikeObject));
+			Assert.IsFalse(mA.Is<ModelA>(mB));
+			Assert.IsFalse(mA.Is<ModelB>(mB));
+			Assert.IsTrue(mALikeObject.Is(mALikeObject));
+			
+			Assert.IsFalse(mA.IsNot(mALikeObject));
+			Assert.IsTrue(mA.IsNot<ModelA>(mB));
+			Assert.IsTrue(mA.IsNot<ModelB>(mB));
+			Assert.IsFalse(mALikeObject.IsNot(mALikeObject));
+
+			5.To(out int? i);
+			Assert.IsTrue(i.Is(5));
+			Assert.IsTrue(i.IsNot(7));
+			Assert.IsFalse(i.Is(7));
+			Assert.IsFalse(i.IsNot(5));
 		}
 	}
 }

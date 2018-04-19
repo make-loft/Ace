@@ -13,6 +13,7 @@ namespace Ace.Base.MSTest
 		[TestMethod] public void TestToExtension() => ToExtension.Test();
 		[TestMethod] public void TestWithExtension() => WithExtension.Test();
 		[TestMethod] public void TestWithLikeExtension() => WithLikeExtensions.Test();
+		[TestMethod] public void TestDeconstructExtension() => DeconstructExtensions.Test();
 		
 		[TestMethod] public void TestJuxtoposition() => Justaposition.Test();
 		[TestMethod] public void TestReconstruction() => Reconstruction.Test();
