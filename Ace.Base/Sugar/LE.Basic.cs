@@ -16,11 +16,8 @@ namespace Ace
 		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
 		public static T? To<T>(this object o, out T? x) where T : struct => x = (T?) o;
 
-		public static TR Put<T, TR>(this T o, TR y) => y;
-		public static TR Put<T, TR>(this T o, ref TR y) => y;
-		public static TR Put<T, TR>(this T o, out TR x, TR y = default(TR)) => x = y;
-		public static TR Put<T, TR>(this T o, out TR x, ref TR y) => x = y;
-		public static TR Put<TR>(out TR x, TR y = default(TR)) => x = y;
+		public static TX Put<T, TX>(this T o, TX x) => x;
+		public static TX Put<T, TX>(this T o, ref TX x) => x;
 
 		public static T As<T>(this T o) => o;
 		public static T As<T>(this T o, out T x) => x = o;

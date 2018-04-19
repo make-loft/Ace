@@ -42,12 +42,6 @@ namespace Ace.Base.Sandbox.Sugar
 			Assert.AreSame(b.Put(a), a);
 			Assert.AreSame(a.Put(ref b), b);
 			Assert.AreSame(b.Put(ref a), a);
-			
-			Assert.AreSame(a.Put(out var c, b), b);
-			Assert.AreSame(c, b);
-			
-			Assert.AreSame(a.Put(out var d, ref b), b);
-			Assert.AreSame(d, b);
 		}
 
 		private static void TestUse()
