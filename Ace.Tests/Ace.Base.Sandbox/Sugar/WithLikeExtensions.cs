@@ -25,6 +25,16 @@ namespace Ace.Base.Sandbox.Sugar
             
             Test(GetPerson());
             Test(GetPoint());
+            TestWith();
+        }
+        
+        public static void TestWith()
+        {
+            3D.To(out var w);
+            4D.To(out var h);
+            new Rectangle().To(out var r).With(r.Width = w, r.Height = h);
+            Assert.AreEqual(w, r.Width);
+            Assert.AreEqual(h, r.Height);
         }
 
         public static void Test(Func<Person> getPerson)

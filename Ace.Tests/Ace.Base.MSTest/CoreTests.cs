@@ -9,9 +9,8 @@ namespace Ace.Base.MSTest
 {
 	[TestClass] public class CoreTests
 	{
-		[TestMethod] public void TestNewExtension() => NewExtension.Test();
-		[TestMethod] public void TestToExtension() => ToExtension.Test();
-		[TestMethod] public void TestWithExtension() => WithExtension.Test();
+		[TestMethod] public void TestNewExtension() => NewExtensions.Test();
+		[TestMethod] public void TestToExtension() => Basics.Test();
 		[TestMethod] public void TestWithLikeExtension() => WithLikeExtensions.Test();
 		[TestMethod] public void TestDeconstructExtension() => DeconstructExtensions.Test();
 		

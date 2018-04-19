@@ -89,7 +89,7 @@
     <Compile Include="Sugar\NE.cs" />
     <Compile Include="Sugar\LE.Tuples.cs" />
     <Compile Include="Sugar\New.Tuples.cs" />
-    <Compile Include="Sugar\LE.Basic.cs" />
+    <Compile Include="Sugar\LE.Basics.cs" />
     <Compile Include="Sugar\System.Linq.cs" />
     <Compile Include="Sugar\LE.Check.cs" />
     <Compile Include="Sugar\LE.Match.cs" />

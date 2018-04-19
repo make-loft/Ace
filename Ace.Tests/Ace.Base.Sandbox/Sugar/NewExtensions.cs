@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Ace.Base.Sandbox.Sugar
 {
-	public static class NewExtension
+	public static class NewExtensions
 	{
 		public static void Test()
 		{
