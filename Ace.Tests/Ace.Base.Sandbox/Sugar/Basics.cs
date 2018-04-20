@@ -51,8 +51,8 @@ namespace Ace.Base.Sandbox.Sugar
 			persons.Use(out var j, 3).ForEach(p => p.FirstName = $"Name{j++}");
 			
 			Assert.AreEqual(persons[0].FirstName, "Name3");
-			Assert.AreEqual(persons[0].FirstName, "Name4");
-			Assert.AreEqual(persons[0].FirstName, "Name5");
+			Assert.AreEqual(persons[1].FirstName, "Name4");
+			Assert.AreEqual(persons[2].FirstName, "Name5");
 			
 			Assert.AreEqual(123.Use(out var x, 1).ToString(), "123");
 			Assert.AreEqual(x, 1);
