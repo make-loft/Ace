@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Ace.Base.Sandbox.Sugar
@@ -46,6 +47,13 @@ namespace Ace.Base.Sandbox.Sugar
 
 		private static void TestUse()
 		{
+			var persons = new[] {new Person(), new Person(), new Person()};
+			persons.Use(out var j, 3).ForEach(p => p.FirstName = $"Name{j++}");
+			
+			Assert.AreEqual(persons[0].FirstName, "Name3");
+			Assert.AreEqual(persons[0].FirstName, "Name4");
+			Assert.AreEqual(persons[0].FirstName, "Name5");
+			
 			Assert.AreEqual(123.Use(out var x, 1).ToString(), "123");
 			Assert.AreEqual(x, 1);
 			

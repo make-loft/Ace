@@ -5,7 +5,7 @@ namespace Ace
 {
 	// ReSharper disable InconsistentNaming
 	public static partial class LE
-	{	
+	{
 		public static T Call<T>(this T o, Action action)
 		{
 			action();

@@ -93,9 +93,11 @@ namespace Ace.Base.Sandbox.Sugar
 
 			5.To(out int? i);
 			Assert.IsTrue(i.Is(5));
-			Assert.IsTrue(i.IsNot(7));
 			Assert.IsFalse(i.Is(7));
+			Assert.IsTrue(i.IsNot(7));
+			Assert.IsTrue(7.IsNot(i));
 			Assert.IsFalse(i.IsNot(5));
+			Assert.IsFalse(5.IsNot(i));
 		}
 	}
 }
