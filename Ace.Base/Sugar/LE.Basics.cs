@@ -50,7 +50,7 @@ namespace Ace
 			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(b);
 
 		public static bool IsNull(this object o) => o is null;
-		public static bool IsNull<T>(this T o) => (IsLegacyRuntime && !TypeOf<T>.IsValueType) || o == null;
+		public static bool IsNull<T>(this T o) => (IsLegacyRuntime && !TypeOf<T>.IsValueType) && o == null;
 		public static bool IsNull<T>(this T o, out T x) => (x = o).IsNull();
 		public static bool IsNull<T>(this object o, out T x, T fallbackValue = default(T)) =>
 			(x = o.IsNull().To(out var b) ? (T) o : fallbackValue).Put(b);
