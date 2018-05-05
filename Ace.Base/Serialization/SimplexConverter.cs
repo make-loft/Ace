@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Ace.Serialization.Converters;
 
 namespace Ace.Serialization
@@ -17,13 +18,16 @@ namespace Ace.Serialization
 			new DateTimeIsoFastConverter(),
 			new ComplexConverter(),
 		};
+		
+		public static Assembly SystemAssembly = TypeOf<object>.Assembly;
+		public static Assembly ExtendedAssembly = TypeOf<Uri>.Assembly;
 
-		public virtual string GetTypeCode(Type type) =>
-			type.Assembly == typeof(object).Assembly || type.Assembly == typeof(Uri).Assembly
+		public virtual string GetTypeName(Type type) =>
+			type.Assembly == SystemAssembly || type.Assembly == ExtendedAssembly
 				? type.Name
 				: type.AssemblyQualifiedName;
 		
-		protected Simplex Simplex = new Simplex();
+		protected readonly Simplex Simplex = new Simplex();
 	
 		public Simplex Convert(object value, KeepProfile keepProfile)
 		{
@@ -42,7 +46,7 @@ namespace Ace.Serialization
 			if (!AppendTypeInfo) return Simplex.Escape(keepProfile.EscapeProfile, 1);
 			
 			Simplex.Add(keepProfile.GetHead(type));
-			Simplex.Add(GetTypeCode(type));
+			Simplex.Add(GetTypeName(type));
 			Simplex.Add(keepProfile.GetTail(type));
 			return Simplex.Escape(keepProfile.EscapeProfile, 1);
 		}

@@ -40,14 +40,6 @@ namespace Ace.Serialization
 			.Append(GetKeyTail(key))
 			.Append(MapPairSplitter);
 
-		public static Assembly SystemAssembly = typeof(object).Assembly;
-		public static Assembly ExtendedAssembly = typeof(Uri).Assembly;
-
-		public string GetTypeName(Type type) =>
-			type.Assembly == SystemAssembly || type.Assembly == ExtendedAssembly
-				? type.Name
-				: type.AssemblyQualifiedName;
-
 		public string GetHead(Type type) => "<";
 		public string GetTail(Type type) => ">";
 

@@ -83,6 +83,7 @@
     <Compile Include="Serialization\SimplexConverter.cs" />
     <Compile Include="Aides.cs" />
     <Compile Include="Sugar\Const.cs" />
+    <Compile Include="Sugar\LE.Basics.Optimizations.cs" />
     <Compile Include="Sugar\LE.Use.cs" />
     <Compile Include="Sugar\LE.Deconstruct.cs" />
     <Compile Include="Sugar\LE.Experimental.cs" />

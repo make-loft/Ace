@@ -1,37 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.TypeInfoAdapter;
+
 // ReSharper disable once CheckNamespace
 namespace Ace
 {
+	// performance optimized
+	// ReSharper disable StaticMemberInGenericType
+	public static class TypeOf<T>
+	{
+		public static readonly Type Info = typeof(T);
+		public static readonly string Name = Info.Name;
+		public static readonly string FullName = Info.FullName;
+		public static readonly Assembly Assembly = Info.Assembly;
+		public static readonly bool IsValueType = Info.IsValueType;
+	}
+	
 	// ReSharper disable once InconsistentNaming
 	/* LanguageExtensions */
 	public static partial class LE
 	{
+		/* a hack to define legacy runtimes todo with C# 7.3 */
+		private static readonly bool IsLegacyRuntime =
+			typeof(Environment).GetProperties()[0].Name != "CommandLine";
+
 		public static TX Put<T, TX>(this T o, TX x) => x;
 		public static TX Put<T, TX>(this T o, ref TX x) => x;
-		
-		public static object ChangeType(this object o, Type type) =>
-			o == null || type.IsValueType || o is IConvertible ? Convert.ChangeType(o, type, null) : o;
+
+		public static object ChangeType<T>(this object o) =>
+			o == null || TypeOf<T>.IsValueType || o is IConvertible ? Convert.ChangeType(o, typeof(T), null) : o;
 
 		public static T To<T>(this T o) => o;
 		public static T To<T>(this T o, out T x) => x = o;
-		public static T To<T>(this object o) => (T) ChangeType(o, typeof(T));
-		public static T To<T>(this object o, out T x) => x = (T) ChangeType(o, typeof(T));
+		public static T To<T>(this object o) => (T) o.ChangeType<T>();
+		public static T To<T>(this object o, out T x) => x = (T) o.ChangeType<T>();
 		public static T? To<T>(this object o, out T? x) where T : struct => x = (T?) o;
 
 		public static T As<T>(this T o) => o;
 		public static T As<T>(this T o, out T x) => x = o;
-		public static T As<T>(this object o, T fallbackValue = default(T)) => o is T ? (T) o : fallbackValue;
+		public static T As<T>(this object o, T fallbackValue = default(T)) => o.Is<T>() ? (T) o : fallbackValue;
 		public static T As<T>(this object o, out T x, T fallbackValue = default(T)) => x = o.As(fallbackValue);
 
-		public static bool Is<T>(this T o) => typeof(T).IsValueType || o != null; // o is T
+		public static bool Is<T>(this T o) => (IsLegacyRuntime && TypeOf<T>.IsValueType) || o != null;
 		public static bool Is<T>(this T o, out T x) => (x = o).Is();
 		public static bool Is<T>(this object o) => o is T; // o != null && typeof(T).IsAssignableFrom(o.GetType());	
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
 			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(b);
 
 		public static bool IsNull(this object o) => o is null;
-		public static bool IsNull<T>(this T o) => !typeof(T).IsValueType && o == null; /* is null */
+		public static bool IsNull<T>(this T o) => (IsLegacyRuntime && !TypeOf<T>.IsValueType) || o == null;
 		public static bool IsNull<T>(this T o, out T x) => (x = o).IsNull();
 		public static bool IsNull<T>(this object o, out T x, T fallbackValue = default(T)) =>
 			(x = o.IsNull().To(out var b) ? (T) o : fallbackValue).Put(b);
