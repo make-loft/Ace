@@ -63,6 +63,7 @@ namespace Ace.Markup
 			SmartObject = (Source ?? value) as SmartObject;
 			value = SmartObject?[Key, DefaultValue, Segregate];
 			if (Segregate) value = (value as Segregator)?.Value;
+			if (value == null && targetType.IsValueType) value = DefaultValue;
 			return Converter == null ? value : Converter.Convert(value, targetType, parameter, culture);
 		}
 
