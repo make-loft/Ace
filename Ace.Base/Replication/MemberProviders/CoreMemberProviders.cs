@@ -8,7 +8,7 @@ namespace Ace.Replication.MemberProviders
 {
 	public class CoreMemberProviderForKeyValuePair : MemberProvider
 	{
-		public override bool CanApply(Type type) => type == typeof(KeyValuePair<,>) || type == typeof(DictionaryEntry);
+		public override bool CanApply(Type type) => type.Is(TypeOf.KeyValuePair) || type.Is(TypeOf.DictionaryEntry);
 
 		protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
 			type.GetMembers().Where(m => m is PropertyInfo);
@@ -29,6 +29,6 @@ namespace Ace.Replication.MemberProviders
 		protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
 			type.EnumerateMembers(BindingFlags)
 				.Where(Filter)
-				.Where(m => !typeof(IEnumerable).IsAssignableFrom(type) && m.Name != "Item");
+				.Where(m => !TypeOf<IEnumerable>.IsAssignableFrom(type) && m.Name != "Item");
 	}
 }

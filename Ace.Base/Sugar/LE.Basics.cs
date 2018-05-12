@@ -19,7 +19,7 @@ namespace Ace
 		public static TX Put<T, TX>(this T o, ref TX x) => x;
 
 		public static object ChangeType<T>(this object o) =>
-			o == null || TypeOf<T>.IsValueType || o is IConvertible ? Convert.ChangeType(o, typeof(T), null) : o;
+			o == null || TypeOf<T>.IsValueType || o is IConvertible ? Convert.ChangeType(o, TypeOf<T>.Info, null) : o;
 
 		public static T To<T>(this T o) => o;
 		public static T To<T>(this T o, out T x) => x = o;

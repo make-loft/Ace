@@ -8,10 +8,10 @@ namespace Ace.Markup
 	public class TypeTypeConverter : TypeConverter
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) =>
-			sourceType == typeof(string);
+			TypeOf.String.Is(sourceType);
 
 		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) =>
-			destinationType == typeof(Type);
+			TypeOf.Type.Is(destinationType);
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
@@ -22,9 +22,8 @@ namespace Ace.Markup
 			foreach (var assembly in assemblies)
 			{
 				var types = assembly.GetTypes();
-				var type = types.FirstOrDefault(t =>
-					t.DeclaringType != null && t.DeclaringType.Name == typeName || t.Name == typeName);
-				if (type != null)
+				var type = types.FirstOrDefault(t => typeName.Is(t.DeclaringType?.Name) || typeName.Is(t.Name));
+				if (type.Is())
 					return type;
 			}
 

@@ -12,9 +12,9 @@ namespace Ace
 			Container.TryGetValue(type, out var item) ? item : Revive(type, constructorArgs);
 
 		public static TItem Get<TItem>(params object[] constructorArgs) where TItem : class =>
-			(TItem) Get(typeof(TItem), constructorArgs);
+			(TItem) Get(TypeOf<TItem>.Info, constructorArgs);
 
-		public static void Set<TItem>(TItem value) where TItem : class => Container[typeof(TItem)] = value;
+		public static void Set<TItem>(TItem value) where TItem : class => Container[TypeOf<TItem>.Info] = value;
 
 		public static void Snapshot() => Container.Values.ForEach(i => Memory.ActiveBox.Keep(i));
 		

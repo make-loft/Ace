@@ -39,10 +39,13 @@ namespace Ace.Replication
 			}
 		}
 
+		private static readonly string DictionaryTypeName = TypeOf.Dictionary.Name;
+		private static readonly Assembly DictionaryTypeAssembly = TypeOf.Dictionary.Assembly;
+		
 		public static bool IsGenericDictionaryWithKey<TKey>(this Type type) =>
-			type.Name == typeof(Dictionary<,>).Name &&
-			type.Assembly == typeof(Dictionary<,>).Assembly &&
-			type.GetGenericArguments()[0] == typeof(TKey);
+			type.Name.Is(DictionaryTypeName) &&
+			type.Assembly.Is(DictionaryTypeAssembly) &&
+			type.GetGenericArguments()[0].Is(TypeOf<TKey>.Info);
 
 		public static IEnumerable<MemberInfo> EnumerateMembers(this Type type, BindingFlags bindingFlags) =>
 			type.BaseType?.EnumerateMembers(bindingFlags)

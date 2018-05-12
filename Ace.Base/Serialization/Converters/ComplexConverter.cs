@@ -52,10 +52,10 @@ namespace Ace.Serialization.Converters
 					if (type == null) return null;
 					if (type.IsEnum) return Enum.Parse(type, value, true);
 
-					var parseMethodFormatted = type.GetMethod("Parse", new[] { typeof(string), typeof(IFormatProvider) });
+					var parseMethodFormatted = type.GetMethod("Parse", new[] { TypeOf.String, typeof(IFormatProvider) });
 					if (parseMethodFormatted != null) return parseMethodFormatted.Invoke(null, new object[] { value, ActiveCulture });
 
-					var parseMethod = type.GetMethod("Parse", new[] { typeof(string) });
+					var parseMethod = type.GetMethod("Parse", new[] { TypeOf.String });
 					return parseMethod?.Invoke(null, new object[] { value });
 			}
 		}

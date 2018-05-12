@@ -76,7 +76,7 @@ namespace Ace.Replication.Replicators
 				else
 				{
 					set.Clear();
-					var subtype = type.GetInterfaces().FirstOrDefault(i => i.Name == typeof(IList<>).Name)?
+					var subtype = type.GetInterfaces().FirstOrDefault(i => i.Name == TypeOf.IList.Name)?
 						.GetGenericArguments().FirstOrDefault();
 					items.ForEach(i => set.Add(replicationProfile.Replicate(i, idCache, subtype)));
 				}

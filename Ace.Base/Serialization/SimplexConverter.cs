@@ -41,7 +41,7 @@ namespace Ace.Serialization
 			
 			var type = value?.GetType();
 			if (type == null || type.IsPrimitive) return Simplex;
-			if (type == typeof(string)) return Simplex.Escape(keepProfile.EscapeProfile, 1);
+			if (type == TypeOf.String) return Simplex.Escape(keepProfile.EscapeProfile, 1);
 
 			if (!AppendTypeInfo) return Simplex.Escape(keepProfile.EscapeProfile, 1);
 			

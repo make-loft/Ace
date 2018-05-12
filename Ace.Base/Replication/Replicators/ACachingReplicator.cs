@@ -64,7 +64,7 @@ namespace Ace.Replication.Replicators
 			replicationProfile.SimplifySets && state is Set
 				? new Map
 				{
-					{replicationProfile.TypeKey, (baseType ?? typeof(object[])).AssemblyQualifiedName},
+					{replicationProfile.TypeKey, (baseType ?? TypeOf<object[]>.Info).AssemblyQualifiedName},
 					{replicationProfile.SetKey, state}
 				}
 				: replicationProfile.SimplifyMaps && state is Map &&
