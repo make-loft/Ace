@@ -83,22 +83,23 @@
     <Compile Include="Serialization\SimplexConverter.cs" />
     <Compile Include="Aides.cs" />
     <Compile Include="Sugar\Const.cs" />
+    <Compile Include="Sugar\LE.Basics.cs" />
     <Compile Include="Sugar\LE.Basics.Optimizations.cs" />
-    <Compile Include="Sugar\LE.Use.cs" />
+    <Compile Include="Sugar\LE.Check.cs" />
     <Compile Include="Sugar\LE.Deconstruct.cs" />
     <Compile Include="Sugar\LE.Experimental.cs" />
-    <Compile Include="Sugar\NE.cs" />
-    <Compile Include="Sugar\LE.Tuples.cs" />
-    <Compile Include="Sugar\New.Tuples.cs" />
-    <Compile Include="Sugar\LE.Basics.cs" />
-    <Compile Include="Sugar\System.Linq.cs" />
-    <Compile Include="Sugar\LE.Check.cs" />
     <Compile Include="Sugar\LE.Match.cs" />
     <Compile Include="Sugar\LE.Merge.cs" />
+    <Compile Include="Sugar\LE.Tuples.cs" />
+    <Compile Include="Sugar\LE.Use.cs" />
     <Compile Include="Sugar\LE.With.cs" />
+    <Compile Include="Sugar\NE.cs" />
     <Compile Include="Sugar\New.cs" />
+    <Compile Include="Sugar\New.Tuples.cs" />
     <Compile Include="Sugar\StringExtensions.cs" />
     <Compile Include="Sugar\Switch.cs" />
+    <Compile Include="Sugar\System.Linq.cs" />
+    <Compile Include="Sugar\TypeOf.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
