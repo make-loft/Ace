@@ -11,7 +11,7 @@ namespace Ace.Replication.MemberProviders
 		public override bool CanApply(Type type) => type.Is(TypeOf.KeyValuePair) || type.Is(TypeOf.DictionaryEntry);
 
 		protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
-			type.GetMembers().Where(m => m is PropertyInfo);
+			type.GetMembers().Where(m => m.Is<PropertyInfo>());
 	}
 
 	public class CoreMemberProvider : MemberProvider

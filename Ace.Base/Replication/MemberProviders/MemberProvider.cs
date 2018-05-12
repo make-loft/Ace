@@ -12,7 +12,7 @@ namespace Ace.Replication.MemberProviders
 		public virtual string GetCustomKey(MemberInfo member) => member.Name;
 
 		public string GetDataKey(MemberInfo member, Type activeType) =>
-			(member.DeclaringType != activeType ? member.DeclaringType?.Name + "." : null) + GetCustomKey(member);
+			(member.DeclaringType.IsNot(activeType) ? member.DeclaringType?.Name + "." : null) + GetCustomKey(member);
 
 		protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
 
