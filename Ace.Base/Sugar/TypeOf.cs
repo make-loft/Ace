@@ -8,7 +8,7 @@ namespace Ace
 {
 	// performance optimized
 	public static class TypeOf
-	{	
+	{
 		public static readonly Type Object = typeof(object);
 		public static readonly Type String = typeof(string);
 		public static readonly Type Type = typeof(Type);
@@ -18,10 +18,14 @@ namespace Ace
 		public static readonly Type IDictionary = typeof(IDictionary<,>);
 		public static readonly Type KeyValuePair = typeof(KeyValuePair<,>);
 		public static readonly Type DictionaryEntry = typeof(DictionaryEntry);
-		
+
 		public static readonly Assembly SystemAssembly = Object.Assembly;
-	}	
-	
+
+#if CoreCLR
+		static TypeOf() { } // see: https://github.com/dotnet/coreclr/issues/17981
+#endif
+	}
+
 	// ReSharper disable StaticMemberInGenericType
 	public static class TypeOf<T>
 	{
@@ -88,5 +92,9 @@ namespace Ace
 		public static bool IsVisible  { get; } = IsVisibleLazy.Value;
 
 		public static bool IsAssignableFrom(Type type) => Info.IsAssignableFrom(type);
+		
+#if CoreCLR
+		static TypeOf() { } // see: https://github.com/dotnet/coreclr/issues/17981
+#endif
 	}
 }

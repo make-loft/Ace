@@ -68,19 +68,20 @@ namespace Ace.Serialization
 			return builder;
 		}
 
+		private readonly StringBuilder _builder = new StringBuilder();
 		public string Convert(string value)
 		{
 			var useVerbatim = value.Contains("\\") || value.Contains("/");
 			var escapeChars = useVerbatim ? VerbatimEscapeChars : EscapeChars;
 			var escapeSequence = useVerbatim ? VerbatimEscapeSequence : EscapeSequence;
-			var builder = new StringBuilder();
-			if (useVerbatim) builder.Append(VerbatimPattern);
-			AppendWithEscape(builder, value, escapeChars, useVerbatim, escapeSequence);
-			return builder.ToString();
+			_builder.Clear();
+			if (useVerbatim) _builder.Append(VerbatimPattern);
+			AppendWithEscape(_builder, value, escapeChars, useVerbatim, escapeSequence);
+			return _builder.ToString();
 		}
 
 		public readonly List<char> NonSimplexChars =
-			new List<char> {'{', '}', '[', ']', ',', ';', ':'}; // and all whitespaces
+			New.List('{', '}', '[', ']', ',', ';', ':'); // and all whitespaces
 
 		public bool IsNonSimplex(char c) => char.IsWhiteSpace(c) || NonSimplexChars.Contains(c);
 
