@@ -19,6 +19,6 @@ namespace Ace
 
 		public static bool EqualsAsStrings(this object a, object b,
 			StringComparison comparison = StringComparison.CurrentCultureIgnoreCase) =>
-			ReferenceEquals(a, b) || string.Compare(a.ToStr(), b.ToStr(), comparison) == 0;
+			ReferenceEquals(a, b) || string.Compare(a.ToStr(), b.ToStr(), comparison).Is(0);
 	}
 }

@@ -16,12 +16,13 @@ namespace Ace.Replication.MemberProviders
 		protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type)
 		{
 			var members = base.GetDataMembersForCaching(type);
-			var hasContract = type.IsDefined(TypeOf<DataContractAttribute>.Info, true) ||
-							  type.IsDefined(TypeOf<CollectionDataContractAttribute>.Info, true);
+			var hasContract =
+				type.IsDefined(TypeOf<DataContractAttribute>.Info, true) ||
+				type.IsDefined(TypeOf<CollectionDataContractAttribute>.Info, true);
 			return hasContract
 				? members
 					.ToDictionary(i => i, i => i.GetCustomAttribute<DataMemberAttribute>())
-					.Where(p => p.Value != null)
+					.Where(p => p.Value.IsNot(null))
 					.OrderBy(p => p.Value.Order)
 					.Select(p => p.Key)
 				: members;

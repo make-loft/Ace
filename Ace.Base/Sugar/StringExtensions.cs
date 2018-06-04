@@ -30,5 +30,8 @@ namespace Ace
 			foreach (var value in values) builder.Append(value);
 			return builder;
 		}
+
+		public static char Pick(this string str, int index) => index < 0 ? str[str.Length + index] : str[index];
+		public static char PickByRing(this string str, int index) => str.Pick(index % str.Length);
 	}
 }

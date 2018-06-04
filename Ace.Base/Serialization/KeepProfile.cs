@@ -67,21 +67,17 @@ namespace Ace.Serialization
 		public string GetKeyHead(object key) => key is "" || !TrimKeys ? KeyHead : null;
 		public string GetKeyTail(object key) => key is "" || !TrimKeys ? KeyTail : null;
 
-		public string GetHead(object body) => body is Map m
-			? GetHead(m)
-			: body is Set s
-				? GetHead(s)
-				: body == null || body.GetType().IsPrimitive
-					? null
-					: "\"";
-		
-		public string GetTail(object body) => body is Map m
-			? GetTail(m)
-			: body is Set s
-				? GetTail(s)
-				: body == null || body.GetType().IsPrimitive
-					? null
-					: "\"";
+		public string GetHead(object body) =>
+			body is Map m ? GetHead(m) :
+			body is Set s ? GetHead(s) :
+			body is null || body.GetType().IsPrimitive ? null :
+			"\"";
+
+		public string GetTail(object body) =>
+			body is Map m ? GetTail(m) :
+			body is Set s ? GetTail(s) :
+			body is null || body.GetType().IsPrimitive ? null :
+			"\"";
 
 		public string GetHead(Map body) => MapBody.GetHead(body);
 		public string GetTail(Map body) => MapBody.GetTail(body);
@@ -91,11 +87,10 @@ namespace Ace.Serialization
 		public string MatchHead(string data, ref int offset)
 		{
 			MoveToItem(data, ref offset);
-			return MapBody.MatchHead(data, ref offset)
-				? Map
-				: SetBody.MatchHead(data, ref offset)
-					? Set
-					: null;
+			return
+				MapBody.MatchHead(data, ref offset) ? Map :
+				SetBody.MatchHead(data, ref offset) ? Set :
+				null;
 		}
 
 		public void SkipMapPairSplitter(string data, ref int offset)
@@ -133,18 +128,14 @@ namespace Ace.Serialization
 		public string MatchTail(string data, ref int offset)
 		{
 			SkipWhiteSpaceWithComments(data, ref offset);
-			return MapBody.MatchTail(data, ref offset)
-				? Map
-				: SetBody.MatchTail(data, ref offset)
-					? Set
-					: null;
+			return
+				MapBody.MatchTail(data, ref offset) ? Map :
+				SetBody.MatchTail(data, ref offset) ? Set :
+				null;
 		}
 
-		public bool MatchTail(string data, ref int offset, bool isMap)
-		{
-			SkipWhiteSpaceWithComments(data, ref offset);
-			return isMap ? MapBody.MatchTail(data, ref offset) : SetBody.MatchTail(data, ref offset);
-		}
+		public bool MatchTail(string data, ref int offset, bool isMap) =>
+			isMap ? MapBody.MatchTail(data, ref offset) : SetBody.MatchTail(data, ref offset);
 
 		public void SkipHeadIndent(string data, ref int offset)
 		{

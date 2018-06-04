@@ -34,7 +34,7 @@ namespace Ace.Replication
 
 		public override bool CanReplicate(object value, ReplicationProfile replicationProfile,
 			IDictionary<int, object> idCache, Type baseType = null) =>
-			ActiveType.Is(TypeOf.Object) || ActiveType.Is(baseType) || value is Map map &&
-			map.TryGetValue(replicationProfile.TypeKey, out var v) && v == ActiveType;
+			TypeOf.Object.Is(ActiveType) || baseType.Is(ActiveType) || value is Map map &&
+			map.TryGetValue(replicationProfile.TypeKey, out var v) && v.Is(ActiveType);
 	}
 }

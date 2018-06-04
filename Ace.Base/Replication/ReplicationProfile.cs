@@ -23,17 +23,18 @@ namespace Ace.Replication
 		
 		public IEqualityComparer<object> Comparer = ReferenceComparer<object>.Default;
 
-		public List<MemberProvider> MemberProviders = new List<MemberProvider>
-		{
+		public static readonly Adapters.BindingFlags DefaultFlags =
+			Adapters.BindingFlags.NonPublic | Adapters.BindingFlags.Public | Adapters.BindingFlags.Instance;
+		
+		public List<MemberProvider> MemberProviders = New.List<MemberProvider>
+		(
 			new CoreMemberProviderForKeyValuePair(),
 			//new CoreMemberProvider(BindingFlags.Public | BindingFlags.Instance, m => m.CanReadWrite() && !(m is EventInfo)),
-			new ContractMemberProvider(
-				Adapters.BindingFlags.NonPublic | Adapters.BindingFlags.Public | Adapters.BindingFlags.Instance,
-				Member.CanReadWrite),
-		};
+			new ContractMemberProvider(DefaultFlags, Member.CanReadWrite)
+		);
 
-		public List<Replicator> Replicators = new List<Replicator>
-		{
+		public List<Replicator> Replicators = New.List<Replicator>
+		(
 			new CoreReplicator(),
 			new CoreReplicator<Enum>(),
 			new CoreReplicator<Type>(),
@@ -44,10 +45,10 @@ namespace Ace.Replication
 			new StringBuilderReplicator(),
 			/* recomended position for cusom replicators */
 			new DeepReplicator()
-		};
+		);
 
 		public bool TryRestoreTypeInfoImplicitly = true;
-		public List<Converter> ImplicitConverters = new List<Converter> {new ComplexConverter()};
+		public readonly List<Converter> ImplicitConverters = New.List<Converter>(new ComplexConverter());
 		
 		public object Replicate(object graph, IDictionary<int, object> idCache = null, Type baseType = null)
 		{

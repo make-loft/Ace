@@ -6,7 +6,7 @@ namespace Ace.Replication.Replicators
 	public class CoreReplicator : Replicator
 	{
 		protected virtual bool CanApply(object value) =>
-			value == null || value is string || value.GetType().IsPrimitive;
+			value is null || value is string || value.GetType().IsPrimitive;
 
 		public override bool CanTranslate(object value, ReplicationProfile replicationProfile,
 			IDictionary<object, int> idCache, Type baseType = null) => CanApply(value);

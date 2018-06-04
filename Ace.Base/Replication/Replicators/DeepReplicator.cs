@@ -76,7 +76,7 @@ namespace Ace.Replication.Replicators
 				else
 				{
 					set.Clear();
-					var subtype = type.GetInterfaces().FirstOrDefault(i => i.Name == TypeOf.IList.Name)?
+					var subtype = type.GetInterfaces().FirstOrDefault(i => i.Name.Is(TypeOf.IList.Name))?
 						.GetGenericArguments().FirstOrDefault();
 					items.ForEach(i => set.Add(replicationProfile.Replicate(i, idCache, subtype)));
 				}
@@ -101,9 +101,9 @@ namespace Ace.Replication.Replicators
 				? Revert(replicationProfile, (string) value, targetType.Name)
 				: (targetType.IsPrimitive ? Convert.ChangeType(value, targetType, null) : value);
 
-		private static object Revert(ReplicationProfile replicationProfile, string s, string typeCode) =>
-			replicationProfile.ImplicitConverters.Select(c => c.Revert(s, typeCode))
-				.First(v => v != Converter.NotParsed);
+		private static object Revert(ReplicationProfile replicationProfile, string s, string typeKey) =>
+			replicationProfile.ImplicitConverters.Select(c => c.Revert(s, typeKey))
+				.First(v => v != Converter.Undefined);
 
 		public override object ActivateInstance(Map snapshot,
 			ReplicationProfile replicationProfile, IDictionary<int, object> idCache, Type baseType = null)

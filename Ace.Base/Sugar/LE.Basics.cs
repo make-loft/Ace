@@ -19,7 +19,7 @@ namespace Ace
 		public static TX Put<T, TX>(this T o, ref TX x) => x;
 
 		public static object ChangeType<T>(this object o) =>
-			o == null || TypeOf<T>.IsValueType || o is IConvertible ? Convert.ChangeType(o, TypeOf<T>.Info, null) : o;
+			o is null || TypeOf<T>.IsValueType || o is IConvertible ? Convert.ChangeType(o, TypeOf<T>.Info, null) : o;
 
 		public static T To<T>(this T o) => o;
 		public static T To<T>(this T o, out T x) => x = o;
@@ -38,7 +38,7 @@ namespace Ace
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
 			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(b);
 
-		public static bool IsNull(this object o) => o is null;
+		//public static bool IsNull(this object o) => o is null;
 		public static bool IsNull<T>(this T o) => (IsLegacyRuntime && !TypeOf<T>.IsValueType) && o == null;
 		public static bool IsNull<T>(this T o, out T x) => (x = o).IsNull();
 		public static bool IsNull<T>(this object o, out T x, T fallbackValue = default(T)) =>
@@ -62,5 +62,7 @@ namespace Ace
 		public static bool IsNot<T>(this T? o, T x) where T : struct => !o.Is(x);
 		public static bool IsNot<T>(this T o, T? x) where T : struct => !o.Is(x);
 		public static bool IsNull<T>(this T? o) where T : struct => !o.HasValue; /* is null */
+
+		public static bool Not<T>(this T o, Func<T, bool> predicate) => !predicate(o);
 	}
 }

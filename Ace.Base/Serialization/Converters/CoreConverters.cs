@@ -1,17 +1,16 @@
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Ace.Serialization.Converters
 {
 	public class NullConverter : Converter
 	{
 		public string NullLiteral = "null";
-		public string[] NullLiterals = {"null", "Null", "NULL", "nil", "Nil", "NIL"};
+		public readonly List<string> NullLiterals = New.List("null", "Null", "NULL", "nil", "Nil", "NIL");
 
-		public override string Convert(object value) =>
-			value == null ? NullLiteral : null;
+		public override string Convert(object value) => value is null ? NullLiteral : null;
 
-		public override object Revert(string value, string typeCode) =>
-			Equals(NullLiteral, value) || NullLiterals.Contains(value) ? null : NotParsed;
+		public override object Revert(string value, string typeKey) =>
+			value.Is(NullLiteral) || NullLiterals.Contains(value) ? null : Undefined;
 	}
 
 	public class BooleanConverter : Converter
@@ -20,19 +19,16 @@ namespace Ace.Serialization.Converters
 		public string FalseLiteral = "false";
 
 		public override string Convert(object value) =>
-			true.Equals(value)
-				? TrueLiteral
-				: false.Equals(value)
-					? FalseLiteral
-					: null;
+			value.Is(true) ? TrueLiteral :
+			value.Is(false) ? FalseLiteral :
+			null;
 
-		public override object Revert(string value, string typeCode) =>
-			bool.TryParse(value, out var b) ? b : NotParsed;
+		public override object Revert(string value, string typeKey) => bool.TryParse(value, out var b) ? b : Undefined;
 	}
 
 	public class StringConverter : Converter
 	{
-		public override string Convert(object value) => value is string s ? s : null;
-		public override object Revert(string value, string typeCode) => typeCode == null ? value : NotParsed;
+		public override string Convert(object value) => value as string;
+		public override object Revert(string value, string typeKey) => typeKey is null ? value : Undefined;
 	}
 }

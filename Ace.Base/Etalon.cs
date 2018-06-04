@@ -15,7 +15,7 @@ namespace Ace
 
 		private static string Print(object item) =>
 			item is Map || item is Set ? "<instance>"
-			: item == null ? "<null>" : "{" + item + "}";
+			: item is null ? "<null>" : "{" + item + "}";
 	}
 
 	public static class Etalon

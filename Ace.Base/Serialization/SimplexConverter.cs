@@ -9,21 +9,22 @@ namespace Ace.Serialization
 	public class SimplexConverter
 	{
 		public bool AppendTypeInfo = true;
-		public List<Converter> Converters = new List<Converter>
-		{
+
+		public List<Converter> Converters = New.List<Converter>
+		(
 			new NullConverter(),
 			new BooleanConverter(),
-			new NumberConverter(),
+			new NumericConverter(),
 			new StringConverter(),
-			new DateTimeIsoFastConverter(),
-			new ComplexConverter(),
-		};
+			new IsoDateTimeConverter(),
+			new ComplexConverter()
+		);
 		
 		public static Assembly SystemAssembly = TypeOf<object>.Assembly;
 		public static Assembly ExtendedAssembly = TypeOf<Uri>.Assembly;
 
 		public virtual string GetTypeName(Type type) =>
-			type.Assembly == SystemAssembly || type.Assembly == ExtendedAssembly
+			type.Assembly.Is(SystemAssembly) || type.Assembly.Is(ExtendedAssembly)
 				? type.Name
 				: type.AssemblyQualifiedName;
 		
@@ -57,7 +58,7 @@ namespace Ace.Serialization
 			var convertedValue = simplex.Count == 1 ? simplex[0] : simplex[1];
 			var typeCode = simplex.Count == 6 ? simplex[4] : null;
 			return Converters.Select(c => c.Revert(convertedValue, typeCode))
-					   .First(v => v != Converter.NotParsed);
+					   .First(v => v != Converter.Undefined);
 		}
 	}
 }

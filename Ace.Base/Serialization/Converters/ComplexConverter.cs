@@ -10,54 +10,38 @@ namespace Ace.Serialization.Converters
 		public string TimeSpanFormat = "G";
 		public string GuidFormat = "D";
 
-		public override string Convert(object value)
+		public override string Convert(object value) => value.Match
+		(
+			(Type t) => t.AssemblyQualifiedName,
+			(Guid g) => g.ToString(GuidFormat),
+			(TimeSpan ts) => ts.ToString(TimeSpanFormat, ActiveCulture),
+			(DateTime dt) => dt.ToString(DateTimeFormat, ActiveCulture),
+			(DateTimeOffset dto) => dto.ToString(DateTimeOffsetFormat, ActiveCulture),
+			(object o) => o.ToString(), // Uri, Enum, etc...
+			() => null
+		);
+
+		public override object Revert(string value, string typeKey) =>
+			typeKey.Is("Uri") ? new Uri(value) :
+			typeKey.Is("Guid") ? Guid.Parse(value) :
+			typeKey.Is("DateTime") ? DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)) :
+			typeKey.Is("DateTimeOffset") ? DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)) :
+			TryParse(value, typeKey);
+
+		private DateTimeStyles GetDateTimeStyle(string value) =>
+			value.EndsWith("Z") ? DateTimeStyles.AdjustToUniversal : DateTimeStyles.None;
+
+		private object TryParse(string value, string typeKey)
 		{
-			switch (value)
-			{
-				case Enum e:
-					return e.ToString();
-				case Type t:
-					return t.AssemblyQualifiedName;
-				case Uri u:
-					return u.ToString();
-				case Guid d:
-					return d.ToString(GuidFormat);
-				case DateTime d:
-					return d.ToString(DateTimeFormat, ActiveCulture);
-				case DateTimeOffset d:
-					return d.ToString(DateTimeOffsetFormat, ActiveCulture);
-				case TimeSpan d:
-					return d.ToString(TimeSpanFormat, ActiveCulture);
-				default:
-					return null;
-			}
-		}
+			var type = Type.GetType(typeKey) ?? Type.GetType("System." + typeKey);
+			if (type is null) return null;
+			if (type.IsEnum) return Enum.Parse(type, value, true);
 
-		public override object Revert(string value, string typeCode)
-		{
-			switch (typeCode)
-			{
-				case "Uri":
-					return new Uri(value);
-				case "DateTime":
-					return value.EndsWith("Z")
-						? DateTime.Parse(value, ActiveCulture, DateTimeStyles.AdjustToUniversal)
-						: DateTime.Parse(value, ActiveCulture);
-				case "DateTimeOffset":
-					return value.EndsWith("Z")
-						? DateTimeOffset.Parse(value, ActiveCulture, DateTimeStyles.AdjustToUniversal)
-						: DateTimeOffset.Parse(value, ActiveCulture);
-				default:
-					var type = Type.GetType(typeCode) ?? Type.GetType("System." + typeCode);
-					if (type == null) return null;
-					if (type.IsEnum) return Enum.Parse(type, value, true);
+			var parseMethodFormatted = type.GetMethod("Parse", new[] {TypeOf.String, typeof(IFormatProvider)});
+			if (parseMethodFormatted != null) return parseMethodFormatted.Invoke(null, new object[] {value, ActiveCulture});
 
-					var parseMethodFormatted = type.GetMethod("Parse", new[] { TypeOf.String, typeof(IFormatProvider) });
-					if (parseMethodFormatted != null) return parseMethodFormatted.Invoke(null, new object[] { value, ActiveCulture });
-
-					var parseMethod = type.GetMethod("Parse", new[] { TypeOf.String });
-					return parseMethod?.Invoke(null, new object[] { value });
-			}
+			var parseMethod = type.GetMethod("Parse", new[] {TypeOf.String});
+			return parseMethod?.Invoke(null, new object[] {value});
 		}
 	}
 }
