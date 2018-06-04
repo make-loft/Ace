@@ -27,8 +27,8 @@ namespace Ace
 		}
 
 		protected static bool HasDataContract(Type type) =>
-			Attribute.IsDefined(type, TypeOf<DataContractAttribute>.Info) ||
-			Attribute.IsDefined(type, TypeOf<CollectionDataContractAttribute>.Info);
+			Attribute.IsDefined(type, TypeOf<DataContractAttribute>.Raw) ||
+			Attribute.IsDefined(type, TypeOf<CollectionDataContractAttribute>.Raw);
 
 		public object Revive(string key, Type type, params object[] constructorArgs) =>
 			(HasDataContract(type) && Storage.HasKey(MakeStorageKey(key, type)) ? Decode(key, type) : null)
@@ -78,8 +78,8 @@ namespace Ace
 		public event ActivationQueryHandler ActivationRequired;
 		public event DecodeFailedHandler DecodeFailed;
 		public event EncodeFailedHandler EncodeFailed;
-		public bool Check<TValue>(string key = null) => Storage.HasKey(MakeStorageKey(key, TypeOf<TValue>.Info));
-		public void Destroy<TValue>(string key = null) => Storage.DeleteKey(MakeStorageKey(key, TypeOf<TValue>.Info));
+		public bool Check<TValue>(string key = null) => Storage.HasKey(MakeStorageKey(key, TypeOf<TValue>.Raw));
+		public void Destroy<TValue>(string key = null) => Storage.DeleteKey(MakeStorageKey(key, TypeOf<TValue>.Raw));
 		private string MakeStorageKey(string key, Type type) => string.Format(KeyFormat ?? "{0}", key ?? type.Name);
 	}
 }

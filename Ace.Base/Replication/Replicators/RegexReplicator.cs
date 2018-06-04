@@ -24,7 +24,7 @@ namespace Ace.Replication.Replicators
 			value is RegexOptions regexOptions
 				? regexOptions
 				: replicationProfile.TryRestoreTypeInfoImplicitly
-					? (RegexOptions) Enum.Parse(TypeOf<RegexOptions>.Info, value.ToString(), true)
+					? (RegexOptions) Enum.Parse(TypeOf<RegexOptions>.Raw, value.ToString(), true)
 					: throw new Exception("Can not restore type info for value " + value);
 	}
 }

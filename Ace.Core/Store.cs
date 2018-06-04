@@ -14,9 +14,9 @@ namespace Ace
 			: Lock.Invoke(() => Container.TryGetValue(type, out item) ? item : Revive(type, cctorArgs));
 
 		public static TItem Get<TItem>(params object[] cctorArgs) where TItem : class =>
-			(TItem) Get(TypeOf<TItem>.Info, cctorArgs);
+			(TItem) Get(TypeOf<TItem>.Raw, cctorArgs);
 
-		public static void Set<TItem>(TItem value) where TItem : class => Container[TypeOf<TItem>.Info] = value;
+		public static void Set<TItem>(TItem value) where TItem : class => Container[TypeOf<TItem>.Raw] = value;
 
 		public static void Snapshot() => Container.Values.ForEach(i => Memory.ActiveBox.Keep(i));
 
@@ -33,7 +33,7 @@ namespace Ace
 		public static TItem Set(TItem item) => _item = item;
 
 		public static TItem Get(params object[] cctorArgs) =>
-			_item ?? Lock.Invoke(() => _item ?? Store.Revive(TypeOf<TItem>.Info, cctorArgs).To(out _item));
+			_item ?? Lock.Invoke(() => _item ?? Store.Revive(TypeOf<TItem>.Raw, cctorArgs).To(out _item));
 
 	}
 }

@@ -27,14 +27,14 @@ namespace Ace.Replication
 
 	public class Replicator<TValue> : Replicator
 	{
-		public readonly Type ActiveType = TypeOf<TValue>.Info;
+		public readonly Type ActiveType = TypeOf<TValue>.Raw;
 
 		public override bool CanTranslate(object value, ReplicationProfile replicationProfile,
 			IDictionary<object, int> idCache, Type baseType = null) => value is TValue;
 
 		public override bool CanReplicate(object value, ReplicationProfile replicationProfile,
 			IDictionary<int, object> idCache, Type baseType = null) =>
-			TypeOf.Object.Is(ActiveType) || baseType.Is(ActiveType) || value is Map map &&
+			TypeOf.Object.Raw.Is(ActiveType) || baseType.Is(ActiveType) || value is Map map &&
 			map.TryGetValue(replicationProfile.TypeKey, out var v) && v.Is(ActiveType);
 	}
 }

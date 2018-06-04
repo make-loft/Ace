@@ -9,7 +9,7 @@ namespace Ace
 {
 	public static class Cloning
 	{
-		public static readonly List<Type> LikeImmutableTypes = new List<Type> {TypeOf<Regex>.Info};
+		public static readonly List<Type> LikeImmutableTypes = new List<Type> {TypeOf<Regex>.Raw};
 
 		private static readonly MethodInfo MemberwiseCloneMethod =
 			typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -27,7 +27,7 @@ namespace Ace
 			type.GetFields(bindingFlags);
 
 		private static bool IsLikeImmutable(this Type type, Type[] likeImmutableTypes) =>
-			type.IsValueType || type.Is(TypeOf.String) || likeImmutableTypes.Contains(type);
+			type.IsValueType || type.Is(TypeOf.String.Raw) || likeImmutableTypes.Contains(type);
 
 		private static object GetDeepClone(object origin, Type type,
 			IDictionary<object, object> originToClone, Type[] likeImmutableTypes) =>

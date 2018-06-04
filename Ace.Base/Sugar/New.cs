@@ -9,7 +9,7 @@ namespace Ace
 		public static T Object<T>() where T : new() => new T();
 
 		public static T Object<T>(params object[] constructorArgs) =>
-			(T) Activator.CreateInstance(TypeOf<T>.Info, constructorArgs);
+			(T) Activator.CreateInstance(TypeOf<T>.Raw, constructorArgs);
 
 		public static object Object(Type type, params object[] constructorArgs) =>
 			Activator.CreateInstance(type, constructorArgs);

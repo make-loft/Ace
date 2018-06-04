@@ -45,7 +45,7 @@ namespace Ace.Replication
 		public static bool IsGenericDictionaryWithKey<TKey>(this Type type) =>
 			type.Name.Is(DictionaryTypeName) &&
 			type.Assembly.Is(DictionaryTypeAssembly) &&
-			type.GetGenericArguments()[0].Is(TypeOf<TKey>.Info);
+			type.GetGenericArguments()[0].Is(TypeOf<TKey>.Raw);
 
 		public static IEnumerable<MemberInfo> EnumerateMembers(this Type type, BindingFlags bindingFlags) =>
 			type.BaseType?.EnumerateMembers(bindingFlags)

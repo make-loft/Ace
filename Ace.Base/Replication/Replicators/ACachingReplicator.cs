@@ -59,7 +59,7 @@ namespace Ace.Replication.Replicators
 		protected Map CompleteMapIfRequried(object state, ReplicationProfile replicationProfile, Type baseType) =>
 			replicationProfile.SimplifySets && state is Set ? new Map
 			{
-				{replicationProfile.TypeKey, (baseType ?? TypeOf<object[]>.Info).AssemblyQualifiedName},
+				{replicationProfile.TypeKey, (baseType ?? TypeOf<object[]>.Raw).AssemblyQualifiedName},
 				{replicationProfile.SetKey, state}
 			} :
 			replicationProfile.SimplifyMaps && state is Map && baseType != null &&

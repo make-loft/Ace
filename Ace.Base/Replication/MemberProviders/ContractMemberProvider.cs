@@ -17,8 +17,8 @@ namespace Ace.Replication.MemberProviders
 		{
 			var members = base.GetDataMembersForCaching(type);
 			var hasContract =
-				type.IsDefined(TypeOf<DataContractAttribute>.Info, true) ||
-				type.IsDefined(TypeOf<CollectionDataContractAttribute>.Info, true);
+				type.IsDefined(TypeOf<DataContractAttribute>.Raw, true) ||
+				type.IsDefined(TypeOf<CollectionDataContractAttribute>.Raw, true);
 			return hasContract
 				? members
 					.ToDictionary(i => i, i => i.GetCustomAttribute<DataMemberAttribute>())

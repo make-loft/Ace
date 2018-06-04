@@ -62,7 +62,7 @@ namespace Ace.Replication
 		public object ReplicateGraph(Type baseType) => ActiveReplicationProfile.Replicate(MasterState, null, baseType);
 
 		public TRoot ReplicateGraph<TRoot>() =>
-			(TRoot) ActiveReplicationProfile.Replicate(MasterState, null, TypeOf<TRoot>.Info);
+			(TRoot) ActiveReplicationProfile.Replicate(MasterState, null, TypeOf<TRoot>.Raw);
 
 		public object ReconstructGraph(IDictionary<object, int> cache) =>
 			ActiveReplicationProfile.Replicate(MasterState, cache?.ToMirrorDictionary());

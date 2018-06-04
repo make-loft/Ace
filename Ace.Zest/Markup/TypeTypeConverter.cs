@@ -8,10 +8,10 @@ namespace Ace.Markup
 	public class TypeTypeConverter : TypeConverter
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) =>
-			TypeOf.String.Is(sourceType);
+			TypeOf.String.Raw.Is(sourceType);
 
 		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) =>
-			TypeOf.Type.Is(destinationType);
+			TypeOf.Type.Raw.Is(destinationType);
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
