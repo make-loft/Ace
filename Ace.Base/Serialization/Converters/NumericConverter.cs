@@ -10,20 +10,20 @@ namespace Ace.Serialization.Converters
 		public string RealNumbersFormat = "G";
 		public bool AppendSyffixes = true;
 
-		public Dictionary<Type, string> TypeToSyffix = new Dictionary<Type, string>
-		{
-			{typeof(byte), "B"},
-			{typeof(char), "C"},
-			{typeof(int), null}, /* "I" */
-			{typeof(uint), "U"},
-			{typeof(long), "L"},
-			{typeof(ulong), "UL"},
-			{typeof(float), "F"},
-			{typeof(double), null}, /* "D" */
-			{typeof(decimal), "M"},
-			{typeof(IntPtr), "P"},
-			{typeof(UIntPtr), "UP"}
-		};
+		public readonly Dictionary<Type, string> TypeToSyffix = New.Dictionary
+		(
+			typeof(byte).Of("B"),
+			typeof(char).Of("C"),
+			typeof(int).Of(""), /* "I" */
+			typeof(uint).Of("U"),
+			typeof(long).Of("L"),
+			typeof(ulong).Of("UL"),
+			typeof(float).Of("F"),
+			typeof(double).Of(""), /* "D" */
+			typeof(decimal).Of("M"),
+			typeof(IntPtr).Of("P"),
+			typeof(UIntPtr).Of("UP")
+		);
 
 		public override string Convert(object value)
 		{
@@ -34,7 +34,7 @@ namespace Ace.Serialization.Converters
 			    && convertedValue.IndexOf(decimalSeparator, StringComparison.OrdinalIgnoreCase) < 0)
 				convertedValue += decimalSeparator + "0";
 			var suffix = AppendSyffixes && TypeToSyffix.TryGetValue(value.GetType(), out var s) ? s : null;
-			return suffix == null ? convertedValue : convertedValue + suffix;
+			return suffix.IsNullOrEmpty() ? convertedValue : convertedValue + suffix;
 		}
 
 		protected string ToStringConvert(object value) =>

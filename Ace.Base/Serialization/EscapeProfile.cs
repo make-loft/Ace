@@ -12,37 +12,36 @@ namespace Ace.Serialization
 		public char VerbatimEscapeSequence = '\"';
 
 		public string VerbatimPattern = "@";
-		public List<string> HeadPatterns = new List<string> {"\"", "<", "'"};
-		public List<string> TailPatterns = new List<string> {"\"", ">", "'"};
+		public List<string> HeadPatterns = New.List("\"", "<", "'");
+		public List<string> TailPatterns = New.List("\"", ">", "'");
 
-		public Dictionary<char, string> VerbatimEscapeChars = new Dictionary<char, string> {{'\"', "\""}};
+		public readonly Dictionary<char, string> VerbatimEscapeChars = New.Dictionary('\"'.Of("\""));
 
-		public Dictionary<char, string> EscapeChars = new Dictionary<char, string>
-		{
-			{'\"', "\""},
-			{'\\', "\\"},
-			{'/', "/"},
-			{'\b', "b"},
-			{'\f', "f"},
-			{'\n', "n"},
-			{'\r', "r"},
-			{'\t', "t"},
-		};
+		public readonly Dictionary<char, string> EscapeChars = New.Dictionary
+		(
+			'\"'.Of("\""),
+			'\\'.Of("\\"),
+			'/'.Of("/"),
+			'\b'.Of("b"),
+			'\f'.Of("f"),
+			'\n'.Of("n"),
+			'\r'.Of("r"),
+			'\t'.Of("t")
+		);
 
-		public Dictionary<char, char> VerbatimUnescapeChars = new Dictionary<char, char> {{'"', '\"'}};
+		public readonly Dictionary<char, char> VerbatimUnescapeChars = New.Dictionary('"'.Of('\"'));
 
-		public Dictionary<char, char> UnescapeChars = new Dictionary<char, char>
-		{
-			{'"', '\"'},
-			{'\\', '\\'},
-			{'/', '/'},
-			{'b', '\b'},
-			{'f', '\f'},
-			{'n', '\n'},
-			{'r', '\r'},
-			{'t', '\t'},
-		};
-
+		public readonly Dictionary<char, char> UnescapeChars = New.Dictionary
+		(
+			'"'.Of('\"'),
+			'\\'.Of('\\'),
+			'/'.Of('/'),
+			'b'.Of('\b'),
+			'f'.Of('\f'),
+			'n'.Of('\n'),
+			'r'.Of('\r'),
+			't'.Of('\t')
+		);
 
 		public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
 			bool verbatim, char escapeSequence, bool asciMode = false)

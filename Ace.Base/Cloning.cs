@@ -9,7 +9,7 @@ namespace Ace
 {
 	public static class Cloning
 	{
-		public static readonly List<Type> LikeImmutableTypes = new List<Type> {TypeOf<Regex>.Raw};
+		public static readonly List<Type> LikeImmutableTypes = New.List(TypeOf<Regex>.Raw);
 
 		private static readonly MethodInfo MemberwiseCloneMethod =
 			typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);

@@ -11,7 +11,7 @@ namespace Ace.Base.Sandbox.Sugar
             p.LastName = "Xyz",
             p.Age = 18
         );
-        
+
         public static Point GetPoint() => new Point().To(out var p).With
         (
             p.X = 12,
@@ -22,12 +22,12 @@ namespace Ace.Base.Sandbox.Sugar
         {
             Test(GetPerson);
             Test(() => null);
-            
+
             Test(GetPerson());
             Test(GetPoint());
             TestWith();
         }
-        
+
         public static void TestWith()
         {
             3D.To(out var w);
@@ -48,11 +48,11 @@ namespace Ace.Base.Sandbox.Sugar
             {
                 Assert.AreEqual("Xyz", lastName);
 
-                if (
-                    p.Check(
-                        p.FirstName.To(out var name).Is("a"),
-                        p.Age.To(out var age) > 5
-                    ).Any(true))
+                if (p.Check
+                (
+                    p.FirstName.To(out var name).Is("a"),
+                    p.Age.To(out var age) > 5
+                ).Any(true))
                 {
                     Assert.IsTrue(name.IsNot("a"));
                     Assert.IsTrue(age > 5);
@@ -69,22 +69,22 @@ namespace Ace.Base.Sandbox.Sugar
             switch (o)
             {
                 case Person p when p.Check(
-                    p.FirstName.Is("Abc"),
-                    p.LastName.Is("Xyz"),
-                    p.Age > 5)
+                        p.FirstName.Is("Abc"),
+                        p.LastName.Is("Xyz"),
+                        p.Age > 5)
                     .All(true):
-                        
+
                     Assert.IsTrue(p.FirstName == "Abc" || p.LastName == "Xyz" || p.Age > 5);
                     break;
-                    
+
                 case Point p when p.Check(
-                    p.X > 9 && p.X < 16,
-                    p.Y < 28)
+                        p.X > 9 && p.X < 16,
+                        p.Y < 28)
                     .All(true):
-                    
+
                     Assert.IsTrue(p.X > 9 && p.X < 16 && p.Y < 28);
                     break;
-                
+
                 default:
                     throw new Exception();
             }

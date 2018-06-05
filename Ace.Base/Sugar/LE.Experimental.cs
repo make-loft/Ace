@@ -14,7 +14,7 @@ namespace Ace
 
 		public static Switch<T> ToSwitch<T>(this T value, params object[] pattern) => new Switch<T>(value, pattern);
 
-		public static KeyValuePair<TK, TV> To<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
+		public static KeyValuePair<TK, TV> Of<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
 		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new KeyValuePair<TK, TV>(key, value);
 
 		public static bool EqualsAsStrings(this object a, object b,

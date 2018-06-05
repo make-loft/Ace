@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
+// ReSharper disable once CheckNamespace
 namespace Ace
 {
 	public class TypeData
@@ -50,10 +51,5 @@ namespace Ace
 		public bool IsSpecialName => GetValue(22, () => Raw.IsSpecialName);
 		public bool IsValueType => GetValue(23, () => Raw.IsValueType);
 		public bool IsVisible => GetValue(24, () => Raw.IsVisible);
-
-		public bool IsAssignableFrom(Type type) => Raw.IsAssignableFrom(type);
-		public bool IsSubclassOf(Type type) => Raw.IsSubclassOf(type);
-		public bool IsDefined(Type attributeType, bool inherit) => Raw.IsDefined(attributeType, inherit);
-		public bool IsInstanceOfType(object o) => Raw.IsInstanceOfType(o);
 	}
 }

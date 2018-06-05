@@ -24,6 +24,7 @@ namespace Ace.Serialization.Converters
 		public override object Revert(string value, string typeKey) =>
 			typeKey.Is("Uri") ? new Uri(value) :
 			typeKey.Is("Guid") ? Guid.Parse(value) :
+			typeKey.Is("TimeSpan") ? TimeSpan.Parse(value, ActiveCulture) :
 			typeKey.Is("DateTime") ? DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)) :
 			typeKey.Is("DateTimeOffset") ? DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)) :
 			TryParse(value, typeKey);
@@ -37,8 +38,8 @@ namespace Ace.Serialization.Converters
 			if (type is null) return null;
 			if (type.IsEnum) return Enum.Parse(type, value, true);
 
-			var parseMethodFormatted = type.GetMethod("Parse", new[] {TypeOf.String.Raw, typeof(IFormatProvider)});
-			if (parseMethodFormatted != null) return parseMethodFormatted.Invoke(null, new object[] {value, ActiveCulture});
+			var parseWithFormatMethod = type.GetMethod("Parse", new[] {TypeOf.String.Raw, typeof(IFormatProvider)});
+			if (parseWithFormatMethod != null) return parseWithFormatMethod.Invoke(null, new object[] {value, ActiveCulture});
 
 			var parseMethod = type.GetMethod("Parse", new[] {TypeOf.String.Raw});
 			return parseMethod?.Invoke(null, new object[] {value});

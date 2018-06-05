@@ -46,17 +46,17 @@ namespace Ace.Serialization.Escapers
 
 	public static class Escaper
 	{
-		public static Dictionary<string, string> EscapeRules = new Dictionary<string, string>
-		{
-			{"/", "/"},
-			{"\"", "\""},
-			{"\\", "\\"},
-			{"\b", "b"},
-			{"\f", "f"},
-			{"\n", "n"},
-			{"\r", "r"},
-			{"\t", "t"},
-		};
+		public static Dictionary<string, string> EscapeRules = New.Dictionary
+		(
+			"/".Of("/"),
+			"\"".Of("\""),
+			"\\".Of("\\"),
+			"\b".Of("b"),
+			"\f".Of("f"),
+			"\n".Of("n"),
+			"\r".Of("r"),
+			"\t".Of("t")
+		);
 		
 		public static StringBuilder Escape(this StringBuilder builder, string matrix,
 			IEnumerable<Marker.Hit> hits, Dictionary<string, string> rules, string escapeMarker, int offset = 0)
