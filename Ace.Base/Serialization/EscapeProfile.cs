@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Ace.Replication.Models;
 
 namespace Ace.Serialization
 {
@@ -84,9 +85,8 @@ namespace Ace.Serialization
 
 		public bool IsNonSimplex(char c) => char.IsWhiteSpace(c) || NonSimplexChars.Contains(c);
 
-		public Simplex CaptureSimplex(string data, ref int offset)
+		public Simplex CaptureSimplex(Simplex simplex, string data, ref int offset)
 		{
-			var simplex = new Simplex();
 			var builder = new StringBuilder();
 
 			for (; offset < data.Length;)

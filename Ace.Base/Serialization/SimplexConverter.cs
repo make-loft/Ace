@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Ace.Replication.Models;
 using Ace.Serialization.Converters;
 
 namespace Ace.Serialization
@@ -54,11 +55,11 @@ namespace Ace.Serialization
 
 		public object Revert(Simplex simplex)
 		{
-			if (simplex.Count == 3) return simplex[1]; /* optimization for strings */
-			var convertedValue = simplex.Count == 1 ? simplex[0] : simplex[1];
-			var typeCode = simplex.Count == 6 ? simplex[4] : null;
-			return Converters.Select(c => c.Revert(convertedValue, typeCode))
-					   .First(v => v != Converter.Undefined);
+			var segments = simplex;
+			if (segments.Count == 3) return segments[1]; /* optimization for strings */
+			var convertedValue = segments.Count == 1 ? segments[0] : segments[1];
+			var typeCode = segments.Count == 6 ? segments[4] : null;
+			return Converters.Select(c => c.Revert(convertedValue, typeCode)).First(v => v != Converter.Undefined);
 		}
 	}
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
-using System.Text;
-using Ace.Replication;
+using Ace.Replication.Models;
 
 namespace Ace.Serialization
 {
@@ -10,8 +8,8 @@ namespace Ace.Serialization
 	{
 		string GetHead(TIn body);
 		string GetTail(TIn body);
-		TOut MatchHead(string data, ref int offset);
-		TOut MatchTail(string data, ref int offset);
+		TOut CreateSingleModel(string data, ref int offset);
+		bool TryFindTail(string data, ref int offset);
 	}
 
 	public class BodyProfile<T> : IBodyProfile<T, bool>
@@ -21,8 +19,8 @@ namespace Ace.Serialization
 
 		public string GetTail(T body) => Tail;
 		public string GetHead(T body) => Head;
-		public bool MatchHead(string data, ref int offset) => Match(data, ref offset, Head);
-		public bool MatchTail(string data, ref int offset) => Match(data, ref offset, Tail);
+		public bool CreateSingleModel(string data, ref int offset) => Match(data, ref offset, Head);
+		public bool TryFindTail(string data, ref int offset) => Match(data, ref offset, Tail);
 
 		public bool Match(string data, ref int offset, string pattern)
 		{
@@ -32,21 +30,12 @@ namespace Ace.Serialization
 		}
 	}
 
-	public class KeepProfile : IBodyProfile<Map, string>, IBodyProfile<Set, string>
+	public class KeepProfile
 	{
-		public StringBuilder WriteKey(StringBuilder builder, string key, int indentLevel) => builder
-			.Append(GetKeyHead(key))
-			.Append(key)
-			.Append(GetKeyTail(key))
-			.Append(MapPairSplitter);
-
 		public string GetHead(Type type) => "<";
 		public string GetTail(Type type) => ">";
 
 		public static KeepProfile GetFormatted() => new KeepProfile();
-
-		public const string Map = "Map";
-		public const string Set = "Set";
 
 		public EscapeProfile EscapeProfile = new EscapeProfile();
 		public SimplexConverter SimplexConverter = new SimplexConverter();
@@ -84,13 +73,13 @@ namespace Ace.Serialization
 		public string GetHead(Set body) => SetBody.GetHead(body);
 		public string GetTail(Set body) => SetBody.GetTail(body);
 
-		public string MatchHead(string data, ref int offset)
+		public IModel CreateSingleModel(string data, ref int offset)
 		{
 			MoveToItem(data, ref offset);
 			return
-				MapBody.MatchHead(data, ref offset) ? Map :
-				SetBody.MatchHead(data, ref offset) ? Set :
-				null;
+				MapBody.CreateSingleModel(data, ref offset) ? new Map() :
+				SetBody.CreateSingleModel(data, ref offset) ? new Set() :
+				(IModel) new Simplex();
 		}
 
 		public void SkipMapPairSplitter(string data, ref int offset)
@@ -101,14 +90,14 @@ namespace Ace.Serialization
 
 		public string CaptureKey(string data, ref int offset)
 		{
-			var simplex = CaptureSimplex(data, ref offset);
-			return simplex.Count > 1 ? simplex[1] : simplex[0];
+			var segments = CaptureSimplex(new Simplex(), data, ref offset);
+			return segments.Count > 1 ? segments[1] : segments[0];
 		}
 		
-		public Simplex CaptureSimplex(string data, ref int offset)
+		public Simplex CaptureSimplex(Simplex simplex, string data, ref int offset)
 		{
 			MoveToSimplex(data, ref offset);
-			return EscapeProfile.CaptureSimplex(data, ref offset);
+			return EscapeProfile.CaptureSimplex(simplex, data, ref offset);
 		}
 
 		public void MoveToSimplex(string data, ref int offset)
@@ -124,18 +113,6 @@ namespace Ace.Serialization
 		}
 
 		public bool IsItem(char c) => !EscapeProfile.IsNonSimplex(c) || c == '{' || c == '[';
-
-		public string MatchTail(string data, ref int offset)
-		{
-			SkipWhiteSpaceWithComments(data, ref offset);
-			return
-				MapBody.MatchTail(data, ref offset) ? Map :
-				SetBody.MatchTail(data, ref offset) ? Set :
-				null;
-		}
-
-		public bool MatchTail(string data, ref int offset, bool isMap) =>
-			isMap ? MapBody.MatchTail(data, ref offset) : SetBody.MatchTail(data, ref offset);
 
 		public void SkipHeadIndent(string data, ref int offset)
 		{

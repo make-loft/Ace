@@ -20,7 +20,7 @@ namespace Ace.Serialization.Escapers
 				Offset = offset;
 			}
 		}
-		
+
 		public static List<Hit> GetHits(string matrix, string marker)
 		{
 			var hits = new List<Hit>();
@@ -46,7 +46,7 @@ namespace Ace.Serialization.Escapers
 
 	public static class Escaper
 	{
-		public static Dictionary<string, string> EscapeRules = New.Dictionary
+		public static readonly Dictionary<string, string> EscapeRules = New.Dictionary
 		(
 			"/".Of("/"),
 			"\"".Of("\""),
@@ -57,7 +57,7 @@ namespace Ace.Serialization.Escapers
 			"\r".Of("r"),
 			"\t".Of("t")
 		);
-		
+
 		public static StringBuilder Escape(this StringBuilder builder, string matrix,
 			IEnumerable<Marker.Hit> hits, Dictionary<string, string> rules, string escapeMarker, int offset = 0)
 		{
@@ -77,19 +77,20 @@ namespace Ace.Serialization.Escapers
 	public class GeneralEscaper
 	{
 		public char EscapeChar = '\\';
-		public List<string> HeadPatterns = new List<string> { "\"", "<", "'" };
-		public List<string> TailPatterns = new List<string> { "\"", ">", "'" };
-		public Dictionary<string, string> EscapeRules = new Dictionary<string, string>
-		{
-			{"/", "/"},
-			{"\"", "\""},
-			{"\\", "\\"},
-			{"\b", "b"},
-			{"\f", "f"},
-			{"\n", "n"},
-			{"\r", "r"},
-			{"\t", "t"},
-		};
+		public List<string> HeadPatterns = new List<string> {"\"", "<", "'"};
+		public List<string> TailPatterns = new List<string> {"\"", ">", "'"};
+
+		public static readonly Dictionary<string, string> EscapeRules = New.Dictionary
+		(
+			"/".Of("/"),
+			"\"".Of("\""),
+			"\\".Of("\\"),
+			"\b".Of("b"),
+			"\f".Of("f"),
+			"\n".Of("n"),
+			"\r".Of("r"),
+			"\t".Of("t")
+		);
 
 		public string EscapeSequence = "\\";
 		public string BreakSequence = "\"";
@@ -99,11 +100,11 @@ namespace Ace.Serialization.Escapers
 			return Escape(originalSequence, EscapeRules, EscapeSequence, BreakSequence)
 				.Aggregate(builder, (b, s) => b.Append(s)).ToString();
 		}
-		
+
 
 		public static IEnumerable<string> Escape(
-			string originalSequence, Dictionary<string, string> rules, 
-			string escapeMarker,  string breakMarker)
+			string originalSequence, Dictionary<string, string> rules,
+			string escapeMarker, string breakMarker)
 		{
 			var j = 0;
 			for (var i = 0; i < originalSequence.Length; i++)

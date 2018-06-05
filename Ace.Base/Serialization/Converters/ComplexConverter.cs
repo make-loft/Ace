@@ -34,7 +34,7 @@ namespace Ace.Serialization.Converters
 
 		private object TryParse(string value, string typeKey)
 		{
-			var type = Type.GetType(typeKey) ?? Type.GetType("System." + typeKey);
+			var type = Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}");
 			if (type is null) return null;
 			if (type.IsEnum) return Enum.Parse(type, value, true);
 

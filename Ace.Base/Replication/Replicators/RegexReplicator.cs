@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Ace.Replication.Models;
 
 namespace Ace.Replication.Replicators
 {

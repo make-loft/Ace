@@ -25,12 +25,12 @@ namespace Ace.Base.Sandbox.Sugar
 			}
 		}
 
-		public static double CalculateSquare(this Shape shape) =>
-			shape.Match(
-				(Line _) => 0,
-				(Circle c) => Math.PI * c.Radius * c.Radius,
-				(Rectangle r) => r.Width * r.Height,
-				() => double.NaN
-			);
+		public static double CalculateSquare(this Shape shape) => shape.Match
+		(
+			(Line _) => 0,
+			(Circle c) => Math.PI * c.Radius * c.Radius,
+			(Rectangle r) => r.Width * r.Height,
+			() => double.NaN
+		);
 	}
 }

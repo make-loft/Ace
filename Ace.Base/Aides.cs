@@ -26,6 +26,6 @@ namespace Ace
 			KeepProfile keepProfile = null) => Snapshot.Parse(matrix, replicationProfile, keepProfile);
 
 		public static object Capture(this string matrix, KeepProfile keepProfile, int offset = 0) =>
-			matrix.Capture(keepProfile, ref offset);
+			matrix.ReadItem(keepProfile, ref offset);
 	}
 }

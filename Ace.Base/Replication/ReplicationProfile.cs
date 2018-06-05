@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Ace.Comparers;
 using Ace.Replication.MemberProviders;
 using Ace.Replication.Replicators;
@@ -26,7 +27,7 @@ namespace Ace.Replication
 		public static readonly Adapters.BindingFlags DefaultFlags =
 			Adapters.BindingFlags.NonPublic | Adapters.BindingFlags.Public | Adapters.BindingFlags.Instance;
 		
-		public List<MemberProvider> MemberProviders = New.List<MemberProvider>
+		public readonly List<MemberProvider> MemberProviders = New.List<MemberProvider>
 		(
 			new CoreMemberProviderForKeyValuePair(),
 			//new CoreMemberProvider(BindingFlags.Public | BindingFlags.Instance, m => m.CanReadWrite() && !(m is EventInfo)),

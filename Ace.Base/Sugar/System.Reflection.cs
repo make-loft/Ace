@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using Ace;
 
-namespace Ace.Replication
+// ReSharper disable once CheckNamespace
+namespace System.Reflection
 {
 	public static class Member
 	{
