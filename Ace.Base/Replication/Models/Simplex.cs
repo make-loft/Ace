@@ -16,13 +16,9 @@ namespace Ace.Replication.Models
 		public object Capture(KeepProfile keepProfile, string data, ref int offset) => 
 			keepProfile.CaptureSimplex(this, data, ref offset).Revert(keepProfile.SimplexConverter);
 
-		public IEnumerable<string> ToStringBeads(KeepProfile keepProfile, int indentLevel = 1)
-		{
-			foreach (var bead in this)
-				yield return bead;
-		}
+		public IEnumerable<string> ToStringBeads(KeepProfile keepProfile, int indentLevel = 1) => this;
 
-		public static Dictionary<string, string> stringToEscape = new Dictionary<string, string>();
+		//public static Dictionary<string, string> stringToEscape = new Dictionary<string, string>();
 		public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
 
 		public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new Dictionary<int, StringBuilder>();
