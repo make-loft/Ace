@@ -69,6 +69,10 @@
     <Compile Include="Replication\Replicators\RegexReplicator.cs" />
     <Compile Include="Replication\Replicators\StringBuilderReplicator.cs" />
     <Compile Include="Serialization\Escapers\GeneralEscaper.cs" />
+    <Compile Include="Serialization\Serializators\ASerializator.cs" />
+    <Compile Include="Serialization\Serializators\MapDeepSerializator.cs" />
+    <Compile Include="Serialization\Serializators\SetDeepSerializator.cs" />
+    <Compile Include="Serialization\Serializators\SimplexSerializator.cs" />
     <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Serialization\Converter.cs" />
     <Compile Include="Serialization\Converters\ComplexConverter.cs" />
