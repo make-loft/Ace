@@ -38,7 +38,6 @@ namespace Ace.Serialization
 		public static KeepProfile GetFormatted() => new KeepProfile();
 
 		public EscapeProfile EscapeProfile = new EscapeProfile();
-		public SimplexConverter SimplexConverter = new SimplexConverter();
 			
 		public IBodyProfile<Map, bool> MapBody = new BodyProfile<Map> {Head = "{", Tail = "}"};
 		public IBodyProfile<Set, bool> SetBody = new BodyProfile<Set> {Head = "[", Tail = "]"};
@@ -73,7 +72,7 @@ namespace Ace.Serialization
 		public string GetHead(Set body) => SetBody.GetHead(body);
 		public string GetTail(Set body) => SetBody.GetTail(body);
 
-		public IModel CreateSingleModel(string data, ref int offset)
+		public IModel CreateBlankModel(string data, ref int offset)
 		{
 			MoveToItem(data, ref offset);
 			return

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Ace.Replication.Models;
 using Ace.Serialization.Serializators;
 
 namespace Ace.Serialization
@@ -16,16 +15,11 @@ namespace Ace.Serialization
 			
 		public static object ReadItem(this string data, KeepProfile keepProfile, ref int offset)
 		{
-			var model = keepProfile.CreateSingleModel(data, ref offset);
-			var serializator = Serializators.FirstOrDefault(s => s.CanApply(model));
-			serializator?.Capture(model, keepProfile, data, ref offset);
-			return model is Simplex simplex ? simplex.Revert(keepProfile.SimplexConverter) : model;
+			var model = keepProfile.CreateBlankModel(data, ref offset);
+			return Serializators.FirstOrDefault(s => s.CanApply(model))?.Capture(model, keepProfile, data, ref offset);
 		}
 
-		public static IEnumerable<string> ToStringBeads(this object value, KeepProfile keepProfile, int indentLevel)
-		{
-			var serializator = Serializators.FirstOrDefault(s => s.CanApply(value));
-			return serializator?.ToStringBeads(value, keepProfile, indentLevel);
-		}
+		public static IEnumerable<string> ToStringBeads(this object value, KeepProfile keepProfile, int indentLevel) =>
+			Serializators.FirstOrDefault(s => s.CanApply(value))?.ToStringBeads(value, keepProfile, indentLevel);
 	}
 }

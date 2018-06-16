@@ -1,14 +1,71 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Ace.Replication.Models;
+using Ace.Serialization.Converters;
 
 namespace Ace.Serialization.Serializators
 {
     public class SimplexSerializator : ASerializator
     {
+        public bool AppendTypeInfo = true;
+
+        public readonly List<Converter> Converters = New.List<Converter>
+        (
+            new NullConverter(),
+            new BooleanConverter(),
+            new NumericConverter(),
+            new StringConverter(),
+            new IsoDateTimeConverter(),
+            new ComplexConverter()
+        );
+        
         public override object Capture(object value, KeepProfile keepProfile, string data, ref int offset) =>
-            keepProfile.CaptureSimplex((Simplex) value, data, ref offset);
+            Revert(keepProfile.CaptureSimplex((Simplex) value, data, ref offset));
 
         public override IEnumerable<string> ToStringBeads(object value, KeepProfile keepProfile, int indentLevel) => 
-            keepProfile.SimplexConverter.Convert(value, keepProfile);
+            Convert(value, keepProfile);
+           
+        public static readonly Assembly SystemAssembly = TypeOf<object>.Assembly;
+        public static readonly Assembly ExtendedAssembly = TypeOf<Uri>.Assembly;
+
+        public virtual string GetTypeName(Type type) =>
+            type.Assembly.Is(SystemAssembly) || type.Assembly.Is(ExtendedAssembly)
+                ? type.Name
+                : type.AssemblyQualifiedName;
+		
+        protected readonly Simplex Simplex = new Simplex();
+	
+        public Simplex Convert(object value, KeepProfile keepProfile)
+        {
+            var convertedValue = Converters.Select(c => c.Convert(value)).FirstOrDefault(s => s != null) ??
+                                 throw new Exception("Can not convert value " + value);
+			
+            Simplex.Clear();
+            Simplex.Add(keepProfile.GetHead(value));
+            Simplex.Add(convertedValue);
+            Simplex.Add(keepProfile.GetTail(value));
+			
+            var type = value?.GetType();
+            if (type == null || type.IsPrimitive) return Simplex;
+            if (type == TypeOf.String.Raw) return Simplex.Escape(keepProfile.EscapeProfile, 1);
+
+            if (!AppendTypeInfo) return Simplex.Escape(keepProfile.EscapeProfile, 1);
+			
+            Simplex.Add(keepProfile.GetHead(type));
+            Simplex.Add(GetTypeName(type));
+            Simplex.Add(keepProfile.GetTail(type));
+            return Simplex.Escape(keepProfile.EscapeProfile, 1);
+        }
+
+        public object Revert(Simplex simplex)
+        {
+            var segments = simplex;
+            if (segments.Count == 3) return segments[1]; /* optimization for strings */
+            var convertedValue = segments.Count == 1 ? segments[0] : segments[1];
+            var typeCode = segments.Count == 6 ? segments[4] : null;
+            return Converters.Select(c => c.Revert(convertedValue, typeCode)).First(v => v != Converter.Undefined);
+        }
     }
 }

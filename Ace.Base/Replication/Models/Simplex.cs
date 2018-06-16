@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using Ace.Serialization;
 using Ace.Serialization.Escapers;
+using Ace.Serialization.Serializators;
 
 namespace Ace.Replication.Models
 {
@@ -13,17 +14,12 @@ namespace Ace.Replication.Models
 
 		public override string ToString() => this.Aggregate("", (a, b) => a + b);
 
-		public object Capture(KeepProfile keepProfile, string data, ref int offset) => 
-			keepProfile.CaptureSimplex(this, data, ref offset).Revert(keepProfile.SimplexConverter);
-
-		public IEnumerable<string> ToStringBeads(KeepProfile keepProfile, int indentLevel = 1) => this;
-
 		//public static Dictionary<string, string> stringToEscape = new Dictionary<string, string>();
 		public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
 
 		public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new Dictionary<int, StringBuilder>();
 
-		public object Revert(SimplexConverter converter) => converter.Revert(this);
+		public object Revert(SimplexSerializator converter) => converter.Revert(this);
 
 		public Simplex Escape(EscapeProfile escaper, int segmentIndex)
 		{

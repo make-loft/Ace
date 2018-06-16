@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Ace.Replication.Models;
 
 namespace Ace.Serialization.Serializators
@@ -32,9 +31,6 @@ namespace Ace.Serialization.Serializators
                 yield return keepProfile.GetTailIndent(indentLevel, items, counter++);
             }
         }
-        
-        public IEnumerable<string> ConvertSimplex(TItem item, KeepProfile keepProfile) =>
-            keepProfile.SimplexConverter.Convert(item, keepProfile);
     }
     
     public abstract class ASerializator

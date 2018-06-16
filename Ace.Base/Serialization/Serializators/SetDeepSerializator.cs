@@ -31,7 +31,7 @@ namespace Ace.Serialization.Serializators
                 keepProfile.SkipTailIndent(data, ref offset);
             }
 
-            return this;
+            return set;
         }
     }
 }

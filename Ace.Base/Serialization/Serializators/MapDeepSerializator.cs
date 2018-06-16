@@ -30,7 +30,7 @@ namespace Ace.Serialization.Serializators
                 keepProfile.SkipTailIndent(data, ref offset);
             }
 
-            return this;
+            return map;
         }
         
         public override IEnumerable<string> ToStringBeads(object value, KeepProfile keepProfile, int indentLevel) =>

@@ -80,7 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Replication\ReplicationProfile.cs" />
     <Compile Include="Serialization\Converters\NumericConverter.cs" />
-    <Compile Include="Serialization\SimplexConverter.cs" />
     <Compile Include="Aides.cs" />
     <Compile Include="Sugar\Const.cs" />
     <Compile Include="Sugar\LE.Basics.cs" />
