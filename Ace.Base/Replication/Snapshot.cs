@@ -59,7 +59,7 @@ namespace Ace.Replication
 		public string ToString(StringBuilder builder) =>
 			MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
-		public object ReplicateGraph(Type baseType) => ActiveReplicationProfile.Replicate(MasterState, null, baseType);
+		public object ReplicateGraph(Type baseType) => ActiveReplicationProfile.Replicate(MasterState, baseType);
 
 		public TRoot ReplicateGraph<TRoot>() =>
 			(TRoot) ActiveReplicationProfile.Replicate(MasterState, null, TypeOf<TRoot>.Raw);

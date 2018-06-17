@@ -10,7 +10,7 @@ namespace Ace
 	{
 		internal static string SnapshotToString(this object value, KeepProfile keepProfile,
 			int indentLevel = 1, StringBuilder builder = null) =>
-			value.ToStringBeads(keepProfile, indentLevel)
+			keepProfile.ToStringBeads(value, indentLevel)
 				.Aggregate(builder ?? new StringBuilder(256), (sb, s) => sb.Append(s))
 				.ToString();
 
@@ -26,6 +26,6 @@ namespace Ace
 			KeepProfile keepProfile = null) => Snapshot.Parse(matrix, replicationProfile, keepProfile);
 
 		public static object Capture(this string matrix, KeepProfile keepProfile, int offset = 0) =>
-			matrix.ReadItem(keepProfile, ref offset);
+			keepProfile.ReadItem(matrix, ref offset);
 	}
 }

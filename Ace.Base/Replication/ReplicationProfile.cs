@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Ace.Comparers;
 using Ace.Replication.MemberProviders;
 using Ace.Replication.Replicators;
 using Ace.Serialization;
@@ -21,12 +20,12 @@ namespace Ace.Replication
 		public bool AttachId = true;
 		public bool SimplifySets = false;
 		public bool SimplifyMaps = false;
-		
-		public IEqualityComparer<object> Comparer = ReferenceComparer<object>.Default;
+		public bool TryRestoreTypeInfoImplicitly = true;
+		public readonly List<Converter> ImplicitConverters = New.List<Converter>(new ComplexConverter());
 
 		public static readonly Adapters.BindingFlags DefaultFlags =
 			Adapters.BindingFlags.NonPublic | Adapters.BindingFlags.Public | Adapters.BindingFlags.Instance;
-		
+
 		public readonly List<MemberProvider> MemberProviders = New.List<MemberProvider>
 		(
 			new CoreMemberProviderForKeyValuePair(),
@@ -34,7 +33,7 @@ namespace Ace.Replication
 			new ContractMemberProvider(DefaultFlags, Member.CanReadWrite)
 		);
 
-		public List<Replicator> Replicators = New.List<Replicator>
+		public readonly List<Replicator> Replicators = New.List<Replicator>
 		(
 			new CoreReplicator(),
 			new CoreReplicator<Enum>(),
@@ -48,22 +47,23 @@ namespace Ace.Replication
 			new DeepReplicator()
 		);
 
-		public bool TryRestoreTypeInfoImplicitly = true;
-		public readonly List<Converter> ImplicitConverters = New.List<Converter>(new ComplexConverter());
-		
-		public object Replicate(object graph, IDictionary<int, object> idCache = null, Type baseType = null)
+		public object Replicate(object graph, Type baseType = null) =>
+			Replicate(graph, new Dictionary<int, object>(), baseType);
+
+		public object Translate(object graph, Type baseType = null) =>
+			Translate(graph, new Dictionary<object, int>(), baseType);
+
+		public object Replicate(object graph, IDictionary<int, object> idCache, Type baseType = null)
 		{
-			idCache = idCache ?? new Dictionary<int, object>();
 			var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, this, idCache, baseType)) ??
-							 throw new Exception("Can not replicate " + graph);
+			                 throw new Exception("Can not replicate " + graph);
 			return replicator.Replicate(graph, this, idCache, baseType);
 		}
-		
-		public object Translate(object graph, IDictionary<object, int> idCache = null, Type baseType = null)
+
+		public object Translate(object graph, IDictionary<object, int> idCache, Type baseType = null)
 		{
-			idCache = idCache ?? new Dictionary<object, int>(Comparer);
 			var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, this, idCache, baseType)) ??
-							 throw new Exception("Can not translate " + graph);
+			                 throw new Exception("Can not translate " + graph);
 			return replicator.Translate(graph, this, idCache, baseType);
 		}
 	}

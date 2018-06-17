@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Ace.Replication.Models;
+using Ace.Serialization.Serializators;
 
 namespace Ace.Serialization
 {
@@ -32,6 +34,22 @@ namespace Ace.Serialization
 
 	public class KeepProfile
 	{
+		public static readonly List<ASerializator> Serializators = New.List<ASerializator>
+		(
+			new MapDeepSerializator(),
+			new SetDeepSerializator(),
+			new SimplexSerializator()
+		);
+			
+		public object ReadItem(string data, ref int offset)
+		{
+			var model = CreateBlankModel(data, ref offset);
+			return Serializators.FirstOrDefault(s => s.CanApply(model))?.Capture(model, this, data, ref offset);
+		}
+
+		public IEnumerable<string> ToStringBeads(object value, int indentLevel) =>
+			Serializators.FirstOrDefault(s => s.CanApply(value))?.ToStringBeads(value, this, indentLevel);
+		
 		public string GetHead(Type type) => "<";
 		public string GetTail(Type type) => ">";
 
@@ -72,13 +90,13 @@ namespace Ace.Serialization
 		public string GetHead(Set body) => SetBody.GetHead(body);
 		public string GetTail(Set body) => SetBody.GetTail(body);
 
-		public IModel CreateBlankModel(string data, ref int offset)
+		public object CreateBlankModel(string data, ref int offset)
 		{
 			MoveToItem(data, ref offset);
 			return
 				MapBody.CreateSingleModel(data, ref offset) ? new Map() :
 				SetBody.CreateSingleModel(data, ref offset) ? new Set() :
-				(IModel) new Simplex();
+				(object) new Simplex();
 		}
 
 		public void SkipMapPairSplitter(string data, ref int offset)
@@ -137,7 +155,7 @@ namespace Ace.Serialization
 			} while (offset < data.Length);
 		}
 
-		public string GetHeadIndent(int indentLevel, ICollection items, int index)
+		public string GetHeadIndent<TItem>(int indentLevel, ICollection<TItem> items, int index)
 		{
 			if (items is Set set && index < set.Count &&
 				(set[index] == null || set[index].GetType().IsPrimitive)) return " ";
@@ -151,7 +169,7 @@ namespace Ace.Serialization
 			return NewLineChars + indent;
 		}
 
-		public string GetTailIndent(int indentLevel, ICollection items, int index) =>
+		public string GetTailIndent<TItem>(int indentLevel, ICollection<TItem> items, int index) =>
 			items.Count == ++index
 				? (UseTailDelimiter ? Delimiter : null) + GetHeadIndent(indentLevel - 1, items, index)
 				: Delimiter;

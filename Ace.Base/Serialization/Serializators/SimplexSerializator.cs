@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading;
 using Ace.Replication.Models;
 using Ace.Serialization.Converters;
+using Ace.Serialization.Escapers;
 
 namespace Ace.Serialization.Serializators
 {
@@ -48,15 +51,15 @@ namespace Ace.Serialization.Serializators
             Simplex.Add(keepProfile.GetTail(value));
 			
             var type = value?.GetType();
-            if (type == null || type.IsPrimitive) return Simplex;
-            if (type == TypeOf.String.Raw) return Simplex.Escape(keepProfile.EscapeProfile, 1);
+            if (type is null || type.IsPrimitive) return Simplex;
+            if (type.Is(TypeOf.String.Raw)) return Escape(keepProfile.EscapeProfile, Simplex, 1);
 
-            if (!AppendTypeInfo) return Simplex.Escape(keepProfile.EscapeProfile, 1);
+            if (!AppendTypeInfo) return Escape(keepProfile.EscapeProfile, Simplex, 1);
 			
             Simplex.Add(keepProfile.GetHead(type));
             Simplex.Add(GetTypeName(type));
             Simplex.Add(keepProfile.GetTail(type));
-            return Simplex.Escape(keepProfile.EscapeProfile, 1);
+            return Escape(keepProfile.EscapeProfile, Simplex, 1);
         }
 
         public object Revert(Simplex simplex)
@@ -66,6 +69,44 @@ namespace Ace.Serialization.Serializators
             var convertedValue = segments.Count == 1 ? segments[0] : segments[1];
             var typeCode = segments.Count == 6 ? segments[4] : null;
             return Converters.Select(c => c.Revert(convertedValue, typeCode)).First(v => v != Converter.Undefined);
+        }
+        
+        public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
+
+        public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new Dictionary<int, StringBuilder>();
+        
+        public Simplex Escape(EscapeProfile escaper, Simplex segments,  int segmentIndex)
+        {
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            if (!ThreadIdToStringBuilder.TryGetValue(threadId, out var builder))
+                builder = ThreadIdToStringBuilder[threadId] = new StringBuilder(256);
+
+            //return this;
+            var segment = segments[segmentIndex];
+            //var useVerbatim = segment.Contains("\\") || segment.Contains("/");
+
+            var useVerbatim = stringToVerbatim.TryGetValue(segment, out var v)
+                ? v
+                : stringToVerbatim[segment] = segment.Contains("\\") || segment.Contains("/");
+
+            var escapeChars = useVerbatim ? escaper.VerbatimEscapeChars : escaper.EscapeChars;
+            var escapeSequence = useVerbatim ? escaper.VerbatimEscapeSequence : escaper.EscapeSequence;
+
+            //hits = (useVerbatim ? hits.Where(h => h.Marker == "\"") : hits.Where(h => h.Marker != "\"")).ToArray();
+            segments[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
+                //builder.Clear().Escape(segment, ProvideHits(segment), Escaper.EscapeRules, "\\").ToString();
+                // this[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
+                escaper.AppendWithEscape(builder.Clear(), segment, escapeChars, useVerbatim, escapeSequence).ToString();
+            if (useVerbatim) segments.Insert(segmentIndex - 1, escaper.VerbatimPattern);
+            return segments;
+        }
+
+        private static List<Marker.Hit> ProvideHits(string segment)
+        {
+            var hits = new List<Marker.Hit>();
+            Escaper.EscapeRules.ForEach(r => hits.AddRange(Marker.GetHits(segment, r.Key)));
+            hits.Sort((x, y) => x.Offset - y.Offset);
+            return hits;
         }
     }
 }

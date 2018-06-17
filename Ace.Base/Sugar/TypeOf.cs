@@ -12,6 +12,7 @@ namespace Ace
 
 		public static readonly TypeData Object = typeof(object).ToRipeData();
 		public static readonly TypeData String = typeof(string).ToRipeData();
+		public static readonly TypeData Array = typeof(Array).ToRipeData();
 		public static readonly TypeData Type = typeof(Type).ToRipeData();
 		public static readonly TypeData List = typeof(List<>).ToRipeData();
 		public static readonly TypeData IList = typeof(IList<>).ToRipeData();

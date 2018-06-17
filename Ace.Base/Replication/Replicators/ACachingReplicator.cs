@@ -44,31 +44,23 @@ namespace Ace.Replication.Replicators
 			return replica;
 		}
 
-		protected object Simplify(Map map, object instance, ReplicationProfile replicationProfile, Type baseType)
-		{
-			var type = instance.GetType();
-			if (type != baseType) return map;
+		protected object Simplify(Map map, object instance, ReplicationProfile profile, Type baseType) =>
+			instance.GetType().Is(out var type) && type.IsNot(baseType) ? map :
+			profile.SimplifySets && instance is IList ? map[profile.SetKey] :
+			profile.SimplifyMaps && instance is IDictionary && type.IsGenericDictionaryWithKey<string>() ? map[profile.MapKey] :
+			map;
 
-			if (replicationProfile.SimplifyMaps && instance is IDictionary && type.IsGenericDictionaryWithKey<string>())
-				return map[replicationProfile.MapKey];
-
-			if (replicationProfile.SimplifySets && instance is IList)
-				return map[replicationProfile.SetKey];
-
-			return map;
-		}
-
-		protected Map CompleteMapIfRequried(object state, ReplicationProfile replicationProfile, Type baseType) =>
-			replicationProfile.SimplifySets && state is Set ? new Map
+		protected Map CompleteMapIfRequried(object state, ReplicationProfile profile, Type baseType) =>
+			profile.SimplifySets && state is Set ? new Map
 			{
-				{replicationProfile.TypeKey, (baseType ?? TypeOf<object[]>.Raw).AssemblyQualifiedName},
-				{replicationProfile.SetKey, state}
+				{profile.TypeKey, (baseType ?? TypeOf<object[]>.Raw).AssemblyQualifiedName},
+				{profile.SetKey, state}
 			} :
-			replicationProfile.SimplifyMaps && state is Map && baseType != null &&
+			profile.SimplifyMaps && state is Map && baseType != null &&
 			baseType.IsGenericDictionaryWithKey<string>() ? new Map
 			{
-				{replicationProfile.TypeKey, baseType.AssemblyQualifiedName},
-				{replicationProfile.MapKey, state}
+				{profile.TypeKey, baseType.AssemblyQualifiedName},
+				{profile.MapKey, state}
 			} :
 			(Map) state;
 	}
