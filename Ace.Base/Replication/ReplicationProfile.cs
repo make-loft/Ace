@@ -47,12 +47,6 @@ namespace Ace.Replication
 			new DeepReplicator()
 		);
 
-		public object Replicate(object graph, Type baseType = null) =>
-			Replicate(graph, new Dictionary<int, object>(), baseType);
-
-		public object Translate(object graph, Type baseType = null) =>
-			Translate(graph, new Dictionary<object, int>(), baseType);
-
 		public object Replicate(object graph, IDictionary<int, object> idCache, Type baseType = null)
 		{
 			var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, this, idCache, baseType)) ??

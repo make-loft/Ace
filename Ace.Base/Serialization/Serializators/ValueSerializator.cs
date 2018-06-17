@@ -10,7 +10,7 @@ using Ace.Serialization.Escapers;
 
 namespace Ace.Serialization.Serializators
 {
-    public class SimplexSerializator : ASerializator
+    public class ValueSerializator : ASerializator
     {
         public bool AppendTypeInfo = true;
 

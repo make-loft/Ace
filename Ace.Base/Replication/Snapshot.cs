@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Ace.Comparers;
 using Ace.Serialization;
 
 namespace Ace.Replication
 {
-	public class ReconstructionCache : Dictionary<object, int>
+	public static class Cache
 	{
-		public ReconstructionCache() : base(32, ReferenceComparer<object>.Default) { }
-		public ReconstructionCache(IEqualityComparer<object> comparer) : base(32, comparer) { }
+		public static Dictionary<int, object> NewForReplication() =>
+			new Dictionary<int, object>(32);
 	}
 
 	public class Snapshot
 	{
-		static Snapshot()
-		{
+		//static Snapshot()
+		//{
 			//if (DateTime.Now > new DateTime(2017, 9, 1))
 			//	throw new Exception(
 			//		"Trial version has been expired. Please, write to 'makeman@tut.by' for getting licence.");
-		}
+		//}
 
 		public static ReplicationProfile DefaultReplicationProfile = new ReplicationProfile {AttachId = true};
 		public static KeepProfile DefaultKeepProfile = KeepProfile.GetFormatted();
@@ -59,10 +58,11 @@ namespace Ace.Replication
 		public string ToString(StringBuilder builder) =>
 			MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
-		public object ReplicateGraph(Type baseType) => ActiveReplicationProfile.Replicate(MasterState, baseType);
+		public object ReplicateGraph(Type baseType) =>
+			ActiveReplicationProfile.Replicate(MasterState, Cache.NewForReplication(), baseType);
 
 		public TRoot ReplicateGraph<TRoot>() =>
-			(TRoot) ActiveReplicationProfile.Replicate(MasterState, null, TypeOf<TRoot>.Raw);
+			(TRoot) ActiveReplicationProfile.Replicate(MasterState, Cache.NewForReplication(), TypeOf<TRoot>.Raw);
 
 		public object ReconstructGraph(IDictionary<object, int> cache) =>
 			ActiveReplicationProfile.Replicate(MasterState, cache?.ToMirrorDictionary());

@@ -38,7 +38,7 @@ namespace Ace.Serialization
 		(
 			new MapDeepSerializator(),
 			new SetDeepSerializator(),
-			new SimplexSerializator()
+			new ValueSerializator()
 		);
 			
 		public object ReadItem(string data, ref int offset)

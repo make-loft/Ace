@@ -71,7 +71,7 @@
     <Compile Include="Serialization\Escapers\GeneralEscaper.cs" />
     <Compile Include="Serialization\Serializators\MapDeepSerializator.cs" />
     <Compile Include="Serialization\Serializators\SetDeepSerializator.cs" />
-    <Compile Include="Serialization\Serializators\SimplexSerializator.cs" />
+    <Compile Include="Serialization\Serializators\ValueSerializator.cs" />
     <Compile Include="Serialization\Converter.cs" />
     <Compile Include="Serialization\Converters\ComplexConverter.cs" />
     <Compile Include="Serialization\Converters\CoreConverters.cs" />

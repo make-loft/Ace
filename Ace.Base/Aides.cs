@@ -18,12 +18,14 @@ namespace Ace
 			this object master,
 			ReplicationProfile replicationProfile = null,
 			KeepProfile keepProfile = null,
-			Dictionary<object, int> cache = null) => Snapshot.Create(master, cache, replicationProfile, keepProfile);
+			Dictionary<object, int> cache = null) =>
+			Snapshot.Create(master, cache, replicationProfile, keepProfile);
 
 		public static Snapshot ParseSnapshot(
 			this string matrix,
 			ReplicationProfile replicationProfile = null,
-			KeepProfile keepProfile = null) => Snapshot.Parse(matrix, replicationProfile, keepProfile);
+			KeepProfile keepProfile = null) =>
+			Snapshot.Parse(matrix, replicationProfile, keepProfile);
 
 		public static object Capture(this string matrix, KeepProfile keepProfile, int offset = 0) =>
 			keepProfile.ReadItem(matrix, ref offset);
