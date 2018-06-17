@@ -8,9 +8,9 @@ namespace Ace
 {
 	public static class Aides
 	{
-		internal static string SnapshotToString(this object value, KeepProfile keepProfile,
+		internal static string SnapshotToString(this object value, KeepProfile profile,
 			int indentLevel = 1, StringBuilder builder = null) =>
-			keepProfile.ToStringBeads(value, indentLevel)
+			profile.ToStringBeads(value, indentLevel)
 				.Aggregate(builder ?? new StringBuilder(256), (sb, s) => sb.Append(s))
 				.ToString();
 
@@ -27,7 +27,7 @@ namespace Ace
 			KeepProfile keepProfile = null) =>
 			Snapshot.Parse(matrix, replicationProfile, keepProfile);
 
-		public static object Capture(this string matrix, KeepProfile keepProfile, int offset = 0) =>
-			keepProfile.ReadItem(matrix, ref offset);
+		public static object Capture(this string matrix, KeepProfile profile, int offset = 0) =>
+			profile.ReadItem(matrix, ref offset);
 	}
 }

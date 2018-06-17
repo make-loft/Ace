@@ -5,29 +5,29 @@ namespace Ace.Serialization.Serializators
 {
     public class MapDeepSerializator : ASerializator<Map, KeyValuePair<string, object>>
     {        
-        public override IEnumerable<string> GetSegmentBeads(KeyValuePair<string, object> pair, KeepProfile keepProfile,
+        public override IEnumerable<string> GetSegmentBeads(KeyValuePair<string, object> pair, KeepProfile profile,
             int indentLevel)
         {
             var key = pair.Key;
-            yield return keepProfile.GetKeyHead(key);
+            yield return profile.GetKeyHead(key);
             yield return key;
-            yield return keepProfile.GetKeyTail(key);
-            yield return keepProfile.MapPairSplitter;
-            foreach (var bead in keepProfile.ToStringBeads(pair.Value, indentLevel + 1))
+            yield return profile.GetKeyTail(key);
+            yield return profile.MapPairSplitter;
+            foreach (var bead in profile.ToStringBeads(pair.Value, indentLevel + 1))
                 yield return bead;
         }
 
-        public override object Capture(Map map, KeepProfile keepProfile, string data, ref int offset)
+        public override object Capture(Map map, KeepProfile profile, string data, ref int offset)
         {
-            while (!keepProfile.MapBody.TryFindTail(data, ref offset)) /* "}" */
+            while (!profile.MapBody.TryFindTail(data, ref offset)) /* "}" */
             {
-                keepProfile.SkipHeadIndent(data, ref offset);
+                profile.SkipHeadIndent(data, ref offset);
 
-                var key = keepProfile.CaptureKey(data, ref offset);
-                keepProfile.SkipMapPairSplitter(data, ref offset);
-                map.Add(key, keepProfile.ReadItem(data, ref offset));
+                var key = profile.CaptureKey(data, ref offset);
+                profile.SkipMapPairSplitter(data, ref offset);
+                map.Add(key, profile.ReadItem(data, ref offset));
 
-                keepProfile.SkipTailIndent(data, ref offset);
+                profile.SkipTailIndent(data, ref offset);
             }
 
             return map;

@@ -138,14 +138,14 @@ namespace System.Linq
 
 			return box(chunks);
 		}
-
-		internal static IEnumerable<object> UnboxMultidimensionArray(this IEnumerable items, int rank)
+		
+		internal static IEnumerable<object> EnumerateMultidimensionArray(this IEnumerable items, int rank)
 		{
 			foreach (var item in items)
 			{
 				if (item is IEnumerable s && rank > 0)
 				{
-					var subitems = UnboxMultidimensionArray(s, rank - 1);
+					var subitems = EnumerateMultidimensionArray(s, rank - 1);
 					foreach (var subitem in subitems)
 						yield return subitem;
 				}

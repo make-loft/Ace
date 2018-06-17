@@ -24,11 +24,11 @@ namespace Ace.Serialization.Serializators
             new ComplexConverter()
         );
         
-        public override object Capture(object value, KeepProfile keepProfile, string data, ref int offset) =>
-            Revert(keepProfile.CaptureSimplex((Simplex) value, data, ref offset));
+        public override object Capture(object value, KeepProfile profile, string data, ref int offset) =>
+            Revert(profile.CaptureSimplex((Simplex) value, data, ref offset));
 
-        public override IEnumerable<string> ToStringBeads(object value, KeepProfile keepProfile, int indentLevel) => 
-            Convert(value, keepProfile);
+        public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel) => 
+            Convert(value, profile);
            
         public static readonly Assembly SystemAssembly = TypeOf<object>.Assembly;
         public static readonly Assembly ExtendedAssembly = TypeOf<Uri>.Assembly;
@@ -40,26 +40,26 @@ namespace Ace.Serialization.Serializators
 		
         protected readonly Simplex Simplex = new Simplex();
 	
-        public Simplex Convert(object value, KeepProfile keepProfile)
+        public Simplex Convert(object value, KeepProfile profile)
         {
-            var convertedValue = Converters.Select(c => c.Convert(value)).FirstOrDefault(s => s != null) ??
+            var convertedValue = Converters.Select(c => c.Convert(value)).FirstOrDefault(s => s.IsNot(null)) ??
                                  throw new Exception("Can not convert value " + value);
 			
             Simplex.Clear();
-            Simplex.Add(keepProfile.GetHead(value));
+            Simplex.Add(profile.GetHead(value));
             Simplex.Add(convertedValue);
-            Simplex.Add(keepProfile.GetTail(value));
+            Simplex.Add(profile.GetTail(value));
 			
             var type = value?.GetType();
             if (type is null || type.IsPrimitive) return Simplex;
-            if (type.Is(TypeOf.String.Raw)) return Escape(keepProfile.EscapeProfile, Simplex, 1);
+            if (type.Is(TypeOf.String.Raw)) return Escape(profile.EscapeProfile, Simplex, 1);
 
-            if (!AppendTypeInfo) return Escape(keepProfile.EscapeProfile, Simplex, 1);
+            if (!AppendTypeInfo) return Escape(profile.EscapeProfile, Simplex, 1);
 			
-            Simplex.Add(keepProfile.GetHead(type));
+            Simplex.Add(profile.GetHead(type));
             Simplex.Add(GetTypeName(type));
-            Simplex.Add(keepProfile.GetTail(type));
-            return Escape(keepProfile.EscapeProfile, Simplex, 1);
+            Simplex.Add(profile.GetTail(type));
+            return Escape(profile.EscapeProfile, Simplex, 1);
         }
 
         public object Revert(Simplex simplex)
@@ -68,7 +68,7 @@ namespace Ace.Serialization.Serializators
             if (segments.Count == 3) return segments[1]; /* optimization for strings */
             var convertedValue = segments.Count == 1 ? segments[0] : segments[1];
             var typeCode = segments.Count == 6 ? segments[4] : null;
-            return Converters.Select(c => c.Revert(convertedValue, typeCode)).First(v => v != Converter.Undefined);
+            return Converters.Select(c => c.Revert(convertedValue, typeCode)).First(v => v.IsNot(Converter.Undefined));
         }
         
         public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();

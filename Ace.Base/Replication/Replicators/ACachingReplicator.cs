@@ -8,39 +8,39 @@ namespace Ace.Replication.Replicators
 {
 	public abstract class ACachingReplicator<T> : Replicator<T>
 	{
-		public abstract T ActivateInstance(Map map, ReplicationProfile replicationProfile,
+		public abstract T ActivateInstance(Map map, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null);
 
-		public virtual void FillMap(Map map, T instance, ReplicationProfile replicationProfile,
+		public virtual void FillMap(Map map, T instance, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null) => Const.Stub();
 
-		public virtual void FillInstance(Map map, T instance, ReplicationProfile replicationProfile,
+		public virtual void FillInstance(Map map, T instance, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null) => Const.Stub();
 
-		public override object Translate(object value, ReplicationProfile replicationProfile,
+		public override object Translate(object value, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null)
 		{
-			if (idCache.TryGetValue(value, out var id)) return new Map {{replicationProfile.IdKey, id}};
+			if (idCache.TryGetValue(value, out var id)) return new Map {{profile.IdKey, id}};
 			id = idCache.Count;
 			idCache.Add(value, id);
 
 			var map = new Map();
-			if (replicationProfile.AttachId) map.Add(replicationProfile.IdKey, id);
-			if (replicationProfile.AttachType) map.Add(replicationProfile.TypeKey, value.GetType().AssemblyQualifiedName);
-			FillMap(map, (T) value, replicationProfile, idCache, baseType);
-			var snapshot = Simplify(map, value, replicationProfile, baseType);
+			if (profile.AttachId) map.Add(profile.IdKey, id);
+			if (profile.AttachType) map.Add(profile.TypeKey, value.GetType().AssemblyQualifiedName);
+			FillMap(map, (T) value, profile, idCache, baseType);
+			var snapshot = Simplify(map, value, profile, baseType);
 			return snapshot;
 		}
 
-		public override object Replicate(object value, ReplicationProfile replicationProfile,
+		public override object Replicate(object value, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null)
 		{
-			var map = CompleteMapIfRequried(value, replicationProfile, baseType);
-			var hasKey = map.TryGetValue(replicationProfile.IdKey, out var key);
+			var map = CompleteMapIfRequried(value, profile, baseType);
+			var hasKey = map.TryGetValue(profile.IdKey, out var key);
 			var id = hasKey ? (int) key : idCache.Count;
 			if (idCache.TryGetValue(id, out var replica) && hasKey && map.Count == 1) return replica;
-			replica = idCache[id] = replica ?? ActivateInstance(map, replicationProfile, idCache, baseType);
-			if (replica != null) FillInstance(map, (T) replica, replicationProfile, idCache, baseType);
+			replica = idCache[id] = replica ?? ActivateInstance(map, profile, idCache, baseType);
+			if (replica != null) FillInstance(map, (T) replica, profile, idCache, baseType);
 			return replica;
 		}
 

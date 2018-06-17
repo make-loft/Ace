@@ -7,16 +7,16 @@ namespace Ace.Replication
 {
 	public class Replicator
 	{
-		public virtual bool CanTranslate(object value, ReplicationProfile replicationProfile,
+		public virtual bool CanTranslate(object value, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null) => true;
 
-		public virtual bool CanReplicate(object value, ReplicationProfile replicationProfile,
+		public virtual bool CanReplicate(object value, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null) => true;
 
-		public virtual object Translate(object value, ReplicationProfile replicationProfile,
+		public virtual object Translate(object value, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null) => value?.ToString();
 
-		public virtual object Replicate(object value, ReplicationProfile replicationProfile,
+		public virtual object Replicate(object value, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null) => value?.ToString();
 
 		public virtual List<MemberInfo> GetDataMembers(Type type, Func<MemberInfo, bool> filter) =>
@@ -30,12 +30,12 @@ namespace Ace.Replication
 	{
 		public readonly Type ActiveType = TypeOf<TValue>.Raw;
 
-		public override bool CanTranslate(object value, ReplicationProfile replicationProfile,
+		public override bool CanTranslate(object value, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null) => value is TValue;
 
-		public override bool CanReplicate(object value, ReplicationProfile replicationProfile,
+		public override bool CanReplicate(object value, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null) =>
 			TypeOf.Object.Raw.Is(ActiveType) || baseType.Is(ActiveType) || value is Map map &&
-			map.TryGetValue(replicationProfile.TypeKey, out var v) && v.Is(ActiveType);
+			map.TryGetValue(profile.TypeKey, out var v) && v.Is(ActiveType);
 	}
 }

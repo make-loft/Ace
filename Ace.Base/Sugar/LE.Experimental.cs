@@ -20,5 +20,9 @@ namespace Ace
 		public static bool EqualsAsStrings(this object a, object b,
 			StringComparison comparison = StringComparison.CurrentCultureIgnoreCase) =>
 			ReferenceEquals(a, b) || string.Compare(a.ToStr(), b.ToStr(), comparison).Is(0);
+		
+		public static T Or<T>(this T o, T x) where T : class => o ?? x;
+		public static T Or<T>(this T? o, T x) where T : struct => o ?? x;
+		public static T OrNew<T>(this T o) where T : class, new() => o ?? new T();
 	}
 }

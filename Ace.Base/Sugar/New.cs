@@ -7,8 +7,6 @@ namespace Ace
 {
 	public static partial class New
 	{
-		public static T NonNull<T>(this T o) where T : class, new() => o ?? new T();
-		
 		public static T Object<T>() where T : new() => new T();
 
 		public static T Object<T>(params object[] constructorArgs) =>

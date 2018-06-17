@@ -32,13 +32,13 @@ namespace Ace.Replication
 
 		public static Snapshot Create(
 			object masterGraph,
-			Dictionary<object, int> idCache,
+			Dictionary<object, int> idCache = null,
 			ReplicationProfile replicationProfile = null,
 			KeepProfile keepProfile = null) => new Snapshot
 		{
-			MasterState = (replicationProfile ?? DefaultReplicationProfile).Translate(masterGraph, idCache),
-			ActiveReplicationProfile = replicationProfile ?? DefaultReplicationProfile,
-			ActiveKeepProfile = keepProfile ?? DefaultKeepProfile
+			MasterState = replicationProfile.Or(DefaultReplicationProfile).Translate(masterGraph, idCache.OrNew()),
+			ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
+			ActiveKeepProfile = keepProfile.Or(DefaultKeepProfile)
 		};
 
 		public static Snapshot Parse(
@@ -46,14 +46,14 @@ namespace Ace.Replication
 			ReplicationProfile replicationProfile = null,
 			KeepProfile keepProfile = null) => new Snapshot
 		{
-			MasterState = matrix.Capture(keepProfile ?? DefaultKeepProfile),
-			ActiveReplicationProfile = replicationProfile ?? DefaultReplicationProfile,
-			ActiveKeepProfile = keepProfile ?? DefaultKeepProfile
+			MasterState = matrix.Capture(keepProfile.Or(DefaultKeepProfile)),
+			ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
+			ActiveKeepProfile = keepProfile.Or(DefaultKeepProfile)
 		};
 
 		public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
 
-		public string ToString(KeepProfile keepProfile) => MasterState.SnapshotToString(keepProfile);
+		public string ToString(KeepProfile profile) => MasterState.SnapshotToString(profile);
 
 		public string ToString(StringBuilder builder) =>
 			MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);

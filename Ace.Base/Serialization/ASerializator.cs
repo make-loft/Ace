@@ -7,49 +7,49 @@ namespace Ace.Serialization
     {
         public virtual bool CanApply(object o) => true;
 
-        public abstract object Capture(object value, KeepProfile keepProfile, string data, ref int offset);
+        public abstract object Capture(object value, KeepProfile profile, string data, ref int offset);
 
-        public abstract IEnumerable<string> ToStringBeads(object value, KeepProfile keepProfile, int indentLevel);
+        public abstract IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel);
     }
 
     public abstract class ASerializator<T, TItem> : ASerializator
     {
         public override bool CanApply(object o) => o is T;
 
-        public abstract object Capture(T map, KeepProfile keepProfile, string data, ref int offset);
+        public abstract object Capture(T map, KeepProfile profile, string data, ref int offset);
 
-        public override object Capture(object value, KeepProfile keepProfile, string data, ref int offset) =>
-            Capture((T) value, keepProfile, data, ref offset);
+        public override object Capture(object value, KeepProfile profile, string data, ref int offset) =>
+            Capture((T) value, profile, data, ref offset);
 
-        public abstract IEnumerable<string> GetSegmentBeads(TItem pair, KeepProfile keepProfile, int indentLevel);
+        public abstract IEnumerable<string> GetSegmentBeads(TItem pair, KeepProfile profile, int indentLevel);
 
-        public override IEnumerable<string> ToStringBeads(object value, KeepProfile keepProfile, int indentLevel) =>
-            ToStringBeads((ICollection<TItem>)value, keepProfile, indentLevel);
+        public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel) =>
+            ToStringBeads((ICollection<TItem>)value, profile, indentLevel);
         
-        public IEnumerable<string> ToStringBeads(ICollection<TItem> items, KeepProfile keepProfile, int indentLevel = 1)
+        public IEnumerable<string> ToStringBeads(ICollection<TItem> items, KeepProfile profile, int indentLevel = 1)
         {
-            if (keepProfile.AppendCountComments) yield return $"/*{((ICollection)items).Count}*/ ";
-            yield return keepProfile.GetHead(items); /* "{" */
-            foreach (var bead in ConvertComplex(items, keepProfile, indentLevel))
+            if (profile.AppendCountComments) yield return $"/*{((ICollection)items).Count}*/ ";
+            yield return profile.GetHead(items); /* "{" */
+            foreach (var bead in ConvertComplex(items, profile, indentLevel))
                 yield return bead;
-            yield return keepProfile.GetTail(items); /* "}" */
+            yield return profile.GetTail(items); /* "}" */
         }
         
-        public IEnumerable<string> ConvertComplex(ICollection<TItem> items, KeepProfile keepProfile, int indentLevel = 1)
+        public IEnumerable<string> ConvertComplex(ICollection<TItem> items, KeepProfile profile, int indentLevel = 1)
         {
             var counter = 0;
 
             foreach (var item in items)
             {
-                yield return keepProfile.GetHeadIndent(indentLevel, items, counter);
+                yield return profile.GetHeadIndent(indentLevel, items, counter);
 
-                var beads = GetSegmentBeads(item, keepProfile, indentLevel);
+                var beads = GetSegmentBeads(item, profile, indentLevel);
                 foreach (var bead in beads)
                 {
                     yield return bead;
                 }
 
-                yield return keepProfile.GetTailIndent(indentLevel, items, counter++);
+                yield return profile.GetTailIndent(indentLevel, items, counter++);
             }
         }
     }
