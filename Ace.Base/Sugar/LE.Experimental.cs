@@ -24,5 +24,9 @@ namespace Ace
 		public static T Or<T>(this T o, T x) where T : class => o ?? x;
 		public static T Or<T>(this T? o, T x) where T : struct => o ?? x;
 		public static T OrNew<T>(this T o) where T : class, new() => o ?? new T();
+		
+		/* a hack to define the .NET Framework runtime todo with C# 7.3 */
+		private static readonly bool IsNetFrameworkRuntime =
+			typeof(Environment).GetProperties()[0].Name != "CommandLine";
 	}
 }
