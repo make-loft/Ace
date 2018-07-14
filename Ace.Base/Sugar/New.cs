@@ -79,15 +79,16 @@ namespace Ace
 		public static Func<A, B, C, D, E, F, Z> Func<A, B, C, D, E, F, Z>(Func<A, B, C, D, E, F, Z> f) => f;
 		public static Func<A, B, C, D, E, F, G, Z> Func<A, B, C, D, E, F, G, Z>(Func<A, B, C, D, E, F, G, Z> f) => f;
 		public static Func<A, B, C, D, E, F, G, H, Z> Func<A, B, C, D, E, F, G, H, Z>(Func<A, B, C, D, E, F, G, H, Z> f) => f;
-	
-		public static Action Action(Action f) => f;
-		public static Action<A> Action<A>(Action<A> f) => f;
-		public static Action<A, B> Action<A, B>(Action<A, B> f) => f;
-		public static Action<A, B, C> Action<A, B, C>(Action<A, B, C> f) => f;
-		public static Action<A, B, C, D> Action<A, B, C, D>(Action<A, B, C, D> f) => f;
-		public static Action<A, B, C, D, E> Action<A, B, C, D, E>(Action<A, B, C, D, E> f) => f;
-		public static Action<A, B, C, D, E, F> Action<A, B, C, D, E, F>(Action<A, B, C, D, E, F> f) => f;
-		public static Action<A, B, C, D, E, F, G> Action<A, B, C, D, E, F, G>(Action<A, B, C, D, E, F, G> f) => f;
-		public static Action<A, B, C, D, E, F, G, H> Action<A, B, C, D, E, F, G, H>(Action<A, B, C, D, E, F, G, H> f) => f;
+
+		public static Action Action(Action a) => a;
+		public static Action<A> Action<A>(Action<A> a) => a;
+		public static Action<A, B> Action<A, B>(Action<A, B> a) => a;
+		public static Action<A, B, C> Action<A, B, C>(Action<A, B, C> a) => a;
+		public static Action<A, B, C, D> Action<A, B, C, D>(Action<A, B, C, D> a) => a;
+		public static Action<A, B, C, D, E> Action<A, B, C, D, E>(Action<A, B, C, D, E> a) => a;
+		public static Action<A, B, C, D, E, F> Action<A, B, C, D, E, F>(Action<A, B, C, D, E, F> a) => a;
+		public static Action<A, B, C, D, E, F, G> Action<A, B, C, D, E, F, G>(Action<A, B, C, D, E, F, G> a) => a;
+		public static Action<A, B, C, D, E, F, G, H> Action<A, B, C, D, E, F, G, H>(Action<A, B, C, D, E, F, G, H> a) => a;
+		public static Action<A, B, C, D, E, F, G, H, I> Action<A, B, C, D, E, F, G, H, I>(Action<A, B, C, D, E, F, G, H, I> a) => a;
 	}
 }
