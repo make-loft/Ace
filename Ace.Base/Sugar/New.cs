@@ -69,5 +69,25 @@ namespace Ace
 			KeyValuePair<TK, TV> a, KeyValuePair<TK, TV> b, KeyValuePair<TK, TV> c, KeyValuePair<TK, TV> d,
 			KeyValuePair<TK, TV> e, KeyValuePair<TK, TV> f, KeyValuePair<TK, TV> g, KeyValuePair<TK, TV> h) =>
 			Dictionary<TK, TV>().Merge(a, b, c, d, e, f, g, h);
+
+		public static Func<Z> Func<Z>(Func<Z> f) => f;
+		public static Func<A, Z> Func<A, Z>(Func<A, Z> f) => f;
+		public static Func<A, B, Z> Func<A, B, Z>(Func<A, B, Z> f) => f;
+		public static Func<A, B, C, Z> Func<A, B, C, Z>(Func<A, B, C, Z> f) => f;
+		public static Func<A, B, C, D, Z> Func<A, B, C, D, Z>(Func<A, B, C, D, Z> f) => f;
+		public static Func<A, B, C, D, E, Z> Func<A, B, C, D, E, Z>(Func<A, B, C, D, E, Z> f) => f;
+		public static Func<A, B, C, D, E, F, Z> Func<A, B, C, D, E, F, Z>(Func<A, B, C, D, E, F, Z> f) => f;
+		public static Func<A, B, C, D, E, F, G, Z> Func<A, B, C, D, E, F, G, Z>(Func<A, B, C, D, E, F, G, Z> f) => f;
+		public static Func<A, B, C, D, E, F, G, H, Z> Func<A, B, C, D, E, F, G, H, Z>(Func<A, B, C, D, E, F, G, H, Z> f) => f;
+	
+		public static Action Action(Action f) => f;
+		public static Action<A> Action<A>(Action<A> f) => f;
+		public static Action<A, B> Action<A, B>(Action<A, B> f) => f;
+		public static Action<A, B, C> Action<A, B, C>(Action<A, B, C> f) => f;
+		public static Action<A, B, C, D> Action<A, B, C, D>(Action<A, B, C, D> f) => f;
+		public static Action<A, B, C, D, E> Action<A, B, C, D, E>(Action<A, B, C, D, E> f) => f;
+		public static Action<A, B, C, D, E, F> Action<A, B, C, D, E, F>(Action<A, B, C, D, E, F> f) => f;
+		public static Action<A, B, C, D, E, F, G> Action<A, B, C, D, E, F, G>(Action<A, B, C, D, E, F, G> f) => f;
+		public static Action<A, B, C, D, E, F, G, H> Action<A, B, C, D, E, F, G, H>(Action<A, B, C, D, E, F, G, H> f) => f;
 	}
 }
