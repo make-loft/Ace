@@ -70,6 +70,9 @@ namespace Ace
 			KeyValuePair<TK, TV> e, KeyValuePair<TK, TV> f, KeyValuePair<TK, TV> g, KeyValuePair<TK, TV> h) =>
 			Dictionary<TK, TV>().Merge(a, b, c, d, e, f, g, h);
 
+		public static EventHandler EventHandler(EventHandler h) => h;
+		public static EventHandler<T> EventHandler<T>(EventHandler<T> h) where T : EventArgs => h;
+		
 		public static Func<Z> Func<Z>(Func<Z> f) => f;
 		public static Func<A, Z> Func<A, Z>(Func<A, Z> f) => f;
 		public static Func<A, B, Z> Func<A, B, Z>(Func<A, B, Z> f) => f;
