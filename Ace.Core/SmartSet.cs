@@ -9,10 +9,18 @@ using Args = System.Collections.Specialized.NotifyCollectionChangedEventArgs;
 namespace Ace
 {
 	[DataContract]
-	public class SmartSet<T> : SmartObject, IList<T>, IList, INotifyCollectionChanged
+	public class SmartSet<T> : SmartSet<T, List<T>>
 	{
-		public SmartSet() => Initialize();	
-		public SmartSet(IEnumerable<T> collection) => Initialize(collection);
+		public SmartSet() => Initialize();
+		public SmartSet(IEnumerable<T> collection) => Initialize(new List<T>(collection));
+	}
+
+	[DataContract]
+	public class SmartSet<T, TList> : SmartObject, IList<T>, IList, INotifyCollectionChanged
+		where TList: class , IList<T>, new()
+	{
+		public SmartSet() => Initialize();
+		public SmartSet(TList collection) => Initialize(collection);
 		[OnDeserialized] public void OnDeserialized(StreamingContext context) => Initialize();
 		
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -20,15 +28,15 @@ namespace Ace
 		public void RaiseCollectionChanged(object sender, Args args) => CollectionChanged?.Invoke(sender, args);
 		public void RaiseCollectionChanged() => CollectionChanged?.Invoke(this, new Args(Action.Reset));
 		
-		private void Initialize(IEnumerable<T> collection = null)
+		protected void Initialize(TList collection = null)
 		{
-			Source = Source ?? (collection == null ? new List<T>() : new List<T>(collection));
+			Source = Source ?? collection ?? new TList();
 			CollectionChanged = null;
 			CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
 		}
 			
 		[DataMember]
-		public List<T> Source { get; set; }
+		public TList Source { get; set; }
 	
 		public int Count => Source.Count;
 		public object SyncRoot => ((IList) Source).SyncRoot;
