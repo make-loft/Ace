@@ -102,7 +102,7 @@
     <Compile Include="Sugar\System.Reflection.cs" />
     <Compile Include="Sugar\Switch.cs" />
     <Compile Include="Sugar\System.Linq.cs" />
-    <Compile Include="Sugar\TypeData.cs" />
+    <Compile Include="Sugar\RipeType.cs" />
     <Compile Include="Sugar\TypeOf.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>netcoreapp2.1;net471</TargetFrameworks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.14" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Ace.Base\Sugar\Const.cs">
+      <Link>ReferenceClasses\Const.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Basics.cs">
+      <Link>ReferenceClasses\LE.Basics.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Basics.Optimizations.cs">
+      <Link>ReferenceClasses\LE.Basics.Optimizations.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Check.cs">
+      <Link>ReferenceClasses\LE.Check.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Deconstruct.cs">
+      <Link>ReferenceClasses\LE.Deconstruct.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Experimental.cs">
+      <Link>ReferenceClasses\LE.Experimental.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Match.cs">
+      <Link>ReferenceClasses\LE.Match.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Merge.cs">
+      <Link>ReferenceClasses\LE.Merge.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Tuples.cs">
+      <Link>ReferenceClasses\LE.Tuples.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.Use.cs">
+      <Link>ReferenceClasses\LE.Use.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\LE.With.cs">
+      <Link>ReferenceClasses\LE.With.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\Lock.cs">
+      <Link>ReferenceClasses\Lock.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\NE.cs">
+      <Link>ReferenceClasses\NE.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\New.cs">
+      <Link>ReferenceClasses\New.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\New.Tuples.cs">
+      <Link>ReferenceClasses\New.Tuples.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\RipeType.cs">
+      <Link>ReferenceClasses\RipeType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\StringExtensions.cs">
+      <Link>ReferenceClasses\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\Switch.cs">
+      <Link>ReferenceClasses\Switch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\System.Linq.cs">
+      <Link>ReferenceClasses\System.Linq.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\System.Reflection.cs">
+      <Link>ReferenceClasses\System.Reflection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Ace.Base\Sugar\TypeOf.cs">
+      <Link>ReferenceClasses\TypeOf.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>
