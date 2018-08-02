@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using Ace.Base.Benchmarks.Benchmarks;
+using Ace.Base.Benchmarking.Benchmarks;
 using BenchmarkDotNet.Running;
 
-namespace Ace.Base.Benchmarks
+namespace Ace.Base.Benchmarking
 {
     static class Program
     {
@@ -13,8 +13,8 @@ namespace Ace.Base.Benchmarks
         
         static void Main()
         {
-            TypeofVsTypeOf();
-            RawTypeVsRipeType();
+            //TypeofVsTypeOf();
+            //RawTypeVsRipeType();
             
             BenchmarkRunner.Run<TypeOfBenchmarks>();
             BenchmarkRunner.Run<RipeTypeBenchmarks>();

@@ -2,12 +2,12 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Jobs;
 
-namespace Ace.Base.Benchmarks.Benchmarks
+namespace Ace.Base.Benchmarking.Benchmarks
 {
 	[
 		CoreJob,
 		ClrJob,
-		MonoJob("Mono 4.8.0", @"C:\Program Files\Mono\bin\mono.exe")
+		MonoJob("Mono", @"C:\Program Files\Mono\bin\mono.exe")
 	]
 	public class TypeOfBenchmarks
 	{
