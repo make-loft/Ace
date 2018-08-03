@@ -8,7 +8,7 @@ namespace Ace
 	{
 		public Type Raw { get; }
 
-		public RipeType(Type raw)
+		internal RipeType(Type raw)
 		{
 			Raw = raw;
 			

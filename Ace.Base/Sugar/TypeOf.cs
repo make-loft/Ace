@@ -11,12 +11,12 @@ namespace Ace
 	{
 		public static readonly Dictionary<Type, RipeType> RawToRipe = new Dictionary<Type, RipeType>();
 
-		public static RipeType ToRipeType(this Type type) =>
-			RawToRipe.TryGetValue(type, out var typeData)
-				? typeData
-				: Lock.Invoke(() => RawToRipe.TryGetValue(type, out typeData)
-					? typeData // may catch item created into different thread
-					: RawToRipe[type] = new RipeType(type));
+		public static RipeType ToRipeType(this Type raw) =>
+			RawToRipe.TryGetValue(raw, out var ripe)
+				? ripe
+				: Lock.Invoke(() => RawToRipe.TryGetValue(raw, out ripe)
+					? ripe // may catch an item created into a different thread
+					: RawToRipe[raw] = new RipeType(raw));
 
 		public static RipeType GetRipeType(this object o) => o.GetType().ToRipeType();
 

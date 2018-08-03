@@ -13,11 +13,11 @@ namespace Ace.Base.Benchmarking
         
         static void Main()
         {
-            //TypeofVsTypeOf();
-            //RawTypeVsRipeType();
+            TypeofVsTypeOf();
+            RawTypeVsRipeType();
             
-            BenchmarkRunner.Run<TypeOfBenchmarks>();
-            BenchmarkRunner.Run<RipeTypeBenchmarks>();
+            //BenchmarkRunner.Run<TypeOfBenchmarks>();
+            //BenchmarkRunner.Run<RipeTypeBenchmarks>();
             
             Console.ReadKey();
         }
