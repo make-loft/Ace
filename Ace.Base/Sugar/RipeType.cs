@@ -6,8 +6,6 @@ namespace Ace
 {
 	public class RipeType
 	{
-		public Type Raw { get; }
-
 		internal RipeType(Type raw)
 		{
 			Raw = raw;
@@ -45,6 +43,8 @@ namespace Ace
 			IsVisible = raw.IsVisible;
 		}
 
+		public Type Raw { get; }
+		
 		public Assembly Assembly { get; }
 		public string AssemblyQualifiedName { get; }
 		public string FullName { get; }

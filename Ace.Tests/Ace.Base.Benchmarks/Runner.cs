@@ -10,18 +10,18 @@ namespace Ace.Base.Benchmarking
     {
         private const long WarmRunsCount = 1000;
         private const long HotRunsCount = 10000000; // 10 000 000
-        
+
         static void Main()
         {
+            BenchmarkRunner.Run<TypeOfBenchmarks>();
+            BenchmarkRunner.Run<RipeTypeBenchmarks>();
+            
             TypeofVsTypeOf();
             RawTypeVsRipeType();
-            
-            //BenchmarkRunner.Run<TypeOfBenchmarks>();
-            //BenchmarkRunner.Run<RipeTypeBenchmarks>();
-            
+
             Console.ReadKey();
         }
-        
+
         static void RawTypeVsRipeType()
         {
             Console.WriteLine($"Count of warm iterations: {WarmRunsCount}");
@@ -30,23 +30,23 @@ namespace Ace.Base.Benchmarking
             var o = new object();
             var rawType = o.GetType();
             var ripeType = o.GetRipeType();
-            
+
             RunBenchmarks(
                 (() => rawType.Name, "() => rawType.Name"),
                 (() => ripeType.Name, "() => ripeType.Name"),
                 (() => o.GetType().Name, "() => o.GetType().Name"),
                 (() => o.GetRipeType().Name, "() => o.GetRipeType().Name")
             );
-            
+
             Console.WriteLine();
-            
+
             RunBenchmarks(
                 (() => rawType.Assembly, "() => rawType.Assembly"),
                 (() => ripeType.Assembly, "() => ripeType.Assembly"),
                 (() => o.GetType().Assembly, "() => o.GetType().Assembly"),
                 (() => o.GetRipeType().Assembly, "() => o.GetRipeType().Assembly")
             );
-            
+
             Console.WriteLine();
 
             RunBenchmarks(
@@ -62,23 +62,32 @@ namespace Ace.Base.Benchmarking
             Console.WriteLine($"Count of warm iterations: {WarmRunsCount}");
             Console.WriteLine($"Count of hot iterations: {HotRunsCount}");
             Console.WriteLine();
-            
+
+            RunBenchmarks(
+                (() => typeof(int), "() => typeof(int)"),
+                (() => TypeOf<int>.Raw, "() => TypeOf<int>.Raw"),
+                (() => typeof(string), "() => typeof(string)"),
+                (() => TypeOf<string>.Raw, "() => TypeOf<string>.Raw")
+            );
+
+            Console.WriteLine();
+
             RunBenchmarks(
                 (() => typeof(int).Name, "() => typeof(int).Name"),
                 (() => TypeOf<int>.Name, "() => TypeOf<int>.Name"),
                 (() => typeof(string).Name, "() => typeof(string).Name"),
                 (() => TypeOf<string>.Name, "() => TypeOf<string>.Name")
             );
-            
+
             Console.WriteLine();
-            
+
             RunBenchmarks(
                 (() => typeof(int).Assembly, "() => typeof(int).Assembly"),
                 (() => TypeOf<int>.Assembly, "() => TypeOf<int>.Assembly"),
                 (() => typeof(string).Assembly, "() => typeof(string).Assembly"),
                 (() => TypeOf<string>.Assembly, "() => TypeOf<string>.Assembly")
             );
-            
+
             Console.WriteLine();
 
             RunBenchmarks(
@@ -88,7 +97,7 @@ namespace Ace.Base.Benchmarking
                 (() => TypeOf<string>.IsValueType, "() => TypeOf<string>.IsValueType")
             );
         }
-        
+
         static void RunBenchmarks<T>(params (Func<T> Func, string StringRepresentation)[] funcAndViewTuples) =>
             funcAndViewTuples
                 .Select(t => (
@@ -97,7 +106,7 @@ namespace Ace.Base.Benchmarking
                 .ToList().ForEach(t =>
                     Console.WriteLine(
                         $"{t.StringRepresentation}\t{t.BenchmarkResults.Result}\t{t.BenchmarkResults.ElapsedMilliseconds} (ms)"));
-        
+
         static (Func<T> Func, long ElapsedMilliseconds, T Result) InvokeBenchmark<T>(this Func<T> func,
             long hotRunsCount, long warmRunsCount)
         {

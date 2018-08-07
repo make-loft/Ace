@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Jobs;
 
@@ -11,6 +12,11 @@ namespace Ace.Base.Benchmarking.Benchmarks
 	]
 	public class TypeOfBenchmarks
 	{
+		[Benchmark] public Type typeof_int() => typeof(int);
+		[Benchmark] public Type TypeOf_int() => TypeOf<int>.Raw;
+		[Benchmark] public Type typeof_string() => typeof(string);
+		[Benchmark] public Type TypeOf_string() => TypeOf<string>.Raw;
+		
 		[Benchmark] public string typeof_int_Name() => typeof(int).Name;
 		[Benchmark] public string TypeOf_int_Name() => TypeOf<int>.Name;
 		[Benchmark] public string typeof_string_Name() => typeof(string).Name;

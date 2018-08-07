@@ -41,8 +41,9 @@ namespace Ace
 	// ReSharper disable StaticMemberInGenericType
 	public static class TypeOf<T>
 	{
-		public static readonly Type Raw = typeof(T);
-		public static readonly RipeType Ripe = Raw.ToRipeType();
+		/* Important! Should be a readonly variable for best performance */ 
+		private static readonly RipeType Ripe = typeof(T).ToRipeType();
+		public static Type Raw => Ripe.Raw;
 
 		public static Assembly Assembly => Ripe.Assembly;
 		public static string AssemblyQualifiedName => Ripe.AssemblyQualifiedName;
