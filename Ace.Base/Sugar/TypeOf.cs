@@ -9,12 +9,14 @@ namespace Ace
 {
 	public static class TypeOf
 	{
-		public static readonly Dictionary<Type, RipeType> RawToRipe = new Dictionary<Type, RipeType>();
+		private static readonly object SyncRoot = new object();
+		
+		private static readonly Dictionary<Type, RipeType> RawToRipe = new Dictionary<Type, RipeType>();
 
 		public static RipeType ToRipeType(this Type raw) =>
 			RawToRipe.TryGetValue(raw, out var ripe)
 				? ripe
-				: Lock.Invoke(() => RawToRipe.TryGetValue(raw, out ripe)
+				: Lock.Invoke(SyncRoot, () => RawToRipe.TryGetValue(raw, out ripe)
 					? ripe // may catch an item created into a different thread
 					: RawToRipe[raw] = new RipeType(raw));
 
@@ -43,12 +45,12 @@ namespace Ace
 	{
 		/* Important! Should be a readonly variable for best performance */ 
 		private static readonly RipeType Ripe = typeof(T).ToRipeType();
-		public static Type Raw => Ripe.Raw;
+		public static readonly Type Raw = Ripe.Raw;
 
-		public static Assembly Assembly => Ripe.Assembly;
+		public static readonly Assembly Assembly = Ripe.Assembly;
 		public static string AssemblyQualifiedName => Ripe.AssemblyQualifiedName;
 		public static string FullName => Ripe.FullName;
-		public static string Name => Ripe.Name;
+		public static readonly string Name = Ripe.Name;
 		public static string Namespace => Ripe.Namespace;
 
 		public static bool HasElementType => Ripe.HasElementType;
@@ -74,7 +76,7 @@ namespace Ace
 		public static bool IsPublic => Ripe.IsPublic;
 		public static bool IsSealed => Ripe.IsSealed;
 		public static bool IsSpecialName => Ripe.IsSpecialName;
-		public static bool IsValueType => Ripe.IsValueType;
+		public static readonly bool IsValueType = Ripe.IsValueType;
 		public static bool IsVisible => Ripe.IsVisible;
 
 		//static TypeOf() { } // see: https://github.com/dotnet/coreclr/issues/17981

@@ -7,11 +7,13 @@ namespace Ace
 {
 	public static class Store
 	{
+		private static readonly object SyncRoot = new object();
+		
 		public static readonly Dictionary<Type, object> Container = new Dictionary<Type, object>();
 
 		public static object Get(Type type, params object[] cctorArgs) => Container.TryGetValue(type, out var item)
 			? item
-			: Lock.Invoke(() => Container.TryGetValue(type, out item) ? item : Revive(type, cctorArgs));
+			: Lock.Invoke(SyncRoot, () => Container.TryGetValue(type, out item) ? item : Revive(type, cctorArgs));
 
 		public static TItem Get<TItem>(params object[] cctorArgs) where TItem : class =>
 			(TItem) Get(TypeOf<TItem>.Raw, cctorArgs);
