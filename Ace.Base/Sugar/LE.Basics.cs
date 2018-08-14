@@ -33,9 +33,6 @@ namespace Ace
 
 		public static bool IsNull(this object o) => o is null;
 		public static bool IsNull<T>(this T o) => o == null;
-		public static bool IsNull<T>(this T o, out T x) => (x = o).IsNull();
-		public static bool IsNull<T>(this object o, out T x, T fallbackValue = default(T)) =>
-			(x = o.IsNull().To(out var b) ? (T) o : fallbackValue).Put(b);
 
 		public static bool Equals<T>(T a, T b) => EqualityComparer<T>.Default.Equals(a, b); /* boxing free equals */
 

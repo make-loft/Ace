@@ -13,9 +13,9 @@ namespace Ace.Markup.Patterns
 
 		protected ABindingExtension(object source) // Source, RelativeSource, null for DataContext
 		{
-			var relativeSource = source as RelativeSource;
-			if (relativeSource == null && source != null) Source = source;
-			else RelativeSource = relativeSource;
+			if (source.Is(out RelativeSource relativeSource))
+				RelativeSource = relativeSource;
+			else if (source.Is()) Source = source;
 			Converter = this;
 		}
 

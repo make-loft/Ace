@@ -22,7 +22,7 @@ namespace Ace
 		public SmartObject Smart
 		{
 			get => this;
-			set => RaisePropertyChanged(Equals(value) ? SmartPropertyName : null);
+			set => RaisePropertyChanged(this.Is(value) ? SmartPropertyName : throw new Exception("Wrong context"));
 		}
 
 		public object this[string key]

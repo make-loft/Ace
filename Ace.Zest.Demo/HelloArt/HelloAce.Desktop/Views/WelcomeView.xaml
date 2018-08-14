@@ -40,11 +40,11 @@
 			<TabItem Header="{Localizing Evocators}">
 				<StackPanel>
 					<GroupBox Header="{Localizing PropertiesAndCommands}">
-						<Attacher.ContextTriggers>
+						<Behaviour.ContextTriggers>
 							<ContextTrigger
 								EventName="Loaded"
 								Command="{Context Hello, StoreKey=viewModel:AppViewModel}"/>
-						</Attacher.ContextTriggers>
+						</Behaviour.ContextTriggers>
 						<StackPanel>
 							<TextBox Text="{Binding Mouse, Mode=TwoWay, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
 							<Button Content="Make (Context Command)" Command="{Context Make}"/>
@@ -117,11 +117,10 @@
 					<GroupBox Grid.Row="3" Header="{Localizing Composite}">
 						<Grid Rack.Columns="* 200\Auto">
 							<Grid.Resources>
-								<BooleanConverter x:Key="YesNoConverter" OnTrue="Yes" OnFalse="No"/>
+								<BooleanConverter x:Key="YesNoConverter" ByDefault="" OnTrue="Yes" OnFalse="No"/>
 								<SwitchConverter 
 									x:Key="CompositeSwitchConverter"
-									Default="True"
-									PostConverter="{StaticResource YesNoConverter}">
+									ByDefault="True">
 									<Case Key="0" Value="False"/>
 								</SwitchConverter>
 							</Grid.Resources>

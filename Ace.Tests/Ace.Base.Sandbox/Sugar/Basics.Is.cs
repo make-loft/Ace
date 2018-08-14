@@ -61,11 +61,11 @@ namespace Ace.Base.Sandbox.Sugar
 			Assert.IsTrue(Const.Null.IsNull());
 			Assert.IsTrue(Const.Null.To(out int? _).IsNull());
 			
-			Assert.IsTrue(Const.Null.IsNull(out var nl));
-			Assert.AreEqual(null, nl);
+			//Assert.IsTrue(Const.Null.IsNull(out var nl));
+			//Assert.AreEqual(null, nl);
 			
-			Assert.IsFalse(new object().IsNull(out var x, 9));
-			Assert.AreEqual(x, 9);
+			//Assert.IsFalse(new object().IsNull(out var x, 9));
+			//Assert.AreEqual(x, 9);
 		}
 		
 		private static void TestIsNot()

@@ -26,30 +26,28 @@ namespace Ace.Markup
 		public static bool GetShowLines(DependencyObject d) => (bool) d.GetValue(ShowLinesProperty);
 
 		public static readonly DependencyProperty ShowLinesProperty = DependencyProperty.RegisterAttached(
-			"ShowLines", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, e) =>
+			"ShowLines", typeof(bool), typeof(Rack), new PropertyMetadata(default(bool), (o, args) =>
 			{
-				var grid = o as Grid;
-				if (grid == null) return;
-				grid.ShowGridLines = Equals(e.NewValue, true);
+				if (o.Is(out Grid grid).Not() || args.NewValue.IsNull()) return;
+				
+				grid.ShowGridLines = Equals(args.NewValue, true);
 			}));
 
 		public static readonly DependencyProperty RowsProperty = DependencyProperty.RegisterAttached(
-			"Rows", typeof(string), typeof(Rack), new PropertyMetadata(default(string), (o, args) =>
+			"Rows", typeof(string), typeof(Rack), new PropertyMetadata((o, args) =>
 			{
-				var grid = o as Grid;
-				if (grid == null || args.NewValue == null) return;
-				if (grid.GetValue(UpdateTriggerProperty) != null) return;
+				if (o.Is(out Grid grid).Not() || args.NewValue.IsNull()) return;
+				if (grid.GetValue(UpdateTriggerProperty).Is(DependencyProperty.UnsetValue)) return;
 
 				UpdateDefinitions(grid, grid.RowDefinitions, args.NewValue.ToString(),
 					RowDefinition.HeightProperty, RowDefinition.MinHeightProperty, RowDefinition.MaxHeightProperty);
 			}));
 
 		public static readonly DependencyProperty ColumnsProperty = DependencyProperty.RegisterAttached(
-			"Columns", typeof(string), typeof(Rack), new PropertyMetadata(default(string), (o, args) =>
+			"Columns", typeof(string), typeof(Rack), new PropertyMetadata((o, args) =>
 			{
-				var grid = o as Grid;
-				if (grid == null || args.NewValue == null) return;
-				if (grid.GetValue(UpdateTriggerProperty) != null) return;
+				if (o.Is(out Grid grid).Not() || args.NewValue.IsNull()) return;
+				if (grid.GetValue(UpdateTriggerProperty).Is(DependencyProperty.UnsetValue)) return;
 
 				UpdateDefinitions(grid, grid.ColumnDefinitions, args.NewValue.ToString(),
 					ColumnDefinition.WidthProperty, ColumnDefinition.MinWidthProperty,
@@ -62,8 +60,7 @@ namespace Ace.Markup
 		public static readonly DependencyProperty UpdateTriggerProperty = DependencyProperty.RegisterAttached(
 			"UpdateTrigger", typeof(object), typeof(Rack), new PropertyMetadata(default(object), (o, e) =>
 			{
-				var grid = o as Grid;
-				if (grid == null) return;
+				if (o.Is(out Grid grid).Not()) return;
 
 				var columnsPattern = grid.ColumnDefinitions.Select(ToPattern).GluePatterns();
 				var rowsPattern = grid.RowDefinitions.Select(ToPattern).GluePatterns();
@@ -87,7 +84,7 @@ namespace Ace.Markup
 			DependencyProperty minValueProperty,
 			DependencyProperty maxValueProperty)
 		{
-			var lengthBinding = BindingOperations.GetBinding(definition, lengthProperty);
+			//var lengthBinding = BindingOperations.GetBinding(definition, lengthProperty);
 			var minValueBinding = BindingOperations.GetBinding(definition, minValueProperty);
 			var maxValueBinding = BindingOperations.GetBinding(definition, maxValueProperty);
 
@@ -100,23 +97,23 @@ namespace Ace.Markup
 			var isDefaultMinValue = Equals(minValue, .0);
 			var hasMinValueBinding = minValueBinding?.Path == UpdateTriggerPropertyPath;
 			builder.Append(isDefaultMinValue && !hasMinValueBinding ? null : minValue);
-			builder.Append(hasMinValueBinding ? "W" : null);
+			builder.Append(hasMinValueBinding ? "MIN" : null);
 			builder.Append(isDefaultMinValue ? null : "\\");
 
-			var hasLengthBinding = lengthBinding?.Path == UpdateTriggerPropertyPath;
+			//var hasLengthBinding = lengthBinding?.Path == UpdateTriggerPropertyPath;
 			builder.Append(length);
-			builder.Append(hasLengthBinding ? "W" : null);
+			//builder.Append(hasLengthBinding ? "LEN" : null);
 
 			var isDefaultMaxValue = Equals(maxValue, double.PositiveInfinity);
 			var hasMaxValueBinding = maxValueBinding?.Path == UpdateTriggerPropertyPath;
 			builder.Append(isDefaultMaxValue ? null : "/");
 			builder.Append(isDefaultMaxValue && !hasMaxValueBinding ? null : minValue);
-			builder.Append(hasMaxValueBinding ? "W" : null);
+			builder.Append(hasMaxValueBinding ? "MAX" : null);
 
 			return builder.ToString();
 		}
 
-		public static TDefinition ToDefinition<TDefinition>(this string pattern, Grid grid,
+		private static TDefinition ToDefinition<TDefinition>(this string pattern, Grid grid,
 			DependencyProperty lengthProperty,
 			DependencyProperty minValueProperty,
 			DependencyProperty maxValueProperty)
@@ -131,13 +128,13 @@ namespace Ace.Markup
 			var start = hasMin ? indexMin + 1 : 0;
 			var finish = hasMax ? indexMax : pattern.Length;
 			var lengthPattern = pattern.Substring(start, finish - start);
-			var bindMinValue = minValuePattern.EndsWith("W", StringComparison.OrdinalIgnoreCase);
-			var bindMaxValue = maxValuePattern.EndsWith("W", StringComparison.OrdinalIgnoreCase);
-			var bindLengthValue = lengthPattern.EndsWith("W", StringComparison.OrdinalIgnoreCase);
+			var bindMinValue = minValuePattern.EndsWith("MIN", StringComparison.OrdinalIgnoreCase);
+			var bindMaxValue = maxValuePattern.EndsWith("MAX", StringComparison.OrdinalIgnoreCase);
+			//var bindLengthValue = lengthPattern.EndsWith("LEN", StringComparison.OrdinalIgnoreCase);
 
-			lengthPattern = lengthPattern.Trim('W', 'w');
-			minValuePattern = minValuePattern.Trim('W', 'w');
-			maxValuePattern = maxValuePattern.Trim('W', 'w');
+			lengthPattern = lengthPattern.Trim("LEN len".ToCharArray());
+			minValuePattern = minValuePattern.Trim("MIN min".ToCharArray());
+			maxValuePattern = maxValuePattern.Trim("MAX max".ToCharArray());
 
 			var definition = new TDefinition();
 			definition.SetValue(lengthProperty, lengthPattern.ToGridLength());
@@ -145,9 +142,12 @@ namespace Ace.Markup
 			definition.SetValue(maxValueProperty,
 				double.TryParse(maxValuePattern, out var maxValue) ? maxValue : double.PositiveInfinity);
 
-			if (bindLengthValue) Bind(grid, definition, lengthProperty);
-			if (bindMinValue) Bind(grid, definition, minValueProperty);
-			if (bindMaxValue) Bind(grid, definition, maxValueProperty);
+			//if (bindLengthValue)
+				Bind(grid, definition, lengthProperty);
+			if (bindMinValue) 
+				Bind(grid, definition, minValueProperty);
+			if (bindMaxValue) 
+				Bind(grid, definition, maxValueProperty);
 
 			return definition;
 		}
@@ -162,28 +162,46 @@ namespace Ace.Markup
 			});
 
 		private static string GluePatterns(this IEnumerable<string> patterns) => patterns.Aggregate(new StringBuilder(),
-			(builder, pattern) => builder.Append(builder.Length == 0 ? null : " ").Append(pattern)).ToString();
+			(builder, pattern) => builder.Append(builder.Length.Is(0) ? null : " ").Append(pattern)).ToString();
 
-		public static string[] SplitPaterns(string value) =>
+		private static string[] SplitPaterns(string value) =>
 			value?.Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
 
-		public static void UpdateDefinitions<T>(Grid grid, ICollection<T> definitionCollection, string pattern,
+		private static void UpdateDefinitions<T>(Grid grid, ICollection<T> definitionCollection, string pattern,
 			DependencyProperty lengthProperty,
 			DependencyProperty minValueProperty,
 			DependencyProperty maxValueProperty)
 			where T : DefinitionBase, new()
 		{
-			definitionCollection.Clear();
 			var patterns = SplitPaterns(pattern);
 			var definitions = patterns.Select(p =>
-				p.ToDefinition<T>(grid, lengthProperty, minValueProperty, maxValueProperty));   
-			definitions.ForEach(definitionCollection.Add);
+				p.ToDefinition<T>(grid, lengthProperty, minValueProperty, maxValueProperty)).ToList();
+			var sourceDefinitions = definitionCollection.ToArray();
+			if (definitionCollection.Count.Is(definitions.Count))
+			{
+				for (var i = 0; i < definitions.Count; i++)
+				{
+					var source = definitions[i];
+					var target = sourceDefinitions[i];
+					lengthProperty.Assign(source, target);
+					minValueProperty.Assign(source, target);
+					maxValueProperty.Assign(source, target);
+				}
+			}
+			else
+			{
+				definitionCollection.Clear();
+				definitions.ForEach(definitionCollection.Add);
+			}
 		}
+
+		private static void Assign(this DependencyProperty dependencyProperty,
+			DependencyObject source, DependencyObject target) =>
+			target.SetValue(dependencyProperty, source.GetValue(dependencyProperty));
 
 		private static void OnSetChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs args)
 		{
-			var element = o as UIElement;
-			if (element == null) return;
+			if (o.Is(out UIElement element).Not()) return;
 
 			var patterns = SplitPaterns((args.NewValue as string ?? "").ToUpperInvariant());
 			var cPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && !p.StartsWith("CS"))?.Replace("C", "");
@@ -202,8 +220,8 @@ namespace Ace.Markup
 		private static GridLength ToGridLength(this string pattern)
 		{
 			var unitType = pattern.Contains("*") ? GridUnitType.Star : GridUnitType.Pixel;
-			pattern = unitType == GridUnitType.Star ? pattern.Replace("*", "") : pattern;
-			pattern = unitType == GridUnitType.Star && string.IsNullOrWhiteSpace(pattern) ? "1" : pattern;
+			pattern = unitType.Is(GridUnitType.Star) ? pattern.Replace("*", "") : pattern;
+			pattern = unitType.Is(GridUnitType.Star) && pattern.IsNullOrWhiteSpace() ? "1" : pattern;
 			return double.TryParse(pattern, out var value) ? new GridLength(value, unitType) : new GridLength();
 		}
 	}

@@ -49,7 +49,6 @@ namespace Ace.Markup
 		public bool Segregate { get; set; }
 		public new IValueConverter Converter { get; set; }
 		public SmartObject SmartObject { get; private set; }
-		public new object Source { get; set; }
 
 		[TypeConverter(typeof(TypeTypeConverter))]
 		public Type StoreKey
@@ -63,15 +62,15 @@ namespace Ace.Markup
 			SmartObject = (Source ?? value) as SmartObject;
 			value = SmartObject?[Key, DefaultValue, Segregate];
 			if (Segregate) value = (value as Segregator)?.Value;
-			if (value == null && targetType.IsValueType) value = DefaultValue;
-			return Converter == null ? value : Converter.Convert(value, targetType, parameter, culture);
+			if (value.IsNull() && targetType.IsValueType) value = DefaultValue;
+			return Converter.IsNull() ? value : Converter.Convert(value, targetType, parameter, culture);
 		}
 
 		public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (SmartObject == null) return null;
-			value = Converter == null ? value : Converter.ConvertBack(value, targetType, parameter, culture);
-			if (Segregate && SmartObject[Key] is Segregator s) s.Value = value;
+			if (SmartObject.IsNull()) return null;
+			value = Converter.IsNull() ? value : Converter.ConvertBack(value, targetType, parameter, culture);
+			if (Segregate && SmartObject[Key].Is(out Segregator s)) s.Value = value;
 			else SmartObject[Key] = value;
 			return Segregate ? null : SmartObject;
 		}
