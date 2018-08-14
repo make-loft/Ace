@@ -1,12 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Ace.Sugar;
 
 // ReSharper disable once Check`Namespace
 namespace Ace
 {
 	public class RipeType
 	{
-		internal RipeType(Type raw)
+		private static readonly Dictionary<Type, RipeType> RawToRipe = new Dictionary<Type, RipeType>();
+
+		public static RipeType Get(Type raw) => Lock.Invoke(RawToRipe, _ =>
+			RawToRipe.TryGetValue(raw, out var ripe)
+				? ripe
+				: RawToRipe[raw] = new RipeType(raw));
+		
+		private RipeType(Type raw)
 		{
 			Raw = raw;
 			

@@ -6,14 +6,11 @@ using Ace.Sugar;
 namespace Ace
 {
 	public static class Store
-	{
-		private static readonly object SyncRoot = new object();
-		
-		public static readonly Dictionary<Type, object> Container = new Dictionary<Type, object>();
+	{	
+		private static readonly Dictionary<Type, object> Container = new Dictionary<Type, object>();
 
-		public static object Get(Type type, params object[] cctorArgs) => Container.TryGetValue(type, out var item)
-			? item
-			: Lock.Invoke(SyncRoot, () => Container.TryGetValue(type, out item) ? item : Revive(type, cctorArgs));
+		public static object Get(Type type, params object[] cctorArgs) =>
+			Lock.Invoke(Container, _ => Container.TryGetValue(type, out var item) ? item : Revive(type, cctorArgs));
 
 		public static TItem Get<TItem>(params object[] cctorArgs) where TItem : class =>
 			(TItem) Get(TypeOf<TItem>.Raw, cctorArgs);
@@ -26,16 +23,5 @@ namespace Ace
 			Memory.ActiveBox.Revive(null, type, constructorArgs)
 				.Use(item => Container.Add(type, item)) /* note: Add before Expose */
 				.Use(item => (item as IExposable)?.Expose());
-	}
-
-	public static class Store<TItem> where TItem : class
-	{
-		private static TItem _item;
-
-		public static TItem Set(TItem item) => _item = item;
-
-		public static TItem Get(params object[] cctorArgs) =>
-			_item ?? Lock.Invoke(() => _item ?? Store.Revive(TypeOf<TItem>.Raw, cctorArgs).To(out _item));
-
 	}
 }
