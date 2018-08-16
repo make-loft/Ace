@@ -7,6 +7,11 @@ namespace Ace
 {
 	public static partial class New
 	{
+		public static T _<T>(out T o) where T : new() => o = new T();
+
+		public static T _<T>(out T o, params object[] constructorArgs) =>
+			o = (T) Activator.CreateInstance(TypeOf<T>.Raw, constructorArgs);
+		
 		public static T Object<T>() where T : new() => new T();
 
 		public static T Object<T>(params object[] constructorArgs) =>

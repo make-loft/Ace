@@ -33,5 +33,22 @@ namespace Ace
 
 		public static char Pick(this string str, int index) => index < 0 ? str[str.Length + index] : str[index];
 		public static char PickByRing(this string str, int index) => str.Pick(index % str.Length);
+
+		public static bool TryParse(this string pattern, out bool value) => bool.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out byte value) => byte.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out sbyte value) => sbyte.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out char value) => char.TryParse(pattern, out value);
+		
+		public static bool TryParse(this string pattern, out int value) => int.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out uint value) => uint.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out long value) => long.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out ulong value) => ulong.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out short value) => short.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out ushort value) => ushort.TryParse(pattern, out value);
+		
+		public static bool TryParse(this string pattern, out float value) => float.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out double value) => double.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out decimal value) => decimal.TryParse(pattern, out value);
+
 	}
 }
