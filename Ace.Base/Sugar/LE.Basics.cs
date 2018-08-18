@@ -41,6 +41,7 @@ namespace Ace
 		public static bool Is<T>(this object o, T x) => o.Is<T>() && Equals((T) o, x);
 		public static bool Is(this object o, object x) => Equals(o, x);
 		
+		public static bool IsNot<T>(this T o) => !o.Is();
 		public static bool IsNot<T>(this T o, T x) => !o.Is(x);
 		public static bool IsNot<T>(this object o, T x) => !o.Is(x);
 		public static bool IsNot<T>(this T o, object x) => !o.Is(x);

@@ -78,7 +78,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedWatcher.cs" />
     <Compile Include="Specific\KeyFileStorage.Desktop.cs" />
-    <Compile Include="VisualTree.Sugar.cs" />
+    <Compile Include="Sugar\BindingOperationsExt.cs" />
+    <Compile Include="Sugar\VisualTree.cs" />
     <Compile Include="WildThread.cs" />
   </ItemGroup>
   <ItemGroup>
