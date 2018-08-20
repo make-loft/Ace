@@ -64,16 +64,16 @@ namespace Ace
 		{
 			switch (context)
 			{
-				case A aa when a != null: return a.Invoke(aa);
-				case B bb when b != null: return b.Invoke(bb);
-				case C cc when c != null: return c.Invoke(cc);
-				case D dd when d != null: return d.Invoke(dd);
-				case E ee when e != null: return e.Invoke(ee);
-				case F ff when f != null: return f.Invoke(ff);
-				case G gg when g != null: return g.Invoke(gg);
-				case H hh when h != null: return h.Invoke(hh);
+				case A aa when a.Is(): return a.Invoke(aa);
+				case B bb when b.Is(): return b.Invoke(bb);
+				case C cc when c.Is(): return c.Invoke(cc);
+				case D dd when d.Is(): return d.Invoke(dd);
+				case E ee when e.Is(): return e.Invoke(ee);
+				case F ff when f.Is(): return f.Invoke(ff);
+				case G gg when g.Is(): return g.Invoke(gg);
+				case H hh when h.Is(): return h.Invoke(hh);
 				default:
-					return nullCase != null && context.IsNull()
+					return nullCase.Is() && context.IsNot()
 						? nullCase.Invoke()
 						: throw new ArgumentException($"Undefined case for '{context}'");
 			}

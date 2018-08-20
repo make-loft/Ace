@@ -31,17 +31,14 @@ namespace Ace
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
 			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(b);
 
-		public static bool IsNull(this object o) => o is null;
-		public static bool IsNull<T>(this T o) => o == null;
-
 		public static bool Equals<T>(T a, T b) => EqualityComparer<T>.Default.Equals(a, b); /* boxing free equals */
 
 		public static bool Is<T>(this T o, T x) => Equals(o, x); /* Equals<T>(o, x); */
 		public static bool Is<T>(this T o, object x) => x.Is<T>() && Equals(o, (T) x);
 		public static bool Is<T>(this object o, T x) => o.Is<T>() && Equals((T) o, x);
 		public static bool Is(this object o, object x) => Equals(o, x);
-		
-		public static bool IsNot<T>(this T o) => !o.Is();
+
+		public static bool IsNot<T>(this T o) => o == null;
 		public static bool IsNot<T>(this T o, T x) => !o.Is(x);
 		public static bool IsNot<T>(this object o, T x) => !o.Is(x);
 		public static bool IsNot<T>(this T o, object x) => !o.Is(x);
@@ -52,7 +49,10 @@ namespace Ace
 		public static bool Is<T>(this T o, T? x) where T : struct => x.HasValue && Equals(o, x.Value);
 		public static bool IsNot<T>(this T? o, T x) where T : struct => !o.Is(x);
 		public static bool IsNot<T>(this T o, T? x) where T : struct => !o.Is(x);
-		public static bool IsNull<T>(this T? o) where T : struct => !o.HasValue; /* is null */
+		
+		//public static bool IsNull(this object o) => o is null;
+		//public static bool IsNull<T>(this T o) => o == null;
+		//public static bool IsNull<T>(this T? o) where T : struct => !o.HasValue; /* is null */
 
 		public static bool Not<T>(this T o, Func<T, bool> predicate) => !predicate(o);
 	}

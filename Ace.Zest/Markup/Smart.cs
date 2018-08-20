@@ -62,14 +62,14 @@ namespace Ace.Markup
 			SmartObject = (Source ?? value) as SmartObject;
 			value = SmartObject?[Key, DefaultValue, Segregate];
 			if (Segregate) value = (value as Segregator)?.Value;
-			if (value.IsNull() && targetType.IsValueType) value = DefaultValue;
-			return Converter.IsNull() ? value : Converter.Convert(value, targetType, parameter, culture);
+			if (value.IsNot() && targetType.IsValueType) value = DefaultValue;
+			return Converter.IsNot() ? value : Converter.Convert(value, targetType, parameter, culture);
 		}
 
 		public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (SmartObject.IsNull()) return null;
-			value = Converter.IsNull() ? value : Converter.ConvertBack(value, targetType, parameter, culture);
+			if (SmartObject.IsNot()) return null;
+			value = Converter.IsNot() ? value : Converter.ConvertBack(value, targetType, parameter, culture);
 			if (Segregate && SmartObject[Key].Is(out Segregator s)) s.Value = value;
 			else SmartObject[Key] = value;
 			return Segregate ? null : SmartObject;

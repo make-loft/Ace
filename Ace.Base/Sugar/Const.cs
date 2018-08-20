@@ -11,7 +11,7 @@ namespace Ace
 		public static readonly Func<bool, bool> Not = LE.Not;
 		public static readonly Func<bool, bool> IsTrue = LE.IsTrue;
 		public static readonly Func<bool, bool> IsFalse = LE.IsFalse;
-		public static readonly Func<object, bool> IsNull = LE.IsNull;
+		public static readonly Func<object, bool> IsNot = LE.IsNot;
 		public static readonly Func<object, bool> Is = LE.Is;
 		public static readonly Action NotImplementedException = () => throw new NotImplementedException();
 		public static readonly Action Stub = () => { };
@@ -19,7 +19,7 @@ namespace Ace
 	
 	public static class Const<T>
 	{
-		public static readonly Func<T, bool> IsNull = LE.IsNull;
+		public static readonly Func<T, bool> IsNot = LE.IsNot;
 		public static readonly Func<T, bool> Is = LE.Is;
 	}
 

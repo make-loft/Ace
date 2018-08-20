@@ -36,7 +36,7 @@ namespace Ace
 			while (true)
 			{
 				var parent = VisualTreeHelper.GetParent(current);
-				if (parent is null) yield break;
+				if (parent.IsNot()) yield break;
 				yield return current = parent;
 			}
 		}

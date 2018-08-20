@@ -16,7 +16,7 @@ namespace Ace.Converters
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var @case = Cases.FirstOrDefault(c => c.MatchByKey(value, StringComparison));
-			return GetDefined(@case == null ? ByDefault : @case.Value, value);
+			return GetDefined(@case.Is() ? @case.Value : ByDefault, value);
 		}
 	}
 }

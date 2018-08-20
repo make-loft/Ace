@@ -199,7 +199,7 @@ namespace Ace.Markup
 			PropertyPath path)
 			where TDefinition : DefinitionBase, new()
 		{
-			if (grid.GetValue(updateTriggerProperty).Is(true)) return;
+			if (grid.GetValue(updateTriggerProperty).Is(true) || pattern.IsNot()) return;
 
 			var patterns = SplitPaterns(pattern);
 

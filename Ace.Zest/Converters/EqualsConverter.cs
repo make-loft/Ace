@@ -21,6 +21,6 @@ namespace Ace.Converters
 				: GetDefined(ByDefault, value);
 
 		public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			Equals(value, true) ? parameter : UndefinedValue;
+			value.Is(true) ? parameter : UndefinedValue;
 	}
 }

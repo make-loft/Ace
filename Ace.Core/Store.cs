@@ -22,6 +22,6 @@ namespace Ace
 		internal static object Revive(Type type, params object[] constructorArgs) =>
 			Memory.ActiveBox.Revive(null, type, constructorArgs)
 				.Use(item => Container.Add(type, item)) /* note: Add before Expose */
-				.Use(item => (item as IExposable)?.Expose());
+				.Use(item => item.As<IExposable>()?.Expose());
 	}
 }

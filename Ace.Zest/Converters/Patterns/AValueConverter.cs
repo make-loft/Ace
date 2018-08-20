@@ -27,12 +27,12 @@ namespace Ace.Converters.Patterns
 		}
 
 		protected static object GetDefined(object activeValue, object defaultValue) =>
-			activeValue == UndefinedValue ? defaultValue : activeValue;
+			activeValue.Is(UndefinedValue) ? defaultValue : activeValue;
 
 		public abstract object Convert(object value, Type targetType, object parameter, CultureInfo culture);
 
 		public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			BackConverter == null
+			BackConverter.IsNot()
 				? throw new Exception("Specify 'BackConverter' for ConvertBack")
 				: BackConverter.Convert(value, targetType, parameter, culture);
 
@@ -41,8 +41,8 @@ namespace Ace.Converters.Patterns
 		public IValueConverter BackConverter { get; set; }
 
 		public static bool EqualsAsStrings(object a, object b, StringComparison comparison) =>
-			a == b
-			|| string.Compare(a as string, b?.ToString(), comparison) == 0
-			|| string.Compare(a?.ToString(), b as string, comparison) == 0;
+			Equals(a, b)
+			|| string.Compare(a as string, b?.ToString(), comparison).Is(0)
+			|| string.Compare(a?.ToString(), b as string, comparison).Is(0);
 	}
 }

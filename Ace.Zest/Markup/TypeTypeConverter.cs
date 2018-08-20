@@ -15,7 +15,7 @@ namespace Ace.Markup
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			if (value.IsNull()) return null;
+			if (value.IsNot()) return null;
 			var typeName = value.ToString().Split(':').Last();
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 			// ReSharper disable once LoopCanBeConvertedToQuery

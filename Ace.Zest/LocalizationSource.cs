@@ -9,13 +9,13 @@ namespace Ace
 	{
 		public static readonly LocalizationSource Wrap = new LocalizationSource();
 
-		public override string this[string key] => key == null
+		public override string this[string key] => key.IsNot()
 			? null
 			: ActiveManager?.GetString(key) ??
 			  MergedManagers.Select(m => m.GetString(key)).FirstOrDefault() ??
 			  GetDefault(key);
 
-		public override string this[string key, CultureInfo culture] => key == null
+		public override string this[string key, CultureInfo culture] => key.IsNot()
 			? null
 			: ActiveManager?.GetString(key, culture) ??
 			  MergedManagers.Select(m => m.GetString(key, culture)).FirstOrDefault() ??

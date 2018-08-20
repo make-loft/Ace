@@ -45,10 +45,10 @@ namespace Ace.Evocators
 		public void EvokePreviewExecuted(object sender, TE args) => PreviewExecuted?.Invoke(sender, args);
 		public void EvokePreviewCanExecute(object sender, TC args) => PreviewCanExecute?.Invoke(sender, args);
 
-		public bool HasExecuted() => Executed != null;
-		public bool HasCanExecute() => CanExecute != null;
-		public bool HasPreviewExecuted() => PreviewExecuted != null;
-		public bool HasPreviewCanExecute() => PreviewCanExecute != null;
+		public bool HasExecuted() => Executed.Is();
+		public bool HasCanExecute() => CanExecute.Is();
+		public bool HasPreviewExecuted() => PreviewExecuted.Is();
+		public bool HasPreviewCanExecute() => PreviewCanExecute.Is();
 	}
 
 	public class CommandEvocator : CommandEvocator<ExecutedEventArgs, CanExecuteEventArgs>

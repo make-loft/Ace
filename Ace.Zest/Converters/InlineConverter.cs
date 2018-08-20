@@ -16,7 +16,7 @@ namespace Ace.Converters
 		{
 			var args = new ConverterEventArgs(value, targetType, parameter, culture);
 			Converting?.Invoke(this, args);
-			return PostConverter == null
+			return PostConverter.IsNot()
 				? args.ConvertedValue
 				: PostConverter.Convert(args.ConvertedValue, targetType, PostConverterParameter, culture);
 		}
@@ -25,7 +25,7 @@ namespace Ace.Converters
 		{
 			var args = new ConverterEventArgs(value, targetType, parameter, culture);
 			ConvertingBack?.Invoke(this, args);
-			return PostConverter == null
+			return PostConverter.IsNot()
 				? args.ConvertedValue
 				: PostConverter.ConvertBack(args.ConvertedValue, targetType, PostConverterParameter, culture);
 		}

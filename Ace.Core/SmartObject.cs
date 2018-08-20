@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Ace.Replication;
 
 namespace Ace
 {
@@ -14,8 +13,7 @@ namespace Ace
 	{
 		public static object UndefinedSmartValue = null;
 		private Dictionary<string, object> _smartContainer;
-		protected Dictionary<string, object> SmartContainer =>
-			_smartContainer ?? (_smartContainer = new Dictionary<string, object>());
+		protected Dictionary<string, object> SmartContainer => _smartContainer.OrNew(ref _smartContainer);
 
 		public const string SmartPropertyName = "Smart";
 
@@ -88,7 +86,7 @@ namespace Ace
 
 		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool checkEquals = false)
 		{
-			if (checkEquals && Equals(Get(expression), value)) return;
+			if (checkEquals && Get(expression).Is(value)) return;
 			var propertyName = expression.UnboxMemberName();
 			RaisePropertyChanging(propertyName);
 			this[propertyName] = value;

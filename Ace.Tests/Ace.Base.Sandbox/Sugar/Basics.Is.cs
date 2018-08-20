@@ -29,9 +29,9 @@ namespace Ace.Base.Sandbox.Sugar
 			var shapeALikeShape = (Shape) shapeA;
 		
 			Assert.AreEqual(shapeALikeShape.Is(), shapeA.Is());
-			Assert.AreEqual(shapeALikeShape.IsNull(), shapeA.IsNull());
+			Assert.AreEqual(shapeALikeShape.IsNot(), shapeA.IsNot());
 			Assert.AreEqual(shapeALikeShape != null, shapeALikeShape.Is());
-			Assert.AreEqual(shapeALikeShape == null, shapeALikeShape.IsNull());
+			Assert.AreEqual(shapeALikeShape == null, shapeALikeShape.IsNot());
 			
 			Assert.AreEqual(true, shapeA.Is(shapeA));
 			Assert.AreEqual(true, shapeA.Is<Shape>(shapeA));
@@ -58,8 +58,8 @@ namespace Ace.Base.Sandbox.Sugar
 
 		private static void TestIsNull()
 		{
-			Assert.IsTrue(Const.Null.IsNull());
-			Assert.IsTrue(Const.Null.To(out int? _).IsNull());
+			Assert.IsTrue(Const.Null.IsNot());
+			Assert.IsTrue(Const.Null.To(out int? _).IsNot());
 			
 			//Assert.IsTrue(Const.Null.IsNull(out var nl));
 			//Assert.AreEqual(null, nl);

@@ -22,13 +22,13 @@ namespace Ace.Converters
 		public static string Apply(this string text, Modifier modifiers) =>
 			modifiers.Is(Modifier.Original)
 				? text
-				: Modifiers.Where(m => (modifiers & m) == m).Aggregate(text, (t, m) => t.ApplySingle(m));
+				: Modifiers.Where(m => (modifiers & m).Is(m)).Aggregate(text, (t, m) => t.ApplySingle(m));
 
 		private static string ApplySingle(this string text, Modifier modifier) =>
-			modifier == Modifier.Original ? text :
-			modifier == Modifier.ToUpper ? text.ToUpper() :
-			modifier == Modifier.ToLower ? text.ToLower() :
-			modifier == Modifier.RemoveUnderlines ? text.Replace("_", "") :
+			modifier.Is(Modifier.Original) ? text :
+			modifier.Is(Modifier.ToUpper) ? text.ToUpper() :
+			modifier.Is(Modifier.ToLower) ? text.ToLower() :
+			modifier.Is(Modifier.RemoveUnderlines) ? text.Replace("_", "") :
 			text;
 
 		public static string Apply(this string text, string stringFormat) =>
@@ -40,7 +40,7 @@ namespace Ace.Converters
 		public Modifier Modifiers { get; set; }
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			(value as string)?.Apply(Modifiers);
+			value.As<string>()?.Apply(Modifiers);
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
 			throw new NotImplementedException();

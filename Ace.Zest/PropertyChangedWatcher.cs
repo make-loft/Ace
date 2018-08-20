@@ -18,7 +18,7 @@ namespace Ace
 		public static DataContextWatcher GetDataContextWatcher(this FrameworkElement element)
 		{
 			var expression = element.GetBindingExpression(DataContextWatcher.ContextProperty);
-			return expression == null
+			return expression.IsNot()
 				? new DataContextWatcher(element)
 				: (DataContextWatcher) expression.ParentBinding.Converter;
 		}
@@ -71,7 +71,7 @@ namespace Ace
 		internal PropertyChangedWatcher(object source, string path = null, BindingMode mode = BindingMode.Default)
 		{
 			PropertyName = path?.Split('.').Last();
-			var binding = path == null
+			var binding = path.IsNot()
 				? new Binding {Source = source, Mode = mode}
 				: new Binding(path) {Source = source, Mode = mode};
 			BindingOperations.SetBinding(this, WatchedPropertyProperty, binding);

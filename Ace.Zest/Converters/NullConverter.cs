@@ -16,6 +16,6 @@ namespace Ace.Converters
 		}
 
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			GetDefined(value == null ? OnNull : ByDefault, value);
+			GetDefined(value.Is() ? ByDefault : OnNull, value);
 	}
 }

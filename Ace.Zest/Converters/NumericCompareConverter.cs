@@ -22,9 +22,9 @@ namespace Ace.Converters
 		}
 
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			value == null || parameter == null ||
-			!decimal.TryParse(value.ToString(), out var v) ||
-			!decimal.TryParse(value.ToString(), out var p) ? GetDefined(ByDefault, value) :
+			value.IsNot() || parameter.IsNot() ||
+			!value.ToString().TryParse(out decimal v) ||
+			!value.ToString().TryParse(out decimal p) ? GetDefined(ByDefault, value) :
 			v > p ? GetDefined(OnGreate, value) :
 			v < p ? GetDefined(OnLess, value) :
 			GetDefined(OnEquals, value);

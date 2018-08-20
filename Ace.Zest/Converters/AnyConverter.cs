@@ -18,6 +18,6 @@ namespace Ace.Converters
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
 			value is IList list && list.Count > 0
 				? GetDefined(OnAny, value)
-				: GetDefined(value == null ? OnNull : ByDefault, value);
+				: GetDefined(value.Is() ? ByDefault : OnNull, value);
 	}
 }

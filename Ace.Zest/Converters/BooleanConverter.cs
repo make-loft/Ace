@@ -25,11 +25,14 @@ namespace Ace.Converters
 		private static readonly string FalseString = false.ToString();
 
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			Equals(value, false) ? GetDefined(OnFalse, false) :
-			Equals(value, true) ? GetDefined(OnTrue, true) :
-			Equals(value, null) ? GetDefined(OnNull, null) :
+			value.Is(false) ? GetDefined(OnFalse, false) :
+			value.Is(true) ? GetDefined(OnTrue, true) :
+			value.IsNot() ? GetDefined(OnNull, null) :
 			EqualsAsStrings(value, FalseString, StringComparison) ? GetDefined(OnFalse, false) :
 			EqualsAsStrings(value, TrueString, StringComparison) ? GetDefined(OnTrue, true) :
 			GetDefined(ByDefault, value);
+
+		public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+			Convert(value, targetType, parameter, culture);
 	}
 }
