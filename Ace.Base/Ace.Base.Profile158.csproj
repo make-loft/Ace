@@ -93,6 +93,7 @@
     <Compile Include="Sugar\LE.Merge.cs" />
     <Compile Include="Sugar\LE.Tuples.cs" />
     <Compile Include="Sugar\LE.Use.cs" />
+    <Compile Include="Sugar\LE.ValueTuples.cs" />
     <Compile Include="Sugar\LE.With.cs" />
     <Compile Include="Sugar\Lock.cs" />
     <Compile Include="Sugar\NE.cs" />
