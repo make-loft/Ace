@@ -203,21 +203,13 @@ namespace Ace.Markup
 
 			var patterns = SplitPaterns(pattern);
 
-			if (definitions.Count.Is(patterns.Length))
+			definitions.Clear();
+			patterns.Select(p =>
 			{
-				for (var i = 0; i < definitions.Count; i++)
-					definitions[i].SetValues(patterns[i], grid, lengthProperty, minValueProperty, maxValueProperty, path);
-			}
-			else
-			{
-				definitions.Clear();
-				patterns.Select(p =>
-				{
-					var d = new TDefinition();
-					d.SetValues(p, grid, lengthProperty, minValueProperty, maxValueProperty, path);
-					return d;
-				}).ForEach(definitions.Add);
-			}
+				var d = new TDefinition();
+				d.SetValues(p, grid, lengthProperty, minValueProperty, maxValueProperty, path);
+				return d;
+			}).ForEach(definitions.Add);
 		}
 
 		private static void OnSetChangedCallback(UIElement element, DependencyPropertyChangedEventArgs args)

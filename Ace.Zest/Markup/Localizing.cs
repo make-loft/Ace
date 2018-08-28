@@ -20,6 +20,6 @@ namespace Ace.Markup
 		public Modifier Modifiers { get; set; }
 		
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			LocalizationSource.Wrap[Key, culture].Apply(Modifiers).Apply(StringFormat);
+			LocalizationSource.Wrap[Key, culture].Apply(Modifiers);
 	}
 }
