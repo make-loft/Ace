@@ -4,7 +4,9 @@ using System.Windows.Markup;
 using Ace.Converters.Patterns;
 using static System.Windows.DependencyProperty;
 using static Ace.Converters.Patterns.AValueConverter;
-using ContentProperty = Xamarin.Forms.ContentPropertyAttribute;
+#if XAMARIN
+using Xamarin.Forms;
+#endif
 
 namespace Ace.Markup
 {

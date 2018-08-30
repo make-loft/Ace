@@ -1,128 +1,43 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{67F9D3A8-F71E-4428-913F-C37AE82CDB24}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <EnableDefaultCompileItems>True</EnableDefaultCompileItems>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Ace</RootNamespace>
-    <AssemblyName>Ace.Zest</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\ReleaseOrDebug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XAMARIN</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;XAMARIN</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\ReleaseOrDebug\</OutputPath>
-    <DefineConstants>TRACE;XAMARIN</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Adapters\RoutedCommandsAdapter.cs" />
-    <Compile Include="Adapters\System.Windows.cs" />
-    <Compile Include="Adapters\System.Windows.Media.cs" />
-    <Compile Include="Converters\AnyConverter.cs" />
-    <Compile Include="Converters\BooleanConverter.cs" />
-    <Compile Include="Converters\EqualsConverter.cs" />
-    <Compile Include="Converters\LetterCaseConverter.cs" />
-    <Compile Include="Converters\NullConverter.cs" />
-    <Compile Include="Converters\NumericCompareConverter.cs" />
-    <Compile Include="Converters\Patterns\AValueConverter.cs" />
-    <Compile Include="Converters\Patterns\ICase.cs" />
-    <Compile Include="Converters\Patterns\ICompositeConverter.cs" />
-    <Compile Include="Converters\Patterns\IInlineConverter.cs" />
-    <Compile Include="Converters\Patterns\ITwoWayConverter.cs" />
-    <Compile Include="Converters\SwitchConverter.cs" />
-    <Compile Include="Converters\ToStringConverter.cs" />
-    <Compile Include="LocalizationSource.cs" />
-    <Compile Include="Markup\Behaviour.cs" />
-    <Compile Include="Markup\Case.cs" />
-    <Compile Include="Markup\Context.cs" />
-    <Compile Include="Markup\ContextTrigger.cs" />
-    <Compile Include="Markup\MarkupWrappers.cs" />
-    <Compile Include="Markup\Localizing.cs" />
-    <Compile Include="Markup\Patterns\ABindingExtension.cs" />
-    <Compile Include="Adapters\System.Windows.Data.cs" />
-    <Compile Include="Markup\Patterns\AMarkupExtension.cs" />
-    <Compile Include="Markup\ResourceDictionary.cs" />
-    <Compile Include="Markup\Set.cs">
-      <SubType>
-      </SubType>
-    </Compile>
-    <Compile Include="Markup\Smart.cs">
-      <SubType>
-      </SubType>
-    </Compile>
-    <Compile Include="Markup\Store.cs">
-      <SubType>
-      </SubType>
-    </Compile>
-    <Compile Include="Markup\StoreBinding.cs">
-      <SubType>
-      </SubType>
-    </Compile>
-    <Compile Include="Markup\TypeExtension.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyChangedWatcher.cs" />
-    <Compile Include="Sugar.cs" />
-    <Compile Include="VisualTree.Sugar.cs" />
-    <Compile Include="WrapLoader.cs" />
+    <Compile Remove="Adapters\Xamarin.Forms.cs" />
+    <Compile Remove="Dictionaries\AppConverters.cs" />
+    <Compile Remove="Markup\Picture.cs" />
+    <Compile Remove="Markup\Rack.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="Specific\Core.Store.cs" />
+    <Compile Remove="Specific\KeyFileStorage.Phone.cs" />
+    <Compile Remove="Specific\KeyFileStorage.Store.cs" />
+    <Compile Remove="Sugar\BindingOperationsExt.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Ace.Base\Ace.Base.Profile158.csproj">
-      <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
-      <Name>Ace.Base.Profile158</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Ace.Core\Ace.Core.Profile158.csproj">
-      <Project>{306379db-60e7-43bc-a6d9-a29b1ccc0057}</Project>
-      <Name>Ace.Core.Profile158</Name>
-    </ProjectReference>
+    <EmbeddedResource Remove="Dictionaries\AppConverters.xaml" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="3.0.0.446417" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ace\Ace.Base\Ace.Base.Standard2.0.csproj" />
+    <ProjectReference Include="..\..\Ace\Ace.Core\Ace.Core.Standard2.0.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Folder Include="Dictionaries\" />
-    <Folder Include="Specific\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Xamarin.Forms.Core">
-      <HintPath>..\..\packages\Xamarin.Forms.2.3.4.270\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xamarin.Forms.Platform">
-      <HintPath>..\..\packages\Xamarin.Forms.2.3.4.270\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.Platform.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xamarin.Forms.Xaml">
-      <HintPath>..\..\packages\Xamarin.Forms.2.3.4.270\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.Xaml.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <Import Project="..\packages\Xamarin.Forms.2.3.4.247\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.4.247\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Xamarin.Forms.2.3.4.270\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Xamarin.Forms.2.3.4.270\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\Xamarin.Forms.2.3.4.270\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.2.3.4.270\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" />
+
 </Project>

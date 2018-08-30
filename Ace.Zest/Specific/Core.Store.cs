@@ -8,30 +8,15 @@ namespace Aero.Specific
     {
         public static Core Aid = new Core();
 
-        public string Localize(string key, string stringFormat = null)
-        {
-            return LocalizationSource.Wrap[key];
-        }
+        public string Localize(string key, string stringFormat = null) => Ace.LocalizationSource.Wrap[key];
 
-        public void Exit()
-        {
-            
-        }
+        public void Exit() { }
 
-        public void Trace(Exception exception)
-        {
-            Debug.WriteLine(exception);
-        }
+        public void Trace(Exception exception) => Debug.WriteLine(exception);
 
-        public object GetCurrentCulture()
-        {
-            return null;// Thread.CurrentThread.CurrentCulture;
-        }
+        public object GetCurrentCulture() => null;
 
-        public void SetInvariantCulture()
-        {
-            SetCurrentCulture(CultureInfo.InvariantCulture);
-        }
+        public void SetInvariantCulture() => SetCurrentCulture(CultureInfo.InvariantCulture);
 
         public void SetCurrentCulture(object culture)
         {

@@ -2,6 +2,7 @@
 using System.Linq;
 using Ace;
 
+#if !NETSTANDARD
 // ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
@@ -14,6 +15,7 @@ namespace System.Reflection
 			member?.GetCustomAttributes(TypeOf<T>.Raw, true).FirstOrDefault() as T;
 	}
 }
+#endif
 
 namespace System.TypeInfoAdapter
 {
