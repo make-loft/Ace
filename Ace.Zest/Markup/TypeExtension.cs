@@ -1,9 +1,10 @@
-﻿// ReSharper disable RedundantUsingDirective
-using System;
+﻿using System;
+
+#if XAMARIN
+using Xamarin.Forms;
+#else
 using System.ComponentModel;
-using Ace.Adapters;
-using TypeConverter = Xamarin.Forms.TypeConverterAttribute;
-using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
+#endif
 
 namespace Ace.Markup
 {

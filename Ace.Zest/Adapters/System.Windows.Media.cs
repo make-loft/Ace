@@ -15,7 +15,7 @@ namespace System.Windows.Media
 
 		private static int GetChildrenCount(object content) => content is IList<View> listedContent
 			? listedContent.Count
-			: content == null
+			: content is null
 				? 0
 				: 1;
 
