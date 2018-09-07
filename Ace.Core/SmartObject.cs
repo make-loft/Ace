@@ -84,9 +84,9 @@ namespace Ace
 		public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default(TValue)) =>
 			(TValue)this[expression.UnboxMemberName(), defaultValue];
 
-		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool checkEquals = false)
+		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool checkEquality = false)
 		{
-			if (checkEquals && Get(expression).Is(value)) return;
+			if (checkEquality && Get(expression).Is(value)) return;
 			var propertyName = expression.UnboxMemberName();
 			RaisePropertyChanging(propertyName);
 			this[propertyName] = value;

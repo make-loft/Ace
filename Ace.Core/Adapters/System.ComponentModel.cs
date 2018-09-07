@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if !NETSTANDARD
+using System.Collections;
 
 // ReSharper disable once CheckNamespace
 
@@ -47,3 +48,4 @@ namespace System.ComponentModel
         event PropertyChangingEventHandler PropertyChanging;
     }
 }
+#endif
