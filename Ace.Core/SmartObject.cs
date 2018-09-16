@@ -74,7 +74,7 @@ namespace Ace
 
 		public void RaiseSmartPropertyChanged(string propertyName) =>
 			SmartPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		
+
 		public void RaisePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
 			RaisePropertyChanging(expression.UnboxMemberName());
 
@@ -82,12 +82,12 @@ namespace Ace
 			RaisePropertyChanged(expression.UnboxMemberName());
 
 		public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default(TValue)) =>
-			(TValue)this[expression.UnboxMemberName(), defaultValue];
+			(TValue) this[expression.UnboxMemberName(), defaultValue];
 
-		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool checkEquality = false)
+		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool matching = false)
 		{
-			if (checkEquality && Get(expression).Is(value)) return;
 			var propertyName = expression.UnboxMemberName();
+			if (matching && this[propertyName].Is(value)) return;
 			RaisePropertyChanging(propertyName);
 			this[propertyName] = value;
 			RaisePropertyChanged(propertyName);

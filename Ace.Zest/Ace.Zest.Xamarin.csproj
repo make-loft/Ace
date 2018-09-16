@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <EnableDefaultCompileItems>True</EnableDefaultCompileItems>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Ace</RootNamespace>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;XAMARIN</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Adapters\Xamarin.Forms.cs" />
     <Compile Remove="Dictionaries\AppConverters.cs" />
@@ -21,23 +21,18 @@
     <Compile Remove="Specific\KeyFileStorage.Store.cs" />
     <Compile Remove="Sugar\BindingOperationsExt.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Remove="Dictionaries\AppConverters.xaml" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="3.0.0.446417" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Ace\Ace.Base\Ace.Base.Standard2.0.csproj" />
     <ProjectReference Include="..\..\Ace\Ace.Core\Ace.Core.Standard2.0.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Dictionaries\" />
     <Folder Include="Properties\" />
   </ItemGroup>
-
 </Project>
