@@ -49,6 +49,5 @@ namespace Ace
 		public static bool TryParse(this string pattern, out float value) => float.TryParse(pattern, out value);
 		public static bool TryParse(this string pattern, out double value) => double.TryParse(pattern, out value);
 		public static bool TryParse(this string pattern, out decimal value) => decimal.TryParse(pattern, out value);
-
 	}
 }

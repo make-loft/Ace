@@ -1,18 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <EnableDefaultCompileItems>True</EnableDefaultCompileItems>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Ace</RootNamespace>
     <AssemblyName>Ace.Base</AssemblyName>
   </PropertyGroup>
-
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>7.3</LangVersion>
+    <DefineConstants>TRACE;DEBUG;SINCE_CSHARP_7_3</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;SINCE_CSHARP_7_3</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-
 </Project>

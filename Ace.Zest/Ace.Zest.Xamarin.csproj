@@ -6,6 +6,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>

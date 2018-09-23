@@ -13,7 +13,7 @@ namespace Ace
 	{
 		public static object UndefinedSmartValue = null;
 		private Dictionary<string, object> _smartContainer;
-		protected Dictionary<string, object> SmartContainer => _smartContainer.OrNew(ref _smartContainer);
+		protected Dictionary<string, object> SmartContainer => New.Lazy(ref _smartContainer);
 
 		public const string SmartPropertyName = "Smart";
 
