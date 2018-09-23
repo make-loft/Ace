@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Ace
 {
 	// ReSharper disable once InconsistentNaming
-	/* LanguageExtensions */
+	/* The Language Extensions */
 	public static partial class LE
 	{
 		public static TX Put<T, TX>(this T o, TX x) => x;
@@ -27,11 +27,11 @@ namespace Ace
 
 		public static bool Is<T>(this T o) => o != null;
 		public static bool Is<T>(this T o, out T x) => (x = o).Is();
-		public static bool Is<T>(this object o) => o is T; // o != null && typeof(T).IsAssignableFrom(o.GetType());	
+		public static bool Is<T>(this object o) => o is T; /* o != null && typeof(T).IsAssignableFrom(o.GetType());	*/
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
 			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(b);
 
-		public static bool Equals<T>(T a, T b) => EqualityComparer<T>.Default.Equals(a, b); /* boxing free equals */
+		public static bool Equals<T>(T a, T b) => EqualityComparer<T>.Default.Equals(a, b); /* boxing free matching */
 
 		public static bool Is<T>(this T o, T x) => Equals(o, x); /* Equals<T>(o, x); */
 		public static bool Is<T>(this T o, object x) => x.Is<T>() && Equals(o, (T) x);
@@ -49,11 +49,12 @@ namespace Ace
 		public static bool Is<T>(this T o, T? x) where T : struct => x.HasValue && Equals(o, x.Value);
 		public static bool IsNot<T>(this T? o, T x) where T : struct => !o.Is(x);
 		public static bool IsNot<T>(this T o, T? x) where T : struct => !o.Is(x);
-		
-		//public static bool IsNull(this object o) => o is null;
-		//public static bool IsNull<T>(this T o) => o == null;
-		//public static bool IsNull<T>(this T? o) where T : struct => !o.HasValue; /* is null */
 
 		public static bool Not<T>(this T o, Func<T, bool> predicate) => !predicate(o);
+		
+#if SINCE_CSHARP_7_3
+		public static bool Is<T>(this ref T o) where T: struct => true;
+		public static bool IsNot<T>(this ref T o) where T: struct => false;
+#endif
 	}
 }

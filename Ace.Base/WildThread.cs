@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Threading;
 
-namespace Foundation
+namespace Ace
 {
     public class WildThread : IDisposable
     {
@@ -18,8 +18,8 @@ namespace Foundation
             _action = action;
             if (_isRunning)
             {
-                if (_thread != null) _thread.Abort();
-                _thread = new Thread(Invoke) {IsBackground = true, Priority = Priority};
+	            _thread?.Abort();
+	            _thread = new Thread(Invoke) {IsBackground = true, Priority = Priority};
                 _thread.Start();
             }
 
@@ -40,8 +40,7 @@ namespace Foundation
 
         public void Dispose()
         {
-            if (_thread == null) return;
-            _thread.Abort();
+            _thread?.Abort();
             _thread = null;
         }
     }

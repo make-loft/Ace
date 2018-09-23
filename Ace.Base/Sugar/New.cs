@@ -7,6 +7,9 @@ namespace Ace
 {
 	public static partial class New
 	{
+		public static T Lazy<T>(ref T o) where T : class, new() => o ?? (o = new T());
+		public static T Lazy<T>(ref T o, params object[] args) where T : class, new() => o ?? (o = Object<T>(args));
+		
 		public static T _<T>(out T o) where T : new() => o = new T();
 
 		public static T _<T>(out T o, params object[] constructorArgs) =>

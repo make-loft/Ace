@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Ace.Sugar;
 
-// ReSharper disable once Check`Namespace
+// ReSharper disable once CheckNamespace
 namespace Ace
 {
 	public class RipeType

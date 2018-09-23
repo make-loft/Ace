@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using System.Windows.Media;
 #if XAMARIN
 using DependencyObject = Xamarin.Forms.Element;
+#else
+using System.Windows;
 #endif
 
 namespace Ace
@@ -36,7 +37,7 @@ namespace Ace
 			while (true)
 			{
 				var parent = VisualTreeHelper.GetParent(current);
-				if (parent.IsNot()) yield break;
+				if (parent is null) yield break;
 				yield return current = parent;
 			}
 		}

@@ -55,10 +55,7 @@ namespace System.Windows.Data
         {
         }
 
-        public Binding(string path)
-        {
-            Path = new PropertyPath(path);
-        }
+        public Binding(string path) => Path = new PropertyPath(path);
 
         [TypeConverter(typeof(PathConverter))]
         public PropertyPath Path
