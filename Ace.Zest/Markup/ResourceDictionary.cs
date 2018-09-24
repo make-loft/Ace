@@ -31,6 +31,6 @@ namespace Ace.Markup
                 .ForEach(this.Merge);
         }
 
-        public ObservableCollection<Xamarin.Forms.ResourceDictionary> MergedDictionaries { get; }
+        public new ObservableCollection<Xamarin.Forms.ResourceDictionary> MergedDictionaries { get; }
     }
 }

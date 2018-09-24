@@ -19,7 +19,7 @@ namespace Ace
 
 			for (var i = 0; i < pattern.Length && offset + i < original.Length; i++)
 			{
-				if (original[offset + i] != pattern[i]) return false;
+				if (original[offset + i].IsNot(pattern[i])) return false;
 			}
 
 			return true;

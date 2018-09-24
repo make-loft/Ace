@@ -64,7 +64,7 @@ namespace Ace
 		private static void InvokePropertyChanged(PropertyChangedWatcher watcher) =>
 			watcher.PropertyChanged?.Invoke(watcher, new PropertyChangedEventArgs(watcher.PropertyName));
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public new event PropertyChangedEventHandler PropertyChanged;
 
 		public string PropertyName { get; }
 

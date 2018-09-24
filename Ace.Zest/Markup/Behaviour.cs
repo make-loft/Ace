@@ -51,7 +51,7 @@ namespace Ace.Markup
 		public static void Subscribe(object element, ContextTrigger contextTrigger)
 		{
 			var eventInfo = element.GetType().GetRuntimeEvent(contextTrigger.EventName);
-			if (eventInfo == null)
+			if (eventInfo.IsNot())
 				throw new Exception($"Can not create Context Trigger for '{contextTrigger.EventName}' at '{element}'.");
 			var handler = MethodInfo.CreateDelegate(eventInfo.EventHandlerType, contextTrigger);
 
@@ -102,7 +102,7 @@ namespace Ace.Markup
 			{
 				if (e.Handled) return;
 				var window = sender as Window ?? o.EnumerateVisualAncestors().OfType<Window>().FirstOrDefault();
-				if (window == null) return;
+				if (window.IsNot()) return;
 				var currentPosition = e.GetPosition(element);
 				var dx = currentPosition.X - lastPosition.X;
 				var dy = currentPosition.Y - lastPosition.Y;

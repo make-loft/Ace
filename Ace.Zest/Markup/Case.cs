@@ -32,7 +32,7 @@ namespace Ace.Markup
 		}
 
 		public virtual bool MatchByKey(object key, StringComparison comparison) =>
-			key == Key || UndefinedValue == Key || EqualsAsStrings(key, Key, comparison);
+			Key.Is(key) || Key.Is(UndefinedValue) || EqualsAsStrings(Key, key, comparison);
 	}
 
 	[ContentProperty("Value")]
@@ -45,6 +45,6 @@ namespace Ace.Markup
 		}
 
 		public override bool MatchByKey(object key, StringComparison comparison) =>
-			base.Key == UndefinedValue || key?.GetType() == Key;
+			base.Key.Is(UndefinedValue) || Key.Is(key?.GetType());
 	}
 }
