@@ -5,6 +5,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Ace</RootNamespace>
     <AssemblyName>Ace.Base</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

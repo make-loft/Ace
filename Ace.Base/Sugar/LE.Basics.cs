@@ -1,16 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// ReSharper disable once CheckNamespace
+// ReSharper disable once CheckNamespace, InconsistentNaming
 namespace Ace
 {
-	// ReSharper disable once InconsistentNaming
 	/* The Language Extensions */
 	public static partial class LE
 	{
+		/* {oldContext}.Put({newContext}).{CallFromNewContext} */
 		public static TX Put<T, TX>(this T o, TX x) => x;
 		public static TX Put<T, TX>(this T o, ref TX x) => x;
 
+		/* negation */
+		public static bool Not<T>(this bool b) => !b;
+
+		/* boxing free value matching */	
+		public static bool Equals<T>(T a, T b) => EqualityComparer<T>.Default.Equals(a, b);
+
+		public static bool Is<T>(this T o) => o != null;
+		public static bool Is<T>(this T o, T x) => Equals(o, x); /* Equals<T>(o, x); */
+		public static bool Is<T>(this T o, object x) => x.Is<T>() && Equals(o, (T) x);
+		public static bool Is<T>(this object o, T x) => o.Is<T>() && Equals((T) o, x);
+		public static bool Is(this object o, object x) => Equals(o, x);
+
+		public static bool IsNot<T>(this T o) => o == null;
+		public static bool IsNot<T>(this T o, T x) => !o.Is(x);
+		public static bool IsNot<T>(this object o, T x) => !o.Is(x);
+		public static bool IsNot<T>(this T o, object x) => !o.Is(x);
+		public static bool IsNot(this object o, object x) => !o.Is(x);
+
+		public static bool Is<T>(this T? o) where T : struct => o.HasValue; /* o is T */
+		public static bool Is<T>(this T? o, T x) where T : struct => o.HasValue && Equals(o.Value, x);
+		public static bool Is<T>(this T o, T? x) where T : struct => x.HasValue && Equals(o, x.Value);
+
+		public static bool IsNot<T>(this T? o) where T : struct => !o.Is();
+		public static bool IsNot<T>(this T? o, T x) where T : struct => !o.Is(x);
+		public static bool IsNot<T>(this T o, T? x) where T : struct => !o.Is(x);
+		
+		/* type matching */
+		public static bool Is<T>(this T o, out T x) => (x = o).Is();
+		public static bool Is<T>(this object o) => o is T; /* o != null && typeof(T).IsAssignableFrom(o.GetType());	*/
+
+		public static bool Is<T>(this object o, out T x, T fallbackValue = default) =>
+			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(b);
+
+		/* type casting */
 		public static object ChangeType<T>(this object o) =>
 			o is null || TypeOf<T>.IsValueType || o is IConvertible ? Convert.ChangeType(o, TypeOf<T>.Raw, null) : o;
 
@@ -22,39 +56,7 @@ namespace Ace
 
 		public static T As<T>(this T o) => o;
 		public static T As<T>(this T o, out T x) => x = o;
-		public static T As<T>(this object o, T fallbackValue = default(T)) => o.Is<T>() ? (T) o : fallbackValue;
-		public static T As<T>(this object o, out T x, T fallbackValue = default(T)) => x = o.As(fallbackValue);
-
-		public static bool Is<T>(this T o) => o != null;
-		public static bool Is<T>(this T o, out T x) => (x = o).Is();
-		public static bool Is<T>(this object o) => o is T; /* o != null && typeof(T).IsAssignableFrom(o.GetType());	*/
-		public static bool Is<T>(this object o, out T x, T fallbackValue = default(T)) =>
-			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(b);
-
-		public static bool Equals<T>(T a, T b) => EqualityComparer<T>.Default.Equals(a, b); /* boxing free matching */
-
-		public static bool Is<T>(this T o, T x) => Equals(o, x); /* Equals<T>(o, x); */
-		public static bool Is<T>(this T o, object x) => x.Is<T>() && Equals(o, (T) x);
-		public static bool Is<T>(this object o, T x) => o.Is<T>() && Equals((T) o, x);
-		public static bool Is(this object o, object x) => Equals(o, x);
-
-		public static bool IsNot<T>(this T o) => o == null;
-		public static bool IsNot<T>(this T o, T x) => !o.Is(x);
-		public static bool IsNot<T>(this object o, T x) => !o.Is(x);
-		public static bool IsNot<T>(this T o, object x) => !o.Is(x);
-		public static bool IsNot(this object o, object x) => !o.Is(x);
-		
-		public static bool Is<T>(this T? o) where T : struct => o.HasValue; // o is T
-		public static bool Is<T>(this T? o, T x) where T : struct => o.HasValue && Equals(o.Value, x);
-		public static bool Is<T>(this T o, T? x) where T : struct => x.HasValue && Equals(o, x.Value);
-		public static bool IsNot<T>(this T? o, T x) where T : struct => !o.Is(x);
-		public static bool IsNot<T>(this T o, T? x) where T : struct => !o.Is(x);
-
-		public static bool Not<T>(this T o, Func<T, bool> predicate) => !predicate(o);
-		
-#if SINCE_CSHARP_7_3
-		public static bool Is<T>(this ref T o) where T: struct => true;
-		public static bool IsNot<T>(this ref T o) where T: struct => false;
-#endif
+		public static T As<T>(this object o, T fallbackValue = default) => o.Is<T>() ? (T) o : fallbackValue;
+		public static T As<T>(this object o, out T x, T fallbackValue = default) => x = o.As(fallbackValue);
 	}
 }
