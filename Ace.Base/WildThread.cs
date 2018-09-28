@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Threading;
 
 namespace Ace
@@ -10,16 +9,14 @@ namespace Ace
         private Action _action = () => { };
         private readonly AutoResetEvent _autoResetEvent = new AutoResetEvent(true);
         private bool _isRunning = true;
-        [DefaultValue(ThreadPriority.Lowest)]
-        public ThreadPriority Priority { get; set; }
-
-        public void Run(Action action)
+        
+        public void Run(Action action, ThreadPriority priority = ThreadPriority.Lowest)
         {
             _action = action;
             if (_isRunning)
             {
 	            _thread?.Abort();
-	            _thread = new Thread(Invoke) {IsBackground = true, Priority = Priority};
+	            _thread = new Thread(Invoke) {IsBackground = true, Priority = priority};
                 _thread.Start();
             }
 
