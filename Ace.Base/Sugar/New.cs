@@ -100,6 +100,5 @@ namespace Ace
 		public static Action<A, B, C, D, E, F> Action<A, B, C, D, E, F>(Action<A, B, C, D, E, F> a) => a;
 		public static Action<A, B, C, D, E, F, G> Action<A, B, C, D, E, F, G>(Action<A, B, C, D, E, F, G> a) => a;
 		public static Action<A, B, C, D, E, F, G, H> Action<A, B, C, D, E, F, G, H>(Action<A, B, C, D, E, F, G, H> a) => a;
-		public static Action<A, B, C, D, E, F, G, H, I> Action<A, B, C, D, E, F, G, H, I>(Action<A, B, C, D, E, F, G, H, I> a) => a;
 	}
 }

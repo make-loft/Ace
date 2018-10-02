@@ -5,13 +5,13 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2FEDB2CB-1B48-411F-A546-762BC9A688CB}</ProjectGuid>
+    <ProjectGuid>{8E212C18-CCA5-4320-A229-D743CC33A70C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Ace</RootNamespace>
     <AssemblyName>Ace.Base</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile88</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SccProjectName>SAK</SccProjectName>
@@ -92,13 +92,11 @@
     <Compile Include="Sugar\LE.Experimental.cs" />
     <Compile Include="Sugar\LE.Match.cs" />
     <Compile Include="Sugar\LE.Merge.cs" />
-    <Compile Include="Sugar\LE.Tuples.cs" />
     <Compile Include="Sugar\LE.Use.cs" />
     <Compile Include="Sugar\LE.With.cs" />
     <Compile Include="Sugar\Lock.cs" />
     <Compile Include="Sugar\NE.cs" />
     <Compile Include="Sugar\New.cs" />
-    <Compile Include="Sugar\New.Tuples.cs" />
     <Compile Include="Sugar\StringExtensions.cs" />
     <Compile Include="Sugar\System.Reflection.cs" />
     <Compile Include="Sugar\Switch.cs" />
