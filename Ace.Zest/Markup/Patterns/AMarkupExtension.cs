@@ -2,11 +2,12 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using Xamarin.Forms.Xaml;
 
 namespace Ace.Markup.Patterns
 {
 #if XAMARIN
+	using Xamarin.Forms.Xaml;
+	
 	public abstract class AMarkupExtension : IMarkupExtension
 	{
 		public object ProvideValue(IServiceProvider serviceProvider)

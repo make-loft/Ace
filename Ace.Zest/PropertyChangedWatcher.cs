@@ -68,7 +68,7 @@ namespace Ace
 
 		public string PropertyName { get; }
 
-		internal PropertyChangedWatcher(object source, string path = null, BindingMode mode = BindingMode.Default)
+		internal PropertyChangedWatcher(object source, string path = null, BindingMode mode = default)
 		{
 			PropertyName = path?.Split('.').Last();
 			var binding = path.IsNot()

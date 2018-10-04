@@ -4,7 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Markup;
 using Ace.Converters.Patterns;
+#if XAMARIN
 using ContentProperty = Xamarin.Forms.ContentPropertyAttribute;
+#endif
 
 namespace Ace.Converters
 {

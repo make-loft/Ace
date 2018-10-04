@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -22,6 +23,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,51 +47,77 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Phone, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v4.0\Profile\WindowsPhone71\Microsoft.Phone.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="mscorlib.extensions" />
+    <Reference Include="System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v4.0\Profile\WindowsPhone71\System.Windows.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapters\Adapters.Phone.cs" />
-    <Compile Include="Markup\Rack.cs" />
-    <Compile Include="Specific\Core.Phone.cs" />
+    <Compile Include="Adapters\RoutedCommandsAdapter.cs" />
+    <Compile Include="Adapters\System.Enum.cs" />
     <Compile Include="Converters\AnyConverter.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\EqualsConverter.cs" />
+    <Compile Include="Converters\InlineConverter.cs" />
     <Compile Include="Converters\LetterCaseConverter.cs" />
+    <Compile Include="Converters\NullConverter.cs" />
     <Compile Include="Converters\NumericCompareConverter.cs" />
+    <Compile Include="Converters\Patterns\AValueConverter.cs" />
     <Compile Include="Converters\Patterns\ICompositeConverter.cs" />
     <Compile Include="Converters\Patterns\IInlineConverter.cs" />
-    <Compile Include="Converters\Patterns\ISwitchConverter.cs" />
+    <Compile Include="Converters\Patterns\ICase.cs" />
+    <Compile Include="Converters\Patterns\ITwoWayConverter.cs" />
     <Compile Include="Converters\SwitchConverter.cs" />
     <Compile Include="Dictionaries\AppConverters.cs" />
     <Compile Include="LocalizationSource.cs" />
-    <Compile Include="Markup\Attacher.cs" />
+    <Compile Include="Markup\Enum.cs" />
+    <Compile Include="Markup\NullExtension.cs" />
     <Compile Include="Markup\Patterns\ABindingExtension.cs" />
     <Compile Include="Markup\Case.cs" />
     <Compile Include="Markup\Context.cs" />
     <Compile Include="Markup\ContextTrigger.cs" />
     <Compile Include="Markup\Localizing.cs" />
+    <Compile Include="Markup\Patterns\AMarkupExtension.cs" />
+    <Compile Include="Markup\SelfBinding.cs" />
     <Compile Include="Markup\Set.cs" />
+    <Compile Include="Markup\Smart.cs" />
     <Compile Include="Markup\Store.cs" />
     <Compile Include="Markup\StoreBinding.cs" />
-    <Compile Include="Markup\Smart.cs" />
-    <Compile Include="Markup\XamlTypeConverter.cs" />
+    <Compile Include="Markup\TypeExtension.cs" />
+    <Compile Include="Markup\TypeTypeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedWatcher.cs" />
-    <Compile Include="Specific\KeyFileStorage.Phone.cs" />
-    <Compile Include="VisualTree.Sugar.cs" />
+    <Compile Include="Specific\KeyFileStorage.Desktop.cs" />
+    <Compile Include="Sugar\VisualTree.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aero.Core\Aero.Core.Phone.csproj">
-      <Project>{0B89642C-FD8A-4E30-801A-7F73CA0DFBFC}</Project>
-      <Name>Aero.Core.Phone</Name>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ace.Base\Ace.Base.WindowsPhone71.csproj">
+      <Project>{b7b8f6e4-bfe8-4534-b31d-b6b3465ab416}</Project>
+      <Name>Ace.Base.WindowsPhone71</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ace.Core\Ace.Core.WindowsPhone71.csproj">
+      <Project>{b7b8f6e4-bfe8-4534-b31d-b6b3465ab417}</Project>
+      <Name>Ace.Core.WindowsPhone71</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
