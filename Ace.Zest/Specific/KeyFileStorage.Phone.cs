@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.IO.IsolatedStorage;
 using System.Windows;
-using Aero.Patterns;
+using Ace.Patterns;
 
-namespace Aero.Specific
+namespace Ace.Specific
 {
     public class KeyFileStorage : IStorage
     {
