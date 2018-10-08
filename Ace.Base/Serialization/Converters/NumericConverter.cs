@@ -28,7 +28,7 @@ namespace Ace.Serialization.Converters
 		public override string Convert(object value)
 		{
 			var convertedValue = value is null ? null : ToStringConvert(value);
-			if (convertedValue == null) return null;
+			if (convertedValue.IsNot()) return null;
 			var decimalSeparator = ActiveCulture.NumberFormat.NumberDecimalSeparator;
 			if ((value is double || value is float || value is decimal)
 			    && convertedValue.IndexOf(decimalSeparator, StringComparison.OrdinalIgnoreCase) < 0)

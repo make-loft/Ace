@@ -37,7 +37,7 @@ namespace Ace.Markup
 		public static Set GetContextTriggers(Target element)
 		{
 			var contextTriggers = (Set)element.GetValue(ContextTriggersProperty);
-			if (contextTriggers != null) return contextTriggers;
+			if (contextTriggers.Is()) return contextTriggers;
 			contextTriggers = new Set();
 			contextTriggers.CollectionChanged += (sender, args) =>
 				args.NewItems.Cast<ContextTrigger>().ForEach(t => Subscribe(element, t));
@@ -107,7 +107,7 @@ namespace Ace.Markup
 				var dx = currentPosition.X - lastPosition.X;
 				var dy = currentPosition.Y - lastPosition.Y;
 				var delta = dx * dx + dy * dy;
-				if (e.LeftButton == MouseButtonState.Pressed && lastPosition != currentPosition && delta > 25)
+				if (e.LeftButton.Is(MouseButtonState.Pressed) && lastPosition.IsNot(currentPosition) && delta > 25)
 					window.DragMove();
 				lastPosition = currentPosition;
 			}

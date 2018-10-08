@@ -39,7 +39,7 @@ namespace Ace.Serialization.Converters
 			if (type.IsEnum) return Enum.Parse(type, value, true);
 
 			var parseWithFormatMethod = type.GetMethod("Parse", new[] {TypeOf.String.Raw, typeof(IFormatProvider)});
-			if (parseWithFormatMethod != null) return parseWithFormatMethod.Invoke(null, new object[] {value, ActiveCulture});
+			if (parseWithFormatMethod.Is()) return parseWithFormatMethod.Invoke(null, new object[] {value, ActiveCulture});
 
 			var parseMethod = type.GetMethod("Parse", new[] {TypeOf.String.Raw});
 			return parseMethod?.Invoke(null, new object[] {value});

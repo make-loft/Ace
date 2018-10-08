@@ -92,7 +92,7 @@ namespace Ace.Replication.Replicators
 				/* should enumerate items at read-only members too */
 				var key = memberProvider.GetDataKey(m, type);
 				var value = profile.Replicate(snapshot[key], idCache, memberType);
-				if (profile.TryRestoreTypeInfoImplicitly && value != null && memberType != value.GetType())
+				if (profile.TryRestoreTypeInfoImplicitly && value.Is() && value.GetType().IsNot(memberType))
 					value = ChangeType(value, memberType, profile);
 				if (m.CanWrite()) m.SetValue(replica, value);
 			});

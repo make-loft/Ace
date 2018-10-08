@@ -108,7 +108,7 @@ namespace Ace.Serialization
 
 				var o = offset;
 				var headPattern = HeadPatterns.FirstOrDefault(p => data.Match(p, o));
-				if (headPattern != null)
+				if (headPattern.Is())
 				{
 					var escapeChar = verbatimFlag ? VerbatimEscapeSequence : EscapeSequence;
 					var unescapeStrategy = verbatimFlag ? VerbatimUnescapeChars : UnescapeChars;

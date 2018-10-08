@@ -32,18 +32,18 @@ namespace Ace.Markup
 		public override object Provide(object targetObject, object targetProperty = null)
 		{
 			var mediator = new Mediator();
-			var source = StoreKey == null ? null : Ace.Store.Get(StoreKey);
-			if (source != null && SourcePath == null)
+			var source = StoreKey.Is() ? Ace.Store.Get(StoreKey) : null;
+			if (source.Is() && SourcePath.IsNot())
 			{
 				mediator.Set(targetObject, GetCommandEvocator(source));
 			}
-			else if (SourcePath != null)
+			else if (SourcePath.Is())
 			{
 				var watcher = new PropertyChangedWatcher(source, SourcePath.ToString(), Mode);
 				watcher.PropertyChanged += (sender, args) =>
 					mediator.Set(targetObject, GetCommandEvocator(watcher.GetWatchedProperty()));
 			}
-			else if (targetObject is ContextElement element)
+			else if (targetObject.Is(out ContextElement element))
 			{
 #if XAMARIN
 				if (TrackContextChanges)
@@ -79,7 +79,7 @@ namespace Ace.Markup
 #endif
 
 		private static ContextObject FindContextObject(ContextElement element, Type type) =>
-			type == null ? FindNearestContextObject(element) : FindRelativeContextObject(element, type);
+			type.Is() ? FindRelativeContextObject(element, type) : FindNearestContextObject(element);
 
 		private static ContextObject FindNearestContextObject(ContextElement element) =>
 			EnumerateContextObjects(element).FirstOrDefault();
@@ -91,6 +91,6 @@ namespace Ace.Markup
 			target.EnumerateSelfAndVisualAncestors().OfType<ContextElement>().Select(GetContext).OfType<ContextObject>();
 
 		private CommandEvocator GetCommandEvocator(object target) => 
-			target is ContextObject contextObject ? contextObject[Ace.Context.Get(Key)] : null;
+			target.Is(out ContextObject contextObject) ? contextObject[Ace.Context.Get(Key)] : null;
 	}
 }

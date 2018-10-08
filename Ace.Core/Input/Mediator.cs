@@ -45,10 +45,10 @@ namespace Ace.Input
 		{
 			if (evocator.IsNot()) Debug.WriteLine($"Can not get command evocator for {sender}");
 			_weakListener?.Dispose();
-			_weakSender = sender == null ? null : new WeakReference(sender);
-			_weakEvocator = evocator == null ? null : new WeakReference(evocator);
+			_weakSender = sender.Is() ? new WeakReference(sender) : null;
+			_weakEvocator = evocator.Is() ? new WeakReference(evocator) : null;
 			_command = evocator?.Command;
-			_weakListener = _command == null ? null : new WeakListener(_command, this);
+			_weakListener = _command.Is() ? new WeakListener(_command, this) : null;
 			//_command.CanExecuteChanged += RaiseCanExecuteChanged;
 
 			var contextCommand = _command as Command;
@@ -60,7 +60,7 @@ namespace Ace.Input
 		public bool CanExecute(object parameter)
 		{
 			if (_weakEvocator.IsNot()) return true;
-			if (_weakEvocator.Target.To(out CommandEvocator evocator) is null || _command is null)
+			if (_weakEvocator.Target.To(out CommandEvocator evocator).IsNot() || _command.IsNot())
 				return _canExecuteState = false;
 
 			var sender = _weakSender.Target;
@@ -78,7 +78,7 @@ namespace Ace.Input
 		public void Execute(object parameter)
 		{
 			if (_weakEvocator.IsNot()) return;
-			if (_weakEvocator.Target.To(out CommandEvocator evocator) is null || _command is null)
+			if (_weakEvocator.Target.To(out CommandEvocator evocator).IsNot() || _command.IsNot())
 				return;
 
 			var sender = _weakSender.Target;

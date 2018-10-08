@@ -59,7 +59,7 @@ namespace Ace
 
 		public IEnumerable GetErrors(string propertyName) =>
 			PropertyEvocators.TryGetValue(propertyName, out var evocator)
-				? evocator.GetErrors(propertyName).Where(e => e != null)
+				? evocator.GetErrors(propertyName).Where(e => e.Is())
 				: Enumerable.Empty<object>();
 
 		public void RaiseErrorsChanged<TValue>(Expression<Func<TValue>> expression) => 
@@ -70,7 +70,7 @@ namespace Ace
 
 		string IDataErrorInfo.this[string propertyName] =>
 			GetErrors(propertyName).Cast<object>().Select(e => e.ToString())
-				.Aggregate((string) null, (x, y) => x + (x == null ? null : Environment.NewLine) + y);
+				.Aggregate((string) null, (x, y) => $"{x}{(x.Is() ? Environment.NewLine : null)}{y}");
 
 		#endregion
 	}

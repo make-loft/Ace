@@ -38,9 +38,9 @@ namespace Ace.Replication.Replicators
 			var map = CompleteMapIfRequried(value, profile, baseType);
 			var hasKey = map.TryGetValue(profile.IdKey, out var key);
 			var id = hasKey ? (int) key : idCache.Count;
-			if (idCache.TryGetValue(id, out var replica) && hasKey && map.Count == 1) return replica;
+			if (idCache.TryGetValue(id, out var replica) && hasKey && map.Count.Is(1)) return replica;
 			replica = idCache[id] = replica ?? ActivateInstance(map, profile, idCache, baseType);
-			if (replica != null) FillInstance(map, (T) replica, profile, idCache, baseType);
+			if (replica.Is()) FillInstance(map, (T) replica, profile, idCache, baseType);
 			return replica;
 		}
 
@@ -56,7 +56,7 @@ namespace Ace.Replication.Replicators
 				{profile.TypeKey, (baseType ?? TypeOf<object[]>.Raw).AssemblyQualifiedName},
 				{profile.SetKey, state}
 			} :
-			profile.SimplifyMaps && state is Map && baseType != null &&
+			profile.SimplifyMaps && state is Map && baseType.Is() &&
 			baseType.IsGenericDictionaryWithKey<string>() ? new Map
 			{
 				{profile.TypeKey, baseType.AssemblyQualifiedName},
