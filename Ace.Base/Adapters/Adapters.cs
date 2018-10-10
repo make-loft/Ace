@@ -17,6 +17,21 @@ namespace System.Reflection
 }
 #endif
 
+#if WINDOWS_PHONE
+namespace System
+{
+	public delegate void Action<T1, T2, T3, T4, T5>(T1 a, T2 b, T3 c, T4 d, T5 e);
+	public delegate void Action<T1, T2, T3, T4, T5, T6>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f);
+	public delegate void Action<T1, T2, T3, T4, T5, T6, T7>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g);
+	public delegate void Action<T1, T2, T3, T4, T5, T6, T7, T8>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g, T8 h);
+	
+	public delegate TResult Func<T1, T2, T3, T4, T5, TResult>(T1 a, T2 b, T3 c, T4 d, T5 e);
+	public delegate TResult Func<T1, T2, T3, T4, T5, T6, TResult>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f);
+	public delegate TResult Func<T1, T2, T3, T4, T5, T6, T7, TResult>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g);
+	public delegate TResult Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g, T8 h);
+}
+#endif
+
 namespace System.TypeInfoAdapter
 {
 	public static class TypeInfo
@@ -40,17 +55,4 @@ namespace Ace.Adapters
 		Public = 16,
 		Static = 8,
 	}
-}
-
-namespace System
-{
-	public delegate void Action<T1, T2, T3, T4, T5>(T1 a, T2 b, T3 c, T4 d, T5 e);
-	public delegate void Action<T1, T2, T3, T4, T5, T6>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f);
-	public delegate void Action<T1, T2, T3, T4, T5, T6, T7>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g);
-	public delegate void Action<T1, T2, T3, T4, T5, T6, T7, T8>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g, T8 h);
-	
-	public delegate TResult Func<T1, T2, T3, T4, T5, TResult>(T1 a, T2 b, T3 c, T4 d, T5 e);
-	public delegate TResult Func<T1, T2, T3, T4, T5, T6, TResult>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f);
-	public delegate TResult Func<T1, T2, T3, T4, T5, T6, T7, TResult>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g);
-	public delegate TResult Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g, T8 h);
 }

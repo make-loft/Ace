@@ -19,8 +19,9 @@ namespace Ace.Specific
 
         public Stream GetReadStream(string key)
         {
-            return Storage.FileExists(Path.Combine(DataFolder, key))
-                ? Storage.OpenFile(Path.Combine(DataFolder, key), FileMode.Open)
+            var path = Path.Combine(DataFolder, key);
+            return Storage.FileExists(path)
+                ? Storage.OpenFile(path, FileMode.Open)
                 : null;
         }
 
@@ -33,7 +34,7 @@ namespace Ace.Specific
         public void DeleteKey(string key)
         {
             var path = Path.Combine(DataFolder, key);
-            if (Storage.FileExists(path)) Storage.DeleteFile(Path.Combine(DataFolder, key));
+            if (Storage.FileExists(path)) Storage.DeleteFile(path);
         }
 
         public bool HasKey(string key)
