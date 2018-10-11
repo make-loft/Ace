@@ -3,120 +3,120 @@
   <Import Project="..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8E212C18-CCA5-4320-A229-D743CC33A70C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ace</RootNamespace>
-    <AssemblyName>Ace.Base</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile88</TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>4.0</OldToolsVersion>
-    <LangVersion>latest</LangVersion>
+	<MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProjectGuid>{8E212C18-CCA5-4320-A229-D743CC33A70C}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace>Ace</RootNamespace>
+	<AssemblyName>Ace.Base</AssemblyName>
+	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkProfile>Profile88</TargetFrameworkProfile>
+	<FileAlignment>512</FileAlignment>
+	<ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+	<SccProjectName>SAK</SccProjectName>
+	<SccLocalPath>SAK</SccLocalPath>
+	<SccAuxPath>SAK</SccAuxPath>
+	<SccProvider>SAK</SccProvider>
+	<FileUpgradeFlags>
+	</FileUpgradeFlags>
+	<UpgradeBackupLocation>
+	</UpgradeBackupLocation>
+	<OldToolsVersion>4.0</OldToolsVersion>
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
+	<Reference Include="System" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapters\Adapters.cs" />
-    <Compile Include="Ace.Patterns.cs" />
-    <Compile Include="Cloning.cs" />
-    <Compile Include="Comparers\ReferenceComparer.cs" />
-    <Compile Include="Etalon.cs" />
-    <Compile Include="Replication\MemberProviders\MemberProvider.cs" />
-    <Compile Include="Replication\Models\Map.cs" />
-    <Compile Include="Replication\Models\Set.cs" />
-    <Compile Include="Replication\Models\Simplex.cs" />
-    <Compile Include="Replication\Replicator.cs" />
-    <Compile Include="Replication\Replicators\ACachingReplicator.cs" />
-    <Compile Include="Replication\Snapshot.cs" />
-    <Compile Include="Serialization\ASerializator.cs" />
-    <Compile Include="Serialization\EscapeProfile.cs" />
-    <Compile Include="Replication\Replicators\CoreReplicators.cs" />
-    <Compile Include="Replication\Replicators\DeepReplicator.cs" />
-    <Compile Include="Replication\Replicators\RegexReplicator.cs" />
-    <Compile Include="Replication\Replicators\StringBuilderReplicator.cs" />
-    <Compile Include="Serialization\Escapers\GeneralEscaper.cs" />
-    <Compile Include="Serialization\Serializators\MapDeepSerializator.cs" />
-    <Compile Include="Serialization\Serializators\SetDeepSerializator.cs" />
-    <Compile Include="Serialization\Serializators\ValueSerializator.cs" />
-    <Compile Include="Serialization\Converter.cs" />
-    <Compile Include="Serialization\Converters\ComplexConverter.cs" />
-    <Compile Include="Serialization\Converters\CoreConverters.cs" />
-    <Compile Include="Serialization\Converters\IsoDateTimeConverter.cs" />
-    <Compile Include="Replication\MemberProviders\ContractMemberProvider.cs" />
-    <Compile Include="Replication\MemberProviders\CoreMemberProviders.cs" />
-    <Compile Include="Serialization\KeepProfile.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Replication\ReplicationProfile.cs" />
-    <Compile Include="Serialization\Converters\NumericConverter.cs" />
-    <Compile Include="Aides.cs" />
-    <Compile Include="Sugar\Const.cs" />
-    <Compile Include="Sugar\LE.Basics.cs" />
-    <Compile Include="Sugar\LE.Basics.Optimizations.cs" />
-    <Compile Include="Sugar\LE.Check.cs" />
-    <Compile Include="Sugar\LE.Deconstruct.cs" />
-    <Compile Include="Sugar\LE.Experimental.cs" />
-    <Compile Include="Sugar\LE.Match.cs" />
-    <Compile Include="Sugar\LE.Merge.cs" />
-    <Compile Include="Sugar\LE.Use.cs" />
-    <Compile Include="Sugar\LE.With.cs" />
-    <Compile Include="Sugar\Lock.cs" />
-    <Compile Include="Sugar\NE.cs" />
-    <Compile Include="Sugar\New.cs" />
-    <Compile Include="Sugar\StringExtensions.cs" />
-    <Compile Include="Sugar\System.Reflection.cs" />
-    <Compile Include="Sugar\Switch.cs" />
-    <Compile Include="Sugar\System.Linq.cs" />
-    <Compile Include="Sugar\RipeType.cs" />
-    <Compile Include="Sugar\TypeOf.cs" />
+	<Compile Include="Adapters\Adapters.cs" />
+	<Compile Include="Ace.Patterns.cs" />
+	<Compile Include="Cloning.cs" />
+	<Compile Include="Comparers\ReferenceComparer.cs" />
+	<Compile Include="Etalon.cs" />
+	<Compile Include="Replication\MemberProviders\MemberProvider.cs" />
+	<Compile Include="Replication\Models\Map.cs" />
+	<Compile Include="Replication\Models\Set.cs" />
+	<Compile Include="Replication\Models\Simplex.cs" />
+	<Compile Include="Replication\Replicator.cs" />
+	<Compile Include="Replication\Replicators\ACachingReplicator.cs" />
+	<Compile Include="Replication\Snapshot.cs" />
+	<Compile Include="Serialization\ASerializator.cs" />
+	<Compile Include="Serialization\EscapeProfile.cs" />
+	<Compile Include="Replication\Replicators\CoreReplicators.cs" />
+	<Compile Include="Replication\Replicators\DeepReplicator.cs" />
+	<Compile Include="Replication\Replicators\RegexReplicator.cs" />
+	<Compile Include="Replication\Replicators\StringBuilderReplicator.cs" />
+	<Compile Include="Serialization\Escapers\GeneralEscaper.cs" />
+	<Compile Include="Serialization\Serializators\MapDeepSerializator.cs" />
+	<Compile Include="Serialization\Serializators\SetDeepSerializator.cs" />
+	<Compile Include="Serialization\Serializators\ValueSerializator.cs" />
+	<Compile Include="Serialization\Converter.cs" />
+	<Compile Include="Serialization\Converters\ComplexConverter.cs" />
+	<Compile Include="Serialization\Converters\CoreConverters.cs" />
+	<Compile Include="Serialization\Converters\IsoDateTimeConverter.cs" />
+	<Compile Include="Replication\MemberProviders\ContractMemberProvider.cs" />
+	<Compile Include="Replication\MemberProviders\CoreMemberProviders.cs" />
+	<Compile Include="Serialization\KeepProfile.cs" />
+	<Compile Include="Properties\AssemblyInfo.cs" />
+	<Compile Include="Replication\ReplicationProfile.cs" />
+	<Compile Include="Serialization\Converters\NumericConverter.cs" />
+	<Compile Include="Aides.cs" />
+	<Compile Include="Sugar\Const.cs" />
+	<Compile Include="Sugar\LE.Basics.cs" />
+	<Compile Include="Sugar\LE.Basics.Optimizations.cs" />
+	<Compile Include="Sugar\LE.Check.cs" />
+	<Compile Include="Sugar\LE.Deconstruct.cs" />
+	<Compile Include="Sugar\LE.Experimental.cs" />
+	<Compile Include="Sugar\LE.Match.cs" />
+	<Compile Include="Sugar\LE.Merge.cs" />
+	<Compile Include="Sugar\LE.Use.cs" />
+	<Compile Include="Sugar\LE.With.cs" />
+	<Compile Include="Sugar\Lock.cs" />
+	<Compile Include="Sugar\NE.cs" />
+	<Compile Include="Sugar\New.cs" />
+	<Compile Include="Sugar\StringExtensions.cs" />
+	<Compile Include="Sugar\System.Reflection.cs" />
+	<Compile Include="Sugar\Switch.cs" />
+	<Compile Include="Sugar\System.Linq.cs" />
+	<Compile Include="Sugar\RipeType.cs" />
+	<Compile Include="Sugar\TypeOf.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+	<None Include="packages.config">
+	  <SubType>Designer</SubType>
+	</None>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props'))" />
+	<PropertyGroup>
+	  <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+	</PropertyGroup>
+	<Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+	   Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">

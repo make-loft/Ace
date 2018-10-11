@@ -50,14 +50,14 @@ namespace Ace.Replication
 		public object Replicate(object graph, IDictionary<int, object> idCache, Type baseType = null)
 		{
 			var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, this, idCache, baseType)) ??
-			                 throw new Exception("Can not replicate " + graph);
+							 throw new Exception("Can not replicate " + graph);
 			return replicator.Replicate(graph, this, idCache, baseType);
 		}
 
 		public object Translate(object graph, IDictionary<object, int> idCache, Type baseType = null)
 		{
 			var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, this, idCache, baseType)) ??
-			                 throw new Exception("Can not translate " + graph);
+							 throw new Exception("Can not translate " + graph);
 			return replicator.Translate(graph, this, idCache, baseType);
 		}
 	}

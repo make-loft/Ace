@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <EnableDefaultCompileItems>True</EnableDefaultCompileItems>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Ace</RootNamespace>
-    <AssemblyName>Ace.Base</AssemblyName>
-    <LangVersion>latest</LangVersion>
+	<EnableDefaultCompileItems>True</EnableDefaultCompileItems>
+	<TargetFramework>netstandard2.0</TargetFramework>
+	<RootNamespace>Ace</RootNamespace>
+	<AssemblyName>Ace.Base</AssemblyName>
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+	<DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+	<DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Properties\AssemblyInfo.cs" />
+	<Compile Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+	<Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

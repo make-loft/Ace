@@ -2,75 +2,75 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8BB299FA-EDC4-4AB0-BF6A-450854A05526}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ace</RootNamespace>
-    <AssemblyName>Ace.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>4.0</OldToolsVersion>
+	<MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProjectGuid>{8BB299FA-EDC4-4AB0-BF6A-450854A05526}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace>Ace</RootNamespace>
+	<AssemblyName>Ace.Core</AssemblyName>
+	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
+	<FileAlignment>512</FileAlignment>
+	<ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+	<SccProjectName>SAK</SccProjectName>
+	<SccLocalPath>SAK</SccLocalPath>
+	<SccAuxPath>SAK</SccAuxPath>
+	<SccProvider>SAK</SccProvider>
+	<FileUpgradeFlags>
+	</FileUpgradeFlags>
+	<UpgradeBackupLocation>
+	</UpgradeBackupLocation>
+	<OldToolsVersion>4.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Adapters\System.Windows.Input.cs" />
-    <Compile Include="Adapters\System.ComponentModel.cs" />
-    <Compile Include="Evocators\CommandEvocator.cs" />
-    <Compile Include="Evocators\PropertyEvocator.cs" />
-    <Compile Include="Input\Command.cs" />
-    <Compile Include="Input\Mediator.cs" />
-    <Compile Include="Patterns\AResourceWrap.cs" />
-    <Compile Include="Patterns\IMemoryBox.cs" />
-    <Compile Include="Patterns\IStorage.cs" />
-    <Compile Include="Context.cs" />
-    <Compile Include="ContextObject.cs" />
-    <Compile Include="SmartSet.cs" />
-    <Compile Include="Segregator.cs" />
-    <Compile Include="SmartObject.cs" />
-    <Compile Include="Expression.cs" />
-    <Compile Include="Memory.cs" />
-    <Compile Include="Store.cs" />
+	<Compile Include="Properties\AssemblyInfo.cs" />
+	<Compile Include="Adapters\System.Windows.Input.cs" />
+	<Compile Include="Adapters\System.ComponentModel.cs" />
+	<Compile Include="Evocators\CommandEvocator.cs" />
+	<Compile Include="Evocators\PropertyEvocator.cs" />
+	<Compile Include="Input\Command.cs" />
+	<Compile Include="Input\Mediator.cs" />
+	<Compile Include="Patterns\AResourceWrap.cs" />
+	<Compile Include="Patterns\IMemoryBox.cs" />
+	<Compile Include="Patterns\IStorage.cs" />
+	<Compile Include="Context.cs" />
+	<Compile Include="ContextObject.cs" />
+	<Compile Include="SmartSet.cs" />
+	<Compile Include="Segregator.cs" />
+	<Compile Include="SmartObject.cs" />
+	<Compile Include="Expression.cs" />
+	<Compile Include="Memory.cs" />
+	<Compile Include="Store.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ace.Base\Ace.Base.Profile158.csproj">
-      <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
-      <Name>Ace.Base.Profile158</Name>
-    </ProjectReference>
+	<ProjectReference Include="..\Ace.Base\Ace.Base.Profile158.csproj">
+	  <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
+	  <Name>Ace.Base.Profile158</Name>
+	</ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+	   Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
