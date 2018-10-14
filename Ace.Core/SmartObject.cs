@@ -15,12 +15,10 @@ namespace Ace
 		private Dictionary<string, object> _smartContainer;
 		protected Dictionary<string, object> SmartContainer => New.Lazy(ref _smartContainer);
 
-		public const string SmartPropertyName = "Smart";
-
 		public SmartObject Smart
 		{
 			get => this;
-			set => RaisePropertyChanged(this.Is(value) ? SmartPropertyName : throw new Exception("Wrong context"));
+			set => RaisePropertyChanged(this.Is(value) ? nameof(Smart) : throw new Exception("Wrong context"));
 		}
 
 		public object this[string key]
@@ -29,10 +27,10 @@ namespace Ace
 			set
 			{
 				RaiseSmartPropertyChanging(key);
-				RaisePropertyChanging(SmartPropertyName);
+				RaisePropertyChanging(nameof(Smart));
 				SmartContainer[key] = value;
 				RaiseSmartPropertyChanged(key);
-				RaisePropertyChanged(SmartPropertyName);
+				RaisePropertyChanged(nameof(Smart));
 			}
 		}
 
@@ -81,7 +79,7 @@ namespace Ace
 		public void RaisePropertyChanged<TValue>(Expression<Func<TValue>> expression) =>
 			RaisePropertyChanged(expression.UnboxMemberName());
 
-		public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default(TValue)) =>
+		public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default) =>
 			(TValue) this[expression.UnboxMemberName(), defaultValue];
 
 		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool matching = false)
