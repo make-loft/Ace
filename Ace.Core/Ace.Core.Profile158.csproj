@@ -62,7 +62,6 @@
     <Compile Include="SmartObject.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Memory.cs" />
-    <Compile Include="Store.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ace.Base\Ace.Base.Profile158.csproj">

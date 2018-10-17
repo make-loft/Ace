@@ -61,7 +61,6 @@
     <Compile Include="SmartObject.cs" />
     <Compile Include="Member.cs" />
     <Compile Include="Memory.cs" />
-    <Compile Include="Store.cs" />
     <Compile Include="Sugar.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

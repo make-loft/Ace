@@ -58,7 +58,6 @@
     <Compile Include="Expression.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="SmartSet.cs" />
-    <Compile Include="Store.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Adapters\" />

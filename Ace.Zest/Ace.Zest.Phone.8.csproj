@@ -80,6 +80,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedWatcher.cs" />
     <Compile Include="Sugar.VisualTree.cs" />
+    <Compile Include="Store.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aero.Core\Aero.Core.Portable.csproj">

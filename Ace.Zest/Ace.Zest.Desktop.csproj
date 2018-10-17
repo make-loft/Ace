@@ -81,6 +81,7 @@
     <Compile Include="Specific\KeyFileStorage.Desktop.cs" />
     <Compile Include="Sugar\BindingOperationsExt.cs" />
     <Compile Include="Sugar\VisualTree.cs" />
+    <Compile Include="Store.cs" />
     <Compile Include="WildThread.cs" />
   </ItemGroup>
   <ItemGroup>

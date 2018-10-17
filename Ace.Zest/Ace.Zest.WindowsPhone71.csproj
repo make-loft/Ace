@@ -92,6 +92,7 @@
 	<Compile Include="PropertyChangedWatcher.cs" />
 	<Compile Include="Specific\KeyFileStorage.Phone.cs" />
 	<Compile Include="Sugar\VisualTree.cs" />
+	<Compile Include="Store.cs" />
   </ItemGroup>
   <ItemGroup>
 	<None Include="packages.config" />

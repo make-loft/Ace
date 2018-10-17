@@ -20,7 +20,7 @@ namespace Ace.Markup
 		public Smart() : base(null)
 		{
 			Mode = BindingMode.TwoWay;
-			Path = new PropertyPath(SmartObject.SmartPropertyName);
+			Path = new PropertyPath(nameof(SmartObject.Smart));
 		}
 
 		public Smart(string set) : this() => Set = set;

@@ -1,8 +1,5 @@
 ﻿using System;
-using Ace;
 using Ace.Adapters;
-using Ace.Specific;
-
 #if XAMARIN
 using Xamarin.Forms;
 #else
@@ -22,7 +19,5 @@ namespace Ace.Markup
 
 		public override object Provide(object targetObject, object targetProperty = null) =>
 			RoutedCommandsAdapter.SetCommandBindings(targetObject, Ace.Store.Get(Key));
-
-		static Store() => Memory.ActiveBox = Memory.ActiveBox ?? new Memory(new KeyFileStorage());
 	}
 }

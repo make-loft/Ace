@@ -10,8 +10,6 @@ namespace Ace
 {
 	public class Memory : IMemoryBox
 	{
-		public static Memory ActiveBox { get; set; }
-
 		public IStorage Storage { get; }
 		public string KeyFormat { get; }
 
@@ -31,13 +29,13 @@ namespace Ace
 			Attribute.IsDefined(type, TypeOf<CollectionDataContractAttribute>.Raw);
 
 		public object Revive(string key, Type type, params object[] constructorArgs) =>
-			(HasDataContract(type) && Storage.HasKey(MakeStorageKey(key, type)) ? Decode(key, type) : null)
+			(HasDataContract(type) && Storage.Is() && Storage.HasKey(MakeStorageKey(key, type)) ? Decode(key, type) : null)
 			?? ActivationRequired?.Invoke(key, type, constructorArgs)
 			?? Activator.CreateInstance(type, constructorArgs);
 
 		public void Keep<TValue>(TValue item, string key = null)
 		{
-			if (HasDataContract(item.GetType())) Encode(item, key);
+			if (HasDataContract(item.GetType()) && Storage.Is()) Encode(item, key);
 		}
 
 		private object Decode(string key, Type type)
