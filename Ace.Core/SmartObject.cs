@@ -84,11 +84,11 @@ namespace Ace
 
 		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool matching = false)
 		{
-			var propertyName = expression.UnboxMemberName();
-			if (matching && this[propertyName].Is(value)) return;
-			EvokePropertyChanging(propertyName);
-			this[propertyName] = value;
-			EvokePropertyChanged(propertyName);
+			var key = expression.UnboxMemberName();
+			if (matching && this[key].Is(value)) return;
+			EvokePropertyChanging(key);
+			this[key] = value;
+			EvokePropertyChanged(key);
 		}
 
 		#endregion
