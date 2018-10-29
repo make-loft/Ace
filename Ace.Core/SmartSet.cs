@@ -27,15 +27,15 @@ namespace Ace
 
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
 		public event NotifyCollectionChangedEventHandler CollectionChangeCompleted;
-		public void RaiseCollectionChanged(object sender, Args args) => CollectionChanged?.Invoke(sender, args);
-		public void RaiseCollectionChanged() => CollectionChanged?.Invoke(this, new Args(Action.Reset));
+		public void EvokeCollectionChanged(object sender, Args args) => CollectionChanged?.Invoke(sender, args);
+		public void EvokeCollectionChanged() => CollectionChanged?.Invoke(this, new Args(Action.Reset));
 
 		protected void Initialize(TList collection = null)
 		{
 			Source = Source ?? collection ?? new TList();
 			_source = (IList)Source;
 			CollectionChanged = null;
-			CollectionChanged += (sender, args) => RaisePropertyChanged("Count");
+			CollectionChanged += (sender, args) => EvokePropertyChanged("Count");
 		}
 
 		private IList _source;

@@ -9,7 +9,7 @@ namespace HelloAce
 		private void App_OnStartup(object sender, StartupEventArgs e)
 		{
 			//LocalizationSource.Wrap.ActiveManager = English.ResourceManager;
-			Memory.ActiveBox = new Memory(new KeyFileStorage());
+			Store.ActiveBox = new Memory(new KeyFileStorage());
 		}
 
 		private void App_OnExit(object sender, ExitEventArgs e)

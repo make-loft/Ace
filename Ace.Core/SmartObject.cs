@@ -15,10 +15,12 @@ namespace Ace
 		private Dictionary<string, object> _smartContainer;
 		protected Dictionary<string, object> SmartContainer => New.Lazy(ref _smartContainer);
 
+		public const string SmartPropertyName = "Smart";
+
 		public SmartObject Smart
 		{
 			get => this;
-			set => RaisePropertyChanged(this.Is(value) ? nameof(Smart) : throw new Exception("Wrong context"));
+			set => EvokePropertyChanged(this.Is(value) ? SmartPropertyName : throw new Exception("Wrong context"));
 		}
 
 		public object this[string key]
@@ -26,11 +28,11 @@ namespace Ace
 			get => SmartContainer.TryGetValue(key, out var value) ? value : UndefinedSmartValue;
 			set
 			{
-				RaiseSmartPropertyChanging(key);
-				RaisePropertyChanging(nameof(Smart));
+				EvokeSmartPropertyChanging(key);
+				EvokePropertyChanging(SmartPropertyName);
 				SmartContainer[key] = value;
-				RaiseSmartPropertyChanged(key);
-				RaisePropertyChanged(nameof(Smart));
+				EvokeSmartPropertyChanged(key);
+				EvokePropertyChanged(SmartPropertyName);
 			}
 		}
 
@@ -61,23 +63,23 @@ namespace Ace
 		public event PropertyChangedEventHandler PropertyChanged;
 		public event PropertyChangedEventHandler SmartPropertyChanged;
 
-		public void RaisePropertyChanging(string propertyName) =>
+		public void EvokePropertyChanging(string propertyName) =>
 			PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 
-		public void RaisePropertyChanged(string propertyName) =>
+		public void EvokePropertyChanged(string propertyName) =>
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-		public void RaiseSmartPropertyChanging(string propertyName) =>
+		public void EvokeSmartPropertyChanging(string propertyName) =>
 			SmartPropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 
-		public void RaiseSmartPropertyChanged(string propertyName) =>
+		public void EvokeSmartPropertyChanged(string propertyName) =>
 			SmartPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-		public void RaisePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
-			RaisePropertyChanging(expression.UnboxMemberName());
+		public void EvokePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
+			EvokePropertyChanging(expression.UnboxMemberName());
 
-		public void RaisePropertyChanged<TValue>(Expression<Func<TValue>> expression) =>
-			RaisePropertyChanged(expression.UnboxMemberName());
+		public void EvokePropertyChanged<TValue>(Expression<Func<TValue>> expression) =>
+			EvokePropertyChanged(expression.UnboxMemberName());
 
 		public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default) =>
 			(TValue) this[expression.UnboxMemberName(), defaultValue];
@@ -86,9 +88,9 @@ namespace Ace
 		{
 			var propertyName = expression.UnboxMemberName();
 			if (matching && this[propertyName].Is(value)) return;
-			RaisePropertyChanging(propertyName);
+			EvokePropertyChanging(propertyName);
 			this[propertyName] = value;
-			RaisePropertyChanged(propertyName);
+			EvokePropertyChanged(propertyName);
 		}
 
 		#endregion

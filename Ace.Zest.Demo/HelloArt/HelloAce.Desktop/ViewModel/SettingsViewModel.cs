@@ -35,7 +35,7 @@ namespace HelloAce.ViewModel
 				Context.Get("SetLanguage").RaiseCanExecuteChanged();
 			};
 
-			RaisePropertyChanged(() => Language);
+			EvokePropertyChanged(() => Language);
 		}
 	}
 }
