@@ -15,12 +15,10 @@ namespace Ace
 		private Dictionary<string, object> _smartContainer;
 		protected Dictionary<string, object> SmartContainer => New.Lazy(ref _smartContainer);
 
-		public const string SmartPropertyName = "Smart";
-
 		public SmartObject Smart
 		{
 			get => this;
-			set => EvokePropertyChanged(this.Is(value) ? SmartPropertyName : throw new Exception("Wrong context"));
+			set => EvokePropertyChanged(this.Is(value) ? nameof(Smart) : throw new Exception("Wrong context"));
 		}
 
 		public object this[string key]
@@ -29,10 +27,10 @@ namespace Ace
 			set
 			{
 				EvokeSmartPropertyChanging(key);
-				EvokePropertyChanging(SmartPropertyName);
+				EvokePropertyChanging(nameof(Smart));
 				SmartContainer[key] = value;
 				EvokeSmartPropertyChanged(key);
-				EvokePropertyChanged(SmartPropertyName);
+				EvokePropertyChanged(nameof(Smart));
 			}
 		}
 
