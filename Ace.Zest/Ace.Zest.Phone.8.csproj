@@ -44,6 +44,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>rd "$(ProjectDir)obj" /s /q</PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
     <Reference Include="system" />

@@ -56,3 +56,95 @@ namespace Ace.Adapters
 		Static = 8,
 	}
 }
+
+namespace Ace
+{
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum, Inherited = false)]
+	public class DataContractAttribute : Attribute
+	{
+		public bool IsNameSetExplicitly => Name.Is();
+		public bool IsNamespaceSetExplicitly => Namespace.Is();
+
+		public bool IsReference { get; set; }
+		public string Namespace { get; set; }
+		public string Name { get; set; }
+	}
+
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
+	public class CollectionDataContractAttribute : DataContractAttribute
+	{
+		public bool IsItemNameSetExplicitly => ItemName.Is();
+		public bool IsKeyNameSetExplicitly => KeyName.Is();
+		public bool IsValueNameSetExplicitly => ValueName.Is();
+
+		public bool IsReferenceSetExplicitly { get; set; }
+		public string ItemName { get; set; }
+		public string KeyName { get; set; }
+		public string ValueName { get; set; }
+	}
+
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, Inherited = false)]
+	public class DataMemberAttribute : Attribute
+	{
+		public string Name { get; set; }
+		public bool IsNameSetExplicitly => Name.Is();
+		public int Order { get; set; } = -1;
+		public bool IsRequired { get; set; }
+		public bool EmitDefaultValue { get; set; }
+	}
+	
+	[AttributeUsage(AttributeTargets.Method, Inherited=false)]
+	public sealed class OnSerializingAttribute : Attribute 
+	{
+	}
+ 
+	[AttributeUsage(AttributeTargets.Method, Inherited=false)]
+	public sealed class OnSerializedAttribute : Attribute 
+	{
+	}
+ 
+	[AttributeUsage(AttributeTargets.Method, Inherited=false)]
+	public sealed class OnDeserializingAttribute : Attribute 
+	{
+	}
+ 
+	[AttributeUsage(AttributeTargets.Method, Inherited=false)]
+	public sealed class OnDeserializedAttribute : Attribute 
+	{
+	}
+
+	public struct StreamingContext
+	{
+		public StreamingContext(StreamingContextStates state, object additional = null)
+		{
+			State = state;
+			Context = additional;
+		}
+
+		public object Context { get; internal set; }
+
+		public override bool Equals(object obj) => obj is StreamingContext context &&
+		                                           context.Context == Context &&
+		                                           context.State == State;
+
+		public override int GetHashCode() => (int) State;
+
+		public StreamingContextStates State { get; internal set; }
+	}
+
+	// **********************************************************
+	// Keep these in sync with the version in vm\runtimehandles.h
+	// **********************************************************
+	[Flags]
+	public enum StreamingContextStates {
+		CrossProcess=0x01,
+		CrossMachine=0x02,
+		File        =0x04,
+		Persistence =0x08,
+		Remoting    =0x10,
+		Other       =0x20,
+		Clone       =0x40,
+		CrossAppDomain =0x80,
+		All         =0xFF,
+	}
+}

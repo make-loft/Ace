@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Runtime.Serialization;
 using Action = System.Collections.Specialized.NotifyCollectionChangedAction;
 using Args = System.Collections.Specialized.NotifyCollectionChangedEventArgs;
 
