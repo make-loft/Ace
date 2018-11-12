@@ -79,11 +79,15 @@ namespace Ace
 			EvokePropertyChanged(expression.UnboxMemberName());
 
 		public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default) =>
-			(TValue) this[expression.UnboxMemberName(), defaultValue];
+			Get(expression.UnboxMemberName(), defaultValue);
 
-		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool matching = false)
+		public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool matching = false) =>
+			Set(expression.UnboxMemberName(), value, matching);
+		
+		public TValue Get<TValue>(string key, TValue defaultValue = default) => (TValue) this[key, defaultValue];
+
+		public void Set<TValue>(string key, TValue value, bool matching = false)
 		{
-			var key = expression.UnboxMemberName();
 			if (matching && this[key].Is(value)) return;
 			EvokePropertyChanging(key);
 			this[key] = value;
