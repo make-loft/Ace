@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Ace;
+﻿using Ace;
 
 namespace HelloAce.ViewModel
 {
