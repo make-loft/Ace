@@ -78,6 +78,7 @@
     <Compile Include="Markup\ContextTrigger.cs" />
     <Compile Include="Markup\Localizing.cs" />
     <Compile Include="Markup\Patterns\AMarkupExtension.cs" />
+    <Compile Include="Markup\Rack.cs" />
     <Compile Include="Markup\SelfBinding.cs" />
     <Compile Include="Markup\Set.cs" />
     <Compile Include="Markup\Smart.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedWatcher.cs" />
     <Compile Include="Specific\KeyFileStorage.Phone.cs" />
+    <Compile Include="Sugar\BindingOperationsExt.cs" />
     <Compile Include="Sugar\VisualTree.cs" />
     <Compile Include="Store.cs" />
   </ItemGroup>

@@ -52,13 +52,13 @@ namespace Ace.Markup
 				ColsIsInUpdateProperty, ColsUpdateTriggerPropertyPath)));
 
 		public static readonly DependencyProperty SetProperty = RegisterAttached(
-			"Set", typeof(string), typeof(Rack), GetMetadata<UIElement>(OnSetChangedCallback));
+			"Set", typeof(string), typeof(Rack), GetMetadata<FrameworkElement>(OnSetChangedCallback));
 
 		private static readonly DependencyProperty RowsIsInUpdateProperty = RegisterAttached(
-			"RowsIsInUpdate", typeof(object), typeof(Rack));
+			"RowsIsInUpdate", typeof(object), typeof(Rack), default);
 
 		private static readonly DependencyProperty ColsIsInUpdateProperty = RegisterAttached(
-			"ColsIsInUpdate", typeof(object), typeof(Rack));
+			"ColsIsInUpdate", typeof(object), typeof(Rack), default);
 
 		private static readonly DependencyProperty RowsUpdateTriggerProperty = RegisterAttached(
 			"RowsUpdateTrigger", typeof(object), typeof(Rack), GetMetadata<Grid>((grid, args) =>
@@ -103,7 +103,7 @@ namespace Ace.Markup
 		private static string ToPattern(this ColDef definition) => definition.ToPattern(
 			ColDef.WidthProperty, ColDef.MinWidthProperty, ColDef.MaxWidthProperty);
 
-		private static string ToPattern(this DefinitionBase definition,
+		private static string ToPattern(this DependencyObject definition,
 			DependencyProperty lengthProperty,
 			DependencyProperty minValueProperty,
 			DependencyProperty maxValueProperty)
@@ -141,7 +141,7 @@ namespace Ace.Markup
 			DependencyProperty minValueProperty,
 			DependencyProperty maxValueProperty,
 			PropertyPath updateTriggerPropertyPath)
-			where TDefinition : DefinitionBase, new()
+			where TDefinition : DependencyObject, new()
 		{
 			var indexMin = pattern.IndexOf(@"\", StringComparison.Ordinal);
 			var indexMax = pattern.IndexOf(@"/", StringComparison.Ordinal);
@@ -172,13 +172,15 @@ namespace Ace.Markup
 				Bind(grid, definition, maxValueProperty, updateTriggerPropertyPath);
 		}
 
-		private static void Bind(Grid grid, DefinitionBase definition, DependencyProperty property,
+		private static void Bind(Grid grid, DependencyObject definition, DependencyProperty property,
 			PropertyPath updateTriggerPropertyPath) =>
 			BindingOperations.SetBinding(definition, property, new Binding
 			{
-				Source = grid,
+				Source = grid,				
+#if !WINDOWS_PHONE
 				Path = updateTriggerPropertyPath,
 				Mode = BindingMode.OneWayToSource,
+#endif
 				FallbackValue = definition.GetValue(property)
 			});
 
@@ -197,7 +199,7 @@ namespace Ace.Markup
 			DependencyProperty maxValueProperty,
 			DependencyProperty updateTriggerProperty,
 			PropertyPath path)
-			where TDefinition : DefinitionBase, new()
+			where TDefinition : DependencyObject, new()
 		{
 			if (grid.GetValue(updateTriggerProperty).Is(true) || pattern.IsNot()) return;
 
@@ -212,7 +214,7 @@ namespace Ace.Markup
 			}).ForEach(definitions.Add);
 		}
 
-		private static void OnSetChangedCallback(UIElement element, DependencyPropertyChangedEventArgs args)
+		private static void OnSetChangedCallback(FrameworkElement element, DependencyPropertyChangedEventArgs args)
 		{
 			var patterns = args.NewValue.As("").ToUpperInvariant().SplitPaterns();
 			var colPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && !p.StartsWith("CS"))?.Replace("C", "");
@@ -220,8 +222,9 @@ namespace Ace.Markup
 			var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "");
 			var colSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "");
 			var rowSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "");
-
+#if !WINDOWS_PHONE
 			if (sssPattern.TryParse(out bool sharedSizeScope)) Grid.SetIsSharedSizeScope(element, sharedSizeScope);
+#endif
 			if (colSpanPattern.TryParse(out int colSpan)) Grid.SetColumnSpan(element, colSpan);
 			if (rowSpanPattern.TryParse(out int rowSpan)) Grid.SetRowSpan(element, rowSpan);
 			if (colPattern.TryParse(out int col)) Grid.SetColumn(element, col);
