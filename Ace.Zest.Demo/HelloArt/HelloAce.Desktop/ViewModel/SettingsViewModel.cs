@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Ace;
+﻿using Ace;
 using HelloAce.Languages;
 
 namespace HelloAce.ViewModel
