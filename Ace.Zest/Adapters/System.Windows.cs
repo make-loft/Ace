@@ -21,7 +21,12 @@ namespace System.Windows
 		    DefaultValue = defaultValue;
 		    PropertyChangedCallback = propertyChangedCallback;
 	    }
-    }
+
+	    public PropertyMetadata(PropertyChangedCallback propertyChangedCallback)
+	    {
+		    PropertyChangedCallback = propertyChangedCallback;
+	    }
+	}
 
 	public class DependencyPropertyChangedEventArgs : EventArgs
 	{
@@ -38,9 +43,8 @@ namespace System.Windows
 	public class DependencyObject : BindableObject
     {
         public object GetValue(DependencyProperty property) => GetValue(property.CoreProperty);
-
         public void SetValue(DependencyProperty property, object value) => SetValue(property.CoreProperty, value);
-    }
+	}
 
     public class DependencyProperty
     {
@@ -55,7 +59,7 @@ namespace System.Windows
 		    };
 
         public static DependencyProperty RegisterAttached(string name, Type type, Type decType, PropertyMetadata metadata) =>
-            Register(name, type, decType, metadata);
+            Register(name, type, decType, metadata ?? new PropertyMetadata(null));
 
         public BindableProperty CoreProperty { get; private set; }
 

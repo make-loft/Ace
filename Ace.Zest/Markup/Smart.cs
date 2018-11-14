@@ -41,7 +41,7 @@ namespace Ace.Markup
 		public object DefaultValue
 		{
 			get => _defaultValue;
-			set => FallbackValue = FallbackValue == DependencyProperty.UnsetValue
+			set => FallbackValue = FallbackValue.Is(DependencyProperty.UnsetValue)
 				? _defaultValue = value
 				: DependencyProperty.UnsetValue;
 		}

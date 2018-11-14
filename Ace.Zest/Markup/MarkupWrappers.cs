@@ -10,7 +10,7 @@ namespace Ace.Markup
 	}
 
 #if XAMARIN
-	public class GridLength : MarkupWrapper<Xamarin.Forms.GridLength> { }
+	//public class GridLength : MarkupWrapper<Xamarin.Forms.GridLength> { }
 	public class LayoutOptions : MarkupWrapper<Xamarin.Forms.LayoutOptions> { }
 #else
 #endif
