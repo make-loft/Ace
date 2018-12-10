@@ -2,12 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if XAMARIN
+using Xamarin.Forms;
+using FrameworkElement = Xamarin.Forms.BindableObject;
+using DependencyObject = Xamarin.Forms.BindableObject;
+using DependencyProperty = Xamarin.Forms.BindableProperty;
+using DependencyPropertyChangedEventArgs = System.Windows.DependencyPropertyChangedEventArgs;
+using PropertyMetadata = System.Windows.PropertyMetadata;
+using PropertyPath = System.Windows.PropertyPath;
+using Binding = System.Windows.Data.Binding;
+using static System.Windows.BindablePropertyExtensions;
+using static Xamarin.Forms.RowDefinition;
+using static Xamarin.Forms.ColumnDefinition;
+#else
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using RowDef = System.Windows.Controls.RowDefinition;
-using ColDef = System.Windows.Controls.ColumnDefinition;
 using static System.Windows.DependencyProperty;
+using static System.Windows.Controls.RowDefinition;
+using static System.Windows.Controls.ColumnDefinition;
+#endif
 
 namespace Ace.Markup
 {
@@ -22,12 +36,12 @@ namespace Ace.Markup
 		public static void SetSet(DependencyObject d, string value) => d.SetValue(SetProperty, value);
 		public static void SetShowLines(DependencyObject d, bool value) => d.SetValue(ShowLinesProperty, value);
 
-		public static int GetRow(DependencyObject d) => (int) d.GetValue(Grid.RowProperty);
-		public static int GetColumn(DependencyObject d) => (int) d.GetValue(Grid.ColumnProperty);
-		public static string GetRows(DependencyObject d) => (string) d.GetValue(RowsProperty);
-		public static string GetColumns(DependencyObject d) => (string) d.GetValue(ColumnsProperty);
-		public static string GetSet(DependencyObject d) => (string) d.GetValue(SetProperty);
-		public static bool GetShowLines(DependencyObject d) => (bool) d.GetValue(ShowLinesProperty);
+		public static int GetRow(DependencyObject d) => (int)d.GetValue(Grid.RowProperty);
+		public static int GetColumn(DependencyObject d) => (int)d.GetValue(Grid.ColumnProperty);
+		public static string GetRows(DependencyObject d) => (string)d.GetValue(RowsProperty);
+		public static string GetColumns(DependencyObject d) => (string)d.GetValue(ColumnsProperty);
+		public static string GetSet(DependencyObject d) => (string)d.GetValue(SetProperty);
+		public static bool GetShowLines(DependencyObject d) => (bool)d.GetValue(ShowLinesProperty);
 
 		private static PropertyMetadata GetMetadata<T>(Action<T, DependencyPropertyChangedEventArgs> action) =>
 			new PropertyMetadata((o, args) =>
@@ -37,18 +51,18 @@ namespace Ace.Markup
 
 		public static readonly DependencyProperty ShowLinesProperty = RegisterAttached(
 			"ShowLines", typeof(bool), typeof(Rack), GetMetadata<Grid>((grid, args) =>
-				grid.ShowGridLines = args.NewValue.Is(true)));
+				grid.SetShowGridLines(args.NewValue.Is(true))));
 
 		public static readonly DependencyProperty RowsProperty = RegisterAttached(
 			"Rows", typeof(string), typeof(Rack), GetMetadata<Grid>((grid, args) => UpdateDefinitions(
 				grid, grid.RowDefinitions, args.NewValue?.ToString(),
-				RowDef.HeightProperty, RowDef.MinHeightProperty, RowDef.MaxHeightProperty,
+				HeightProperty, MinHeightProperty, MaxHeightProperty,
 				RowsIsInUpdateProperty, RowsUpdateTriggerPropertyPath)));
 
 		public static readonly DependencyProperty ColumnsProperty = RegisterAttached(
 			"Columns", typeof(string), typeof(Rack), GetMetadata<Grid>((grid, args) => UpdateDefinitions(
 				grid, grid.ColumnDefinitions, args.NewValue?.ToString(),
-				ColDef.WidthProperty, ColDef.MinWidthProperty, ColDef.MaxWidthProperty,
+				WidthProperty, MinWidthProperty, MaxWidthProperty,
 				ColsIsInUpdateProperty, ColsUpdateTriggerPropertyPath)));
 
 		public static readonly DependencyProperty SetProperty = RegisterAttached(
@@ -67,7 +81,7 @@ namespace Ace.Markup
 
 				var newRowsPatterns = grid.RowDefinitions.Select(ToPattern).ToArray();
 				var newRowsPattern = newRowsPatterns.GluePatterns();
-				var oldRowsPattern = (string) grid.GetValue(RowsProperty);
+				var oldRowsPattern = (string)grid.GetValue(RowsProperty);
 				var oldRowsPatterns = SplitPaterns(oldRowsPattern);
 
 				if (newRowsPatterns.Length.Is(oldRowsPatterns.Length) && newRowsPattern.IsNot(oldRowsPattern))
@@ -83,7 +97,7 @@ namespace Ace.Markup
 
 				var newColsPatterns = grid.ColumnDefinitions.Select(ToPattern).ToArray();
 				var newColsPattern = newColsPatterns.GluePatterns();
-				var oldColsPattern = (string) grid.GetValue(ColumnsProperty);
+				var oldColsPattern = (string)grid.GetValue(ColumnsProperty);
 				var oldColsPatterns = SplitPaterns(oldColsPattern);
 
 				if (newColsPatterns.Length.Is(oldColsPatterns.Length) && newColsPattern.IsNot(oldColsPattern))
@@ -97,11 +111,11 @@ namespace Ace.Markup
 
 		#endregion
 
-		private static string ToPattern(this RowDef definition) => definition.ToPattern(
-			RowDef.HeightProperty, RowDef.MinHeightProperty, RowDef.MaxHeightProperty);
+		private static string ToPattern(this RowDefinition definition) => definition.ToPattern(
+			HeightProperty, MinHeightProperty, MaxHeightProperty);
 
-		private static string ToPattern(this ColDef definition) => definition.ToPattern(
-			ColDef.WidthProperty, ColDef.MinWidthProperty, ColDef.MaxWidthProperty);
+		private static string ToPattern(this ColumnDefinition definition) => definition.ToPattern(
+			WidthProperty, MinWidthProperty, MaxWidthProperty);
 
 		private static string ToPattern(this DependencyObject definition,
 			DependencyProperty lengthProperty,
@@ -174,9 +188,9 @@ namespace Ace.Markup
 
 		private static void Bind(Grid grid, DependencyObject definition, DependencyProperty property,
 			PropertyPath updateTriggerPropertyPath) =>
-			BindingOperations.SetBinding(definition, property, new Binding
+			definition.SetBinding(property, new Binding
 			{
-				Source = grid,				
+				Source = grid,
 #if !WINDOWS_PHONE
 				Path = updateTriggerPropertyPath,
 				Mode = BindingMode.OneWayToSource,
@@ -187,13 +201,13 @@ namespace Ace.Markup
 		private static string GluePatterns(this IEnumerable<string> patterns) => patterns.Aggregate(new StringBuilder(),
 			(builder, pattern) => builder.Append(builder.Length.Is(0) ? null : " ").Append(pattern)).ToString();
 
-		private static readonly char[] PatternSplitters = {' ', ','};
+		private static readonly char[] PatternSplitters = { ' ', ',' };
 
 		private static string[] SplitPaterns(this string pattern) =>
 			pattern?.Split(PatternSplitters, StringSplitOptions.RemoveEmptyEntries);
 
 		private static void UpdateDefinitions<TDefinition>(Grid grid,
-			IList<TDefinition> definitions, string pattern,
+			ICollection<TDefinition> definitions, string pattern,
 			DependencyProperty lengthProperty,
 			DependencyProperty minValueProperty,
 			DependencyProperty maxValueProperty,
@@ -222,7 +236,7 @@ namespace Ace.Markup
 			var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "");
 			var colSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "");
 			var rowSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "");
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !XAMARIN
 			if (sssPattern.TryParse(out bool sharedSizeScope)) Grid.SetIsSharedSizeScope(element, sharedSizeScope);
 #endif
 			if (colSpanPattern.TryParse(out int colSpan)) Grid.SetColumnSpan(element, colSpan);
@@ -233,10 +247,23 @@ namespace Ace.Markup
 
 		private static GridLength ToGridLength(this string pattern)
 		{
-			var unitType = pattern.Contains("*") ? GridUnitType.Star : GridUnitType.Pixel;
-			pattern = unitType.Is(GridUnitType.Star) ? pattern.Replace("*", "") : pattern;
-			pattern = unitType.Is(GridUnitType.Star) && pattern.IsNullOrWhiteSpace() ? "1" : pattern;
+			var unitType = pattern.Contains("*") ? Star : Pixel;
+			pattern = unitType.Is(Star) ? pattern.Replace("*", "") : pattern;
+			pattern = unitType.Is(Star) && pattern.IsNullOrWhiteSpace() ? "1" : pattern;
 			return pattern.TryParse(out double value) ? new GridLength(value, unitType) : new GridLength();
 		}
+
+		static readonly GridUnitType Star = GridUnitType.Star;
+#if XAMARIN
+		static readonly GridUnitType Pixel = GridUnitType.Absolute;
+		static readonly DependencyProperty MinWidthProperty = WidthProperty;
+		static readonly DependencyProperty MaxWidthProperty = WidthProperty;
+		static readonly DependencyProperty MinHeightProperty = HeightProperty;
+		static readonly DependencyProperty MaxHeightProperty = HeightProperty;
+		static void SetShowGridLines(this Grid grid, bool value) { }
+#else
+		static readonly GridUnitType Pixel = GridUnitType.Pixel;
+		static void SetShowGridLines(this Grid grid, bool value) => grid.ShowGridLines = value;
+#endif
 	}
 }

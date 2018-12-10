@@ -2,14 +2,38 @@
 using System.Reflection;
 using Xamarin.Forms;
 
+namespace Xamarin.Forms
+{
+	public static class BindingOperations
+	{
+		public static Binding GetBinding(this BindableObject o, BindableProperty p) => null;
+		public static void ClearBinding(this BindableObject o, BindableProperty p) => o.RemoveBinding(p);
+		public static void SetBinding(this BindableObject o, BindableProperty p, Binding b) => o.SetBinding(p, b);
+		public static void SetBinding(this BindableObject o, BindableProperty p, System.Windows.Data.Binding b) =>
+			o.SetBinding(p, b.CoreBinding);
+	}
+}
+
+namespace System.Windows.Data
+{
+	public static class BindingOperations
+	{
+		public static Binding GetBinding(this BindableObject o, DependencyProperty p) => null;
+		public static void ClearBinding(this BindableObject o, DependencyProperty p) => o.RemoveBinding(p.CoreProperty);
+		public static void SetBinding(this BindableObject o, DependencyProperty p, Xamarin.Forms.Binding b) => o.SetBinding(p, b);
+		public static void SetBinding(this BindableObject o, DependencyProperty p, Binding b) =>
+			o.SetBinding(p, b.CoreBinding);
+	}
+}
+
 namespace System.Windows
 {
     public class PropertyPath
     {
         public string Path { get; }
-
         public PropertyPath(string path) => Path = path;
-    }
+		public PropertyPath(BindableProperty property) => Path = property.PropertyName;
+	}
 }
 
 namespace System.Windows.Data
@@ -17,9 +41,7 @@ namespace System.Windows.Data
     public class PathConverter : TypeConverter
     {
         public static readonly List<Assembly> RegisteredAssemblies = new List<Assembly>();
-
         public override bool CanConvertFrom(Type sourceType) => sourceType == typeof(string);
-
         public override object ConvertFromInvariantString(string value) => new PropertyPath(value);
     }
 
@@ -37,12 +59,6 @@ namespace System.Windows.Data
     {
         public RelativeSource(RelativeSourceMode mode) => Mode = mode;
         public RelativeSourceMode Mode { get; set; }
-    }
-
-    public static class BindingOperations
-    {
-        public static void SetBinding(DependencyObject o, DependencyProperty p, Binding b) => 
-            o.SetBinding(p.CoreProperty, b.CoreBinding);
     }
 
     public class Binding : Xamarin.Forms.Xaml.IMarkupExtension

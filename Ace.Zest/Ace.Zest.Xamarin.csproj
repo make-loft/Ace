@@ -3,6 +3,7 @@
 	<EnableDefaultCompileItems>True</EnableDefaultCompileItems>
 	<TargetFramework>netstandard2.0</TargetFramework>
 	<RootNamespace>Ace</RootNamespace>
+	<AssemblyName>Ace.Zest</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 	<DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
@@ -18,7 +19,7 @@
 	<Compile Remove="Adapters\Xamarin.Forms.cs" />
 	<Compile Remove="Dictionaries\AppConverters.cs" />
 	<Compile Remove="Markup\Picture.cs" />
-	<Compile Remove="Markup\Rack.cs" />
+	<Compile Remove="Markup\Rack.Xamarin.cs" />
 	<Compile Remove="Properties\AssemblyInfo.cs" />
 	<Compile Remove="Specific\Core.Store.cs" />
 	<Compile Remove="Specific\KeyFileStorage.Phone.cs" />
@@ -38,5 +39,10 @@
   <ItemGroup>
 	<Folder Include="Dictionaries\" />
 	<Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Dictionaries\AppConverters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
 </Project>

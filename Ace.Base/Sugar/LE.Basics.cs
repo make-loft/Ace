@@ -12,7 +12,7 @@ namespace Ace
 		public static TX Put<T, TX>(this T o, ref TX x) => x;
 
 		/* negation */
-		public static bool Not<T>(this bool b) => !b;
+		public static bool Not(this bool b) => !b;
 
 		/* boxing free value matching */	
 		public static bool Equals<T>(T a, T b) => EqualityComparer<T>.Default.Equals(a, b);

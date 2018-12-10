@@ -6,13 +6,15 @@ namespace Ace
 {
 	public static class BindingOperationsExt
 	{
+		public static void SetBinding(this DepObject target, DepProperty dp, Binding b) =>
+			BindingOperations.SetBinding(target, dp, b);
 #if WINDOWS_PHONE
         public static Binding GetBinding(this DepObject target, DepProperty dp) => null;
 		
 		public static void ClearBinding(this DepObject target, DepProperty dp) { }
 		
 		public static void ClearAllBindings(this DepObject target) { }
-#else
+#else		
 		public static Binding GetBinding(this DepObject target, DepProperty dp) =>
 			BindingOperations.GetBinding(target, dp);
 		

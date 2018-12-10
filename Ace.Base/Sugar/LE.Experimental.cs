@@ -6,7 +6,6 @@ namespace Ace
 	// ReSharper disable InconsistentNaming
 	public static partial class LE
 	{
-		public static bool Not(this bool b) => !b;
 		public static bool IsTrue(this bool b) => b;
 		public static bool IsFalse(this bool b) => !b;
 		public static string ToStr(this string o) => o;
