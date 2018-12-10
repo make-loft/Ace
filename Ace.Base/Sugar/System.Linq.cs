@@ -7,6 +7,18 @@ namespace System.Linq
 {
 	public static class EnumerableExtensions
 	{
+		public static T Head<T>(this IEnumerable<T> collection) => collection.First();
+		public static T Tail<T>(this IEnumerable<T> collection) => collection.Last();
+
+		public static T HeadOrDefault<T>(this IEnumerable<T> collection) => collection.FirstOrDefault();
+		public static T TailOrDefault<T>(this IEnumerable<T> collection) => collection.LastOrDefault();
+
+		public static T Set<T>(this IList<T> collection, int index, T value) =>
+			collection[index < 0 ? collection.Count + index : index] = value;
+
+		public static T Get<T>(this IList<T> collection, int index) =>
+			collection[index < 0 ? collection.Count + index : index];
+
 		public static int[] IndexesOf<T>(this IEnumerable<T> collection, T value)
 		{
 			var indexes = new List<int>();
