@@ -29,21 +29,17 @@ namespace Ace.Markup
 	{
 		#region Declarations
 
-		public static void SetRow(DependencyObject o, int value) => o.SetValue(Grid.RowProperty, value);
-		public static void SetColumn(DependencyObject o, int value) => o.SetValue(Grid.ColumnProperty, value);
-		public static void SetRows(DependencyObject o, string value) => o.SetValue(RowsProperty, value);
-		public static void SetColumns(DependencyObject o, string value) => o.SetValue(ColumnsProperty, value);
-		public static void SetCell(DependencyObject o, string value) => o.SetValue(CellProperty, value);
-		public static void SetShowLines(DependencyObject o, bool value) => o.SetValue(ShowLinesProperty, value);
-		public static void SetIsTwoWayMode(DependencyObject o, bool value) => o.SetValue(IsTwoWayModeProperty, value);
-
-		public static int GetRow(DependencyObject o) => o.GetValue(Grid.RowProperty).To<int>();
-		public static int GetColumn(DependencyObject o) => o.GetValue(Grid.ColumnProperty).To<int>();
+		public static string GetCell(DependencyObject o) => o.GetValue(CellProperty).To<string>();
 		public static string GetRows(DependencyObject o) => o.GetValue(RowsProperty).To<string>();
 		public static string GetColumns(DependencyObject o) => o.GetValue(ColumnsProperty).To<string>();
-		public static string GetCell(DependencyObject o) => o.GetValue(CellProperty).To<string>();
 		public static bool GetShowLines(DependencyObject o) => o.GetValue(ShowLinesProperty).To<bool>();
 		public static bool GetIsTwoWayMode(DependencyObject o) => o.GetValue(IsTwoWayModeProperty).To<bool>();
+
+		public static void SetCell(DependencyObject o, string value) => o.SetValue(CellProperty, value);
+		public static void SetRows(DependencyObject o, string value) => o.SetValue(RowsProperty, value);
+		public static void SetColumns(DependencyObject o, string value) => o.SetValue(ColumnsProperty, value);
+		public static void SetShowLines(DependencyObject o, bool value) => o.SetValue(ShowLinesProperty, value);
+		public static void SetIsTwoWayMode(DependencyObject o, bool value) => o.SetValue(IsTwoWayModeProperty, value);
 
 		private static PropertyMetadata GetMetadata<T>(Action<T, DependencyPropertyChangedEventArgs> action)
 			where T : DependencyObject =>
@@ -70,7 +66,7 @@ namespace Ace.Markup
 				ColsIsInUpdateProperty, ColsUpdateTriggerPropertyPath)));
 
 		public static readonly DependencyProperty CellProperty = RegisterAttached(
-			"Cell", typeof(string), typeof(Rack), GetMetadata<FrameworkElement>(OnSetChangedCallback));
+			"Cell", typeof(string), typeof(Rack), GetMetadata<FrameworkElement>(OnCellChanged));
 
 		private static readonly DependencyProperty RowsIsInUpdateProperty = RegisterAttached(
 			"RowsIsInUpdate", typeof(object), typeof(Rack), default);
@@ -232,7 +228,7 @@ namespace Ace.Markup
 			}).ForEach(definitions.Add);
 		}
 
-		private static void OnSetChangedCallback(FrameworkElement element, DependencyPropertyChangedEventArgs args)
+		private static void OnCellChanged(FrameworkElement element, DependencyPropertyChangedEventArgs args)
 		{
 			var patterns = args.NewValue.As("").ToUpperInvariant().Separate();
 			var colPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && !p.StartsWith("CS"))?.Replace("C", "");

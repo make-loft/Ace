@@ -7,6 +7,8 @@ namespace Ace.Markup
 {
 	public class Enum : ABindingExtension
 	{
+		public Enum() => Type = null;
+
 		public Enum(Type type) => Type = type;
 		
 		[TypeConverter(typeof(TypeTypeConverter))]
