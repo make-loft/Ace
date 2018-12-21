@@ -144,19 +144,21 @@
 						<TextBox Text="{Smart RackRows, DefaultValue='* 20\\Auto * 2* */100 * *', UpdateSourceTrigger=PropertyChanged}"/>
 						<TextBlock Text="Rack.Columns="/>
 						<TextBox Text="{Smart RackColumns, DefaultValue='* 50\\*/100 *', UpdateSourceTrigger=PropertyChanged}"/>
-						<TextBlock Text="TextBox Rack.Set=" Background="Plum"/>
+						<TextBlock Text="GridSplitter Rack.Cell=" Background="Plum"/>
 						<TextBox Text="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1', UpdateSourceTrigger=PropertyChanged}"/>
+						<TextBlock Text="Rack.IsTwoWayMode=True"/>
 					</StackPanel>
 					<Grid
 						Grid.Row="1"
 						Rack.ShowLines="True"
+						Rack.IsTwoWayMode="True"
 						Rack.Rows="{Smart RackRows}" 
 						Rack.Columns="{Smart RackColumns}">
 						<GridSplitter
 							Background="Plum"
 							VerticalAlignment="Stretch"
 							HorizontalAlignment="Stretch"
-							Rack.Set="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1'}"/>
+							Rack.Cell="{Smart RackPosition, DefaultValue='C1 R1 CS2 RS1'}"/>
 					</Grid>
 				</Grid>
 			</TabItem>
