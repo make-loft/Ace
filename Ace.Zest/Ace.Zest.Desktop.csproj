@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\RoutedCommandsAdapter.cs" />
+    <Compile Include="Converters\AggregateConverter.cs" />
     <Compile Include="Converters\AnyConverter.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\EqualsConverter.cs" />
@@ -59,10 +60,12 @@
     <Compile Include="Converters\Patterns\IInlineConverter.cs" />
     <Compile Include="Converters\Patterns\ICase.cs" />
     <Compile Include="Converters\Patterns\ITwoWayConverter.cs" />
+    <Compile Include="Converters\SplitConverter.cs" />
     <Compile Include="Converters\SwitchConverter.cs" />
     <Compile Include="Dictionaries\AppConverters.cs" />
     <Compile Include="LocalizationSource.cs" />
     <Compile Include="Markup\Behaviour.cs" />
+    <Compile Include="Markup\Converter.cs" />
     <Compile Include="Markup\Enum.cs" />
     <Compile Include="Markup\NullExtension.cs" />
     <Compile Include="Markup\Patterns\ABindingExtension.cs" />
