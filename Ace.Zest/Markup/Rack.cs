@@ -77,29 +77,29 @@ namespace Ace.Markup
 		private static readonly DependencyProperty RowsUpdateTriggerProperty = RegisterAttached(
 			"RowsUpdateTrigger", typeof(object), typeof(Rack), GetMetadata<Grid>((grid, args) =>
 			{
-				if (grid.GetValue(RowsIsInUpdateProperty).Is(true)) return;
+				if (grid.GetValue(RowsIsInUpdateProperty).Is(True)) return;
 
 				var newRowsPattern = grid.RowDefinitions.Select(ToPattern).Glue();
 				var oldRowsPattern = grid.GetValue(RowsProperty).To<string>();
 				if (newRowsPattern.Is(oldRowsPattern)) return;
 
-				grid.SetValue(RowsIsInUpdateProperty, true);
+				grid.SetValue(RowsIsInUpdateProperty, True);
 				grid.SetValue(RowsProperty, newRowsPattern);
-				grid.SetValue(RowsIsInUpdateProperty, false);
+				grid.SetValue(RowsIsInUpdateProperty, False);
 			}));
 
 		private static readonly DependencyProperty ColsUpdateTriggerProperty = RegisterAttached(
 			"ColsUpdateTrigger", typeof(object), typeof(Rack), GetMetadata<Grid>((grid, args) =>
 			{
-				if (grid.GetValue(ColsIsInUpdateProperty).Is(true)) return;
+				if (grid.GetValue(ColsIsInUpdateProperty).Is(True)) return;
 
 				var newColsPattern = grid.ColumnDefinitions.Select(ToPattern).Glue();
 				var oldColsPattern = grid.GetValue(ColumnsProperty).To<string>();
 				if (newColsPattern.Is(oldColsPattern)) return;
 
-				grid.SetValue(ColsIsInUpdateProperty, true);
+				grid.SetValue(ColsIsInUpdateProperty, True);
 				grid.SetValue(ColumnsProperty, newColsPattern);
-				grid.SetValue(ColsIsInUpdateProperty, false);
+				grid.SetValue(ColsIsInUpdateProperty, False);
 			}));
 
 		public static readonly DependencyProperty IsTwoWayModeProperty = RegisterAttached(
@@ -186,7 +186,7 @@ namespace Ace.Markup
 				definition.SetValue(maxValueProperty, maxPattern.TryParse(out double maxValue) ? maxValue : double.PositiveInfinity);
 			else definition.ClearBinding(maxValueProperty);
 
-			if (GetIsTwoWayMode(grid).IsNot(true)) return;
+			if (GetIsTwoWayMode(grid).IsNot(True)) return;
 
 			if (hasLengthInPattern && definition.GetBinding(lengthProperty).IsNot())
 				Bind(grid, definition, lengthProperty, updateTriggerPropertyPath);
@@ -217,9 +217,9 @@ namespace Ace.Markup
 			PropertyPath path)
 			where TDefinition : DependencyObject, new()
 		{
-			if (grid.GetValue(isInUpdateProperty).Is(true) || pattern.IsNot()) return;
+			if (grid.GetValue(isInUpdateProperty).Is(True) || pattern.IsNot()) return;
 			
-			grid.SetValue(isInUpdateProperty, true);
+			grid.SetValue(isInUpdateProperty, True);
 			
 			var patterns = Separate(pattern);
 			
@@ -231,7 +231,7 @@ namespace Ace.Markup
 				return d;
 			}).ForEach(definitions.Add);
 			
-			grid.SetValue(isInUpdateProperty, false);
+			grid.SetValue(isInUpdateProperty, False);
 		}
 
 		private static void OnCellChanged(FrameworkElement element, DependencyPropertyChangedEventArgs args)
@@ -272,16 +272,19 @@ namespace Ace.Markup
 			return pattern.TryParse(out double value) ? new GridLength(value, unitType) : new GridLength();
 		}
 		
-		private static readonly GridUnitType Star = GridUnitType.Star;
+		private static readonly object True = true;
+		private static readonly object False = false;
+		
+		private const GridUnitType Star = GridUnitType.Star;
 #if XAMARIN
-		private static readonly GridUnitType Pixel = GridUnitType.Absolute;
+		private const GridUnitType Pixel = GridUnitType.Absolute;
 		private static readonly DependencyProperty MinWidthProperty = WidthProperty;
 		private static readonly DependencyProperty MaxWidthProperty = WidthProperty;
 		private static readonly DependencyProperty MinHeightProperty = HeightProperty;
 		private static readonly DependencyProperty MaxHeightProperty = HeightProperty;
 		private static void SetShowGridLines(this Grid grid, bool value) { }
 #else
-		private static readonly GridUnitType Pixel = GridUnitType.Pixel;
+		private const GridUnitType Pixel = GridUnitType.Pixel;
 		private static void SetShowGridLines(this Grid grid, bool value) => grid.ShowGridLines = value;
 #endif
 
