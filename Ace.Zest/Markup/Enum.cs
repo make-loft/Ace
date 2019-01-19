@@ -1,11 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Globalization;
-using Ace.Markup.Patterns;
+#if XAMARIN
+using Xamarin.Forms.Xaml;
+#else
+using System.Windows.Markup;
+#endif
 
 namespace Ace.Markup
 {
-	public class Enum : ABindingExtension
+	public class Enum : MarkupExtension
 	{
 		public Enum() => Type = null;
 
@@ -14,7 +17,7 @@ namespace Ace.Markup
 		[TypeConverter(typeof(TypeTypeConverter))]
 		public Type Type { get; set; }
 
-		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+		public override object ProvideValue(IServiceProvider serviceProvider) =>
 			System.Enum.GetValues(Type);
 	}
 }
