@@ -77,28 +77,28 @@ namespace Ace.Markup
 		private static readonly DependencyProperty RowsUpdateTriggerProperty = RegisterAttached(
 			"RowsUpdateTrigger", typeof(object), typeof(Rack), GetMetadata<Grid>((grid, args) =>
 			{
-				grid.SetValue(RowsIsInUpdateProperty, true);
+				if (grid.GetValue(RowsIsInUpdateProperty).Is(true)) return;
 
 				var newRowsPattern = grid.RowDefinitions.Select(ToPattern).Glue();
 				var oldRowsPattern = grid.GetValue(RowsProperty).To<string>();
+				if (newRowsPattern.Is(oldRowsPattern)) return;
 
-				if (newRowsPattern.IsNot(oldRowsPattern))
-					grid.SetValue(RowsProperty, newRowsPattern);
-
+				grid.SetValue(RowsIsInUpdateProperty, true);
+				grid.SetValue(RowsProperty, newRowsPattern);
 				grid.SetValue(RowsIsInUpdateProperty, false);
 			}));
 
 		private static readonly DependencyProperty ColsUpdateTriggerProperty = RegisterAttached(
 			"ColsUpdateTrigger", typeof(object), typeof(Rack), GetMetadata<Grid>((grid, args) =>
 			{
-				grid.SetValue(ColsIsInUpdateProperty, true);
+				if (grid.GetValue(ColsIsInUpdateProperty).Is(true)) return;
 
 				var newColsPattern = grid.ColumnDefinitions.Select(ToPattern).Glue();
 				var oldColsPattern = grid.GetValue(ColumnsProperty).To<string>();
+				if (newColsPattern.Is(oldColsPattern)) return;
 
-				if (newColsPattern.IsNot(oldColsPattern))
-					grid.SetValue(ColumnsProperty, newColsPattern);
-
+				grid.SetValue(ColsIsInUpdateProperty, true);
+				grid.SetValue(ColumnsProperty, newColsPattern);
 				grid.SetValue(ColsIsInUpdateProperty, false);
 			}));
 
@@ -145,7 +145,7 @@ namespace Ace.Markup
 
 			var rounded = new GridLength(Math.Round(length.Value * 10d) / 10d, length.GridUnitType);
 			var hasLengthBinding = lengthBinding.Is();
-			builder.Append(hasLengthBinding ? rounded.ToString() : null);
+			builder.Append(hasLengthBinding ? rounded.ToString().Replace("Auto", AutoKeyword) : null);
 
 			var isDefaultMaxValue = maxValue.Is(double.PositiveInfinity);
 			var hasMaxValueBinding = maxValueBinding.Is();
@@ -167,21 +167,23 @@ namespace Ace.Markup
 			var indexMax = pattern.IndexOf(@"/", StringComparison.Ordinal);
 			var hasMinInPattern = indexMin >= 0;
 			var hasMaxInPattern = indexMax >= 0;
-			var minValuePattern = hasMinInPattern ? pattern.Substring(0, indexMin) : "";
-			var maxValuePattern = hasMaxInPattern ? pattern.Substring(indexMax + 1, pattern.Length - indexMax - 1) : "";
+			var minPattern = hasMinInPattern ? pattern.Substring(0, indexMin) : "";
+			var maxPattern = hasMaxInPattern ? pattern.Substring(indexMax + 1, pattern.Length - indexMax - 1) : "";
 			var start = hasMinInPattern ? indexMin + 1 : 0;
 			var finish = hasMaxInPattern ? indexMax : pattern.Length;
 			var lengthPattern = pattern.Substring(start, finish - start);
 			var hasLengthInPattern = lengthPattern.IsNullOrWhiteSpace().Not();
 
-			if (hasLengthInPattern) definition.SetValue(lengthProperty, lengthPattern.ToGridLength());
+			if (hasLengthInPattern)
+				definition.SetValue(lengthProperty, lengthPattern.ToGridLength());
 			else definition.ClearBinding(lengthProperty);
+			
 			if (hasMinInPattern)
-				definition.SetValue(minValueProperty, minValuePattern.TryParse(out double minValue) ? minValue : .0);
+				definition.SetValue(minValueProperty, minPattern.TryParse(out double minValue) ? minValue : .0);
 			else definition.ClearBinding(minValueProperty);
+			
 			if (hasMaxInPattern)
-				definition.SetValue(maxValueProperty,
-					maxValuePattern.TryParse(out double maxValue) ? maxValue : double.PositiveInfinity);
+				definition.SetValue(maxValueProperty, maxPattern.TryParse(out double maxValue) ? maxValue : double.PositiveInfinity);
 			else definition.ClearBinding(maxValueProperty);
 
 			if (GetIsTwoWayMode(grid).IsNot(true)) return;
@@ -211,14 +213,16 @@ namespace Ace.Markup
 			DependencyProperty lengthProperty,
 			DependencyProperty minValueProperty,
 			DependencyProperty maxValueProperty,
-			DependencyProperty updateTriggerProperty,
+			DependencyProperty isInUpdateProperty,
 			PropertyPath path)
 			where TDefinition : DependencyObject, new()
 		{
-			if (grid.GetValue(updateTriggerProperty).Is(true) || pattern.IsNot()) return;
-
-			var patterns = pattern.Separate();
-
+			if (grid.GetValue(isInUpdateProperty).Is(true) || pattern.IsNot()) return;
+			
+			grid.SetValue(isInUpdateProperty, true);
+			
+			var patterns = Separate(pattern);
+			
 			definitions.Clear();
 			patterns.Select(p =>
 			{
@@ -226,6 +230,8 @@ namespace Ace.Markup
 				d.SetValues(p, grid, lengthProperty, minValueProperty, maxValueProperty, path);
 				return d;
 			}).ForEach(definitions.Add);
+			
+			grid.SetValue(isInUpdateProperty, false);
 		}
 
 		private static void OnCellChanged(FrameworkElement element, DependencyPropertyChangedEventArgs args)
@@ -247,6 +253,7 @@ namespace Ace.Markup
 
 		#region Markup
 
+		public static string AutoKeyword { get; set; } = "^";
 		public static string ActiveSplitter { get; set; } = " ";
 		public static string[] AllowedSplitters { get; set; } = {" ", ","};
 
@@ -264,7 +271,7 @@ namespace Ace.Markup
 			pattern = unitType.Is(Star) && pattern.IsNullOrWhiteSpace() ? "1" : pattern;
 			return pattern.TryParse(out double value) ? new GridLength(value, unitType) : new GridLength();
 		}
-
+		
 		private static readonly GridUnitType Star = GridUnitType.Star;
 #if XAMARIN
 		private static readonly GridUnitType Pixel = GridUnitType.Absolute;
