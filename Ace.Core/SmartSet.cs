@@ -31,7 +31,7 @@ namespace Ace
 
 		protected void Initialize(TList collection = null)
 		{
-			Source = Source ?? collection ?? new TList();
+			Source = collection ?? Source ?? new TList();
 			_source = (IList)Source;
 			CollectionChanged = null;
 			CollectionChanged += (sender, args) => EvokePropertyChanged("Count");
