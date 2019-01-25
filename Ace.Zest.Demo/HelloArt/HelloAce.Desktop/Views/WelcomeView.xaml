@@ -117,7 +117,7 @@
 					<GroupBox Grid.Row="3" Header="{Localizing Composite}">
 						<Grid Rack.Columns="* 200\Auto">
 							<Grid.Resources>
-								<BooleanConverter x:Key="YesNoConverter" ByDefault="" OnTrue="Yes" OnFalse="No"/>
+								<KeyToValueConverter x:Key="YesNoConverter" Key="True" Value="Yes" ByDefault="No"/>
 								<SwitchConverter 
 									x:Key="CompositeSwitchConverter"
 									ByDefault="True">

@@ -48,13 +48,9 @@
   <ItemGroup>
     <Compile Include="Adapters\RoutedCommandsAdapter.cs" />
     <Compile Include="Converters\AggregateConverter.cs" />
-    <Compile Include="Converters\AnyConverter.cs" />
-    <Compile Include="Converters\BooleanConverter.cs" />
-    <Compile Include="Converters\EqualsConverter.cs" />
     <Compile Include="Converters\InlineConverter.cs" />
+    <Compile Include="Converters\KeyToValueConverter.cs" />
     <Compile Include="Converters\LetterCaseConverter.cs" />
-    <Compile Include="Converters\NullConverter.cs" />
-    <Compile Include="Converters\NumericCompareConverter.cs" />
     <Compile Include="Converters\Patterns\AValueConverter.cs" />
     <Compile Include="Converters\Patterns\ICompositeConverter.cs" />
     <Compile Include="Converters\Patterns\IInlineConverter.cs" />
@@ -62,7 +58,6 @@
     <Compile Include="Converters\Patterns\ITwoWayConverter.cs" />
     <Compile Include="Converters\SplitConverter.cs" />
     <Compile Include="Converters\SwitchConverter.cs" />
-    <Compile Include="Dictionaries\AppConverters.cs" />
     <Compile Include="LocalizationSource.cs" />
     <Compile Include="Markup\Behaviour.cs" />
     <Compile Include="Markup\Converter.cs" />
