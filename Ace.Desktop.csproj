@@ -114,23 +114,19 @@
     <Compile Include="Ace.Core\Expression.cs" />
     <Compile Include="Ace.Core\Memory.cs" />
     <Compile Include="Ace.Core\SmartSet.cs" />
-    <Compile Include="Ace.Zest\Adapters\Xamarin.Forms.cs" />
     <Compile Include="Ace.Zest\Adapters\RoutedCommandsAdapter.cs" />
-    <Compile Include="Ace.Zest\Converters\AnyConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\BooleanConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\EqualsConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\InlineConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\LetterCaseConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\NullConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\NumericCompareConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\Patterns\AValueConverter.cs" />
+    <Compile Include="Ace.Zest\Adapters\Xamarin.Forms.cs" />
     <Compile Include="Ace.Zest\Converters\AggregateConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\InlineConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\KeyToValueConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\LetterCaseConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\Patterns\AValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\ICompositeConverter.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\IInlineConverter.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\ICase.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\ITwoWayConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\SplitConverter.cs" />
     <Compile Include="Ace.Zest\Converters\SwitchConverter.cs" />
-    <Compile Include="Ace.Zest\Dictionaries\AppConverters.cs" />
     <Compile Include="Ace.Zest\LocalizationSource.cs" />
     <Compile Include="Ace.Zest\Markup\Behaviour.cs" />
     <Compile Include="Ace.Zest\Markup\Converter.cs" />
@@ -157,16 +153,6 @@
     <Compile Include="Ace.Zest\Sugar\VisualTree.cs" />
     <Compile Include="Ace.Zest\Store.cs" />
     <Compile Include="Ace.Zest\WildThread.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Ace.Base\Ace.Base.Profile158.csproj">
-      <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
-      <Name>Ace.Base.Profile158</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Ace.Core\Ace.Core.Desktop.csproj">
-      <Project>{2582f9f6-c381-475e-b454-4c1e4d323269}</Project>
-      <Name>Ace.Core.Desktop</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Ace.Zest\Dictionaries\AppConverters.xaml" />

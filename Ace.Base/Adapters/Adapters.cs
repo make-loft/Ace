@@ -2,7 +2,7 @@
 using System.Linq;
 using Ace;
 
-#if !NETSTANDARD
+#if !NETSTANDARD && !DESKTOP
 // ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
