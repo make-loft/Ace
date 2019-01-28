@@ -31,7 +31,7 @@ namespace Ace.Serialization.Converters
 			if (convertedValue.IsNot()) return null;
 			var decimalSeparator = ActiveCulture.NumberFormat.NumberDecimalSeparator;
 			if ((value is double || value is float || value is decimal)
-				&& convertedValue.IndexOf(decimalSeparator, StringComparison.OrdinalIgnoreCase) < 0)
+				&& convertedValue.Contains(decimalSeparator).Not())
 				convertedValue += decimalSeparator + "0";
 			var suffix = AppendSyffixes && TypeToSyffix.TryGetValue(value.GetType(), out var s) ? s : null;
 			return suffix.IsNullOrEmpty() ? convertedValue : convertedValue + suffix;
