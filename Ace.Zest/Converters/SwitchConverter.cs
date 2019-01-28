@@ -14,7 +14,7 @@ namespace Ace.Converters
 	[ContentProperty("Cases")]
 	public class SwitchConverter : AValueConverter
 	{
-		public bool Diagnostics { get; set; }
+		public string DiagnosticKey { get; set; }
 
 		public List<ICase<object, object>> Cases { get; } = new List<ICase<object, object>>();
 
@@ -24,11 +24,13 @@ namespace Ace.Converters
 			var matchedCase = Cases.FirstOrDefault(c => c.MatchByKey(value, comparison));
 			var newValue = matchedCase.Is() ? matchedCase.Value : ByDefault;
 
-			if (Diagnostics)
+			if (DiagnosticKey.Is())
 			{
-				if (matchedCase.Is())
-					Trace.WriteLine($"Key is {matchedCase.Key}: Value is {newValue}");
-				else Trace.WriteLine($"The key for {value} is not defined");
+				var diagnosticMessage = matchedCase.Is()
+					? $"{DiagnosticKey}: '{newValue}' matched by key '{matchedCase.Key}' for '{value}'"
+					: $"{DiagnosticKey}: The default value '{newValue}' matched for '{value}'";
+
+				Trace.WriteLine(diagnosticMessage);
 			}
 
 			return newValue;

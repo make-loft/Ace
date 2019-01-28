@@ -63,7 +63,7 @@ namespace Ace.Markup
 
 		public static readonly DependencyProperty UpdateHeaderOnLanguageChangeProperty = RegisterAttached(
 			"UpdateHeaderOnLanguageChange", typeof(object), typeof(Behaviour),
-			new PropertyMetadata(default(object), null, CoerceValueCallback));
+			new PropertyMetadata(default, null, CoerceValueCallback));
 		
 		private static object CoerceValueCallback(DependencyObject dependencyObject, object baseValue)
 		{
@@ -78,7 +78,7 @@ namespace Ace.Markup
 			RegisterAttached("DragMoveHandler", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool),
 				(o, args) =>
 				{
-					var element = o as FrameworkElement ?? throw new ArgumentException("Expected FrameworkElement");
+					if (o.Is(out FrameworkElement element).Not()) return;
 
 					if (args.NewValue.Is(true))
 						element.MouseMove += OnMouseMove;
@@ -121,8 +121,8 @@ namespace Ace.Markup
 
 		public static bool GetDragMove(UIElement element) => (bool) element.GetValue(DragMoveProperty);
 		public static void SetDragMove(UIElement element, bool value) => element.SetValue(DragMoveProperty, value);
-		public static object GetDragMoveHandler(UIElement element) => element.GetValue(DragMoveHandlerProperty);
-		public static void SetDragMoveHandler(UIElement element, object value) => 
+		public static bool GetDragMoveHandler(UIElement element) => (bool)element.GetValue(DragMoveHandlerProperty);
+		public static void SetDragMoveHandler(UIElement element, bool value) => 
 			element.SetValue(DragMoveHandlerProperty, value);
 
 #endif

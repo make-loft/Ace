@@ -75,24 +75,25 @@ namespace Ace.Serialization.Converters
 				? RevertWithoutCode(value, NumberStyles.Any, ActiveCulture)
 				: RevertByCode(value.ToUpper(), NumberStyles.Any, ActiveCulture);
 
-		private static object RevertWithoutCode(string number, NumberStyles style, IFormatProvider provider) =>
-			int.TryParse(number, style, provider, out var i) ? i :
-			double.TryParse(number, style, provider, out var r) ? r :
+		private static object RevertWithoutCode(string number, NumberStyles style, CultureInfo culture) =>
+			number.Contains(culture.NumberFormat.NumberDecimalSeparator).Not() &&
+			int.TryParse(number, style, culture, out var i) ? i :
+			double.TryParse(number, style, culture, out var r) ? r :
 			Undefined;
 
-		private static object RevertByCode(string number, NumberStyles style, IFormatProvider provider) =>
+		private static object RevertByCode(string number, NumberStyles style, CultureInfo culture) =>
 			number.EndsWith("B") && byte.TryParse(TrimEnd(number, 1), out var b) ? b :
-			number.EndsWith("C") && int.TryParse(TrimEnd(number, 1), style, provider, out var c) ? (char) c :
-			number.EndsWith("UL") && ulong.TryParse(TrimEnd(number, 2), style, provider, out var ul) ? ul :
-			number.EndsWith("LU") && ulong.TryParse(TrimEnd(number, 2), style, provider, out ul) ? ul :
-			number.EndsWith("U") && uint.TryParse(TrimEnd(number, 1), style, provider, out var u) ? u :
-			number.EndsWith("L") && long.TryParse(TrimEnd(number, 1), style, provider, out var l) ? l :
-			number.EndsWith("D") && double.TryParse(TrimEnd(number, 1), style, provider, out var d) ? d :
-			number.EndsWith("F") && float.TryParse(TrimEnd(number, 1), style, provider, out var f) ? f :
-			number.EndsWith("M") && decimal.TryParse(TrimEnd(number, 1), style, provider, out var m) ? m :
-			number.EndsWith("P") && int.TryParse(TrimEnd(number, 1), style, provider, out var p) ? new IntPtr(p) :
-			number.EndsWith("UP") && ulong.TryParse(TrimEnd(number, 2), style, provider, out var up) ? new UIntPtr(up) :
-			number.EndsWith("PU") && ulong.TryParse(TrimEnd(number, 2), style, provider, out up) ? new UIntPtr(up) :
+			number.EndsWith("C") && int.TryParse(TrimEnd(number, 1), style, culture, out var c) ? (char) c :
+			number.EndsWith("UL") && ulong.TryParse(TrimEnd(number, 2), style, culture, out var ul) ? ul :
+			number.EndsWith("LU") && ulong.TryParse(TrimEnd(number, 2), style, culture, out ul) ? ul :
+			number.EndsWith("U") && uint.TryParse(TrimEnd(number, 1), style, culture, out var u) ? u :
+			number.EndsWith("L") && long.TryParse(TrimEnd(number, 1), style, culture, out var l) ? l :
+			number.EndsWith("D") && double.TryParse(TrimEnd(number, 1), style, culture, out var d) ? d :
+			number.EndsWith("F") && float.TryParse(TrimEnd(number, 1), style, culture, out var f) ? f :
+			number.EndsWith("M") && decimal.TryParse(TrimEnd(number, 1), style, culture, out var m) ? m :
+			number.EndsWith("P") && int.TryParse(TrimEnd(number, 1), style, culture, out var p) ? new IntPtr(p) :
+			number.EndsWith("UP") && ulong.TryParse(TrimEnd(number, 2), style, culture, out var up) ? new UIntPtr(up) :
+			number.EndsWith("PU") && ulong.TryParse(TrimEnd(number, 2), style, culture, out up) ? new UIntPtr(up) :
 			Undefined;
 
 		private static string TrimEnd(string value, int l) => value.Substring(0, value.Length - l);
