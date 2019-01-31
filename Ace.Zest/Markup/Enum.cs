@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Ace.Markup.Patterns;
 #if XAMARIN
 using Xamarin.Forms.Xaml;
 #else
@@ -8,7 +9,7 @@ using System.Windows.Markup;
 
 namespace Ace.Markup
 {
-	public class Enum : MarkupExtension
+	public class Enum : AMarkupExtension
 	{
 		public Enum() => Type = null;
 		
@@ -17,7 +18,7 @@ namespace Ace.Markup
 		[TypeConverter(typeof(TypeTypeConverter))]
 		public Type Type { get; set; }
 		
-		public override object ProvideValue(IServiceProvider serviceProvider) =>
+		public override object Provide(object targetObject, object targetProperty = null) =>
 			System.Enum.GetValues(Type);
 	}
 }

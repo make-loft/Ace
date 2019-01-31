@@ -201,7 +201,7 @@ namespace Ace.Markup
 			definition.SetBinding(property, new Binding
 			{
 				Source = grid,
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE || !XAMARIN
 				Path = updateTriggerPropertyPath,
 				Mode = BindingMode.OneWayToSource,
 #endif

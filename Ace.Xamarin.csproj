@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	<EnableDefaultCompileItems>True</EnableDefaultCompileItems>
+	<TargetFramework>netstandard2.0</TargetFramework>
+	<RootNamespace>Ace</RootNamespace>
+	<AssemblyName>Ace</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	<DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
+	<LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	<DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>rd "$(ProjectDir)obj" /s /q</PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Ace.Base\bin\**" />
+    <Compile Remove="Ace.Base\obj\**" />
+    <Compile Remove="Ace.Base\Properties\**" />
+    <Compile Remove="Ace.Core\bin\**" />
+    <Compile Remove="Ace.Core\obj\**" />
+    <Compile Remove="Ace.Core\Properties\**" />
+    <Compile Remove="Ace.Tests\**" />
+    <Compile Remove="Ace.Zest.Demo\**" />
+    <Compile Remove="Ace.Zest.Universal\**" />
+    <Compile Remove="Ace.Zest\bin\**" />
+    <Compile Remove="Ace.Zest\obj\**" />
+    <Compile Remove="Dictionaries\**" />
+    <EmbeddedResource Remove="Ace.Base\bin\**" />
+    <EmbeddedResource Remove="Ace.Base\obj\**" />
+    <EmbeddedResource Remove="Ace.Base\Properties\**" />
+    <EmbeddedResource Remove="Ace.Core\bin\**" />
+    <EmbeddedResource Remove="Ace.Core\obj\**" />
+    <EmbeddedResource Remove="Ace.Core\Properties\**" />
+    <EmbeddedResource Remove="Ace.Tests\**" />
+    <EmbeddedResource Remove="Ace.Zest.Demo\**" />
+    <EmbeddedResource Remove="Ace.Zest.Universal\**" />
+    <EmbeddedResource Remove="Ace.Zest\bin\**" />
+    <EmbeddedResource Remove="Ace.Zest\obj\**" />
+    <EmbeddedResource Remove="Dictionaries\**" />
+    <None Remove="Ace.Base\bin\**" />
+    <None Remove="Ace.Base\obj\**" />
+    <None Remove="Ace.Base\Properties\**" />
+    <None Remove="Ace.Core\bin\**" />
+    <None Remove="Ace.Core\obj\**" />
+    <None Remove="Ace.Core\Properties\**" />
+    <None Remove="Ace.Tests\**" />
+    <None Remove="Ace.Zest.Demo\**" />
+    <None Remove="Ace.Zest.Universal\**" />
+    <None Remove="Ace.Zest\bin\**" />
+    <None Remove="Ace.Zest\obj\**" />
+    <None Remove="Dictionaries\**" />
+  </ItemGroup>
+  <ItemGroup>
+	<Compile Remove="Ace.Base\WildThread.cs" />
+	<Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
+	<Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
+	<Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
+	<Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
+	<Compile Remove="Ace.Zest\Markup\Picture.cs" />
+	<Compile Remove="Ace.Zest\Markup\Rack.Xamarin.cs" />
+	<Compile Remove="Ace.Zest\Properties\AssemblyInfo.cs" />
+	<Compile Remove="Ace.Zest\Specific\Core.Store.cs" />
+	<Compile Remove="Ace.Zest\Specific\KeyFileStorage.Phone.cs" />
+	<Compile Remove="Ace.Zest\Specific\KeyFileStorage.Store.cs" />
+	<Compile Remove="Ace.Zest\Sugar\BindingOperationsExt.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Ace.Zest\Dictionaries\AppConverters.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove=".git" />
+    <None Remove=".gitignore" />
+    <None Remove="Ace.Base\packages.config" />
+    <None Remove="Ace.Zest\Ace.Zest.Xamarin.csproj.DotSettings" />
+    <None Remove="Ace.Zest\packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+	<PackageReference Include="Xamarin.Forms" Version="3.0.0.446417" />
+  </ItemGroup>
+  <ItemGroup>
+	<Folder Include="Ace.Zest\Dictionaries\" />
+	<Folder Include="Properties\" />
+  </ItemGroup>
+</Project>
