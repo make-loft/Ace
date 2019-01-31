@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using IValueConverter = System.Windows.Data.IValueConverter;
+using System.Linq;
 
 #if XAMARIN
 using Xamarin.Forms;
@@ -41,9 +42,12 @@ namespace Ace.Markup
 		public object DefaultValue
 		{
 			get => _defaultValue;
-			set => FallbackValue = FallbackValue.Is(DependencyProperty.UnsetValue)
-				? _defaultValue = value
-				: DependencyProperty.UnsetValue;
+			set => value.To(out _defaultValue).With
+			(
+				FallbackValue = FallbackValue.Is(DependencyProperty.UnsetValue)
+					? value
+					: DependencyProperty.UnsetValue
+			);
 		}
 
 		public bool Segregate { get; set; }
@@ -82,7 +86,9 @@ namespace Ace.Markup
 			if (parts.Length > 0) Key = parts[0].Trim();
 			if (parts.Length > 1) DefaultValue = parts[1].Trim();
 			if (parts.Length > 2)
-				Segregate = parts[2].Trim().ToLower() == "true" || parts[2].Trim().ToLower() == "segregate";
+				Segregate = SegregationLiterals.Contains(parts[2].Trim().ToLower());
 		}
+
+		private static readonly string[] SegregationLiterals = { "true", "segregate" };
 	}
 }

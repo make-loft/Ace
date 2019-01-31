@@ -140,8 +140,8 @@ namespace Ace.Markup
 
 			var isDefaultMinValue = minValue.Is(.0);
 			var hasMinValueBinding = minValueBinding.Is();
-			builder.Append(isDefaultMinValue && !hasMinValueBinding ? null : minValue);
-			builder.Append(!hasMinValueBinding ? null : "\\");
+			builder.Append(isDefaultMinValue && hasMinValueBinding.Not() ? null : minValue);
+			builder.Append(hasMinValueBinding ? "\\" : null);
 
 			var rounded = new GridLength(Math.Round(length.Value * 10d) / 10d, length.GridUnitType);
 			var hasLengthBinding = lengthBinding.Is();
@@ -149,8 +149,8 @@ namespace Ace.Markup
 
 			var isDefaultMaxValue = maxValue.Is(double.PositiveInfinity);
 			var hasMaxValueBinding = maxValueBinding.Is();
-			builder.Append(!hasMaxValueBinding ? null : "/");
-			builder.Append(isDefaultMaxValue && !hasMaxValueBinding ? null : maxValue);
+			builder.Append(hasMaxValueBinding ? "/" : null);
+			builder.Append(isDefaultMaxValue && hasMaxValueBinding.Not() ? null : maxValue);
 
 			return builder.ToString();
 		}
@@ -237,8 +237,8 @@ namespace Ace.Markup
 		private static void OnCellChanged(FrameworkElement element, DependencyPropertyChangedEventArgs args)
 		{
 			var patterns = args.NewValue.As("").ToUpperInvariant().Separate();
-			var colPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && !p.StartsWith("CS"))?.Replace("C", "");
-			var rowPattern = patterns.FirstOrDefault(p => p.StartsWith("R") && !p.StartsWith("RS"))?.Replace("R", "");
+			var colPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && p.StartsWith("CS").Not())?.Replace("C", "");
+			var rowPattern = patterns.FirstOrDefault(p => p.StartsWith("R") && p.StartsWith("RS").Not())?.Replace("R", "");
 			var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "");
 			var colSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "");
 			var rowSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "");
@@ -269,12 +269,15 @@ namespace Ace.Markup
 			var unitType = pattern.Contains("*") ? Star : Pixel;
 			pattern = unitType.Is(Star) ? pattern.Replace("*", "") : pattern;
 			pattern = unitType.Is(Star) && pattern.IsNullOrWhiteSpace() ? "1" : pattern;
-			return pattern.TryParse(out double value) ? new GridLength(value, unitType) : new GridLength();
+			return pattern.TryParse(out double value)
+				? new GridLength(value, unitType)
+				: new GridLength(0d, Auto);
 		}
 		
 		private static readonly object True = true;
 		private static readonly object False = false;
-		
+
+		private const GridUnitType Auto = GridUnitType.Auto;
 		private const GridUnitType Star = GridUnitType.Star;
 #if XAMARIN
 		private const GridUnitType Pixel = GridUnitType.Absolute;

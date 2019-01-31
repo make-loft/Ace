@@ -27,6 +27,7 @@
     <Compile Remove="Ace.Zest.Universal\**" />
     <Compile Remove="Ace.Zest\bin\**" />
     <Compile Remove="Ace.Zest\obj\**" />
+    <Compile Remove="Ace.Zest\Properties\**" />
     <Compile Remove="Dictionaries\**" />
     <EmbeddedResource Remove="Ace.Base\bin\**" />
     <EmbeddedResource Remove="Ace.Base\obj\**" />
@@ -39,6 +40,7 @@
     <EmbeddedResource Remove="Ace.Zest.Universal\**" />
     <EmbeddedResource Remove="Ace.Zest\bin\**" />
     <EmbeddedResource Remove="Ace.Zest\obj\**" />
+    <EmbeddedResource Remove="Ace.Zest\Properties\**" />
     <EmbeddedResource Remove="Dictionaries\**" />
     <None Remove="Ace.Base\bin\**" />
     <None Remove="Ace.Base\obj\**" />
@@ -51,6 +53,7 @@
     <None Remove="Ace.Zest.Universal\**" />
     <None Remove="Ace.Zest\bin\**" />
     <None Remove="Ace.Zest\obj\**" />
+    <None Remove="Ace.Zest\Properties\**" />
     <None Remove="Dictionaries\**" />
   </ItemGroup>
   <ItemGroup>
@@ -61,7 +64,6 @@
 	<Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
 	<Compile Remove="Ace.Zest\Markup\Picture.cs" />
 	<Compile Remove="Ace.Zest\Markup\Rack.Xamarin.cs" />
-	<Compile Remove="Ace.Zest\Properties\AssemblyInfo.cs" />
 	<Compile Remove="Ace.Zest\Specific\Core.Store.cs" />
 	<Compile Remove="Ace.Zest\Specific\KeyFileStorage.Phone.cs" />
 	<Compile Remove="Ace.Zest\Specific\KeyFileStorage.Store.cs" />
