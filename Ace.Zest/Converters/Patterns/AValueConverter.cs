@@ -39,10 +39,5 @@ namespace Ace.Converters.Patterns
 		public StringComparison StringComparison { get; set; } = StringComparison.OrdinalIgnoreCase;
 
 		public IValueConverter BackConverter { get; set; }
-
-		public static bool EqualsAsStrings(object a, object b, StringComparison comparison) =>
-			Equals(a, b)
-			|| string.Compare(a as string, b?.ToString(), comparison).Is(0)
-			|| string.Compare(a?.ToString(), b as string, comparison).Is(0);
 	}
 }

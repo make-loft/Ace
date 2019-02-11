@@ -32,7 +32,7 @@ namespace Ace.Markup
 		}
 
 		public virtual bool MatchByKey(object key, StringComparison comparison) =>
-			Key.Is(key) || Key.Is(UndefinedValue) || EqualsAsStrings(Key, key, comparison);
+			Key.Is(key) || Key.Is(UndefinedValue) || Key.Is(key, comparison);
 	}
 
 	[ContentProperty("Value")]
