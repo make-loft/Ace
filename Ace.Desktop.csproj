@@ -129,6 +129,7 @@
     <Compile Include="Ace.Zest\Converters\SwitchConverter.cs" />
     <Compile Include="Ace.Zest\LocalizationSource.cs" />
     <Compile Include="Ace.Zest\Markup\Behaviour.cs" />
+    <Compile Include="Ace.Zest\Markup\ContextBinding.cs" />
     <Compile Include="Ace.Zest\Markup\Converter.cs" />
     <Compile Include="Ace.Zest\Markup\Enum.cs" />
     <Compile Include="Ace.Zest\Markup\NullExtension.cs" />
