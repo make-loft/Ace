@@ -9,7 +9,7 @@ namespace Ace
 	{
 		/* {oldContext}.Put({newContext}).{CallFromNewContext} */
 		public static TX Put<T, TX>(this T o, TX x) => x;
-		public static TX Put<T, TX>(this T o, ref TX x) => x;
+		public static ref TX Put<T, TX>(this T o, ref TX x) => ref x;
 
 		/* negation */
 		public static bool Not(this bool b) => !b;

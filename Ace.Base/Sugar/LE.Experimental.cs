@@ -10,6 +10,8 @@ namespace Ace
 		public static bool IsFalse(this bool b) => !b;
 		public static string ToStr(this string o) => o;
 		public static string ToStr(this object o) => o?.ToString();
+		public static Uri ToUri(this string o, UriKind kind) => new Uri(o, kind);
+		public static Uri ToUri(this string o) => new Uri(o);
 
 		public static Switch<T> ToSwitch<T>(this T value, params object[] pattern) => new Switch<T>(value, pattern);
 
