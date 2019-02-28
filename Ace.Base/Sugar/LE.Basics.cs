@@ -51,7 +51,7 @@ namespace Ace
 		public static bool Is<T>(this object o) => o is T; /* o != null && typeof(T).IsAssignableFrom(o.GetType());	*/
 
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default) =>
-			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(b);
+			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(ref b);
 
 		/* type casting */
 		public static object ChangeType<T>(this object o) =>
@@ -67,5 +67,8 @@ namespace Ace
 		public static T As<T>(this T o, out T x) => x = o;
 		public static T As<T>(this object o, T fallbackValue = default) => o.Is<T>() ? (T) o : fallbackValue;
 		public static T As<T>(this object o, out T x, T fallbackValue = default) => x = o.As(fallbackValue);
+
+		public static ref T ToRef<T>(this T o, out T x) => ref (x = o).Put(ref x);
+		public static ref T ToRef<T>(this object o, out T x) => ref (x = (T)o.ChangeType<T>()).Put(ref x);
 	}
 }
