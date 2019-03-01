@@ -14,13 +14,13 @@ namespace Ace
 		/* negation */
 		public static bool Not(this bool b) => !b;
 
-		/* boxing free value matching */	
+		/* boxing free value matching */
 		public static bool Equals<T>(T a, T b) => EqualityComparer<T>.Default.Equals(a, b);
 
 		public static bool Is<T>(this T o) => o != null;
 		public static bool Is<T>(this T o, T x) => Equals(o, x); /* Equals<T>(o, x); */
-		public static bool Is<T>(this T o, object x) => x.Is<T>() && Equals(o, (T) x);
-		public static bool Is<T>(this object o, T x) => o.Is<T>() && Equals((T) o, x);
+		public static bool Is<T>(this T o, object x) => x.Is<T>() && Equals(o, (T)x);
+		public static bool Is<T>(this object o, T x) => o.Is<T>() && Equals((T)o, x);
 		public static bool Is(this object o, object x) => Equals(o, x);
 
 		public static bool IsNot<T>(this T o) => o == null;
@@ -36,39 +36,36 @@ namespace Ace
 		public static bool IsNot<T>(this T? o) where T : struct => !o.Is();
 		public static bool IsNot<T>(this T? o, T x) where T : struct => !o.Is(x);
 		public static bool IsNot<T>(this T o, T? x) where T : struct => !o.Is(x);
-		
+
 		/* string based value matching */
 		public static int Compare(this string o, string x, StringComparison comparison = StringComparison.Ordinal) =>
 			string.Compare(o, x, comparison);
-		
+
 		public static bool Is(this string o, string x, StringComparison comparison) => o.Compare(x, comparison).Is(0);
 		public static bool Is(this object o, object x, StringComparison comparison) => o.Is(x) || o.ToStr().Is(x.ToStr(), comparison);
 		public static bool IsNot(this string o, string x, StringComparison comparison) => !o.Is(x, comparison);
 		public static bool IsNot(this object o, object x, StringComparison comparison) => !o.Is(x, comparison);
-		
+
 		/* type matching */
 		public static bool Is<T>(this T o, out T x) => (x = o).Is();
 		public static bool Is<T>(this object o) => o is T; /* o != null && typeof(T).IsAssignableFrom(o.GetType());	*/
 
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default) =>
-			(x = o.Is<T>().To(out var b) ? (T) o : fallbackValue).Put(ref b);
+			(x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b);
 
 		/* type casting */
 		public static object ChangeType<T>(this object o) =>
 			o is null || TypeOf<T>.IsValueType || o is IConvertible ? Convert.ChangeType(o, TypeOf<T>.Raw, null) : o;
 
 		public static T To<T>(this T o) => o;
-		public static T To<T>(this T o, out T x) => x = o;
-		public static T To<T>(this object o) => (T) o.ChangeType<T>();
-		public static T To<T>(this object o, out T x) => x = (T) o.ChangeType<T>();
-		public static T? To<T>(this object o, out T? x) where T : struct => x = (T?) o;
+		public static T To<T>(this object o) => (T)o.ChangeType<T>();
+		public static ref T To<T>(this T o, out T x) { x = o; return ref x; }
+		public static ref T To<T>(this object o, out T x) { x = (T)o.ChangeType<T>(); return ref x; }
+		public static ref T? To<T>(this object o, out T? x) where T : struct { x = (T?)o; return ref x; }
 
 		public static T As<T>(this T o) => o;
 		public static T As<T>(this T o, out T x) => x = o;
-		public static T As<T>(this object o, T fallbackValue = default) => o.Is<T>() ? (T) o : fallbackValue;
+		public static T As<T>(this object o, T fallbackValue = default) => o.Is<T>() ? (T)o : fallbackValue;
 		public static T As<T>(this object o, out T x, T fallbackValue = default) => x = o.As(fallbackValue);
-
-		public static ref T ToRef<T>(this T o, out T x) => ref (x = o).Put(ref x);
-		public static ref T ToRef<T>(this object o, out T x) => ref (x = (T)o.ChangeType<T>()).Put(ref x);
 	}
 }

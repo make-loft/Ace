@@ -27,7 +27,7 @@ namespace Ace.Serialization.Converters
 			.Append("T")
 			.Append(d.Hour.ToString("D2"), ":", d.Minute.ToString("D2"), ":", d.Second.ToString("D2"))
 			.Append(".", d.Millisecond.ToString("D7"))
-			.Append(d.Kind == DateTimeKind.Utc ? "Z" : TimeZoneInfo.Local.GetUtcOffset(d).ToShortString(builder))
+			.Append(d.Kind.Is(DateTimeKind.Utc) ? "Z" : "")
 			.ToString();
 
 		// $"{d.Year:D4}-{d.Month:D2}-{d.Day:D2}T{d.Hour:D2}:{d.Minute:D2}:{d.Second:D2}.{d.Millisecond:D7}+{d.Offset}";
@@ -36,11 +36,7 @@ namespace Ace.Serialization.Converters
 			.Append("T")
 			.Append(d.Hour.ToString("D2"), ":", d.Minute.ToString("D2"), ":", d.Second.ToString("D2"))
 			.Append(".", d.Millisecond.ToString("D7"))
-			.Append(d.Offset.ToShortString(builder))
-			.ToString();
-
-		public static string ToShortString(this TimeSpan d, StringBuilder builder) => builder
-			.Append(d < TimeSpan.Zero ? "-" : "+", d.Hours.ToString("D2"), ":", d.Minutes.ToString("D2"))
+			.Append(d.Offset.To(out var o) < TimeSpan.Zero ? "-" : "+", o.Hours.ToString("D2"), ":", o.Minutes.ToString("D2"))
 			.ToString();
 	}
 }
