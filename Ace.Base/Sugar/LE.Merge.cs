@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 // ReSharper disable once CheckNamespace
@@ -7,6 +8,18 @@ namespace Ace
 	// ReSharper disable once InconsistentNaming
 	public static partial class LE
 	{
+		public static T UncheckedAddTo<T>(this T item, IList list)
+		{
+			list.Add(item);
+			return item;
+		}
+
+		public static T AddTo<T>(this T item, ICollection<T> collecton)
+		{
+			collecton.Add(item);
+			return item;
+		}
+
 		public static TCollection MergeMany<TCollection, TElement>(this TCollection collection, IEnumerable<TElement> items)
 			where TCollection : ICollection<TElement>
 		{
