@@ -8,7 +8,7 @@ namespace Ace
 	// ReSharper disable once InconsistentNaming
 	public static partial class LE
 	{
-		public static T UncheckedAddTo<T>(this T item, IList list)
+		public static T AddToUntyped<T>(this T item, IList list)
 		{
 			list.Add(item);
 			return item;
