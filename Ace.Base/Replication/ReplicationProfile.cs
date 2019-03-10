@@ -40,6 +40,7 @@ namespace Ace.Replication
 			new CoreReplicator<Type>(),
 			new CoreReplicator<Guid>(),
 			new CoreReplicator<Uri>(),
+			new DelegateReplicator(),
 			new TimeCoreReplicator(),
 			new RegexReplicator(),
 			new StringBuilderReplicator(),

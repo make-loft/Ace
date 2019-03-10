@@ -27,6 +27,7 @@ namespace Ace.Serialization.Converters
 			typeKey.Is("TimeSpan") ? TimeSpan.Parse(value, ActiveCulture) :
 			typeKey.Is("DateTime") ? DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)) :
 			typeKey.Is("DateTimeOffset") ? DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)) :
+			typeKey.Is("RuntimeType") ? Type.GetType(value) :
 			TryParse(value, typeKey);
 
 		private DateTimeStyles GetDateTimeStyle(string value) =>

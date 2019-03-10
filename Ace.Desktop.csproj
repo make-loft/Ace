@@ -57,6 +57,7 @@
     <Compile Include="Ace.Base\Replication\Models\Simplex.cs" />
     <Compile Include="Ace.Base\Replication\Replicator.cs" />
     <Compile Include="Ace.Base\Replication\Replicators\ACachingReplicator.cs" />
+    <Compile Include="Ace.Base\Replication\Replicators\DelegateReplicator.cs" />
     <Compile Include="Ace.Base\Replication\Snapshot.cs" />
     <Compile Include="Ace.Base\Serialization\ASerializator.cs" />
     <Compile Include="Ace.Base\Serialization\EscapeProfile.cs" />
