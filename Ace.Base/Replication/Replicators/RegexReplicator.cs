@@ -10,7 +10,7 @@ namespace Ace.Replication.Replicators
 		public string PatternKey = "#c_Pattern";
 		public string OptionsKey = "#c_Options";
 
-		public override void FillMap(Map map, Regex instance, ReplicationProfile profile,
+		public override void FillMap(Map map, ref Regex instance, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null)
 		{
 			map.Add(PatternKey, instance.ToString());

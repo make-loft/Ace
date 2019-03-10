@@ -10,7 +10,7 @@ namespace Ace.Replication.Replicators
 		public string ValueKey = "#c_Value";
 		public string CapacityKey = "#c_Capacity";
 
-		public override void FillMap(Map map, StringBuilder instance, ReplicationProfile profile,
+		public override void FillMap(Map map, ref StringBuilder instance, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null)
 		{
 			map.Add(ValueKey, instance.ToString());

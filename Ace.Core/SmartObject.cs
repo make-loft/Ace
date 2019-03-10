@@ -45,13 +45,13 @@ namespace Ace
 		[DataMember]
 		public virtual Dictionary<string, object> SmartState
 		{
-			get => GetSmartProperties(SmartContainer, GetType())?.ToDictionary();
+			get => GetSmartProperties(_smartContainer, GetType())?.ToDictionary();
 			set => value?.ForEach(pair => this[pair.Key] = pair.Value);
 		}
 
 		protected static IEnumerable<KeyValuePair<string, object>> GetSmartProperties(
 			Dictionary<string, object> smartContainer, Type smartType, BindingFlags bindingFlags = Member.DefaultFlags) =>
-			smartContainer?.Where(p => !smartType.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo));
+			smartContainer?.Where(p => smartType.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo).Not());
 
 		#region Notification Core
 

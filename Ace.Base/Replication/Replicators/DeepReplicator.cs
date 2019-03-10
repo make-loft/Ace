@@ -10,7 +10,7 @@ namespace Ace.Replication.Replicators
 {
 	public class DeepReplicator : ACachingReplicator<object>
 	{
-		public override void FillMap(Map snapshot, object instance, ReplicationProfile profile,
+		public override void FillMap(Map snapshot, ref object instance, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null)
 		{
 			var type = instance.GetType();
@@ -37,15 +37,15 @@ namespace Ace.Replication.Replicators
 
 			var memberProvider = profile.MemberProviders.First(p => p.CanApply(type));
 			var members = memberProvider.GetDataMembers(type);
-			members.ForEach(m =>
+			foreach (var m in members)
 			{
 				var key = memberProvider.GetDataKey(m, type);
 				var value = profile.Translate(m.GetValue(instance), idCache, m.GetMemberType());
 				snapshot.Add(key, value);
-			});
+			}
 		}
 
-		public override void FillInstance(Map snapshot, object replica, ReplicationProfile profile,
+		public override void FillInstance(Map snapshot, ref object replica, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null)
 		{
 			var type = replica.GetType();
@@ -86,7 +86,7 @@ namespace Ace.Replication.Replicators
 
 			var memberProvider = profile.MemberProviders.First(p => p.CanApply(type));
 			var members = memberProvider.GetDataMembers(type);
-			members.ForEach(m =>
+			foreach (var m in members)
 			{
 				var memberType = m.GetMemberType();
 				/* should enumerate items at read-only members too */
@@ -96,7 +96,7 @@ namespace Ace.Replication.Replicators
 				if (profile.TryRestoreTypeInfoImplicitly && value.Is() && value.GetType().IsNot(memberType))
 					value = ChangeType(value, memberType, profile);
 				if (m.CanWrite()) m.SetValue(replica, value);
-			});
+			}
 		}
 
 		private static object ChangeType(object value, Type targetType, ReplicationProfile profile) =>
