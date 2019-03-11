@@ -16,11 +16,13 @@ namespace Ace.Replication
 		public string MapKey = "#Map";
 		public string TypeKey = "#Type";
 		public string SetDimensionKey = "#Dimensions";
-		public bool AttachType = true;
+
 		public bool AttachId = true;
+		public bool AttachType = true;
 		public bool SimplifySets = false;
 		public bool SimplifyMaps = false;
 		public bool TryRestoreTypeInfoImplicitly = true;
+
 		public readonly List<Converter> ImplicitConverters = New.List<Converter>(new ComplexConverter());
 
 		public static readonly Adapters.BindingFlags DefaultFlags =
@@ -61,5 +63,11 @@ namespace Ace.Replication
 							 throw new Exception("Can not translate " + graph);
 			return replicator.Translate(graph, this, idCache, baseType);
 		}
+
+		public TBase Replicate<TBase>(object graph, IDictionary<int, object> idCache) =>
+			(TBase)Replicate(graph, idCache, TypeOf<TBase>.Raw);
+
+		public object Translate<TBase>(object graph, IDictionary<object, int> idCache) =>
+			Translate(graph, idCache, TypeOf<TBase>.Raw);
 	}
 }

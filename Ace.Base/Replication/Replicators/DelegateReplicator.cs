@@ -7,20 +7,23 @@ namespace Ace.Replication.Replicators
 	public class DelegateReplicator : ACachingReplicator<Delegate>
 	{
 		public string TargetKey = "#c_Target";
-		public string MethodNameKey = "#c_MethodName";
-		public string InvokationListKey = "#c_InvokationList";
+		public string MethodNameKey = "#c_Method_Name";
+		public string InvocationListKey = "#c_InvocationList";
+
+		public bool SkipMonocastInvokationList { get; set; } = true;
 
 		public override void FillMap(Map map, ref Delegate instance, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null)
 		{
-			if (instance is MulticastDelegate m)
-			{
-				var value = profile.Translate(m.GetInvocationList(), idCache, baseType);
-				map.Add(InvokationListKey, value);
-			}
-
 			map.Add(TargetKey, instance.Target ?? instance.Method.DeclaringType);
 			map.Add(MethodNameKey, instance.Method.Name);
+			if (instance.Is(out MulticastDelegate m))
+			{
+				var invocationList = m.GetInvocationList();
+				if (SkipMonocastInvokationList && invocationList.Length.Is(1)) return;
+				var snapshot = profile.Translate<Delegate[]>(invocationList, idCache);
+				map.Add(InvocationListKey, snapshot);
+			}
 		}
 
 		public override Delegate ActivateInstance(Map map, ReplicationProfile profile,
@@ -30,10 +33,10 @@ namespace Ace.Replication.Replicators
 
 		public override void FillInstance(Map map, ref Delegate instance, ReplicationProfile profile, IDictionary<int, object> idCache, Type baseType = null)
 		{
-			if (map.TryGetValue(InvokationListKey, out var value))
+			if (map.TryGetValue(InvocationListKey, out var snapshot))
 			{
-				var invokationList = profile.Replicate(value, idCache, value.GetType()).To<Delegate[]>();
-				instance = Delegate.Combine(invokationList);
+				var invocationList = profile.Replicate<Delegate[]>(snapshot, idCache);
+				instance = Delegate.Combine(invocationList);
 			}
 		}
 
