@@ -9,18 +9,18 @@ namespace Ace
 	{
 		public static readonly LocalizationSource Wrap = new LocalizationSource();
 
-		public override string this[string key] => key.IsNot()
-			? null
-			: ActiveManager?.GetString(key) ??
+		public override string this[string key] => key.Is()
+			? ActiveManager?.GetString(key) ??
 			  MergedManagers.Select(m => m.GetString(key)).FirstOrDefault() ??
-			  GetDefault(key);
+			  GetDefault(key)
+			: default;
 
-		public override string this[string key, CultureInfo culture] => key.IsNot()
-			? null
-			: ActiveManager?.GetString(key, culture) ??
+		public override string this[string key, CultureInfo culture] => key.Is()
+			? ActiveManager?.GetString(key, culture) ??
 			  MergedManagers.Select(m => m.GetString(key, culture)).FirstOrDefault() ??
-			  GetDefault(key, culture);
+			  GetDefault(key, culture)
+			: default;
 
-		public virtual string GetDefault(string key, CultureInfo culture = null) => ":" + key + "•";
+		public virtual string GetDefault(string key, CultureInfo culture = null) => $":{key}•";
 	}
 }
