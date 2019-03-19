@@ -20,6 +20,10 @@ namespace Ace.Markup
 		public Modifier Modifiers { get; set; }
 		
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+#if NETSTANDARD
 			LocalizationSource.Wrap[Key].Apply(Modifiers);
+#else
+			LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(StringFormat);
+#endif
 	}
 }
