@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Ace.Input;
 
@@ -6,6 +7,12 @@ namespace Ace
 {
 	public static class Context
 	{
+		public static void Notify<TValue>(
+			this ref TValue value,
+			SmartObject smartObject,
+			[CallerMemberName]string propertyName = null) where TValue : struct =>
+			smartObject.EvokePropertyChanged(propertyName);
+
 		private static readonly Dictionary<string, Command> Container = new Dictionary<string, Command>();
 
 		public static Command Get(string key) =>

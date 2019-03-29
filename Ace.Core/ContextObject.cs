@@ -31,7 +31,7 @@ namespace Ace
 				: PropertyEvocators[propertyName] = new PropertyEvocator(propertyName);
 
 		[OnDeserializing]
-		public void Initialize(StreamingContext context = default(StreamingContext))
+		public void Initialize(StreamingContext context = default)
 		{
 			CommandEvocators = new Dictionary<ICommand, CommandEvocator>();
 			PropertyEvocators = new Dictionary<string, PropertyEvocator>();
