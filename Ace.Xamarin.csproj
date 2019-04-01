@@ -86,4 +86,9 @@
 	<Folder Include="Ace.Zest\Dictionaries\" />
 	<Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Ace.Zest\Dictionaries\AppConverters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
 </Project>

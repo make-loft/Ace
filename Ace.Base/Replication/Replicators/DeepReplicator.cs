@@ -91,7 +91,7 @@ namespace Ace.Replication.Replicators
 				var memberType = m.GetMemberType();
 				/* should enumerate items at read-only members too */
 				var key = memberProvider.GetDataKey(m, type);
-				if (snapshot.TryGetValue(key, out var snapshotValue).Not()) return;
+				if (snapshot.TryGetValue(key, out var snapshotValue).Not()) continue;
 				var value = profile.Replicate(snapshotValue, idCache, memberType);
 				if (profile.TryRestoreTypeInfoImplicitly && value.Is() && value.GetType().IsNot(memberType))
 					value = ChangeType(value, memberType, profile);
@@ -106,7 +106,7 @@ namespace Ace.Replication.Replicators
 
 		private static object Revert(ReplicationProfile profile, string s, string typeKey) =>
 			profile.ImplicitConverters.Select(c => c.Revert(s, typeKey))
-				.First(v => v != Converter.Undefined);
+				.First(v => v.IsNot(Converter.Undefined));
 
 		public override object ActivateInstance(Map snapshot,
 			ReplicationProfile profile, IDictionary<int, object> idCache, Type baseType = null)
