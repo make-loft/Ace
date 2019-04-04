@@ -18,12 +18,15 @@ namespace Ace.Markup
 		public string Key { get; set; }
 
 		public Modifier Modifiers { get; set; }
-		
-		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-#if NETSTANDARD
-			LocalizationSource.Wrap[Key].Apply(Modifiers);
-#else
-			LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(StringFormat);
+
+		public bool ForceStringFormat { get; set; }
+#if XAMARIN
+			= true;
 #endif
+
+		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+			ForceStringFormat
+			? LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(StringFormat)
+			: LocalizationSource.Wrap[Key].Apply(Modifiers);
 	}
 }

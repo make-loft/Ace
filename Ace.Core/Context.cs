@@ -7,11 +7,14 @@ namespace Ace
 {
 	public static class Context
 	{
-		public static void Notify<TValue>(
+		public static ref TValue Notify<TValue>(
 			this ref TValue value,
 			SmartObject smartObject,
-			[CallerMemberName]string propertyName = null) where TValue : struct =>
+			[CallerMemberName]string propertyName = null) where TValue : struct
+		{
 			smartObject.EvokePropertyChanged(propertyName);
+			return ref value;
+		}
 
 		private static readonly Dictionary<string, Command> Container = new Dictionary<string, Command>();
 
