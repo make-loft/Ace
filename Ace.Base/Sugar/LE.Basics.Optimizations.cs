@@ -57,22 +57,5 @@ namespace Ace
 		public static bool IsNot(this float o) => false;
 		public static bool IsNot(this double o) => false;
 		public static bool IsNot(this decimal o) => false;
-		
-		public static bool IsNot(this bool o, out bool x) => (x = o).IsNot();
-		public static bool IsNot(this char o, out char x) => (x = o).IsNot();
-		
-		public static bool IsNot(this sbyte o, out sbyte x) => (x = o).IsNot();
-		public static bool IsNot(this short o, out short x) => (x = o).IsNot();
-		public static bool IsNot(this int o, out int x) => (x = o).IsNot();
-		public static bool IsNot(this long o, out long x) => (x = o).IsNot();
-		
-		public static bool IsNot(this byte o, out byte x) => (x = o).IsNot();
-		public static bool IsNot(this ushort o, out ushort x) => (x = o).IsNot();
-		public static bool IsNot(this uint o, out uint x) => (x = o).IsNot();
-		public static bool IsNot(this ulong o, out ulong x) => (x = o).IsNot();	
-		
-		public static bool IsNot(this float o, out float x) => (x = o).IsNot();
-		public static bool IsNot(this double o, out double x) => (x = o).IsNot();
-		public static bool IsNot(this decimal o, out decimal x) => (x = o).IsNot();
 	}
 }

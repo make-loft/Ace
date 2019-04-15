@@ -80,6 +80,7 @@
     <Compile Include="Ace.Base\Serialization\Converters\NumericConverter.cs" />
     <Compile Include="Ace.Base\Aides.cs" />
     <Compile Include="Ace.Base\Sugar\Const.cs" />
+    <Compile Include="Ace.Base\Sugar\LE.Basics.Optional.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Basics.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Basics.Optimizations.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Check.cs" />
