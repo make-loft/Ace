@@ -4,6 +4,7 @@ using System.Linq;
 using Ace.Input;
 using System.Windows;
 using Ace.Evocators;
+using System.Windows.Data;
 #if XAMARIN
 using Xamarin.Forms;
 using ContextElement = Xamarin.Forms.Element;
@@ -39,9 +40,10 @@ namespace Ace.Markup
 			}
 			else if (SourcePath.Is())
 			{
-				var watcher = new PropertyChangedWatcher(source, SourcePath.ToString(), Mode);
+				var watcher = new PropertyChangedWatcher(source, SourcePath?.Path, BindingMode.OneWay);
 				watcher.PropertyChanged += (sender, args) =>
 					mediator.Set(targetObject, GetCommandEvocator(watcher.GetWatchedProperty()));
+				mediator.Set(targetObject, GetCommandEvocator(watcher.GetWatchedProperty()));
 			}
 			else if (targetObject.Is(out ContextElement element))
 			{

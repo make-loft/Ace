@@ -51,11 +51,12 @@ namespace Ace
 
 	public class PropertyChangedWatcher : DependencyObject, INotifyPropertyChanged
 	{
+		private static readonly object UndefinedValue = new object();
 		private const string WatchedPropertyName = "WatchedProperty";
 
 		private static readonly DependencyProperty WatchedPropertyProperty =
 			DependencyProperty.Register(WatchedPropertyName, typeof(object),
-				typeof(PropertyChangedWatcher), new PropertyMetadata(default(object),
+				typeof(PropertyChangedWatcher), new PropertyMetadata(UndefinedValue,
 					(sender, args) => InvokePropertyChanged((PropertyChangedWatcher) sender)));
 
 		public object GetWatchedProperty() => GetValue(WatchedPropertyProperty);
@@ -68,12 +69,12 @@ namespace Ace
 
 		public string PropertyName { get; }
 
-		internal PropertyChangedWatcher(object source, string path = null, BindingMode mode = default)
+		internal PropertyChangedWatcher(object source, string path = default, BindingMode mode = default)
 		{
 			PropertyName = path?.Split('.').Last();
 			var binding = path.IsNot()
-				? new Binding {Source = source, Mode = mode}
-				: new Binding(path) {Source = source, Mode = mode};
+				? new Binding { Source = source, Mode = mode }
+				: new Binding(path) { Source = source, Mode = mode };
 			BindingOperations.SetBinding(this, WatchedPropertyProperty, binding);
 		}
 	}
