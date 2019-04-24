@@ -55,6 +55,8 @@ namespace Ace
 			public static Command Add => Get("Set.Add");
 			public static Command Remove => Get("Set.Remove");
 			public static Command Clear => Get("Set.Clear");
+			public static Command Create => Get("Set.Create");
+			public static Command Delete => Get("Set.Delete");
 		}
 
 		public static Mediator GetMediator(this ContextObject contextObject, string commandKey, object sender) =>
