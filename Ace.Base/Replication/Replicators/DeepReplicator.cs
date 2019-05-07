@@ -39,7 +39,7 @@ namespace Ace.Replication.Replicators
 			var members = memberProvider.GetDataMembers(type);
 			foreach (var m in members)
 			{
-				var key = memberProvider.GetDataKey(m, type);
+				var key = memberProvider.GetDataKey(m, type, members);
 				var value = profile.Translate(m.GetValue(instance), idCache, m.GetMemberType());
 				snapshot.Add(key, value);
 			}
@@ -90,7 +90,7 @@ namespace Ace.Replication.Replicators
 			{
 				var memberType = m.GetMemberType();
 				/* should enumerate items at read-only members too */
-				var key = memberProvider.GetDataKey(m, type);
+				var key = memberProvider.GetDataKey(m, type, members);
 				if (snapshot.TryGetValue(key, out var snapshotValue).Not()) continue;
 				var value = profile.Replicate(snapshotValue, idCache, memberType);
 				if (profile.TryRestoreTypeInfoImplicitly && value.Is() && value.GetType().IsNot(memberType))

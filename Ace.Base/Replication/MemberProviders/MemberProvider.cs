@@ -7,12 +7,20 @@ namespace Ace.Replication.MemberProviders
 {
 	public class MemberProvider
 	{
+		public bool PreferFullKeyWhenInheritance { get; set; }
+
 		public virtual bool CanApply(Type type) => true;
 
 		public virtual string GetCustomKey(MemberInfo member) => member.Name;
 
-		public string GetDataKey(MemberInfo member, Type activeType) =>
-			(member.DeclaringType.IsNot(activeType) ? member.DeclaringType?.Name + "." : null) + GetCustomKey(member);
+		private bool IsFullKeyRequried(MemberInfo member, IList<MemberInfo> members) =>
+			PreferFullKeyWhenInheritance || members.Any(m => m.Name.Is(member.Name) && m.IsNot(member));
+
+		public string GetDataKey(MemberInfo member, Type activeType, IList<MemberInfo> members) =>
+			(member.DeclaringType.IsNot(activeType) && IsFullKeyRequried(member, members)
+				? member.DeclaringType?.Name + "."
+				: null)
+			+ GetCustomKey(member);
 
 		protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
 
