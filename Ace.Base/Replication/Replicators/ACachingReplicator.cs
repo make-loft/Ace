@@ -26,7 +26,7 @@ namespace Ace.Replication.Replicators
 
 			var map = new Map();
 			if (profile.AttachId) map.Add(profile.IdKey, id);
-			if (profile.AttachType) map.Add(profile.TypeKey, value.GetType().AssemblyQualifiedName);
+			if (profile.AttachType) map.Add(profile.TypeKey, value.GetType().GetFriendlyName());
 			var typedValue = (T)value;
 			FillMap(map, ref typedValue, profile, idCache, baseType);
 			var snapshot = Simplify(map, value, profile, baseType);
@@ -54,13 +54,13 @@ namespace Ace.Replication.Replicators
 		protected Map CompleteMapIfRequried(object state, ReplicationProfile profile, Type baseType) =>
 			profile.SimplifySets && state is Set ? new Map
 			{
-				{profile.TypeKey, (baseType ?? TypeOf<object[]>.Raw).AssemblyQualifiedName},
+				{profile.TypeKey, (baseType ?? TypeOf<object[]>.Raw).GetFriendlyName()},
 				{profile.SetKey, state}
 			} :
 			profile.SimplifyMaps && state is Map && baseType.Is() &&
 			baseType.IsGenericDictionaryWithKey<string>() ? new Map
 			{
-				{profile.TypeKey, baseType.AssemblyQualifiedName},
+				{profile.TypeKey, baseType.GetFriendlyName()},
 				{profile.MapKey, state}
 			} :
 			(Map)state;

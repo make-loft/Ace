@@ -12,7 +12,7 @@ namespace Ace.Serialization.Converters
 
 		public override string Convert(object value) => value.Match
 		(
-			(Type t) => t.AssemblyQualifiedName,
+			(Type t) => t.GetFriendlyName(),
 			(Guid g) => g.ToString(GuidFormat),
 			(TimeSpan ts) => ts.ToString(TimeSpanFormat, ActiveCulture),
 			(DateTime dt) => dt.ToString(DateTimeFormat, ActiveCulture),

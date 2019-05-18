@@ -8,6 +8,7 @@ namespace Ace
 {
 	public static class TypeOf
 	{
+		public static string GetFriendlyName(this Type raw) => $"{raw.FullName}, {raw.Assembly.GetName().Name}";
 		public static RipeType ToRipeType(this Type raw) => RipeType.Get(raw);
 		public static RipeType GetRipeType(this object o) => o.GetType().ToRipeType();
 
