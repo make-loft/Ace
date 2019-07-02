@@ -36,7 +36,7 @@ namespace Ace.Serialization.Serializators
 		public virtual string GetTypeName(Type type) =>
 			type.Assembly.Is(SystemAssembly) || type.Assembly.Is(ExtendedAssembly)
 				? type.Name
-				: type.AssemblyQualifiedName;
+				: type.GetFriendlyName();
 		
 		protected readonly Simplex Simplex = new Simplex();
 	
