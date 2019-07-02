@@ -50,8 +50,8 @@ namespace Ace.Serialization
 		public IEnumerable<string> ToStringBeads(object value, int indentLevel) =>
 			Serializators.FirstOrDefault(s => s.CanApply(value))?.ToStringBeads(value, this, indentLevel);
 		
-		public string GetHead(Type type) => "<";
-		public string GetTail(Type type) => ">";
+		public string GetHead(Type type) => "(";
+		public string GetTail(Type type) => ")";
 
 		public static KeepProfile GetFormatted() => new KeepProfile();
 

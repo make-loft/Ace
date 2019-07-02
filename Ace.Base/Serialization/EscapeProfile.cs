@@ -13,8 +13,8 @@ namespace Ace.Serialization
 		public char VerbatimEscapeSequence = '\"';
 
 		public string VerbatimPattern = "@";
-		public List<string> HeadPatterns = New.List("\"", "<", "'");
-		public List<string> TailPatterns = New.List("\"", ">", "'");
+		public List<string> HeadPatterns = New.List("\"", "(", "'");
+		public List<string> TailPatterns = New.List("\"", ")", "'");
 
 		public readonly Dictionary<char, string> VerbatimEscapeChars = New.Dictionary('\"'.Of("\""));
 

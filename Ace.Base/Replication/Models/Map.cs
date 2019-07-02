@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Ace.Replication.Models
 {
@@ -6,5 +7,17 @@ namespace Ace.Replication.Models
 	{
 		public Map() { }
 		public Map(IDictionary<string, object> dictionary) : base(dictionary) { }
+
+		public new void Add(string key, object value)
+		{
+			try
+			{
+				base.Add(key, value);
+			}
+			catch (Exception exception)
+			{
+				throw new Exception($"{key} : {value}", exception);
+			}
+		}
 	}
 }

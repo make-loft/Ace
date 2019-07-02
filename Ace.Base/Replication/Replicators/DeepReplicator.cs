@@ -39,9 +39,16 @@ namespace Ace.Replication.Replicators
 			var members = memberProvider.GetDataMembers(type);
 			foreach (var m in members)
 			{
-				var key = memberProvider.GetDataKey(m, type, members);
-				var value = profile.Translate(m.GetValue(instance), idCache, m.GetMemberType());
-				snapshot.Add(key, value);
+				try
+				{
+					var key = memberProvider.GetDataKey(m, type, members);
+					var value = profile.Translate(m.GetValue(instance), idCache, m.GetMemberType());
+					snapshot.Add(key, value);
+				}
+				catch (Exception exception)
+				{
+					throw new Exception($"{memberProvider.GetDataKey(m, type, members)}", exception);
+				}
 			}
 		}
 
@@ -52,8 +59,9 @@ namespace Ace.Replication.Replicators
 
 			if (replica is IDictionary map && type.IsGenericDictionaryWithKey<string>())
 			{
-				var items = (IDictionary) snapshot[profile.MapKey];
-				items.Cast<DictionaryEntry>().ForEach(p => map.Add(p.Key, p.Value));
+				var pairs = (IDictionary) snapshot[profile.MapKey];
+				foreach (DictionaryEntry pair in pairs)
+					map.Add(pair.Key, profile.Replicate(pair.Value, idCache));
 			}
 			else if (replica is IList set)
 			{
@@ -88,14 +96,21 @@ namespace Ace.Replication.Replicators
 			var members = memberProvider.GetDataMembers(type);
 			foreach (var m in members)
 			{
-				var memberType = m.GetMemberType();
-				/* should enumerate items at read-only members too */
-				var key = memberProvider.GetDataKey(m, type, members);
-				if (snapshot.TryGetValue(key, out var snapshotValue).Not()) continue;
-				var value = profile.Replicate(snapshotValue, idCache, memberType);
-				if (profile.TryRestoreTypeInfoImplicitly && value.Is() && value.GetType().IsNot(memberType))
-					value = ChangeType(value, memberType, profile);
-				if (m.CanWrite()) m.SetValue(replica, value);
+				try
+				{
+					var memberType = m.GetMemberType();
+					/* should enumerate items at read-only members too */
+					var key = memberProvider.GetDataKey(m, type, members);
+					if (snapshot.TryGetValue(key, out var snapshotValue).Not()) continue;
+					var value = profile.Replicate(snapshotValue, idCache, memberType);
+					if (profile.TryRestoreTypeInfoImplicitly && value.Is() && value.GetType().IsNot(memberType))
+						value = ChangeType(value, memberType, profile);
+					if (m.CanWrite()) m.SetValue(replica, value);
+				}
+				catch (Exception excepton)
+				{
+					throw new Exception($"{memberProvider.GetDataKey(m, type, members)}", excepton);
+				}
 			}
 		}
 
