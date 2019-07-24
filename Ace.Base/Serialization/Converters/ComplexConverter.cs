@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 
 namespace Ace.Serialization.Converters
 {
@@ -35,15 +36,18 @@ namespace Ace.Serialization.Converters
 
 		private object TryParse(string value, string typeKey)
 		{
-			var type = Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}");
+			var type = Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}") ?? GetType(typeKey.Split(','));
 			if (type is null) return Undefined;
 			if (type.IsEnum) return Enum.Parse(type, value, true);
 
-			var parseWithFormatMethod = type.GetMethod("Parse", new[] {TypeOf.String.Raw, typeof(IFormatProvider)});
-			if (parseWithFormatMethod.Is()) return parseWithFormatMethod.Invoke(null, new object[] {value, ActiveCulture});
+			var parseWithFormatMethod = type.GetMethod("Parse", new[] { TypeOf.String.Raw, typeof(IFormatProvider) });
+			if (parseWithFormatMethod.Is()) return parseWithFormatMethod.Invoke(null, new object[] { value, ActiveCulture });
 
-			var parseMethod = type.GetMethod("Parse", new[] {TypeOf.String.Raw});
-			return parseMethod?.Invoke(null, new object[] {value});
+			var parseMethod = type.GetMethod("Parse", new[] { TypeOf.String.Raw });
+			return parseMethod?.Invoke(null, new object[] { value });
 		}
+
+		private static Type GetType(params string[] typeKeyParts) => AppDomain.CurrentDomain.GetAssemblies()
+			.FirstOrDefault(a => a.GetName().Name.Is(typeKeyParts[1]))?.GetType(typeKeyParts[0]);
 	}
 }
