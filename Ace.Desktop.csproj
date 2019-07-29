@@ -129,6 +129,9 @@
     <Compile Include="Ace.Zest\Converters\Patterns\ITwoWayConverter.cs" />
     <Compile Include="Ace.Zest\Converters\SplitConverter.cs" />
     <Compile Include="Ace.Zest\Converters\SwitchConverter.cs" />
+    <Compile Include="Ace.Zest\Dictionaries\AppConverters.xaml.cs">
+      <DependentUpon>AppConverters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ace.Zest\LocalizationSource.cs" />
     <Compile Include="Ace.Zest\Markup\Behaviour.cs" />
     <Compile Include="Ace.Zest\Markup\ContextBinding.cs" />
