@@ -11,7 +11,7 @@ namespace Ace.Input
 		public string Name { get; internal set; }
 		public Command(string name) => Name = name;
 		public override string ToString() => "[" + Name + "]";
-		public void RaiseCanExecuteChanged() => CanExecuteChanged(this, EventArgs.Empty);
+		public void EvokeCanExecuteChanged() => CanExecuteChanged(this, EventArgs.Empty);
 		bool ICommand.CanExecute(object parameter) => throw new Exception(UsingMessage);
 		void ICommand.Execute(object parameter) => throw new Exception(UsingMessage);
 		public event EventHandler CanExecuteChanged = (sender, args) => { };

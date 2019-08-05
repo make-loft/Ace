@@ -23,7 +23,7 @@ namespace Ace
 
 		public static void UpdateCanExecuteState()
 		{
-			foreach (var command in Container.Values) command.RaiseCanExecuteChanged();
+			foreach (var command in Container.Values) command.EvokeCanExecuteChanged();
 		}
 
 		public static Command Make => Get("Make");

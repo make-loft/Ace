@@ -52,7 +52,7 @@ namespace Ace.Input
 			//_command.CanExecuteChanged += RaiseCanExecuteChanged;
 
 			var contextCommand = _command as Command;
-			contextCommand?.RaiseCanExecuteChanged();
+			contextCommand?.EvokeCanExecuteChanged();
 		}
 
 		public void SetSender(object sender) => _weakSender = new WeakReference(sender);
@@ -91,7 +91,7 @@ namespace Ace.Input
 			}
 			else if (evocator.HasExecuted() && _canExecuteState) evocator.EvokeExecuted(sender, args);
 
-			contextCommand?.RaiseCanExecuteChanged();
+			contextCommand?.EvokeCanExecuteChanged();
 		}
 
 		public void RaiseCanExecuteChanged(object o, EventArgs args) => CanExecuteChanged(o, args);

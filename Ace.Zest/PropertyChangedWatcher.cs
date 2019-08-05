@@ -14,16 +14,16 @@ namespace Ace
 {
 	public static class WatcherSugar
 	{
-#if WINDOWS_PHONE
+#if XAMARIN
+		public static FrameworkElement GetDataContextWatcher(this FrameworkElement element) => element;
+#else
 		public static DataContextWatcher GetDataContextWatcher(this FrameworkElement element)
 		{
 			var expression = element.GetBindingExpression(DataContextWatcher.ContextProperty);
 			return expression.IsNot()
 				? new DataContextWatcher(element)
-				: (DataContextWatcher) expression.ParentBinding.Converter;
+				: (DataContextWatcher)expression.ParentBinding.Converter;
 		}
-#else
-		public static FrameworkElement GetDataContextWatcher(this FrameworkElement element) => element;
 #endif
 		public static PropertyChangedWatcher GetWatcher<T>(this T element, string path)
 			where T : DependencyObject, INotifyPropertyChanged => new PropertyChangedWatcher(element, path);

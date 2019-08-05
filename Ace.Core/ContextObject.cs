@@ -61,10 +61,10 @@ namespace Ace
 				? evocator.GetErrors(propertyName).Where(e => e.Is())
 				: Enumerable.Empty<object>();
 
-		public void RaiseErrorsChanged<TValue>(Expression<Func<TValue>> expression) => 
+		public void EvokeErrorsChanged<TValue>(Expression<Func<TValue>> expression) => 
 			ErrorsChanged(this, new DataErrorsChangedEventArgs(expression.UnboxMemberName()));
 
-		public void RaiseErrorsChanged(string propertyName) =>
+		public void EvokeErrorsChanged(string propertyName) =>
 			ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
 
 		string IDataErrorInfo.this[string propertyName] =>
