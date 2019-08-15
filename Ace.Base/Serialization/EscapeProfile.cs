@@ -149,7 +149,7 @@ namespace Ace.Serialization
 					if (unescapeStrategy.TryGetValue(d, out var s))
 					{
 						builder.Append(s);
-						if (s == breakPattern[0]) offset++;
+						offset++;
 					}
 					else if (asciMode && !verbatim && d == 'u')
 					{
