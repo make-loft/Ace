@@ -62,6 +62,7 @@
 	<Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
 	<Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
 	<Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
+	<Compile Remove="Ace.Zest\Dictionaries\AppConverters.xaml.cs" />
 	<Compile Remove="Ace.Zest\Markup\Picture.cs" />
 	<Compile Remove="Ace.Zest\Markup\Rack.Xamarin.cs" />
 	<Compile Remove="Ace.Zest\Specific\Core.Store.cs" />
