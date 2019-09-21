@@ -1,0 +1,21 @@
+﻿<ResourceDictionary
+	xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:c="clr-namespace:Ace.Converters"
+	x:Class="Ace.Zest.Dictionaries.AppConverters">
+
+	 <!--Use this values to reduce boxing/unboxing and string conversions-->
+	<x:Boolean x:Key="True">True</x:Boolean>
+	<x:Boolean x:Key="False">False</x:Boolean>
+
+	<c:KeyToValueConverter x:Key="NullToTrueConverter" Key="{x:Null}" Value="{StaticResource True}" ByDefault="{StaticResource False}" />
+	<c:KeyToValueConverter x:Key="NullToFalseConverter" Key="{x:Null}" Value="{StaticResource False}" ByDefault="{StaticResource True}" />
+
+	<c:KeyToValueConverter x:Key="TrueToFalseConverter" Key="{StaticResource True}" Value="{StaticResource False}" ByDefault="{StaticResource True}" />
+	<c:KeyToValueConverter x:Key="FalseToTrueConverter" Key="{StaticResource False}" Value="{StaticResource True}" ByDefault="{StaticResource False}" />
+
+	<c:KeyToValueConverter x:Key="EqualsToFalseConverter" KeySource="ConverterParameter" Value="{StaticResource False}" ByDefault="{StaticResource True}" />
+	<c:KeyToValueConverter x:Key="EqualsToTrueConverter" KeySource="ConverterParameter" Value="{StaticResource True}" ByDefault="{StaticResource False}" />
+
+	
+</ResourceDictionary>

@@ -5,6 +5,12 @@ using Ace.Patterns;
 
 namespace Ace
 {
+	public static class LocalizationExtensions
+	{
+		public static string Localize(this string key) => LocalizationSource.Wrap[key];
+		public static string Localize(this string key, CultureInfo culture) => LocalizationSource.Wrap[key, culture];
+	}
+
 	public class LocalizationSource : AResourceWrap<string, string, CultureInfo, ResourceManager>
 	{
 		public static readonly LocalizationSource Wrap = new LocalizationSource();

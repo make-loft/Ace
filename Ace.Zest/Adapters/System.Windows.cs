@@ -47,7 +47,11 @@ namespace System.Windows
     public class DependencyObject : BindableObject
     {
         public object GetValue(DependencyProperty property) => GetValue(property.CoreProperty);
-        public void SetValue(DependencyProperty property, object value) => SetValue(property.CoreProperty, value);
+		public void SetValue(DependencyProperty property, object value)
+		{
+			if (value.Is(out Binding b)) SetBinding(property.CoreProperty, b);
+			else SetValue(property.CoreProperty, value);
+		}
     }
 
     public class DependencyProperty
