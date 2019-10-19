@@ -81,7 +81,7 @@
     <None Remove="Ace.Zest\packages.config" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="Xamarin.Forms" Version="3.0.0.446417" />
+	<PackageReference Include="Xamarin.Forms" Version="4.2.0.815419" />
   </ItemGroup>
   <ItemGroup>
 	<Folder Include="Properties\" />
@@ -92,6 +92,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Ace.Zest\Dictionaries\AppConverters.Xamarin.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Ace.Zest\Dictionaries\AppConverters.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
