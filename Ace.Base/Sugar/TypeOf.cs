@@ -31,7 +31,7 @@ namespace Ace
 	}
 
 	// ReSharper disable StaticMemberInGenericType
-	public static class TypeOf<T>
+	public static partial class TypeOf<T>
 	{
 		private static RipeType Ripe { get; } = typeof(T).ToRipeType();
 		public static Type Raw => Ripe.Raw;
