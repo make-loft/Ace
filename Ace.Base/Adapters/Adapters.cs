@@ -92,24 +92,24 @@ namespace Ace
 		public bool IsRequired { get; set; }
 		public bool EmitDefaultValue { get; set; }
 	}
-	
-	[AttributeUsage(AttributeTargets.Method, Inherited=false)]
-	public sealed class OnSerializingAttribute : Attribute 
+
+	[AttributeUsage(AttributeTargets.Method, Inherited = false)]
+	public sealed class OnSerializingAttribute : Attribute
 	{
 	}
- 
-	[AttributeUsage(AttributeTargets.Method, Inherited=false)]
-	public sealed class OnSerializedAttribute : Attribute 
+
+	[AttributeUsage(AttributeTargets.Method, Inherited = false)]
+	public sealed class OnSerializedAttribute : Attribute
 	{
 	}
- 
-	[AttributeUsage(AttributeTargets.Method, Inherited=false)]
-	public sealed class OnDeserializingAttribute : Attribute 
+
+	[AttributeUsage(AttributeTargets.Method, Inherited = false)]
+	public sealed class OnDeserializingAttribute : Attribute
 	{
 	}
- 
-	[AttributeUsage(AttributeTargets.Method, Inherited=false)]
-	public sealed class OnDeserializedAttribute : Attribute 
+
+	[AttributeUsage(AttributeTargets.Method, Inherited = false)]
+	public sealed class OnDeserializedAttribute : Attribute
 	{
 	}
 
@@ -124,10 +124,10 @@ namespace Ace
 		public object Context { get; internal set; }
 
 		public override bool Equals(object obj) => obj is StreamingContext context &&
-		                                           context.Context == Context &&
-		                                           context.State == State;
+												   context.Context == Context &&
+												   context.State == State;
 
-		public override int GetHashCode() => (int) State;
+		public override int GetHashCode() => (int)State;
 
 		public StreamingContextStates State { get; internal set; }
 	}
@@ -136,15 +136,16 @@ namespace Ace
 	// Keep these in sync with the version in vm\runtimehandles.h
 	// **********************************************************
 	[Flags]
-	public enum StreamingContextStates {
-		CrossProcess=0x01,
-		CrossMachine=0x02,
-		File        =0x04,
-		Persistence =0x08,
-		Remoting    =0x10,
-		Other       =0x20,
-		Clone       =0x40,
-		CrossAppDomain =0x80,
-		All         =0xFF,
+	public enum StreamingContextStates
+	{
+		CrossProcess = 0x01,
+		CrossMachine = 0x02,
+		File = 0x04,
+		Persistence = 0x08,
+		Remoting = 0x10,
+		Other = 0x20,
+		Clone = 0x40,
+		CrossAppDomain = 0x80,
+		All = 0xFF,
 	}
 }

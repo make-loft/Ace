@@ -102,19 +102,19 @@ namespace Ace.Markup
 				grid.SetValue(ColsIsInUpdateProperty, False);
 			}));
 
-        public static readonly DependencyProperty IsTwoWayModeProperty = RegisterAttached(
-            "IsTwoWayMode", typeof(bool), typeof(Rack), GetMetadata<Grid>((grid, args) =>
-            {
-                UpdateDefinitions(
-                    grid, grid.RowDefinitions, GetRows(grid),
-                    HeightProperty, MinHeightProperty, MaxHeightProperty,
-                    RowsIsInUpdateProperty, RowsUpdateTriggerPropertyPath);
+		public static readonly DependencyProperty IsTwoWayModeProperty = RegisterAttached(
+			"IsTwoWayMode", typeof(bool), typeof(Rack), GetMetadata<Grid>((grid, args) =>
+			{
+				UpdateDefinitions(
+					grid, grid.RowDefinitions, GetRows(grid),
+					HeightProperty, MinHeightProperty, MaxHeightProperty,
+					RowsIsInUpdateProperty, RowsUpdateTriggerPropertyPath);
 
-                UpdateDefinitions(
-                    grid, grid.ColumnDefinitions, GetColumns(grid),
-                    WidthProperty, MinWidthProperty, MaxWidthProperty,
-                    ColsIsInUpdateProperty, ColsUpdateTriggerPropertyPath);
-            }));
+				UpdateDefinitions(
+					grid, grid.ColumnDefinitions, GetColumns(grid),
+					WidthProperty, MinWidthProperty, MaxWidthProperty,
+					ColsIsInUpdateProperty, ColsUpdateTriggerPropertyPath);
+			}));
 
 		private static readonly PropertyPath
 			RowsUpdateTriggerPropertyPath = new PropertyPath(RowsUpdateTriggerProperty);

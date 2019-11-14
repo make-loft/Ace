@@ -9,7 +9,7 @@ namespace Ace
 		public static void SetBinding(this DepObject target, DepProperty dp, Binding b) =>
 			BindingOperations.SetBinding(target, dp, b);
 #if WINDOWS_PHONE
-        public static Binding GetBinding(this DepObject target, DepProperty dp) => null;
+		public static Binding GetBinding(this DepObject target, DepProperty dp) => null;
 		
 		public static void ClearBinding(this DepObject target, DepProperty dp) { }
 		
