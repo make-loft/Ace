@@ -2,7 +2,7 @@
 using System.Linq;
 using Ace;
 
-#if !NETSTANDARD && !DESKTOP
+#if !NETSTANDARD && !NET45
 // ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
@@ -13,6 +13,9 @@ namespace System.Reflection
 
 		public static T GetCustomAttribute<T>(this MemberInfo member) where T : class =>
 			member?.GetCustomAttributes(TypeOf<T>.Raw, true).FirstOrDefault() as T;
+
+		public static Delegate CreateDelegate(this MethodInfo methodInfo, Type type, object source) =>
+			Delegate.CreateDelegate(type, source, methodInfo);
 	}
 }
 #endif

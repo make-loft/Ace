@@ -31,4 +31,10 @@ namespace System.Reflection
         public static EventInfo GetRuntimeEvent(this Type type, string name) => type.GetEvent(name);
     }
 }
+
+namespace System.Runtime.CompilerServices
+{
+	internal class CallerMemberNameAttribute : Attribute
+	{ }
+}
 #endif

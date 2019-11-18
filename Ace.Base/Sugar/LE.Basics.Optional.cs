@@ -40,10 +40,13 @@ namespace Ace
 		public static bool IsNot(this string o, in string x, in StringComparison comparison) => !o.Is(x, comparison);
 		public static bool IsNot(this object o, in object x, in StringComparison comparison) => !o.Is(x, comparison);
 
-		public static async Task<TResult> ToAsync<TResult>(this TResult result) => await Task.FromResult(result);
 		public static Uri ToUri(this string uriString) => new Uri(uriString);
 		public static Uri ToUri(this string uriString, out Uri uri) => uri = new Uri(uriString);
 		public static Regex ToRegex(this string pattern, RegexOptions options = RegexOptions.Compiled) => new Regex(pattern, options);
 		public static Guid ToGuid(this string uriString) => new Guid(uriString);
+
+#if NET45
+		public static async Task<TResult> ToAsync<TResult>(this TResult result) => await Task.FromResult(result);
+#endif
 	}
 }
