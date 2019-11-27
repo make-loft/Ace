@@ -22,7 +22,7 @@ namespace Ace.Input
 			private void CommandOnCanExecuteChanged(object sender, EventArgs eventArgs)
 			{
 				if (_weakMediator.Target is Mediator mediator)
-					mediator.RaiseCanExecuteChanged(sender, eventArgs);
+					mediator.EvokeCanExecuteChanged(sender, eventArgs);
 				else _command.CanExecuteChanged -= CommandOnCanExecuteChanged;
 			}
 
@@ -49,10 +49,8 @@ namespace Ace.Input
 			_weakEvocator = evocator.Is() ? new WeakReference(evocator) : null;
 			_command = evocator?.Command;
 			_weakListener = _command.Is() ? new WeakListener(_command, this) : null;
-			//_command.CanExecuteChanged += RaiseCanExecuteChanged;
 
-			var contextCommand = _command as Command;
-			contextCommand?.EvokeCanExecuteChanged();
+			EvokeCanExecuteChanged(sender, EventArgs.Empty);
 		}
 
 		public void SetSender(object sender) => _weakSender = new WeakReference(sender);
@@ -82,7 +80,6 @@ namespace Ace.Input
 				return;
 
 			var sender = _weakSender.Target;
-			var contextCommand = _command as Command;
 			var args = new ExecutedEventArgs(_command, parameter, false);
 			if (evocator.HasPreviewExecuted())
 			{
@@ -91,10 +88,10 @@ namespace Ace.Input
 			}
 			else if (evocator.HasExecuted() && _canExecuteState) evocator.EvokeExecuted(sender, args);
 
-			contextCommand?.EvokeCanExecuteChanged();
+			EvokeCanExecuteChanged(sender, EventArgs.Empty);
 		}
 
-		public void RaiseCanExecuteChanged(object o, EventArgs args) => CanExecuteChanged(o, args);
+		public void EvokeCanExecuteChanged(object o, EventArgs args) => CanExecuteChanged(o, args);
 
 		public event EventHandler CanExecuteChanged = (sender, args) => { };
 	}

@@ -23,7 +23,8 @@ namespace Ace.Markup
 
 		public string Key { get; set; }
 		public PropertyPath SourcePath { get; set; }
-		public bool TrackContextChanges { get; set; } = true;
+		public PropertyPath TrackedPath { get; set; }
+
 		[TypeConverter(typeof(TypeTypeConverter))] public Type StoreKey { get; set; }
 		[TypeConverter(typeof(TypeTypeConverter))] public Type RelativeContextType { get; set; }
 #if XAMARIN
@@ -40,7 +41,7 @@ namespace Ace.Markup
 			}
 			else if (SourcePath.Is())
 			{
-				var watcher = new PropertyChangedWatcher(source, SourcePath?.Path, BindingMode.OneWay);
+				var watcher = new PropertyChangedWatcher(source, SourcePath?.Path);
 				watcher.PropertyChanged += (sender, args) =>
 					mediator.Set(targetObject, GetCommandEvocator(watcher.GetWatchedProperty()));
 				mediator.Set(targetObject, GetCommandEvocator(watcher.GetWatchedProperty()));
@@ -48,7 +49,7 @@ namespace Ace.Markup
 			else if (targetObject.Is(out ContextElement element))
 			{
 #if XAMARIN
-				if (TrackContextChanges)
+				if (TrackedPath.Is())
 				{
 					element.BindingContextChanged += (sender, args) =>
 						mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
@@ -63,9 +64,10 @@ namespace Ace.Markup
 					mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 				}
 
-				if (TrackContextChanges)
+				if (TrackedPath.Is())
 				{
-					element.GetDataContextWatcher().DataContextChanged += (sender, args) =>
+					var watcher = new PropertyChangedWatcher(element, TrackedPath?.Path);
+					watcher.PropertyChanged += (sender, args) =>
 						mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 				}
 #endif
