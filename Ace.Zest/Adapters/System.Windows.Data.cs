@@ -63,6 +63,8 @@ namespace System.Windows.Data
 
     public class Binding : Xamarin.Forms.Xaml.IMarkupExtension
     {
+        public static readonly object DoNothing = default;
+
         public readonly Xamarin.Forms.Binding CoreBinding = new Xamarin.Forms.Binding();
 
         public object ProvideValue(IServiceProvider serviceProvider) => CoreBinding;

@@ -18,6 +18,8 @@ namespace System.Windows
         public ValidateValueCallback ValidateValueCallback;
         public PropertyChangedCallback PropertyChangedCallback;
 
+        public PropertyMetadata() { }
+
         public PropertyMetadata(object defaultValue) => DefaultValue = defaultValue;
 
         public PropertyMetadata(object defaultValue, PropertyChangedCallback propertyChangedCallback)

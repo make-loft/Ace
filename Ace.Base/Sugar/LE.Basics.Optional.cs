@@ -45,7 +45,7 @@ namespace Ace
 		public static Regex ToRegex(this string pattern, RegexOptions options = RegexOptions.Compiled) => new Regex(pattern, options);
 		public static Guid ToGuid(this string uriString) => new Guid(uriString);
 
-#if NET45
+#if NET45 || XAMARIN
 		public static async Task<TResult> ToAsync<TResult>(this TResult result) => await Task.FromResult(result);
 #endif
 	}
