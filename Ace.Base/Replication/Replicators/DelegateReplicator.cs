@@ -15,7 +15,11 @@ namespace Ace.Replication.Replicators
 		public override void FillMap(Map map, ref Delegate instance, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null)
 		{
-			map.Add(TargetKey, instance.Target ?? instance.Method.DeclaringType);
+			var target = instance.Target.Is()
+				? profile.Translate(instance.Target, idCache)
+				: instance.Method.DeclaringType;
+
+			map.Add(TargetKey, target);
 			map.Add(MethodNameKey, instance.Method.Name);
 			if (instance.Is(out MulticastDelegate m))
 			{
@@ -29,7 +33,7 @@ namespace Ace.Replication.Replicators
 		public override Delegate ActivateInstance(Map map, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null) => map[TargetKey].To(out var o).Is(out Type t)
 			? Delegate.CreateDelegate(baseType, t, (string)map[MethodNameKey])
-			: Delegate.CreateDelegate(baseType, o, (string)map[MethodNameKey]);
+			: Delegate.CreateDelegate(baseType, profile.Replicate(o, idCache), (string)map[MethodNameKey]);
 
 		public override void FillInstance(Map map, ref Delegate instance, ReplicationProfile profile, IDictionary<int, object> idCache, Type baseType = null)
 		{

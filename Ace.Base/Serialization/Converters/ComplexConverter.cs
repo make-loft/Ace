@@ -36,7 +36,7 @@ namespace Ace.Serialization.Converters
 
 		private object TryParse(string value, string typeKey)
 		{
-			var type = Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}") ?? GetType(typeKey.Split(','));
+			var type = Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}, System") ?? GetType(typeKey.Split(','));
 			if (type is null) return Undefined;
 			if (type.IsEnum) return Enum.Parse(type, value, true);
 
