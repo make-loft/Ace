@@ -10,7 +10,7 @@ namespace Ace
 	public class Memory : IMemoryBox
 	{
 		public IStorage Storage { get; }
-		public string KeyFormat { get; }
+		public string KeyFormat { get; set; }
 
 		public KeepProfile KeepProfile = new KeepProfile {MapPairSplitter = "\t", Delimiter = ""};
 
@@ -42,15 +42,17 @@ namespace Ace
 			try
 			{
 				var storageKey = MakeStorageKey(key, type);
-				//var data = File.ReadAllText(storageKey);
-				using (var stream = Storage.GetReadStream(storageKey))
-				using (var streamReader = new StreamReader(stream, Encoding.UTF8))
-					return streamReader.ReadToEnd().ParseSnapshot(ReplicationProfile, KeepProfile).ReplicateGraph(type);
+				using var stream = Storage.GetReadStream(storageKey);
+				using var streamReader = new StreamReader(stream, Encoding.UTF8);
+				var data = streamReader.ReadToEnd(); // var data = File.ReadAllText(storageKey);
+				var snapshot = data.ParseSnapshot(ReplicationProfile, KeepProfile);
+				var item = snapshot.ReplicateGraph(type);
+				return item;
 			}
 			catch (Exception exception)
 			{
 				DecodeFailed?.Invoke(key, type, exception);
-				return null;
+				return default;
 			}
 		}
 
@@ -58,13 +60,12 @@ namespace Ace
 		{
 			try
 			{
+				var storageKey = MakeStorageKey(key, item.GetType());
+				using var stream = Storage.GetWriteStream(storageKey);
+				using var streamWriter = new StreamWriter(stream, Encoding.UTF8);
 				var snapshot = item.CreateSnapshot(ReplicationProfile);
 				var data = snapshot.ToString(KeepProfile);
-				var storageKey = MakeStorageKey(key, item.GetType());
-				//File.WriteAllText(storageKey, data);
-				using (var stream = Storage.GetWriteStream(storageKey))
-				using (var streamWriter = new StreamWriter(stream, Encoding.UTF8))
-					streamWriter.Write(data);
+				streamWriter.Write(data); // File.WriteAllText(storageKey, data);
 			}
 			catch (Exception exception)
 			{

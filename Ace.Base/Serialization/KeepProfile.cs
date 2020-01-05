@@ -63,7 +63,7 @@ namespace Ace.Serialization
 		public string MapPairSplitter { get; set; } = ": ";
 		public string Delimiter { get; set; } = ",";
 		public bool UseTailDelimiter { get; set; } = false;
-		public string IndentChars { get; set; } = "  ";
+		public string IndentChars { get; set; } = "	";
 		public string NewLineChars { get; set; } = Environment.NewLine;
 		public bool AppendCountComments { get; set; } = false;
 		public bool TrimKeys { get; set; } = true;
