@@ -57,6 +57,7 @@
     <None Remove="Dictionaries\**" />
   </ItemGroup>
   <ItemGroup>
+	<Compile Remove="Ace.Base\Sugar\LE.Switch.cs" />
 	<Compile Remove="Ace.Base\WildThread.cs" />
 	<Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
 	<Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
@@ -85,6 +86,9 @@
   </ItemGroup>
   <ItemGroup>
 	<Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Ace.Base\Sugar\LE.Switch.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Ace.Zest\Dictionaries\AppConverters.Xamarin.xaml">

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace, InconsistentNaming
 namespace Ace
@@ -39,14 +37,5 @@ namespace Ace
 		public static bool Is(this object o, in object x, in StringComparison comparison) => o.Is(x) || o.ToStr().Is(x.ToStr(), comparison);
 		public static bool IsNot(this string o, in string x, in StringComparison comparison) => !o.Is(x, comparison);
 		public static bool IsNot(this object o, in object x, in StringComparison comparison) => !o.Is(x, comparison);
-
-		public static Uri ToUri(this string uriString) => new Uri(uriString);
-		public static Uri ToUri(this string uriString, out Uri uri) => uri = new Uri(uriString);
-		public static Regex ToRegex(this string pattern, RegexOptions options = RegexOptions.Compiled) => new Regex(pattern, options);
-		public static Guid ToGuid(this string uriString) => new Guid(uriString);
-
-#if NET45 || XAMARIN
-		public static async Task<TResult> ToAsync<TResult>(this TResult result) => await Task.FromResult(result);
-#endif
 	}
 }

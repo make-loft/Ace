@@ -29,17 +29,17 @@ namespace Ace.Markup
 	{
 		#region Declarations
 
-		public static string GetCell(DependencyObject o) => o.GetValue(CellProperty).To<string>();
-		public static string GetRows(DependencyObject o) => o.GetValue(RowsProperty).To<string>();
-		public static string GetColumns(DependencyObject o) => o.GetValue(ColumnsProperty).To<string>();
-		public static bool GetShowLines(DependencyObject o) => o.GetValue(ShowLinesProperty).To<bool>();
-		public static bool GetIsTwoWayMode(DependencyObject o) => o.GetValue(IsTwoWayModeProperty).To<bool>();
+		public static string GetCell(this DependencyObject o) => o.GetValue(CellProperty).To<string>();
+		public static string GetRows(this DependencyObject o) => o.GetValue(RowsProperty).To<string>();
+		public static string GetColumns(this DependencyObject o) => o.GetValue(ColumnsProperty).To<string>();
+		public static bool GetShowLines(this DependencyObject o) => o.GetValue(ShowLinesProperty).To<bool>();
+		public static bool GetIsTwoWayMode(this DependencyObject o) => o.GetValue(IsTwoWayModeProperty).To<bool>();
 
-		public static void SetCell(DependencyObject o, string value) => o.SetValue(CellProperty, value);
-		public static void SetRows(DependencyObject o, string value) => o.SetValue(RowsProperty, value);
-		public static void SetColumns(DependencyObject o, string value) => o.SetValue(ColumnsProperty, value);
-		public static void SetShowLines(DependencyObject o, bool value) => o.SetValue(ShowLinesProperty, value);
-		public static void SetIsTwoWayMode(DependencyObject o, bool value) => o.SetValue(IsTwoWayModeProperty, value);
+		public static void SetCell(this DependencyObject o, string value) => o.SetValue(CellProperty, value);
+		public static void SetRows(this DependencyObject o, string value) => o.SetValue(RowsProperty, value);
+		public static void SetColumns(this DependencyObject o, string value) => o.SetValue(ColumnsProperty, value);
+		public static void SetShowLines(this DependencyObject o, bool value) => o.SetValue(ShowLinesProperty, value);
+		public static void SetIsTwoWayMode(this DependencyObject o, bool value) => o.SetValue(IsTwoWayModeProperty, value);
 
 		private static PropertyMetadata GetMetadata<T>(Action<T, DependencyPropertyChangedEventArgs> action)
 			where T : DependencyObject =>

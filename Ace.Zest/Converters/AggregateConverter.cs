@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+#if XAMARIN
+using Xamarin.Forms;
+#else
 using System.Windows.Data;
 using System.Windows.Markup;
-#if XAMARIN
-using ContentProperty = Xamarin.Forms.ContentPropertyAttribute;
 #endif
 
 namespace Ace.Converters

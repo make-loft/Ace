@@ -11,8 +11,8 @@ namespace Ace
 
 		public bool Case(params object[] pattern)
 		{
-			pattern = pattern ?? new[] {(object) null};
-			_pattern = _pattern ?? new[] {_value};
+			pattern ??= new[] {(object) null};
+			_pattern ??= new[] {_value};
 			for (var i = 0; i < pattern.Length && i < _pattern.Length; i++)
 			{
 				if (Equals(pattern[i], _pattern[i])) continue;
@@ -25,7 +25,7 @@ namespace Ace
 		public bool Case<TValue>() where TValue : T => _value.Is<TValue>();
 		public bool Case(out T value) => Case<T>(out value);
 
-		public bool Case<TValue>(out TValue value, TValue fallbackValue = default(TValue)) where TValue : T =>
+		public bool Case<TValue>(out TValue value, TValue fallbackValue = default) where TValue : T =>
 			_value.Is(out value, fallbackValue);
 	}
 }
