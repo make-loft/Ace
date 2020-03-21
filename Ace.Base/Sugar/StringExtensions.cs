@@ -1,4 +1,6 @@
 ﻿using System;
+using static System.Globalization.NumberStyles;
+using static System.Globalization.NumberFormatInfo;
 using System.Text;
 // ReSharper disable once CheckNamespace
 namespace Ace
@@ -12,7 +14,7 @@ namespace Ace
 		public static string Format(this string value, string format, params object[] args) => string.Format(format, args);
 		public static string Format(this string value, IFormatProvider provider, string format, params object[] args) =>
 			string.Format(provider, format, args);
-		
+
 		public static bool Match(this string original, string pattern, int offset)
 		{
 			if (offset + pattern.Length > original.Length) return false;
@@ -35,19 +37,19 @@ namespace Ace
 		public static char PickByRing(this string str, int index) => str.Pick(index % str.Length);
 
 		public static bool TryParse(this string pattern, out bool value) => bool.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out byte value) => byte.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out sbyte value) => sbyte.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, out byte value) => byte.TryParse(pattern, Integer, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out sbyte value) => sbyte.TryParse(pattern, Integer, InvariantInfo, out value);
 		public static bool TryParse(this string pattern, out char value) => char.TryParse(pattern, out value);
-		
-		public static bool TryParse(this string pattern, out int value) => int.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out uint value) => uint.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out long value) => long.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out ulong value) => ulong.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out short value) => short.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out ushort value) => ushort.TryParse(pattern, out value);
-		
-		public static bool TryParse(this string pattern, out float value) => float.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out double value) => double.TryParse(pattern, out value);
-		public static bool TryParse(this string pattern, out decimal value) => decimal.TryParse(pattern, out value);
+
+		public static bool TryParse(this string pattern, out int value) => int.TryParse(pattern, Integer, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out uint value) => uint.TryParse(pattern, Integer, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out long value) => long.TryParse(pattern, Integer, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out ulong value) => ulong.TryParse(pattern, Integer, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out short value) => short.TryParse(pattern, Integer, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out ushort value) => ushort.TryParse(pattern, Integer, InvariantInfo, out value);
+
+		public static bool TryParse(this string pattern, out float value) => float.TryParse(pattern, Any, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out double value) => double.TryParse(pattern, Any, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out decimal value) => decimal.TryParse(pattern, Any, InvariantInfo, out value);
 	}
 }
