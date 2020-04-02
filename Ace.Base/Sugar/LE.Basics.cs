@@ -49,9 +49,10 @@ namespace Ace
 		public static bool IsNot(this object o, object x, StringComparison comparison) => !o.Is(x, comparison);
 
 		/* type matching */
-		public static bool Is<T>(this T o, out T x) => (x = o).Is();
 		public static bool Is<T>(this object o) => o is T; /* o != null && typeof(T).IsAssignableFrom(o.GetType());	*/
+		public static bool IsNot<T>(this object o) => !o.Is<T>();
 
+		public static bool Is<T>(this T o, out T x) => (x = o).Is();
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default) =>
 			(x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b);
 

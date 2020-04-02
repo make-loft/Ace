@@ -7,6 +7,8 @@ namespace Ace.Markup
 {
 	public class Localizing : Patterns.ABindingExtension
 	{
+		public static bool ForceStringFormatByDefault = false;
+
 		public Localizing()
 		{
 			Source = LocalizationSource.Wrap;
@@ -19,14 +21,11 @@ namespace Ace.Markup
 
 		public Modifier Modifiers { get; set; }
 
-		public bool ForceStringFormat { get; set; }
-#if XAMARIN
-			= true;
-#endif
+		public bool ForceStringFormat { get; set; } = ForceStringFormatByDefault;
 
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
 			ForceStringFormat
-			? LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(StringFormat)
-			: LocalizationSource.Wrap[Key].Apply(Modifiers);
+				? LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(StringFormat)
+				: LocalizationSource.Wrap[Key].Apply(Modifiers);
 	}
 }
