@@ -22,8 +22,8 @@ namespace Ace.Markup
 		public Context(string key) => Key = key;
 
 		public string Key { get; set; }
-		public PropertyPath SourcePath { get; set; }
-		public PropertyPath TrackedPath { get; set; }
+		[TypeConverter(typeof(PathConverter))] public PropertyPath SourcePath { get; set; }
+		[TypeConverter(typeof(PathConverter))] public PropertyPath TrackedPath { get; set; }
 
 		[TypeConverter(typeof(TypeTypeConverter))] public Type StoreKey { get; set; }
 		[TypeConverter(typeof(TypeTypeConverter))] public Type RelativeContextType { get; set; }

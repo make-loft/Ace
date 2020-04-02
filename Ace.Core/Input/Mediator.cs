@@ -62,7 +62,7 @@ namespace Ace.Input
 				return _canExecuteState = false;
 
 			var sender = _weakSender.Target;
-			var args = new CanExecuteEventArgs(evocator.Command, parameter, false);
+			var args = new CanExecuteEventArgs(evocator.Command, parameter, false, evocator.HasExecuted());
 			if (evocator.HasPreviewCanExecute())
 			{
 				evocator.EvokePreviewCanExecute(sender, args);

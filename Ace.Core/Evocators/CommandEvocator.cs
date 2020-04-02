@@ -27,7 +27,7 @@ namespace Ace.Evocators
 
 	public class CanExecuteEventArgs : CommandEventArgs
 	{
-		public CanExecuteEventArgs(ICommand command, object parameter, bool handled, bool canExecute = true) :
+		public CanExecuteEventArgs(ICommand command, object parameter, bool handled, bool canExecute) :
 			base(command, parameter, handled) => CanExecute = canExecute;
 
 		public bool CanExecute { get; set; }

@@ -40,7 +40,6 @@ namespace System.Windows.Data
 {
     public class PathConverter : TypeConverter
     {
-        public static readonly List<Assembly> RegisteredAssemblies = new List<Assembly>();
         public override bool CanConvertFrom(Type sourceType) => sourceType == typeof(string);
         public override object ConvertFromInvariantString(string value) => new PropertyPath(value);
     }
