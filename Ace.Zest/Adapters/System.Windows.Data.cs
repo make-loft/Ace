@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Ace;
+using System.Collections.Generic;
 using System.Reflection;
 using Xamarin.Forms;
 
@@ -41,7 +42,7 @@ namespace System.Windows.Data
     public class PathConverter : TypeConverter
     {
         public override bool CanConvertFrom(Type sourceType) => sourceType == typeof(string);
-        public override object ConvertFromInvariantString(string value) => new PropertyPath(value);
+        public override object ConvertFromInvariantString(string value) => value.Is() ? new PropertyPath(value) : default;
     }
 
     public interface IValueConverter : Xamarin.Forms.IValueConverter { }
@@ -77,8 +78,8 @@ namespace System.Windows.Data
         [TypeConverter(typeof(PathConverter))]
         public PropertyPath Path
         {
-            get => new PropertyPath(CoreBinding.Path);
-            set => CoreBinding.Path = value.Path;
+            get => CoreBinding.Path.Is(out var path) ? new PropertyPath(path) : default;
+            set => CoreBinding.Path = value?.Path;
         }
 
         public object Source

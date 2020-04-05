@@ -19,6 +19,15 @@ namespace System.Linq
 		public static T Get<T>(this IList<T> collection, int index) =>
 			collection[index < 0 ? collection.Count + index : index];
 
+		public static T[] ToArray<T>(this IList<T> list) => list.ToArray(list.Count);
+		public static T[] ToArray<T>(this IEnumerable<T> collection, int length)
+		{
+			var array = new T[length];
+			var enumerator = collection.GetEnumerator();
+			for (var i = 0; i < length && enumerator.MoveNext(); array[i++] = enumerator.Current) ;
+			return array;
+		}
+
 		public static int[] IndexesOf<T>(this IEnumerable<T> collection, T value)
 		{
 			var indexes = new List<int>();
