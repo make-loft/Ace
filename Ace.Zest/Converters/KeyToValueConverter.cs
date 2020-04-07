@@ -31,8 +31,14 @@ namespace Ace.Converters
 			set => SetValue(ValueProperty, value);
 		}
 
-		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			Choose(KeySource, Key, parameter).Is(value, StringComparison) ? Choose(ValueSource, Value, parameter) : ByDefault;
+		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var matchedValue = Choose(KeySource, Key, parameter).Is(value, StringComparison)
+				? Choose(ValueSource, Value, parameter)
+				: ByDefault;
+			var convertedValue = matchedValue.Is(UndefinedValue) ? value : matchedValue;
+			return convertedValue;
+		}
 
 		private static object Choose(Source source, object manual, object parameter) =>
 			source.Is(Source.Manual) ? manual :

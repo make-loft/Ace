@@ -26,9 +26,6 @@ namespace Ace.Converters.Patterns
 			set => SetValue(ByDefaultProperty, value);
 		}
 
-		protected static object GetDefined(object activeValue, object defaultValue) =>
-			activeValue.Is(UndefinedValue) ? defaultValue : activeValue;
-
 		public abstract object Convert(object value, Type targetType, object parameter, CultureInfo culture);
 
 		public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>

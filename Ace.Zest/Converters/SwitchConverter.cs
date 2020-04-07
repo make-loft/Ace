@@ -23,18 +23,19 @@ namespace Ace.Converters
 		{
 			var comparison = StringComparison;
 			var matchedCase = Cases.FirstOrDefault(c => c.MatchByKey(value, comparison));
-			var newValue = matchedCase.Is() ? matchedCase.Value : ByDefault;
+			var matchedValue = matchedCase.Is()	? matchedCase.Value : ByDefault;
+			var convertedValue = matchedValue.Is(UndefinedValue) ? value : matchedValue;
 
 			if (DiagnosticKey.Is())
 			{
 				var diagnosticMessage = matchedCase.Is()
-					? $"{DiagnosticKey}: '{newValue}' matched by key '{matchedCase.Key}' for '{value}'"
-					: $"{DiagnosticKey}: The default value '{newValue}' matched for '{value}'";
+					? $"{DiagnosticKey}: '{matchedValue}' matched by key '{matchedCase.Key}' for '{value}' and converted to '{convertedValue}'"
+					: $"{DiagnosticKey}: The default value '{matchedValue}' matched for '{value}' and converted to '{convertedValue}'";
 
 				Trace.WriteLine(diagnosticMessage);
 			}
 
-			return newValue;
+			return convertedValue;
 		}
 	}
 }
