@@ -22,10 +22,9 @@ namespace Ace
 		private static readonly bool IsNetFrameworkRuntime =
 			typeof(Environment).GetProperties()[0].Name != "CommandLine";
 
-		public static Uri ToUri(this string uriString) => new Uri(uriString);
-		public static Uri ToUri(this string uriString, out Uri uri) => uri = new Uri(uriString);
-		public static Regex ToRegex(this string pattern, RegexOptions options = RegexOptions.Compiled) => new Regex(pattern, options);
-		public static Guid ToGuid(this string uriString) => new Guid(uriString);
+		public static Uri ToUri(this string value, bool skipEscape = false) => new Uri(value, skipEscape);
+		public static Regex ToRegex(this string value, RegexOptions options = RegexOptions.Compiled) => new Regex(value, options);
+		public static Guid ToGuid(this string value) => new Guid(value);
 
 		public static string ToStr(this string o) => o;
 		public static string ToStr(this object o) => o?.ToString();
@@ -34,6 +33,7 @@ namespace Ace
 			StringComparison comparison = StringComparison.CurrentCultureIgnoreCase) =>
 			ReferenceEquals(a, b) || string.Compare(a.ToStr(), b.ToStr(), comparison).Is(0);
 
+		public static string GetPath(this Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
 
 #if NET45 || XAMARIN
 		public static async Task<TResult> ToAsync<TResult>(this TResult result) => await Task.FromResult(result);
