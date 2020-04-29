@@ -41,7 +41,7 @@ namespace Ace.Adapters
 
 			void OnCanExecute(object sender, CanExecuteRoutedEventArgs args)
 			{
-				var e = new CanExecuteEventArgs(args.Command, args.Parameter, args.Handled);
+				var e = new CanExecuteEventArgs(args.Command, args.Parameter, args.Handled, evocator.HasExecuted());
 				evocator.EvokeCanExecute(sender, e);
 				args.CanExecute = e.CanExecute;
 				args.Handled = e.Handled;

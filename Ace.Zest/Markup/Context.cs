@@ -4,9 +4,9 @@ using System.Linq;
 using Ace.Input;
 using System.Windows;
 using Ace.Evocators;
-using System.Windows.Data;
 #if XAMARIN
 using Xamarin.Forms;
+using System.Windows.Data;
 using ContextElement = Xamarin.Forms.Element;
 using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 #else
@@ -22,8 +22,14 @@ namespace Ace.Markup
 		public Context(string key) => Key = key;
 
 		public string Key { get; set; }
-		[TypeConverter(typeof(PathConverter))] public PropertyPath SourcePath { get; set; }
-		[TypeConverter(typeof(PathConverter))] public PropertyPath TrackedPath { get; set; }
+#if XAMARIN
+		[TypeConverter(typeof(PathConverter))] 
+#endif
+		public PropertyPath SourcePath { get; set; }
+#if XAMARIN
+		[TypeConverter(typeof(PathConverter))] 
+# endif
+		public PropertyPath TrackedPath { get; set; }
 
 		[TypeConverter(typeof(TypeTypeConverter))] public Type StoreKey { get; set; }
 		[TypeConverter(typeof(TypeTypeConverter))] public Type RelativeContextType { get; set; }
