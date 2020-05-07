@@ -28,6 +28,17 @@ namespace System.Linq
 			return array;
 		}
 
+		public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> collection, Func<T, TKey> lookup) =>
+			collection.Distinct(new Comparer<T, TKey>(lookup));
+
+		class Comparer<T, TKey> : IEqualityComparer<T>
+		{
+			private readonly Func<T, TKey> _lookup;
+			public Comparer(Func<T, TKey> lookup) => _lookup = lookup;
+			public bool Equals(T x, T y) => LE.Equals(_lookup(x), _lookup(y));
+			public int GetHashCode(T obj) => _lookup(obj).GetHashCode();
+		}
+
 		public static int[] IndexesOf<T>(this IEnumerable<T> collection, T value)
 		{
 			var indexes = new List<int>();

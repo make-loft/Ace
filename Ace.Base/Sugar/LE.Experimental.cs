@@ -37,6 +37,8 @@ namespace Ace
 
 #if NET45 || XAMARIN
 		public static async Task<TResult> ToAsync<TResult>(this TResult result) => await Task.FromResult(result);
+		public static TResult SyncAwait<TResult>(this Task<TResult> task) => task.GetAwaiter().GetResult();
+		public static void SyncAwait(this Task task) => task.GetAwaiter().GetResult();
 #endif
 	}
 }
