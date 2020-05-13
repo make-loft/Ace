@@ -71,7 +71,7 @@ namespace Ace.Serialization.Serializators
 			return Converters.Select(c => c.Revert(convertedValue, typeCode)).First(v => v.IsNot(Converter.Undefined));
 		}
 		
-		public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
+		//public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
 
 		public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new Dictionary<int, StringBuilder>();
 		
@@ -81,14 +81,8 @@ namespace Ace.Serialization.Serializators
 			if (!ThreadIdToStringBuilder.TryGetValue(threadId, out var builder))
 				builder = ThreadIdToStringBuilder[threadId] = new StringBuilder(256);
 
-			//return this;
 			var segment = segments[segmentIndex];
-			//var useVerbatim = segment.Contains("\\") || segment.Contains("/");
-
-			var useVerbatim = stringToVerbatim.TryGetValue(segment, out var v)
-				? v
-				: stringToVerbatim[segment] = segment.Contains("\\") || segment.Contains("/");
-
+			var useVerbatim = escaper.AllowVerbatim && (segment.Contains("\\") || segment.Contains("/"));
 			var escapeChars = useVerbatim ? escaper.VerbatimEscapeChars : escaper.EscapeChars;
 			var escapeSequence = useVerbatim ? escaper.VerbatimEscapeSequence : escaper.EscapeSequence;
 
@@ -96,7 +90,7 @@ namespace Ace.Serialization.Serializators
 			segments[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
 				//builder.Clear().Escape(segment, ProvideHits(segment), Escaper.EscapeRules, "\\").ToString();
 				// this[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
-				escaper.AppendWithEscape(builder.Clear(), segment, escapeChars, useVerbatim, escapeSequence).ToString();
+				EscapeProfile.AppendWithEscape(builder.Clear(), segment, escapeChars, useVerbatim, escapeSequence).ToString();
 			if (useVerbatim) segments.Insert(segmentIndex - 1, escaper.VerbatimPattern);
 			return segments;
 		}

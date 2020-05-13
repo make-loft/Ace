@@ -12,6 +12,7 @@ namespace Ace.Serialization
 		public char EscapeSequence = '\\';
 		public char VerbatimEscapeSequence = '\"';
 
+		public bool AllowVerbatim = false;
 		public string VerbatimPattern = "@";
 		public List<string> HeadPatterns = New.List("\"", "(", "'");
 		public List<string> TailPatterns = New.List("\"", ")", "'");
@@ -44,7 +45,7 @@ namespace Ace.Serialization
 			't'.Of('\t')
 		);
 
-		public StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
+		public static StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
 			bool verbatim, char escapeSequence, bool asciMode = false)
 		{
 			if (value == null) return builder;
@@ -66,18 +67,6 @@ namespace Ace.Serialization
 			}
 
 			return builder;
-		}
-
-		private readonly StringBuilder _builder = new StringBuilder();
-		public string Convert(string value)
-		{
-			var useVerbatim = value.Contains("\\") || value.Contains("/");
-			var escapeChars = useVerbatim ? VerbatimEscapeChars : EscapeChars;
-			var escapeSequence = useVerbatim ? VerbatimEscapeSequence : EscapeSequence;
-			_builder.Clear();
-			if (useVerbatim) _builder.Append(VerbatimPattern);
-			AppendWithEscape(_builder, value, escapeChars, useVerbatim, escapeSequence);
-			return _builder.ToString();
 		}
 
 		public readonly List<char> NonSimplexChars =
