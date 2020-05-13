@@ -5,6 +5,7 @@ namespace Ace.Specific
 {
 	public class KeyFileStorage : IStorage
 	{
+		public long GetLength(string key) => new FileInfo(key).Length;
 		public Stream GetReadStream(string key) => File.OpenRead(key);
 		
 		public Stream GetWriteStream(string key) => File.Open(key, FileMode.Create);

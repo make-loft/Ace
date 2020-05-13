@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 // ReSharper disable once CheckNamespace
@@ -22,6 +23,7 @@ namespace Ace
 		private static readonly bool IsNetFrameworkRuntime =
 			typeof(Environment).GetProperties()[0].Name != "CommandLine";
 
+		public static Uri ToUri(this string value) => new Uri(value);
 		public static Uri ToUri(this string value, bool skipEscape = false) => new Uri(value, skipEscape);
 		public static Regex ToRegex(this string value, RegexOptions options = RegexOptions.Compiled) => new Regex(value, options);
 		public static Guid ToGuid(this string value) => new Guid(value);
@@ -34,6 +36,12 @@ namespace Ace
 			ReferenceEquals(a, b) || string.Compare(a.ToStr(), b.ToStr(), comparison).Is(0);
 
 		public static string GetPath(this Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
+
+		public static StringBuilder Append(this StringBuilder builder, params object[] args)
+		{
+			for (var i = 0; i < args.Length; i++) builder.Append(args[i]);
+			return builder;
+		}
 
 #if NET45 || XAMARIN
 		public static async Task<TResult> ToAsync<TResult>(this TResult result) => await Task.FromResult(result);

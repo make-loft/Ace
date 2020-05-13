@@ -32,6 +32,8 @@ namespace Ace
 			?? ActivationRequired?.Invoke(key, type, constructorArgs)
 			?? Activator.CreateInstance(type, constructorArgs);
 
+		public TItem Revive<TItem>(string key = null) => (TItem)Revive(MakeStorageKey(key, TypeOf<TItem>.Raw), TypeOf<TItem>.Raw);
+
 		public void Keep<TValue>(TValue item, string key = null)
 		{
 			if (HasDataContract(item.GetType()) && Storage.Is()) Encode(item, key);
