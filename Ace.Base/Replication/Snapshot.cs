@@ -34,9 +34,10 @@ namespace Ace.Replication
 			object masterGraph,
 			Dictionary<object, int> idCache = null,
 			ReplicationProfile replicationProfile = null,
-			KeepProfile keepProfile = null) => new Snapshot
+			KeepProfile keepProfile = null,
+			Type baseType = null) => new Snapshot
 		{
-			MasterState = replicationProfile.Or(DefaultReplicationProfile).Translate(masterGraph, idCache.OrNew()),
+			MasterState = replicationProfile.Or(DefaultReplicationProfile).Translate(masterGraph, idCache.OrNew(), baseType),
 			ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
 			ActiveKeepProfile = keepProfile.Or(DefaultKeepProfile)
 		};
@@ -58,13 +59,13 @@ namespace Ace.Replication
 		public string ToString(StringBuilder builder) =>
 			MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
-		public object ReplicateGraph(Type baseType) =>
-			ActiveReplicationProfile.Replicate(MasterState, Cache.NewForReplication(), baseType);
+		public object ReplicateGraph(Type baseType, ReplicationProfile replicationProfile = null) =>
+			(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), baseType);
 
-		public TRoot ReplicateGraph<TRoot>() =>
-			(TRoot) ActiveReplicationProfile.Replicate(MasterState, Cache.NewForReplication(), TypeOf<TRoot>.Raw);
+		public TRoot ReplicateGraph<TRoot>(ReplicationProfile replicationProfile = null) =>
+			(TRoot)(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), TypeOf<TRoot>.Raw);
 
-		public object ReconstructGraph(IDictionary<object, int> cache) =>
-			ActiveReplicationProfile.Replicate(MasterState, cache?.ToMirrorDictionary());
+		public object ReconstructGraph(IDictionary<object, int> cache, ReplicationProfile replicationProfile = null) =>
+			(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, cache?.ToMirrorDictionary());
 	}
 }

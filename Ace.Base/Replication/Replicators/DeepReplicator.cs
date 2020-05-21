@@ -17,13 +17,19 @@ namespace Ace.Replication.Replicators
 
 			if (instance is IDictionary map && type.IsGenericDictionaryWithKey<string>())
 			{
+				var subtype = type.GetInterfaces()
+					.FirstOrDefault(i => i.Name.Is(TypeOf.IDictionary.Name))?
+					.GetGenericArguments()[1];
 				var items = new Map(map.Cast<DictionaryEntry>()
-					.ToDictionary(p => (string) p.Key, p => profile.Translate(p.Value, idCache)));
+					.ToDictionary(p => (string) p.Key, p => profile.Translate(p.Value, idCache, subtype)));
 				snapshot.Add(profile.MapKey, items);
 			}
-			else if (instance is IList set)
+			else if (instance is ICollection set)
 			{
-				var items = new Set(set.Cast<object>().Select(i => profile.Translate(i, idCache)));
+				var subtype = type.GetInterfaces()
+					.FirstOrDefault(i => i.Name.Is(TypeOf.ICollection.Name))?
+					.GetGenericArguments()[0];
+				var items = new Set(set.Cast<object>().Select(i => profile.Translate(i, idCache, subtype)));
 				if (instance is Array array && array.Rank > 1)
 				{
 					var dimensions = new List<int>();
@@ -59,11 +65,13 @@ namespace Ace.Replication.Replicators
 
 			if (replica is IDictionary map && type.IsGenericDictionaryWithKey<string>())
 			{
+				var subtype = type.GetInterfaces()
+					.FirstOrDefault(i => i.Name.Is(TypeOf.IDictionary.Name))?.GetGenericArguments()[1];
 				var pairs = (IDictionary) snapshot[profile.MapKey];
 				foreach (DictionaryEntry pair in pairs)
-					map.Add(pair.Key, profile.Replicate(pair.Value, idCache));
+					map.Add(pair.Key, profile.Replicate(pair.Value, idCache, subtype));
 			}
-			else if (replica is IList set)
+			else if (replica is ICollection set)
 			{
 				var items = (Set) snapshot[profile.SetKey];
 				if (replica is Array array)
@@ -83,12 +91,22 @@ namespace Ace.Replication.Replicators
 						Array.Copy(source, array, source.Length); /* array [replica] is cached */
 					}
 				}
-				else
+				else if (replica is IList list)
 				{
-					set.Clear(); // for reconstruction
-					var subtype = type.GetInterfaces().FirstOrDefault(i => i.Name.Is(TypeOf.IList.Name))?
-						.GetGenericArguments().FirstOrDefault();
-					items.ForEach(i => set.Add(profile.Replicate(i, idCache, subtype)));
+					list.Clear(); // for reconstruction
+					var subtype = type.GetInterfaces()
+						.FirstOrDefault(i => i.Name.Is(TypeOf.IList.Name))?
+						.GetGenericArguments()[0];
+					items.ForEach(i => list.Add(profile.Replicate(i, idCache, subtype)));
+				}
+				else if (replica is IDictionary dictionary)
+				{
+					dictionary.Clear(); // for reconstruction
+					items.ForEach(i =>
+					{
+						var entry = (DictionaryEntry)profile.Replicate(i, idCache, TypeOf<DictionaryEntry>.Raw);
+						dictionary.Add(entry.Key, entry.Value);
+					});
 				}
 			}
 

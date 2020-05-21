@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ace.Replication;
@@ -18,8 +19,9 @@ namespace Ace
 			this object master,
 			ReplicationProfile replicationProfile = null,
 			KeepProfile keepProfile = null,
-			Dictionary<object, int> cache = null) =>
-			Snapshot.Create(master, cache, replicationProfile, keepProfile);
+			Dictionary<object, int> cache = null,
+			Type baseType = null) =>
+			Snapshot.Create(master, cache, replicationProfile, keepProfile, baseType);
 
 		public static Snapshot ParseSnapshot(
 			this string matrix,

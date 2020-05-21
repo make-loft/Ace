@@ -28,18 +28,18 @@ namespace Ace
 			Attribute.IsDefined(type, TypeOf<CollectionDataContractAttribute>.Raw);
 
 		public object Revive(string key, Type type, params object[] constructorArgs) =>
-			(HasDataContract(type) && Storage.Is() && Storage.HasKey(MakeStorageKey(key, type)) ? Decode(key, type) : null)
-			?? ActivationRequired?.Invoke(key, type, constructorArgs)
-			?? Activator.CreateInstance(type, constructorArgs);
+			HasDataContract(type) && Storage.Is() && Storage.HasKey(MakeStorageKey(key, type)) && TryDecode(key, type, out var item)
+				? item
+				: ActivationRequired?.Invoke(key, type, constructorArgs) ?? Activator.CreateInstance(type, constructorArgs);
 
 		public TItem Revive<TItem>(string key = null) => (TItem)Revive(MakeStorageKey(key, TypeOf<TItem>.Raw), TypeOf<TItem>.Raw);
 
-		public void Keep<TValue>(TValue item, string key = null)
-		{
-			if (HasDataContract(item.GetType()) && Storage.Is()) Encode(item, key);
-		}
+		public bool TryKeep(object item, string key = null) =>
+			HasDataContract(item.GetType()) && Storage.Is() && TryEncode(key, item.GetType(), in item)
+				? true
+				: false;
 
-		private object Decode(string key, Type type)
+		private bool TryDecode(string key, Type type, out object item)
 		{
 			try
 			{
@@ -48,30 +48,33 @@ namespace Ace
 				using var streamReader = new StreamReader(stream, Encoding.UTF8);
 				var data = streamReader.ReadToEnd(); // var data = File.ReadAllText(storageKey);
 				var snapshot = data.ParseSnapshot(ReplicationProfile, KeepProfile);
-				var item = snapshot.ReplicateGraph(type);
-				return item;
+				item = snapshot.ReplicateGraph(type);
+				return true;
 			}
 			catch (Exception exception)
 			{
 				DecodeFailed?.Invoke(key, type, exception);
-				return default;
+				item = default;
+				return false;
 			}
 		}
 
-		private void Encode(object item, string key)
+		private bool TryEncode(string key, Type type, in object item)
 		{
 			try
 			{
 				var storageKey = MakeStorageKey(key, item.GetType());
 				using var stream = Storage.GetWriteStream(storageKey);
 				using var streamWriter = new StreamWriter(stream, Encoding.UTF8);
-				var snapshot = item.CreateSnapshot(ReplicationProfile);
+				var snapshot = item.CreateSnapshot(ReplicationProfile, baseType: type);
 				var data = snapshot.ToString(KeepProfile);
 				streamWriter.Write(data); // File.WriteAllText(storageKey, data);
+				return true;
 			}
 			catch (Exception exception)
 			{
 				EncodeFailed?.Invoke(key, item, exception);
+				return false;
 			}
 		}
 

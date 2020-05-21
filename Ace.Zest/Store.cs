@@ -20,7 +20,7 @@ namespace Ace
 
 		public static void Set<TItem>(TItem value) where TItem : class => Container[TypeOf<TItem>.Raw] = value;
 
-		public static void Snapshot() => Container.Values.ForEach(i => ActiveBox.Keep(i));
+		public static void Snapshot() => Container.Values.ForEach(i => ActiveBox.TryKeep(i));
 
 		internal static object Revive(Type type, params object[] constructorArgs) =>
 			ActiveBox.Revive(null, type, constructorArgs)
