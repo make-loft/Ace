@@ -1,10 +1,34 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 
 namespace Ace.Markup
 {
+#if XAMARIN
+	using Xamarin.Forms;
+
+	public class TypeTypeConverter : TypeConverter
+	{
+		public override object ConvertFromInvariantString(string value)
+		{
+			if (value.IsNot()) return null;
+			var typeName = value.ToString().Split(':').Last();
+			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			// ReSharper disable once LoopCanBeConvertedToQuery
+			foreach (var assembly in assemblies)
+			{
+				var types = assembly.GetTypes();
+				var type = types.FirstOrDefault(t => typeName.Is(t.DeclaringType?.Name) || typeName.Is(t.Name));
+				if (type.Is())
+					return type;
+			}
+
+			return null;
+		}
+	}
+#else
+	using System.Globalization;
+	using System.ComponentModel;
+
 	public class TypeTypeConverter : TypeConverter
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) =>
@@ -30,8 +54,11 @@ namespace Ace.Markup
 			return null;
 		}
 
+		
+
 		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture,
 			object value, Type destinationType) =>
 			value.ToString();
 	}
+#endif
 }

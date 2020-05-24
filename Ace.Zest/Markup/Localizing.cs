@@ -24,8 +24,6 @@ namespace Ace.Markup
 		public bool ForceStringFormat { get; set; } = ForceStringFormatByDefault;
 
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			ForceStringFormat
-				? LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(StringFormat)
-				: LocalizationSource.Wrap[Key].Apply(Modifiers);
+			LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(ForceStringFormat ? StringFormat : default);
 	}
 }
