@@ -58,8 +58,6 @@ namespace System.Runtime.Serialization.Json
             _stream.Write(buffer, offset, count);
         }
 
-        private Regex _safe = new Regex(@"[^\\]" + "(?<replace>\":)");
-
         public byte[] InsertIndents(byte[] buffer, int offset, int count)
         {
             var json = _encoding.GetString(buffer, 0, buffer.Length);

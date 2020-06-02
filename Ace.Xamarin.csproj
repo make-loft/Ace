@@ -60,6 +60,10 @@
   <ItemGroup>
 	<Compile Remove="Ace.Base\Sugar\LE.Switch.cs" />
 	<Compile Remove="Ace.Base\WildThread.cs" />
+	<Compile Remove="Ace.Core\Adapters\Net4.0.cs" />
+	<Compile Remove="Ace.Core\Adapters\System.ComponentModel.cs" />
+	<Compile Remove="Ace.Core\Adapters\System.cs" />
+	<Compile Remove="Ace.Core\Adapters\System.Runtime.Serialization.Json.cs" />
 	<Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
 	<Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
 	<Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
