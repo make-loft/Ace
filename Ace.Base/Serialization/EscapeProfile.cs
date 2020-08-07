@@ -12,6 +12,7 @@ namespace Ace.Serialization
 		public char EscapeSequence = '\\';
 		public char VerbatimEscapeSequence = '\"';
 
+		public bool AsciMode = false;
 		public bool AllowVerbatim = false;
 		public string VerbatimPattern = "@";
 		public List<string> HeadPatterns = New.List("\"", "(", "'");
@@ -106,7 +107,7 @@ namespace Ace.Serialization
 					var index = HeadPatterns.IndexOf(headPattern);
 					var tailPattern = TailPatterns[index];
 					AppendEscapedLiteral(builder, data, ref offset, unescapeStrategy, escapeChar, tailPattern,
-						verbatimFlag);
+						verbatimFlag, AsciMode);
 					simplex.Add(builder.ToString());
 					builder.Clear();
 

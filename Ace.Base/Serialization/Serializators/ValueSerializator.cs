@@ -82,6 +82,7 @@ namespace Ace.Serialization.Serializators
 				builder = ThreadIdToStringBuilder[threadId] = new StringBuilder(256);
 
 			var segment = segments[segmentIndex];
+			var useAsci = escaper.AsciMode;
 			var useVerbatim = escaper.AllowVerbatim && (segment.Contains("\\") || segment.Contains("/"));
 			var escapeChars = useVerbatim ? escaper.VerbatimEscapeChars : escaper.EscapeChars;
 			var escapeSequence = useVerbatim ? escaper.VerbatimEscapeSequence : escaper.EscapeSequence;
@@ -90,7 +91,7 @@ namespace Ace.Serialization.Serializators
 			segments[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
 				//builder.Clear().Escape(segment, ProvideHits(segment), Escaper.EscapeRules, "\\").ToString();
 				// this[segmentIndex] = //stringToEscape.TryGetValue(segment, out var v) ? v : stringToEscape[segment] =
-				EscapeProfile.AppendWithEscape(builder.Clear(), segment, escapeChars, useVerbatim, escapeSequence).ToString();
+				EscapeProfile.AppendWithEscape(builder.Clear(), segment, escapeChars, useVerbatim, escapeSequence, useAsci).ToString();
 			if (useVerbatim) segments.Insert(segmentIndex - 1, escaper.VerbatimPattern);
 			return segments;
 		}
