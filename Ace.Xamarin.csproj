@@ -87,7 +87,7 @@
     <None Remove="Ace.Zest\packages.config" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="Xamarin.Forms" Version="4.8.0.1687" />
+	<PackageReference Include="Xamarin.Forms" Version="4.8.0.1821" />
   </ItemGroup>
   <ItemGroup>
 	<Folder Include="Properties\" />
