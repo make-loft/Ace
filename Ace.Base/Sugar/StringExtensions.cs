@@ -2,6 +2,7 @@
 using static System.Globalization.NumberStyles;
 using static System.Globalization.NumberFormatInfo;
 using System.Text;
+using System.Globalization;
 // ReSharper disable once CheckNamespace
 namespace Ace
 {
@@ -51,5 +52,11 @@ namespace Ace
 		public static bool TryParse(this string pattern, out float value) => float.TryParse(pattern, Any, InvariantInfo, out value);
 		public static bool TryParse(this string pattern, out double value) => double.TryParse(pattern, Any, InvariantInfo, out value);
 		public static bool TryParse(this string pattern, out decimal value) => decimal.TryParse(pattern, Any, InvariantInfo, out value);
+
+		public static bool TryParse(this string pattern, out DateTime value) => DateTime.TryParse(pattern, out value);
+		public static bool TryParse(this string pattern, IFormatProvider provider, out DateTime value) =>
+			DateTime.TryParse(pattern, provider, default, out value);
+		public static bool TryParse(this string pattern, IFormatProvider provider, DateTimeStyles styles, out DateTime value) =>
+			DateTime.TryParse(pattern, provider, styles, out value);
 	}
 }

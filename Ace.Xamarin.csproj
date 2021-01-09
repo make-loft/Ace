@@ -30,6 +30,7 @@
     <Compile Remove="Ace.Zest\obj\**" />
     <Compile Remove="Ace.Zest\Properties\**" />
     <Compile Remove="Dictionaries\**" />
+    <Compile Remove="Properties\**" />
     <EmbeddedResource Remove="Ace.Base\bin\**" />
     <EmbeddedResource Remove="Ace.Base\obj\**" />
     <EmbeddedResource Remove="Ace.Base\Properties\**" />
@@ -43,6 +44,7 @@
     <EmbeddedResource Remove="Ace.Zest\obj\**" />
     <EmbeddedResource Remove="Ace.Zest\Properties\**" />
     <EmbeddedResource Remove="Dictionaries\**" />
+    <EmbeddedResource Remove="Properties\**" />
     <None Remove="Ace.Base\bin\**" />
     <None Remove="Ace.Base\obj\**" />
     <None Remove="Ace.Base\Properties\**" />
@@ -56,6 +58,7 @@
     <None Remove="Ace.Zest\obj\**" />
     <None Remove="Ace.Zest\Properties\**" />
     <None Remove="Dictionaries\**" />
+    <None Remove="Properties\**" />
   </ItemGroup>
   <ItemGroup>
 	<Compile Remove="Ace.Base\Sugar\LE.Switch.cs" />
@@ -88,9 +91,6 @@
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="Xamarin.Forms" Version="4.8.0.1821" />
-  </ItemGroup>
-  <ItemGroup>
-	<Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ace.Base\Sugar\LE.Switch.cs" />
