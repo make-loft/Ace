@@ -12,9 +12,9 @@ namespace Ace
 		public static bool IsNotNullOrEmpty(this string value) => !string.IsNullOrEmpty(value);
 		public static bool IsNullOrWhiteSpace(this string value) => string.IsNullOrWhiteSpace(value);
 		public static bool IsNotNullOrWhiteSpace(this string value) => !string.IsNullOrWhiteSpace(value);
-		public static string Format(this string value, string format, params object[] args) => string.Format(format, args);
-		public static string Format(this string value, IFormatProvider provider, string format, params object[] args) =>
-			string.Format(provider, format, args);
+		public static string Format(this string value, params object[] args) => string.Format(value, args);
+		public static string Format(this string value, IFormatProvider provider, params object[] args) =>
+			string.Format(provider, value, args);
 
 		public static bool Match(this string original, string pattern, int offset)
 		{
