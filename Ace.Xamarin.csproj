@@ -13,9 +13,6 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 	<DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>rd "$(ProjectDir)obj" /s /q</PostBuildEvent>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Ace.Base\bin\**" />
     <Compile Remove="Ace.Base\obj\**" />
