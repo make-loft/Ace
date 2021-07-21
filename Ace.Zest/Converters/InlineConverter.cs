@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using Ace.Converters.Patterns;
+using ConvertingHandler = System.EventHandler<Ace.Converters.Patterns.ConverterEventArgs>;
 
 namespace Ace.Converters
 {
@@ -9,8 +10,16 @@ namespace Ace.Converters
 	{
 		public IValueConverter PostConverter { get; set; }
 		public object PostConverterParameter { get; set; }
-		public event EventHandler<ConverterEventArgs> Converting;
-		public event EventHandler<ConverterEventArgs> ConvertingBack;
+		public event ConvertingHandler Converting;
+		public event ConvertingHandler ConvertingBack;
+
+		public InlineConverter() { }
+
+		public InlineConverter(ConvertingHandler converting = default, ConvertingHandler convertingBack = default)
+		{
+			Converting = converting;
+			ConvertingBack = convertingBack;
+		}
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{

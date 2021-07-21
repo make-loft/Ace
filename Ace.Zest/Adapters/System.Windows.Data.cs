@@ -1,5 +1,4 @@
 ﻿using Ace;
-using System.Collections.Generic;
 using System.Reflection;
 using Xamarin.Forms;
 
@@ -7,8 +6,18 @@ namespace Xamarin.Forms
 {
 	public static class BindingOperations
 	{
-		public static Binding GetBinding(this BindableObject o, BindableProperty p) => null;
-		public static void ClearBinding(this BindableObject o, BindableProperty p) => o.RemoveBinding(p);
+        static readonly MethodInfo getContextMethod = TypeOf<BindableObject>.Raw.GetTypeInfo().GetDeclaredMethod("GetContext");
+        static readonly FieldInfo expressionField = TypeOf<Binding>.Raw.GetTypeInfo().GetDeclaredField("_expression");
+
+        public static Binding GetBinding(this BindableObject o, BindableProperty p)
+        {
+            var context = getContextMethod.Invoke(o, new[] { p });
+            var bindingField = context.GetType().GetTypeInfo().GetDeclaredField("Binding");
+            return (Binding)bindingField.GetValue(context);
+        }
+
+        public static object GetBindingExpression(this Binding b) => expressionField.GetValue(b);
+        public static void ClearBinding(this BindableObject o, BindableProperty p) => o.RemoveBinding(p);
 		public static void SetBinding(this BindableObject o, BindableProperty p, Binding b) => o.SetBinding(p, b);
 		public static void SetBinding(this BindableObject o, BindableProperty p, System.Windows.Data.Binding b) =>
 			o.SetBinding(p, b.CoreBinding);
