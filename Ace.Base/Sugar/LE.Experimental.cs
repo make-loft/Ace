@@ -23,10 +23,11 @@ namespace Ace
 		private static readonly bool IsNetFrameworkRuntime =
 			typeof(Environment).GetProperties()[0].Name != "CommandLine";
 
-		public static Uri ToUri(this string value) => new Uri(value);
-		public static Uri ToUri(this string value, bool skipEscape = false) => new Uri(value, skipEscape);
-		public static Regex ToRegex(this string value, RegexOptions options = RegexOptions.Compiled) => new Regex(value, options);
-		public static Guid ToGuid(this string value) => new Guid(value);
+		public static Uri ToUri(this string value) => new(value);
+		/* use 'typeof(Uri).SetNonPublicStaticField("s_IriParsing", false); // s_IdnScope = 2||0' to allow 'skipEscape' */
+		public static Uri ToUri(this string value, bool skipEscape = false) => new(value, skipEscape);
+		public static Regex ToRegex(this string value, RegexOptions options = RegexOptions.Compiled) => new(value, options);
+		public static Guid ToGuid(this string value) => new(value);
 
 		public static string ToStr(this string o) => o;
 		public static string ToStr(this object o) => o?.ToString();
