@@ -87,7 +87,7 @@
     <None Remove="Ace.Zest\packages.config" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
+	<PackageReference Include="Xamarin.Forms" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ace.Base\Sugar\LE.Switch.cs" />
