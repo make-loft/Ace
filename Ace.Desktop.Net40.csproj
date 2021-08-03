@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿f<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -25,7 +25,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">f
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
@@ -120,12 +120,11 @@
     <Compile Include="Ace.Zest\Adapters\RoutedCommandsAdapter.cs" />
     <Compile Include="Ace.Zest\Adapters\Xamarin.Forms.cs" />
     <Compile Include="Ace.Zest\Converters\AggregateConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\InlineConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\Converter.cs" />
     <Compile Include="Ace.Zest\Converters\KeyToValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\LetterCaseConverter.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\AValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\ICompositeConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\Patterns\IInlineConverter.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\ICase.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\ITwoWayConverter.cs" />
     <Compile Include="Ace.Zest\Converters\SplitConverter.cs" />
