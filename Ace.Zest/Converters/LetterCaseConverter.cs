@@ -1,7 +1,7 @@
-﻿using System;
-using System.Globalization;
+﻿using Ace.Converters.Patterns;
+
+using System;
 using System.Linq;
-using System.Windows.Data;
 
 namespace Ace.Converters
 {
@@ -35,14 +35,10 @@ namespace Ace.Converters
 			stringFormat.Is() ? string.Format(stringFormat, text) : text;
 	}
 
-	public class ModifierConverter : IValueConverter
+	public class ModifierConverter : AValueConverter.Reflected
 	{
 		public Modifier Modifiers { get; set; }
 
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			value.As<string>()?.Apply(Modifiers);
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			throw new NotImplementedException();
+		public override object Convert(object value) => value.As<string>()?.Apply(Modifiers);
 	}
 }

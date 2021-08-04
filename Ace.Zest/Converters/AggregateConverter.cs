@@ -14,12 +14,12 @@ namespace Ace.Converters
 	[ContentProperty("Converters")]
 	public class AggregateConverter : IValueConverter
 	{
-		public List<IValueConverter> Converters { get; } = new List<IValueConverter>();
+		public List<IValueConverter> Converters { get; } = new();
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
 			Converters.Aggregate(value, (v, c) => c.Convert(v, targetType, parameter, culture));
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			throw new NotImplementedException();
+			Converters.Aggregate(value, (v, c) => c.ConvertBack(v, targetType, parameter, culture));
 	}
 }

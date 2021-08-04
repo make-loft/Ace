@@ -1,5 +1,6 @@
 ﻿using Ace;
 
+using System;
 using System.Globalization;
 using System.Reflection;
 using Xamarin.Forms;
@@ -56,10 +57,7 @@ namespace System.Windows.Data
         public override object ConvertFromInvariantString(string value) => value.Is() ? new PropertyPath(value) : default;
     }
 
-	public interface IValueConverter : Xamarin.Forms.IValueConverter
-	{
-		object Convert(object value, Type targetType, object parameter, CultureInfo culture);
-	}
+	public interface IValueConverter : Xamarin.Forms.IValueConverter { }
 
 	public enum RelativeSourceMode
     {

@@ -1,40 +1,36 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
+#if XAMARIN
+using Xamarin.Forms;
+#else
 using System.Windows.Data;
+#endif
 
 namespace Ace.Converters.Patterns
 {
-	public abstract class AValueConverter : DependencyObject, ITwoWayConverter
+	public abstract class AValueConverter : IValueConverter
 	{
-		public static readonly object UndefinedValue = new object();
+		public static object Stub() => throw new NotImplementedException();
 
-		public static readonly DependencyProperty ByDefaultProperty = DependencyProperty.Register(
-			"ByDefault", typeof(object), typeof(AValueConverter), new PropertyMetadata(UndefinedValue));
+		public virtual object Convert(object value) => Stub();
+		public virtual object Convert(object value, object parameter) => Convert(value);
+		public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+			Convert(value, parameter);
 
-		public static DependencyProperty Register<TProperty, TOwner>(string name, object defaultValue = null) =>
-			DependencyProperty.Register(name, typeof(TProperty), typeof(TOwner),
-				new PropertyMetadata(defaultValue ?? UndefinedValue));
-
-		public static DependencyProperty Register(string name, object defaultValue = null) =>
-			DependencyProperty.Register(name, typeof(object), typeof(AValueConverter),
-				new PropertyMetadata(defaultValue ?? UndefinedValue));
-
-		public object ByDefault
-		{
-			get => GetValue(ByDefaultProperty);
-			set => SetValue(ByDefaultProperty, value);
-		}
-
-		public abstract object Convert(object value, Type targetType, object parameter, CultureInfo culture);
-
+		public virtual object ConvertBack(object value) => Stub();
+		public virtual object ConvertBack(object value, object parameter) => ConvertBack(value);
 		public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			BackConverter.IsNot()
-				? throw new Exception("Specify 'BackConverter' for ConvertBack")
-				: BackConverter.Convert(value, targetType, parameter, culture);
+			ConvertBack(value, parameter);
 
-		public StringComparison StringComparison { get; set; } = StringComparison.OrdinalIgnoreCase;
+		public abstract class Reflected : IValueConverter
+		{
+			public virtual object Convert(object value) => Stub();
+			public virtual object Convert(object value, object parameter) => Convert(value);
+			public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+				Convert(value, parameter);
 
-		public IValueConverter BackConverter { get; set; }
+			object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+				Convert(value, targetType, parameter, culture);
+		}
 	}
 }

@@ -22,9 +22,9 @@ namespace Ace.Converters
 		public Converter(Convert convert, Convert convertBack) : this(convert) => ConvertBack = convertBack;
 
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			(Convert ?? NotImplementedException)(value, targetType, parameter, culture);
+			(Convert ?? ConvertBack ?? NotImplementedException)(value, targetType, parameter, culture);
 
 		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			(ConvertBack ?? NotImplementedException)(value, targetType, parameter, culture);
+			(ConvertBack ?? Convert ?? NotImplementedException)(value, targetType, parameter, culture);
 	}
 }

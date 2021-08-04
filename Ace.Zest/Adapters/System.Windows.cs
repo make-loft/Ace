@@ -58,7 +58,7 @@ namespace System.Windows
 
     public class DependencyProperty
     {
-        public static readonly object UnsetValue = new object();
+        public static readonly object UnsetValue = new();
 
         public static DependencyProperty Register(string name, Type type, Type declaringType, PropertyMetadata m) =>
             new DependencyProperty

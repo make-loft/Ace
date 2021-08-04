@@ -125,9 +125,9 @@
     <Compile Include="Ace.Zest\Converters\Converter.cs" />
     <Compile Include="Ace.Zest\Converters\KeyToValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\LetterCaseConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\Patterns\AValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\Patterns\ICase.cs" />
-    <Compile Include="Ace.Zest\Converters\Patterns\ITwoWayConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\Patterns\AValueConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\Patterns\ValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\SplitConverter.cs" />
     <Compile Include="Ace.Zest\Converters\SwitchConverter.cs" />
     <Compile Include="Ace.Zest\Dictionaries\AppConverters.xaml.cs">

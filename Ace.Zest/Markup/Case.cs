@@ -1,47 +1,46 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Markup;
 using Ace.Converters.Patterns;
-using static System.Windows.DependencyProperty;
-using static Ace.Converters.Patterns.AValueConverter;
+using static Ace.Converters.Patterns.ValueConverter;
 #if XAMARIN
 using Xamarin.Forms;
+#else
+using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup
 {
-	[ContentProperty("Value")]
-	public class Case : DependencyObject, ICase<object, object>
+	[ContentProperty(nameof(Value))]
+	public class Case : ICase<object, object>
 	{
-		public static readonly DependencyProperty KeyProperty =
-			Register("Key", typeof(object), typeof(Case), new PropertyMetadata(UndefinedValue));
+		protected readonly DependencyObject Attached = new();
+
+		public static readonly DependencyProperty KeyProperty = Attach(nameof(Key));
+		public static readonly DependencyProperty ValueProperty = Attach(nameof(Value));
 
 		public object Key
 		{
-			get => GetValue(KeyProperty);
-			set => SetValue(KeyProperty, value);
+			get => Attached.GetValue(KeyProperty);
+			set => Attached.SetValue(KeyProperty, value);
 		}
-
-		public static readonly DependencyProperty ValueProperty =
-			Register("Value", typeof(object), typeof(Case), new PropertyMetadata(UndefinedValue));
 
 		public object Value
 		{
-			get => GetValue(ValueProperty);
-			set => SetValue(ValueProperty, value);
+			get => Attached.GetValue(ValueProperty);
+			set => Attached.SetValue(ValueProperty, value);
 		}
 
 		public virtual bool MatchByKey(object key, StringComparison comparison) =>
 			Key.Is(key) || Key.Is(UndefinedValue) || Key.Is(key, comparison);
 	}
 
-	[ContentProperty("Value")]
+	[ContentProperty(nameof(Value))]
 	public class TypedCase : Case
 	{
 		public new Type Key
 		{
-			get => (Type) GetValue(KeyProperty);
-			set => SetValue(KeyProperty, value);
+			get => (Type)Attached.GetValue(KeyProperty);
+			set => Attached.SetValue(KeyProperty, value);
 		}
 
 		public override bool MatchByKey(object key, StringComparison comparison) =>

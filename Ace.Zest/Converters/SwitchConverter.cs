@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using Ace.Converters.Patterns;
 #if XAMARIN
-using ContentProperty = Xamarin.Forms.ContentPropertyAttribute;
+using Xamarin.Forms;
 #else
 using System.Windows.Markup;
 #endif
@@ -13,11 +13,11 @@ using System.Windows.Markup;
 namespace Ace.Converters
 {
 	[ContentProperty("Cases")]
-	public class SwitchConverter : AValueConverter
+	public class SwitchConverter : ValueConverter
 	{
 		public string DiagnosticKey { get; set; }
 
-		public List<ICase<object, object>> Cases { get; } = new List<ICase<object, object>>();
+		public List<ICase<object, object>> Cases { get; } = new();
 
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
