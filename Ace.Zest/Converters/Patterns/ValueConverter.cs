@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Windows;
-#if XAMARIN
-using Xamarin.Forms;
-#else
-using System.Windows.Data;
-#endif
 
 namespace Ace.Converters.Patterns
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Ace.Adapters;
+
 #if XAMARIN
 using Xamarin.Forms;
 #else

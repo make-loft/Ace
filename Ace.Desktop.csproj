@@ -90,14 +90,11 @@
     <Compile Include="Ace.Base\Sugar\LE.Experimental.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Match.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Merge.cs" />
-    <Compile Include="Ace.Base\Sugar\LE.Tuples.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Use.cs" />
-    <Compile Include="Ace.Base\Sugar\LE.ValueTuples.cs" />
     <Compile Include="Ace.Base\Sugar\LE.With.cs" />
     <Compile Include="Ace.Base\Sugar\Lock.cs" />
     <Compile Include="Ace.Base\Sugar\NE.cs" />
     <Compile Include="Ace.Base\Sugar\New.cs" />
-    <Compile Include="Ace.Base\Sugar\New.Tuples.cs" />
     <Compile Include="Ace.Base\Sugar\StringExtensions.cs" />
     <Compile Include="Ace.Base\Sugar\System.Reflection.cs" />
     <Compile Include="Ace.Base\Sugar\Switch.cs" />

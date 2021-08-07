@@ -9,10 +9,10 @@ namespace Ace
 	// ReSharper disable InconsistentNaming
 	public static partial class LE
 	{
-		public static Switch<T> ToSwitch<T>(this T value, params object[] pattern) => new Switch<T>(value, pattern);
+		public static Switch<T> ToSwitch<T>(this T value, params object[] pattern) => new(value, pattern);
 
-		public static KeyValuePair<TK, TV> Of<TK, TV>(this TK key, TV value) => new KeyValuePair<TK, TV>(key, value);
-		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new KeyValuePair<TK, TV>(key, value);
+		public static KeyValuePair<TK, TV> Of<TK, TV>(this TK key, TV value) => new(key, value);
+		public static KeyValuePair<TK, TV> By<TK, TV>(this TV value, TK key) => new(key, value);
 
 		public static T Or<T>(this T o, T x) where T : class => o ?? x;
 		public static T Or<T>(this T? o, T x) where T : struct => o ?? x;

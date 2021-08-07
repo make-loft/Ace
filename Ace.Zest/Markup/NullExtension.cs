@@ -2,6 +2,6 @@
 {
 	public class NullExtension : Patterns.AMarkupExtension
 	{
-		public override object Provide(object targetObject, object targetProperty = null) => null;
+		public override object Provide(object targetObject, object targetProperty) => null;
 	}
 }

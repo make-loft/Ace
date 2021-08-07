@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using IValueConverter = System.Windows.Data.IValueConverter;
 using System.Linq;
 
 #if XAMARIN
 using Xamarin.Forms;
-using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 #else
 using System.ComponentModel;
 using System.Windows.Data;
@@ -72,11 +70,11 @@ namespace Ace.Markup
 
 		public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (SmartObject.IsNot()) return null;
+			if (SmartObject.IsNot()) return default;
 			value = Converter.IsNot() ? value : Converter.ConvertBack(value, targetType, parameter, culture);
 			if (Segregate && SmartObject[Key].Is(out Segregator s)) s.Value = value;
 			else SmartObject[Key] = value;
-			return Segregate ? null : SmartObject;
+			return Segregate ? default : SmartObject;
 		}
 
 		private void Initialize(string set = "")

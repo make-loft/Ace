@@ -16,7 +16,7 @@ namespace Ace.Markup.Patterns
 			return Provide(targets.TargetObject, targets.TargetProperty);
 		}
 
-		public abstract object Provide(object targetObject, object targetProperty = null);
+		public abstract object Provide(object targetObject, object targetProperty = default);
 	}
 #else
 	public abstract class AMarkupExtension : ABindingExtension
@@ -24,7 +24,7 @@ namespace Ace.Markup.Patterns
 		protected AMarkupExtension() : base(new RelativeSource {Mode = RelativeSourceMode.Self}) =>
 			Mode = BindingMode.OneTime;
 
-		public abstract object Provide(object targetObject, object targetProperty = null);
+		public abstract object Provide(object targetObject, object targetProperty = default);
 
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) => 
 			Provide(value);
