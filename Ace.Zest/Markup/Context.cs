@@ -23,19 +23,15 @@ namespace Ace.Markup
 
 		public string Key { get; set; }
 #if XAMARIN
-		[TypeConverter(typeof(PathConverter))] 
-#endif
+		public BindingMode Mode { get; set; }
+		[TypeConverter(typeof(PathConverter))] public PropertyPath SourcePath { get; set; }
+		[TypeConverter(typeof(PathConverter))] public PropertyPath TrackedPath { get; set; }
+#else
 		public PropertyPath SourcePath { get; set; }
-#if XAMARIN
-		[TypeConverter(typeof(PathConverter))] 
-# endif
 		public PropertyPath TrackedPath { get; set; }
-
+#endif
 		[TypeConverter(typeof(TypeTypeConverter))] public Type StoreKey { get; set; }
 		[TypeConverter(typeof(TypeTypeConverter))] public Type RelativeContextType { get; set; }
-#if XAMARIN
-		public BindingMode Mode { get; set; }
-#endif
 
 		public override object Provide(object targetObject, object targetProperty = null)
 		{
@@ -55,28 +51,28 @@ namespace Ace.Markup
 			else if (targetObject.Is(out ContextElement element))
 			{
 #if XAMARIN
-				if (TrackedPath.Is())
-				{
-					element.BindingContextChanged += (sender, args) =>
-						mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
-				}
-				else mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
-#else
-				element.Loaded += OnLoadedRefreshMediatorHandler;
+				element.BindingContextChanged += Set;
 
-				void OnLoadedRefreshMediatorHandler(object sender, RoutedEventArgs args)
+				void Set(object sender, EventArgs args)
 				{
-					element.Loaded -= OnLoadedRefreshMediatorHandler;
+					element.BindingContextChanged -= Set;
 					mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 				}
+#else
+				element.Loaded += Set;
 
+				void Set(object sender, EventArgs args)
+				{
+					element.Loaded -= Set;
+					mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
+				}
+#endif
 				if (TrackedPath.Is())
 				{
 					var watcher = new PropertyChangedWatcher(element, TrackedPath?.Path);
 					watcher.PropertyChanged += (sender, args) =>
 						mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
 				}
-#endif
 			}
 
 			return mediator;
