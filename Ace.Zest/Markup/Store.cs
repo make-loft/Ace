@@ -11,7 +11,7 @@ namespace Ace.Markup
 {
 	public class Store : Patterns.AMarkupExtension
 	{
-		public Store() => Key = null;
+		public Store() => Key = default;
 
 		public Store(Type key) => Key = key;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using Ace.Converters;
 
 namespace Ace.Markup
@@ -12,7 +11,7 @@ namespace Ace.Markup
 		public Localizing()
 		{
 			Source = LocalizationSource.Wrap;
-			Path = new PropertyPath(LocalizationSource.Wrap.ActivePath);
+			Path = new(LocalizationSource.Wrap.ActivePath);
 		}
 
 		public Localizing(string key) : this() => Key = key;

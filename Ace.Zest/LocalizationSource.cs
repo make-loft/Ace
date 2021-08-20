@@ -13,7 +13,7 @@ namespace Ace
 
 	public class LocalizationSource : AResourceWrap<string, string, CultureInfo, ResourceManager>
 	{
-		public static readonly LocalizationSource Wrap = new LocalizationSource();
+		public static readonly LocalizationSource Wrap = new();
 
 		public override string this[string key] => key.Is()
 			? ActiveManager?.GetString(key) ??

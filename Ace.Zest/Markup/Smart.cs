@@ -16,10 +16,10 @@ namespace Ace.Markup
 	{
 		private object _defaultValue;
 
-		public Smart() : base(null)
+		public Smart() : base(default)
 		{
 			Mode = BindingMode.TwoWay;
-			Path = new PropertyPath(nameof(SmartObject.Smart));
+			Path = new(nameof(SmartObject.Smart));
 		}
 
 		public Smart(string set) : this() => Set = set;

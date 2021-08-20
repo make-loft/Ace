@@ -8,9 +8,9 @@ namespace Ace
 {
 	public static class Store
 	{
-		public static Memory ActiveBox { get; set; } = new Memory(new KeyFileStorage());
+		public static Memory ActiveBox { get; set; } = new(new KeyFileStorage());
 
-		private static readonly Dictionary<Type, object> Container = new Dictionary<Type, object>();
+		private static readonly Dictionary<Type, object> Container = new();
 
 		public static object Get(Type type, params object[] cctorArgs) =>
 			Lock.Invoke(Container, _ => Container.TryGetValue(type, out var item) ? item : Revive(type, cctorArgs));

@@ -18,7 +18,7 @@ namespace Ace.Markup
 {
 	public class Context : Patterns.AMarkupExtension
 	{
-		public Context() => Key = null;
+		public Context() => Key = default;
 		public Context(string key) => Key = key;
 
 		public string Key { get; set; }

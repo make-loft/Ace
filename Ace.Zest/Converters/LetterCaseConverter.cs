@@ -19,10 +19,9 @@ namespace Ace.Converters
 		private static readonly Modifier[] Modifiers =
 			Enum.GetValues(typeof(Modifier)).Cast<Modifier>().Skip(1).ToArray();
 
-		public static string Apply(this string text, Modifier modifiers) =>
-			modifiers.Is(Modifier.Original)
-				? text
-				: Modifiers.Where(m => (modifiers & m).Is(m)).Aggregate(text, (t, m) => t.ApplySingle(m));
+		public static string Apply(this string text, Modifier modifiers) => modifiers.Is(Modifier.Original)
+			? text
+			: Modifiers.Where(m => (modifiers & m).Is(m)).Aggregate(text, (t, m) => t.ApplySingle(m));
 
 		private static string ApplySingle(this string text, Modifier modifier) =>
 			modifier.Is(Modifier.Original) ? text :

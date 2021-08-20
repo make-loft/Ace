@@ -10,7 +10,7 @@ namespace Ace.Markup
 	{
 		public override object ConvertFromInvariantString(string value)
 		{
-			if (value.IsNot()) return null;
+			if (value.IsNot()) return default;
 			var typeName = value.ToString().Split(':').Last();
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 			// ReSharper disable once LoopCanBeConvertedToQuery
@@ -22,7 +22,7 @@ namespace Ace.Markup
 					return type;
 			}
 
-			return null;
+			return default;
 		}
 	}
 #else

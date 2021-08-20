@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace Ace.Markup
 {
-	public class Converter : IValueConverter
+	public class RemoteConverter : IValueConverter
 	{
 		public IValueConverter Source { get; set; }
 

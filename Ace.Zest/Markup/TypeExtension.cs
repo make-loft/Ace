@@ -10,7 +10,7 @@ namespace Ace.Markup
 {
 	public class TypeExtension : Patterns.AMarkupExtension
 	{
-		public TypeExtension() => Key = null;
+		public TypeExtension() => Key = default;
 		
 		public TypeExtension(Type key) => Key = key;
 		

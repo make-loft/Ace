@@ -6,8 +6,8 @@ namespace Ace.Markup
 {
 	public class ContextBinding : ABindingExtension
 	{
-		public ContextBinding() : base(null) => Key = null;
-		public ContextBinding(string key) : base(null) => Key = key;
+		public ContextBinding() : base(default) => Key = default;
+		public ContextBinding(string key) : base(default) => Key = key;
 
 		public string Key { get; set; }
 

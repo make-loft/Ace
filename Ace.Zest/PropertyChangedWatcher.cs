@@ -26,7 +26,7 @@ namespace Ace
 		}
 #endif
 		public static PropertyChangedWatcher GetWatcher(this DependencyObject element, string path) =>
-			new PropertyChangedWatcher(element, path);
+			new(element, path);
 	}
 
 	public class PropertyChangedWatcher : DependencyObject, INotifyPropertyChanged, IValueConverter

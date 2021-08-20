@@ -7,7 +7,7 @@ namespace Ace
 	{
 		private Thread _thread;
 		private Action _action = () => { };
-		private readonly AutoResetEvent _autoResetEvent = new AutoResetEvent(true);
+		private readonly AutoResetEvent _autoResetEvent = new(true);
 		public ThreadPriority Priority { get; set; } = ThreadPriority.Lowest;
 		private bool _isRunning = true;
 
@@ -17,7 +17,7 @@ namespace Ace
 			if (_isRunning)
 			{
 				_thread?.Abort();
-				_thread = new Thread(Invoke) {IsBackground = true, Priority = Priority};
+				_thread = new(Invoke) {IsBackground = true, Priority = Priority};
 				_thread.Start();
 			}
 

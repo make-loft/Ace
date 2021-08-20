@@ -6,7 +6,7 @@ namespace Ace.Markup.Patterns
 {
 	public abstract class ABindingExtension : Binding, IValueConverter
 	{
-		protected static object DataContext = null;
+		protected static object DataContext = default;
 		protected static RelativeSource RelativeSelf = new(RelativeSourceMode.Self);
 		
 		protected ABindingExtension() => Source = Converter = this;

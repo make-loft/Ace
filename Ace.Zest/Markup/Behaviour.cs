@@ -83,12 +83,12 @@ namespace Ace.Markup
 					if (args.NewValue.Is(true))
 						element.MouseMove += OnMouseMove;
 					else if (args.NewValue.Is(false))
-						element.MouseMove -= OnMouseMove;		
-			
-					void OnMouseMove(object sender, MouseEventArgs e) => e.Handled = true;
+						element.MouseMove -= OnMouseMove;
+
+					static void OnMouseMove(object sender, MouseEventArgs e) => e.Handled = true;
 				}));
 
-		private static void DragMoveChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs args)
+		private static void DragMoveChangedCallback(Target o, DependencyPropertyChangedEventArgs args)
 		{
 			var element = o as FrameworkElement ?? throw new ArgumentException("Expected FrameworkElement");
 			var lastPosition = new Point();
