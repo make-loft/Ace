@@ -19,7 +19,7 @@ namespace Ace.Replication.Replicators
 
 		public override Regex ActivateInstance(Map map, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null) =>
-			new Regex((string) map[PatternKey], RestoreOptions(map[OptionsKey], profile));
+			new((string) map[PatternKey], RestoreOptions(map[OptionsKey], profile));
 
 		private static RegexOptions RestoreOptions(object value, ReplicationProfile profile) =>
 			value is RegexOptions regexOptions

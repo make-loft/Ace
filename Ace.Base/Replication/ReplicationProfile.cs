@@ -23,7 +23,7 @@ namespace Ace.Replication
 		public bool SimplifyMaps = false;
 		public bool TryRestoreTypeInfoImplicitly = true;
 
-		public readonly List<Converter> ImplicitConverters = New.List<Converter>(new ComplexConverter());
+		public readonly List<Converter> ImplicitConverters = New.List<Converter>(new SystemConverter());
 
 		public static readonly Adapters.BindingFlags DefaultFlags =
 			Adapters.BindingFlags.NonPublic | Adapters.BindingFlags.Public | Adapters.BindingFlags.Instance;

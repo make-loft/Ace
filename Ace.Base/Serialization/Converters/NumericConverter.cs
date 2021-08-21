@@ -25,7 +25,7 @@ namespace Ace.Serialization.Converters
 			typeof(UIntPtr).Of("UP")
 		);
 
-		public override string Convert(object value)
+		public override string Encode(object value)
 		{
 			var convertedValue = value is null ? null : ToStringConvert(value);
 			if (convertedValue.IsNot()) return null;
@@ -37,53 +37,39 @@ namespace Ace.Serialization.Converters
 			return suffix.IsNullOrEmpty() ? convertedValue : convertedValue + suffix;
 		}
 
-		protected string ToStringConvert(object value) =>
-			value.Match
-			(
-				(int i) => i.ToString(IntegerNumbersFormat, ActiveCulture),
-				(long i) => i.ToString(IntegerNumbersFormat, ActiveCulture),
-				(short i) => i.ToString(IntegerNumbersFormat, ActiveCulture),
+		protected string ToStringConvert(object value) => value switch
+		{
+			int i => i.ToString(IntegerNumbersFormat, ActiveCulture),
+			long i => i.ToString(IntegerNumbersFormat, ActiveCulture),
+			short i => i.ToString(IntegerNumbersFormat, ActiveCulture),
+			float n => n.ToString(RealNumbersFormat, ActiveCulture),
+			double n => n.ToString(RealNumbersFormat, ActiveCulture),
+			decimal m => m.ToString(RealNumbersFormat, ActiveCulture),
+			byte b => b.ToString(IntegerNumbersFormat, ActiveCulture),
+			char c => ((int)c).ToString(IntegerNumbersFormat, ActiveCulture),
+			sbyte b => b.ToString(IntegerNumbersFormat, ActiveCulture),
+			uint i => i.ToString(IntegerNumbersFormat, ActiveCulture),
+			ulong i => i.ToString(IntegerNumbersFormat, ActiveCulture),
+			ushort i => i.ToString(IntegerNumbersFormat, ActiveCulture),
+			IntPtr i => i.ToString(),
+			UIntPtr i => i.ToString(),
+			_ => default
+		};
 
-				(float n) => n.ToString(RealNumbersFormat, ActiveCulture),
-				(double n) => n.ToString(RealNumbersFormat, ActiveCulture),
-				(decimal m) => m.ToString(RealNumbersFormat, ActiveCulture),
-
-				(object o) => null
-			) ??
-			value.Match
-			(
-				(byte b) => b.ToString(IntegerNumbersFormat, ActiveCulture),
-				(char c) => ((int) c).ToString(IntegerNumbersFormat, ActiveCulture),
-				(sbyte b) => b.ToString(IntegerNumbersFormat, ActiveCulture),
-
-				(uint i) => i.ToString(IntegerNumbersFormat, ActiveCulture),
-				(ulong i) => i.ToString(IntegerNumbersFormat, ActiveCulture),
-				(ushort i) => i.ToString(IntegerNumbersFormat, ActiveCulture),
-
-				(object o) => null
-			) ??
-			value.Match
-			(
-				(IntPtr i) => i.ToString(),
-				(UIntPtr i) => i.ToString(),
-
-				(object o) => null
-			);
-
-		public override object Revert(string value, string typeCode) =>
+		public override object Decode(string value, string typeKey) =>
 			value.Length > 0 && char.IsDigit(value.Pick(-1))
-				? RevertWithoutCode(value, NumberStyles.Any, ActiveCulture)
-				: RevertByCode(value.ToUpper(), NumberStyles.Any, ActiveCulture);
+				? DecodeWithoutKey(value, NumberStyles.Any, ActiveCulture)
+				: DecodeByKey(value.ToUpper(), NumberStyles.Any, ActiveCulture);
 
-		private static object RevertWithoutCode(string number, NumberStyles style, CultureInfo culture) =>
+		private static object DecodeWithoutKey(string number, NumberStyles style, CultureInfo culture) =>
 			number.Contains(culture.NumberFormat.NumberDecimalSeparator).Not() &&
 			int.TryParse(number, style, culture, out var i) ? i :
 			double.TryParse(number, style, culture, out var r) ? r :
 			Undefined;
 
-		private static object RevertByCode(string number, NumberStyles style, CultureInfo culture) =>
+		private static object DecodeByKey(string number, NumberStyles style, CultureInfo culture) =>
 			number.EndsWith("B") && byte.TryParse(TrimEnd(number, 1), out var b) ? b :
-			number.EndsWith("C") && int.TryParse(TrimEnd(number, 1), style, culture, out var c) ? (char) c :
+			number.EndsWith("C") && int.TryParse(TrimEnd(number, 1), style, culture, out var c) ? c :
 			number.EndsWith("UL") && ulong.TryParse(TrimEnd(number, 2), style, culture, out var ul) ? ul :
 			number.EndsWith("LU") && ulong.TryParse(TrimEnd(number, 2), style, culture, out ul) ? ul :
 			number.EndsWith("U") && uint.TryParse(TrimEnd(number, 1), style, culture, out var u) ? u :

@@ -12,10 +12,9 @@ namespace Ace
 		public IStorage Storage { get; }
 		public string KeyFormat { get; set; }
 
-		public KeepProfile KeepProfile = new KeepProfile {MapPairSplitter = "\t", Delimiter = ""};
+		public KeepProfile KeepProfile = new() {MapPairSplitter = "\t", Delimiter = ""};
 
-		public ReplicationProfile ReplicationProfile =
-			new ReplicationProfile {SimplifyMaps = true, SimplifySets = true};
+		public ReplicationProfile ReplicationProfile = new() {SimplifyMaps = true, SimplifySets = true};
 
 		public Memory(IStorage storage, string keyFormat = "{0}.json")
 		{
@@ -35,9 +34,7 @@ namespace Ace
 		public TItem Revive<TItem>(string key = null) => (TItem)Revive(MakeStorageKey(key, TypeOf<TItem>.Raw), TypeOf<TItem>.Raw);
 
 		public bool TryKeep(object item, string key = null) =>
-			HasDataContract(item.GetType()) && Storage.Is() && TryEncode(key, item.GetType(), in item)
-				? true
-				: false;
+			HasDataContract(item.GetType()) && Storage.Is() && TryEncode(key, item.GetType(), in item);
 
 		private bool TryDecode(string key, Type type, out object item)
 		{

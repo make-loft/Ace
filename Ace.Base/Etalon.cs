@@ -38,19 +38,19 @@ namespace Ace
 			sample.MasterState.Juxtapose(etalon.MasterState, path, reordering);
 
 		private static IEnumerable<Juxtaposition> Juxtapose(this object sample,
-			object etalon, string path, bool reordering) => sample.Match(
+			object etalon, string path, bool reordering) => sample switch
+			{
+				Map samples => etalon.Is(out Map etalons)
+					? Juxtapose(samples, etalons, path, reordering)
+					: Juxtapose(sample, etalon, path, State.Different),
 
-			(Map samples) => etalon.Is(out Map etalons)
-				? Juxtapose(samples, etalons, path, reordering)
-				: Juxtapose(sample, etalon, path, State.Different),
+				Set samples => etalon.Is(out Set etalons)
+					? Juxtapose(samples, etalons, path, reordering)
+					: Juxtapose(sample, etalon, path, State.Different),
 
-			(Set samples) => etalon.Is(out Set etalons)
-				? Juxtapose(samples, etalons, path, reordering)
-				: Juxtapose(sample, etalon, path, State.Different),
-
-			(object _) => Juxtapose(sample, etalon, path),
-			() => Juxtapose(null, etalon, path)
-		);
+				object => Juxtapose(sample, etalon, path),
+				null => Juxtapose(null, etalon, path)
+			};
 
 		private static IEnumerable<Juxtaposition> Juxtapose(object sample, object etalon, string path,
 			State state = State.Identical) => new Juxtaposition

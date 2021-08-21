@@ -12,7 +12,7 @@ namespace Ace
 		public static readonly List<Type> LikeImmutableTypes = New.List(TypeOf<Regex>.Raw);
 
 		private static readonly MethodInfo MemberwiseCloneMethod =
-			typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
+			TypeOf.Object.Raw.GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		public static T MemberwiseClone<T>(this T origin, bool deepMode,
 			IEqualityComparer<object> comparer = null, Type[] likeImmutableTypes = null) => deepMode

@@ -16,19 +16,18 @@ namespace Ace.Serialization.Serializators
 
 		public readonly List<Converter> Converters = New.List<Converter>
 		(
-			new NullConverter(),
 			new BooleanConverter(),
 			new NumericConverter(),
 			new StringConverter(),
-			new IsoDateTimeConverter(),
-			new ComplexConverter()
+			new IsoTimeConverter(),
+			new SystemConverter()
 		);
 		
 		public override object Capture(object value, KeepProfile profile, string data, ref int offset) =>
-			Revert(profile.CaptureSimplex((Simplex) value, data, ref offset));
+			Decode(profile.CaptureSimplex((Simplex) value, data, ref offset));
 
-		public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel) => 
-			Convert(value, profile);
+		public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel) =>
+			Encode(value, profile);
 		   
 		public static readonly Assembly SystemAssembly = TypeOf<object>.Assembly;
 		public static readonly Assembly ExtendedAssembly = TypeOf<Uri>.Assembly;
@@ -38,11 +37,11 @@ namespace Ace.Serialization.Serializators
 				? type.FullName.Substring(type.FullName.IndexOf('.') + 1)
 				: type.GetFriendlyName();
 		
-		protected readonly Simplex Simplex = new Simplex();
+		protected readonly Simplex Simplex = new();
 	
-		public Simplex Convert(object value, KeepProfile profile)
+		public Simplex Encode(object value, KeepProfile profile)
 		{
-			var convertedValue = Converters.Select(c => c.Convert(value)).FirstOrDefault(s => s.IsNot(null)) ??
+			var convertedValue = Converters.Select(c => c.Encode(value)).FirstOrDefault(s => s.IsNot(null)) ??
 								 throw new Exception("Can not convert value " + value);
 			
 			Simplex.Clear();
@@ -62,18 +61,18 @@ namespace Ace.Serialization.Serializators
 			return Escape(profile.EscapeProfile, Simplex, 1);
 		}
 
-		public object Revert(Simplex simplex)
+		public object Decode(Simplex simplex)
 		{
 			var segments = simplex;
 			if (segments.Count == 3) return segments[1]; /* optimization for strings */
 			var convertedValue = segments.Count == 1 ? segments[0] : segments[1];
 			var typeCode = segments.Count == 6 ? segments[4] : null;
-			return Converters.Select(c => c.Revert(convertedValue, typeCode)).First(v => v.IsNot(Converter.Undefined));
+			return Converters.Select(c => c.Decode(convertedValue, typeCode)).FirstOrDefault(v => v.IsNot(Converter.Undefined));
 		}
 		
 		//public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
 
-		public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new Dictionary<int, StringBuilder>();
+		public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new();
 		
 		public Simplex Escape(EscapeProfile escaper, Simplex segments,  int segmentIndex)
 		{

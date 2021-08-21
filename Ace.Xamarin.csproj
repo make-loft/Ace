@@ -58,7 +58,6 @@
     <None Remove="Properties\**" />
   </ItemGroup>
   <ItemGroup>
-	<Compile Remove="Ace.Base\Sugar\LE.Switch.cs" />
 	<Compile Remove="Ace.Base\WildThread.cs" />
 	<Compile Remove="Ace.Core\Adapters\Net4.0.cs" />
 	<Compile Remove="Ace.Core\Adapters\System.ComponentModel.cs" />
@@ -88,9 +87,6 @@
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="Xamarin.Forms" Version="*" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Ace.Base\Sugar\LE.Switch.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Ace.Zest\Dictionaries\AppConverters.Xamarin.xaml">

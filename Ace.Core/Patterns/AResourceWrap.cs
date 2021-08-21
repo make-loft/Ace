@@ -5,8 +5,7 @@ namespace Ace.Patterns
 {
 	public abstract class AResourceWrap<TKey, TValue, TCulture, TManager> : INotifyPropertyChanged
 	{
-		public readonly ObservableCollection<TManager> MergedManagers =
-			new ObservableCollection<TManager>();
+		public readonly ObservableCollection<TManager> MergedManagers = new();
 
 		public virtual string ActivePath => "ActiveManager";
 
@@ -18,7 +17,8 @@ namespace Ace.Patterns
 			set
 			{
 				_activeManager = value;
-				if (!ManualActivate) Activate();
+				if (ManualActivate) return;
+				Activate();
 			}
 		}
 
@@ -28,7 +28,7 @@ namespace Ace.Patterns
 
 		public abstract TValue this[TKey key, TCulture culture] { get; }
 
-		public void Activate() => PropertyChanged(this, new PropertyChangedEventArgs(ActivePath));
+		public void Activate() => PropertyChanged(this, new(ActivePath));
 
 		public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
 	}

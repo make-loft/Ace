@@ -19,6 +19,6 @@ namespace Ace.Replication.Replicators
 
 		public override StringBuilder ActivateInstance(Map map, ReplicationProfile profile,
 			IDictionary<int, object> idCache, Type baseType = null) =>
-			new StringBuilder((string) map[ValueKey], (int) map[CapacityKey]);
+			new((string) map[ValueKey], (int) map[CapacityKey]);
 	}
 }

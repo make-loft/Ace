@@ -23,18 +23,18 @@ namespace Ace
 		public CommandEvocator GetEvocator(ICommand command) =>
 			CommandEvocators.TryGetValue(command, out var evocator)
 				? evocator
-				: CommandEvocators[command] = new CommandEvocator(command);
+				: CommandEvocators[command] = new(command);
 
 		public PropertyEvocator GetEvocator(string propertyName) =>
 			PropertyEvocators.TryGetValue(propertyName, out var evocator)
 				? evocator
-				: PropertyEvocators[propertyName] = new PropertyEvocator(propertyName);
+				: PropertyEvocators[propertyName] = new(propertyName);
 
 		[OnDeserializing]
 		public void Initialize(StreamingContext context = default)
 		{
-			CommandEvocators = new Dictionary<ICommand, CommandEvocator>();
-			PropertyEvocators = new Dictionary<string, PropertyEvocator>();
+			CommandEvocators = new();
+			PropertyEvocators = new();
 			PropertyChanging += (sender, args) => GetEvocator(args.PropertyName).EvokePropertyChanging(sender, args);
 			PropertyChanged += (sender, args) => GetEvocator(args.PropertyName).EvokePropertyChanged(sender, args);
 			ErrorsChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeErrorsChanged(sender, args);
@@ -62,14 +62,14 @@ namespace Ace
 				: Enumerable.Empty<object>();
 
 		public void EvokeErrorsChanged<TValue>(Expression<Func<TValue>> expression) => 
-			ErrorsChanged(this, new DataErrorsChangedEventArgs(expression.UnboxMemberName()));
+			ErrorsChanged(this, new(expression.UnboxMemberName()));
 
 		public void EvokeErrorsChanged(string propertyName) =>
-			ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
+			ErrorsChanged(this, new(propertyName));
 
 		string IDataErrorInfo.this[string propertyName] =>
 			GetErrors(propertyName).Cast<object>().Select(e => e.ToString())
-				.Aggregate((string) null, (x, y) => $"{x}{(x.Is() ? Environment.NewLine : null)}{y}");
+				.Aggregate((string) default, (x, y) => $"{x}{(x.Is() ? Environment.NewLine : null)}{y}");
 
 		#endregion
 	}

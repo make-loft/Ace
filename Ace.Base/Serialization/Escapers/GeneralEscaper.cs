@@ -77,8 +77,8 @@ namespace Ace.Serialization.Escapers
 	public class GeneralEscaper
 	{
 		public char EscapeChar = '\\';
-		public List<string> HeadPatterns = new List<string> {"\"", "<", "'"};
-		public List<string> TailPatterns = new List<string> {"\"", ">", "'"};
+		public List<string> HeadPatterns = New.List("\"", "<", "'");
+		public List<string> TailPatterns = New.List("\"", ">", "'");
 
 		public static readonly Dictionary<string, string> EscapeRules = New.Dictionary
 		(
@@ -100,7 +100,6 @@ namespace Ace.Serialization.Escapers
 			return Escape(originalSequence, EscapeRules, EscapeSequence, BreakSequence)
 				.Aggregate(builder, (b, s) => b.Append(s)).ToString();
 		}
-
 
 		public static IEnumerable<string> Escape(
 			string originalSequence, Dictionary<string, string> rules,

@@ -4,10 +4,10 @@ namespace Ace.Serialization
 {
 	public class Converter
 	{
-		public static readonly object Undefined = new object();
+		public static readonly object Undefined = new();
 		public CultureInfo ActiveCulture = CultureInfo.InvariantCulture;
 
-		public virtual string Convert(object value) => value?.ToString();
-		public virtual object Revert(string value, string typeCode) => Undefined;
+		public virtual string Encode(object value) => value?.ToString();
+		public virtual object Decode(string value, string typeKey) => Undefined;
 	}
 }

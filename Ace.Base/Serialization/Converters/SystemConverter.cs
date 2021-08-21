@@ -4,32 +4,34 @@ using System.Linq;
 
 namespace Ace.Serialization.Converters
 {
-	public class ComplexConverter : Converter
+	public class SystemConverter : Converter
 	{
 		public string DateTimeOffsetFormat = "O";
 		public string DateTimeFormat = "O";
 		public string TimeSpanFormat = "G";
 		public string GuidFormat = "D";
 
-		public override string Convert(object value) => value.Match
-		(
-			(Type t) => t.GetFriendlyName(),
-			(Guid g) => g.ToString(GuidFormat),
-			(TimeSpan ts) => ts.ToString(TimeSpanFormat, ActiveCulture),
-			(DateTime dt) => dt.ToString(DateTimeFormat, ActiveCulture),
-			(DateTimeOffset dto) => dto.ToString(DateTimeOffsetFormat, ActiveCulture),
-			(object o) => o.ToString(), // Uri, Enum, etc...
-			() => null
-		);
+		public override string Encode(object value) => value switch
+		{
+			Type t => t.GetFriendlyName(),
+			Guid g => g.ToString(GuidFormat),
+			TimeSpan ts => ts.ToString(TimeSpanFormat, ActiveCulture),
+			DateTime dt => dt.ToString(DateTimeFormat, ActiveCulture),
+			DateTimeOffset dto => dto.ToString(DateTimeOffsetFormat, ActiveCulture),
+			object o => o.ToString(), // Uri, Enum, etc...
+			_ => default
+		};
 
-		public override object Revert(string value, string typeKey) =>
-			typeKey.Is("Uri") ? new Uri(value) :
-			typeKey.Is("Guid") ? Guid.Parse(value) :
-			typeKey.Is("TimeSpan") ? TimeSpan.Parse(value, ActiveCulture) :
-			typeKey.Is("DateTime") ? DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)) :
-			typeKey.Is("DateTimeOffset") ? DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)) :
-			typeKey.Is("RuntimeType") ? Type.GetType(value) :
-			TryParse(value, typeKey);
+		public override object Decode(string value, string typeKey) => typeKey switch
+		{
+			"Uri" => new Uri(value),
+			"Guid" => Guid.Parse(value),
+			"TimeSpan" => TimeSpan.Parse(value, ActiveCulture),
+			"DateTime" => DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
+			"DateTimeOffset" => DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
+			"RuntimeType" => Type.GetType(value),
+			_ => TryParse(value, typeKey),
+		};
 
 		private DateTimeStyles GetDateTimeStyle(string value) =>
 			value.EndsWith("Z") ? DateTimeStyles.AdjustToUniversal : DateTimeStyles.None;

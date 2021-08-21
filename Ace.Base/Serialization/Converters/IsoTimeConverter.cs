@@ -3,20 +3,19 @@ using System.Text;
 
 namespace Ace.Serialization.Converters
 {
-	public class IsoDateTimeConverter : Converter
+	public class IsoTimeConverter : Converter
 	{
 		public string DateTimeOffsetFormat = "O";
 		public string DateTimeFormat = "O";
 
-		private readonly StringBuilder _builder = new StringBuilder(64);
+		private readonly StringBuilder _builder = new(64);
 
-		public override string Convert(object value) => value.Match
-		(
-			(DateTime dt) => DateTimeFormat.Is("O") ? dt.ToIsoString(_builder.Clear()) : null,
-			(DateTimeOffset dto) => DateTimeOffsetFormat.Is("O") ? dto.ToIsoString(_builder.Clear()) : null,
-			(object o) => null,
-			() => null
-		);
+		public override string Encode(object value) => value switch
+		{
+			DateTime dt => DateTimeFormat.Is("O") ? dt.ToIsoString(_builder.Clear()) : null,
+			DateTimeOffset dto => DateTimeOffsetFormat.Is("O") ? dto.ToIsoString(_builder.Clear()) : null,
+			_ => default
+		};
 	}
 
 	public static class DateTimeExtensions

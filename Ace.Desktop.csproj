@@ -62,6 +62,7 @@
     <Compile Include="Ace.Base\Replication\Replicators\DelegateReplicator.cs" />
     <Compile Include="Ace.Base\Replication\Snapshot.cs" />
     <Compile Include="Ace.Base\Serialization\ASerializator.cs" />
+    <Compile Include="Ace.Base\Serialization\Converters\StringConverter.cs" />
     <Compile Include="Ace.Base\Serialization\EscapeProfile.cs" />
     <Compile Include="Ace.Base\Replication\Replicators\CoreReplicators.cs" />
     <Compile Include="Ace.Base\Replication\Replicators\DeepReplicator.cs" />
@@ -72,9 +73,9 @@
     <Compile Include="Ace.Base\Serialization\Serializators\SetDeepSerializator.cs" />
     <Compile Include="Ace.Base\Serialization\Serializators\ValueSerializator.cs" />
     <Compile Include="Ace.Base\Serialization\Converter.cs" />
-    <Compile Include="Ace.Base\Serialization\Converters\ComplexConverter.cs" />
-    <Compile Include="Ace.Base\Serialization\Converters\CoreConverters.cs" />
-    <Compile Include="Ace.Base\Serialization\Converters\IsoDateTimeConverter.cs" />
+    <Compile Include="Ace.Base\Serialization\Converters\SystemConverter.cs" />
+    <Compile Include="Ace.Base\Serialization\Converters\BooleanConverter.cs" />
+    <Compile Include="Ace.Base\Serialization\Converters\IsoTimeConverter.cs" />
     <Compile Include="Ace.Base\Replication\MemberProviders\ContractMemberProvider.cs" />
     <Compile Include="Ace.Base\Replication\MemberProviders\CoreMemberProviders.cs" />
     <Compile Include="Ace.Base\Serialization\KeepProfile.cs" />
@@ -88,12 +89,10 @@
     <Compile Include="Ace.Base\Sugar\LE.Check.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Deconstruct.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Experimental.cs" />
-    <Compile Include="Ace.Base\Sugar\LE.Match.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Merge.cs" />
     <Compile Include="Ace.Base\Sugar\LE.Use.cs" />
     <Compile Include="Ace.Base\Sugar\LE.With.cs" />
     <Compile Include="Ace.Base\Sugar\Lock.cs" />
-    <Compile Include="Ace.Base\Sugar\NE.cs" />
     <Compile Include="Ace.Base\Sugar\New.cs" />
     <Compile Include="Ace.Base\Sugar\StringExtensions.cs" />
     <Compile Include="Ace.Base\Sugar\System.Reflection.cs" />
@@ -133,7 +132,7 @@
     <Compile Include="Ace.Zest\LocalizationSource.cs" />
     <Compile Include="Ace.Zest\Markup\Behaviour.cs" />
     <Compile Include="Ace.Zest\Markup\ContextBinding.cs" />
-    <Compile Include="Ace.Zest\Markup\Converter.cs" />
+    <Compile Include="Ace.Zest\Markup\RemoteConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Enum.cs" />
     <Compile Include="Ace.Zest\Markup\NullExtension.cs" />
     <Compile Include="Ace.Zest\Markup\Patterns\ABindingExtension.cs" />

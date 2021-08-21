@@ -45,15 +45,15 @@ namespace Ace.Input
 		{
 			if (evocator.IsNot()) Debug.WriteLine($"Can not get command evocator for {sender}");
 			_weakListener?.Dispose();
-			_weakSender = sender.Is() ? new WeakReference(sender) : null;
-			_weakEvocator = evocator.Is() ? new WeakReference(evocator) : null;
+			_weakSender = sender.Is() ? new(sender) : null;
+			_weakEvocator = evocator.Is() ? new(evocator) : null;
 			_command = evocator?.Command;
-			_weakListener = _command.Is() ? new WeakListener(_command, this) : null;
+			_weakListener = _command.Is() ? new(_command, this) : null;
 
 			EvokeCanExecuteChanged(sender, EventArgs.Empty);
 		}
 
-		public void SetSender(object sender) => _weakSender = new WeakReference(sender);
+		public void SetSender(object sender) => _weakSender = new(sender);
 
 		public bool CanExecute(object parameter)
 		{

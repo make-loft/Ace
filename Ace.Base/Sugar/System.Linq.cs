@@ -129,6 +129,9 @@ namespace System.Linq
 			return target;
 		}
 
+		public static bool Contains(this IEnumerable<string> collection, string value, StringComparison comparison) =>
+			collection.Any(i => i.Is(value, comparison));
+
 		internal static void CopyToMultidimensionalArray(this IList<object> source, Array target, IList<int> dimensions)
 		{
 			var indices = new int[dimensions.Count];
@@ -187,13 +190,11 @@ namespace System.Linq
 
 		public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize)
 		{
-			using (var enumerator = source.GetEnumerator())
+			using var enumerator = source.GetEnumerator();
+
+			while (enumerator.MoveNext())
 			{
-				do
-				{
-					if (!enumerator.MoveNext()) yield break;
-					yield return ChunkSequence(enumerator, chunkSize);
-				} while (true);
+				yield return ChunkSequence(enumerator, chunkSize);
 			}
 		}
 

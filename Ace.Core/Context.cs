@@ -16,7 +16,7 @@ namespace Ace
 			return ref value;
 		}
 
-		private static readonly Dictionary<string, Command> Container = new Dictionary<string, Command>();
+		private static readonly Dictionary<string, Command> Container = new();
 
 		public static Command Get(string key) =>
 			Container.TryGetValue(key, out var value) ? value : Container[key] = new Command(key);
@@ -60,24 +60,23 @@ namespace Ace
 		}
 
 		public static Mediator GetMediator(this ContextObject contextObject, string commandKey, object sender) =>
-			new Mediator(sender, contextObject[Get(commandKey)]);
+			new(sender, contextObject[Get(commandKey)]);
 
 		public static Mediator GetMediator(this ContextObject contextObject, string commandKey) =>
-			new Mediator(contextObject, contextObject[Get(commandKey)]);
+			new(contextObject, contextObject[Get(commandKey)]);
 
 		public static Mediator GetMediator(this ContextObject contextObject, ICommand command, object sender) =>
-			new Mediator(sender, contextObject[command]);
+			new(sender, contextObject[command]);
 
 		public static Mediator GetMediator(this ContextObject contextObject, ICommand command) =>
-			new Mediator(contextObject, contextObject[command]);
+			new(contextObject, contextObject[command]);
 
 		public static Mediator GetMediator(this ICommand command, ContextObject contextObject, object sender) =>
-			new Mediator(sender, contextObject[command]);
+			new(sender, contextObject[command]);
 
 		public static Mediator GetMediator(this ICommand command, ContextObject contextObject) =>
-			new Mediator(contextObject, contextObject[command]);
+			new(contextObject, contextObject[command]);
 
-		public static SmartSet<T> ToSet<T>(this IEnumerable<T> collection) =>
-			new SmartSet<T>(collection);
+		public static SmartSet<T> ToSet<T>(this IEnumerable<T> collection) => new(collection);
 	}
 }
