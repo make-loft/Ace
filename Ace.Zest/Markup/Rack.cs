@@ -43,7 +43,7 @@ namespace Ace.Markup
 
 		private static PropertyMetadata GetMetadata<T>(Action<T, DependencyPropertyChangedEventArgs> action)
 			where T : DependencyObject =>
-			new PropertyMetadata((sender, args) =>
+			new((sender, args) =>
 			{
 				if (args.NewValue.Is(args.OldValue)) return;
 				if (sender.Is(out T typedSender)) action(typedSender, args);
@@ -116,11 +116,8 @@ namespace Ace.Markup
 					ColsIsInUpdateProperty, ColsUpdateTriggerPropertyPath);
 			}));
 
-		private static readonly PropertyPath
-			RowsUpdateTriggerPropertyPath = new PropertyPath(RowsUpdateTriggerProperty);
-
-		private static readonly PropertyPath
-			ColsUpdateTriggerPropertyPath = new PropertyPath(ColsUpdateTriggerProperty);
+		private static readonly PropertyPath RowsUpdateTriggerPropertyPath = new(RowsUpdateTriggerProperty);
+		private static readonly PropertyPath ColsUpdateTriggerPropertyPath = new(ColsUpdateTriggerProperty);
 
 		#endregion
 

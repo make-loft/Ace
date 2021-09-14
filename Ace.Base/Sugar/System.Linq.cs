@@ -28,6 +28,10 @@ namespace System.Linq
 			return array;
 		}
 
+		public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> targetDictionary,
+			IEnumerable<KeyValuePair<TKey, TValue>> sourceItems) =>
+			sourceItems.ForEach(i => targetDictionary.TryGetValue(i.Key, out var value) ? value : i.Value);
+
 		public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> collection, Func<T, TKey> lookup) =>
 			collection.Distinct(new Comparer<T, TKey>(lookup));
 
