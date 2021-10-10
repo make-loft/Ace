@@ -8,7 +8,6 @@ using Ace.Evocators;
 using Xamarin.Forms;
 using System.Windows.Data;
 using ContextElement = Xamarin.Forms.Element;
-using TypeTypeConverter = Xamarin.Forms.TypeTypeConverter;
 #else
 using System.ComponentModel;
 using ContextElement = System.Windows.FrameworkElement;
@@ -45,8 +44,8 @@ namespace Ace.Markup
 			{
 				var watcher = new PropertyChangedWatcher(source, SourcePath?.Path);
 				watcher.PropertyChanged += (sender, args) =>
-					mediator.Set(targetObject, GetCommandEvocator(watcher.GetWatchedProperty()));
-				mediator.Set(targetObject, GetCommandEvocator(watcher.GetWatchedProperty()));
+					mediator.Set(targetObject, GetCommandEvocator(watcher.GetTarget()));
+				mediator.Set(targetObject, GetCommandEvocator(watcher.GetTarget()));
 			}
 			else if (targetObject.Is(out ContextElement element))
 			{

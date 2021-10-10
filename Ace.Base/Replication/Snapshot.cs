@@ -8,8 +8,7 @@ namespace Ace.Replication
 {
 	public static class Cache
 	{
-		public static Dictionary<int, object> NewForReplication() =>
-			new Dictionary<int, object>(32);
+		public static Dictionary<int, object> NewForReplication() => new(32);
 	}
 
 	public class Snapshot
@@ -21,13 +20,13 @@ namespace Ace.Replication
 			//		"Trial version has been expired. Please, write to 'makeman@tut.by' for getting licence.");
 		//}
 
-		public static ReplicationProfile DefaultReplicationProfile = new ReplicationProfile {AttachId = true};
+		public static ReplicationProfile DefaultReplicationProfile = new() { AttachId = true};
 		public static KeepProfile DefaultKeepProfile = KeepProfile.GetFormatted();
 
 		public object MasterState { get; set; }
 		public DateTime Timestamp { get; } = DateTime.Now;
 
-		public ReplicationProfile ActiveReplicationProfile = new ReplicationProfile();
+		public ReplicationProfile ActiveReplicationProfile = new();
 		public KeepProfile ActiveKeepProfile = KeepProfile.GetFormatted();
 
 		public static Snapshot Create(
@@ -35,7 +34,7 @@ namespace Ace.Replication
 			Dictionary<object, int> idCache = null,
 			ReplicationProfile replicationProfile = null,
 			KeepProfile keepProfile = null,
-			Type baseType = null) => new Snapshot
+			Type baseType = null) => new()
 		{
 			MasterState = replicationProfile.Or(DefaultReplicationProfile).Translate(masterGraph, idCache.OrNew(), baseType),
 			ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
@@ -45,7 +44,7 @@ namespace Ace.Replication
 		public static Snapshot Parse(
 			string matrix,
 			ReplicationProfile replicationProfile = null,
-			KeepProfile keepProfile = null) => new Snapshot
+			KeepProfile keepProfile = null) => new()
 		{
 			MasterState = matrix.Capture(keepProfile.Or(DefaultKeepProfile)),
 			ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),

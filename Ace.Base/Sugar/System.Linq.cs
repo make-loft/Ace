@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+
 using Ace;
 
 // ReSharper disable once CheckNamespace
@@ -27,6 +29,9 @@ namespace System.Linq
 			for (var i = 0; i < length && enumerator.MoveNext(); array[i++] = enumerator.Current) ;
 			return array;
 		}
+
+		public static string ToString<T>(this IEnumerable<T> source, Func<T, string> selector, string separator = " ") =>
+			source.Select(selector).Aggregate(new StringBuilder(), (b, v) => b.Append(b.Length > 0 ? separator : "").Append(v)).ToString();
 
 		public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> targetDictionary,
 			IEnumerable<KeyValuePair<TKey, TValue>> sourceItems) =>

@@ -8,7 +8,7 @@ namespace Ace.Markup
 	public class ContextTrigger : DependencyObject
 	{
 		public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
-			"Command", typeof (ICommand), typeof (ContextTrigger), new PropertyMetadata(default(ICommand)));
+			nameof(Command), typeof(ICommand), typeof(ContextTrigger), new PropertyMetadata(default(ICommand)));
 
 		public ICommand Command
 		{
@@ -17,7 +17,7 @@ namespace Ace.Markup
 		}
 
 		public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register(
-			"CommandParameter", typeof (object), typeof (ContextTrigger), new PropertyMetadata(default(object)));
+			nameof(CommandParameter), typeof(object), typeof(ContextTrigger), new PropertyMetadata(default(object)));
 
 		public object CommandParameter
 		{

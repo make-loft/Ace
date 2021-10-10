@@ -27,18 +27,6 @@ namespace Xamarin.Forms
 	}
 }
 
-namespace System.Windows.Data
-{
-	public static class BindingOperations
-	{
-		public static Binding GetBinding(this BindableObject o, DependencyProperty p) => null;
-		public static void ClearBinding(this BindableObject o, DependencyProperty p) => o.RemoveBinding(p.CoreProperty);
-		public static void SetBinding(this BindableObject o, DependencyProperty p, Xamarin.Forms.Binding b) => o.SetBinding(p, b);
-		public static void SetBinding(this BindableObject o, DependencyProperty p, Binding b) =>
-			o.SetBinding(p, b.CoreBinding);
-	}
-}
-
 namespace System.Windows
 {
     public class PropertyPath

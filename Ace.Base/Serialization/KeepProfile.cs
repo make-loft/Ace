@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Ace.Replication.Models;
 using Ace.Serialization.Serializators;
+
+using static System.Char;
+using static System.Globalization.UnicodeCategory;
 
 namespace Ace.Serialization
 {
@@ -53,9 +57,9 @@ namespace Ace.Serialization
 		public string GetHead(Type type) => "(";
 		public string GetTail(Type type) => ")";
 
-		public static KeepProfile GetFormatted() => new KeepProfile();
+		public static KeepProfile GetFormatted() => new();
 
-		public EscapeProfile EscapeProfile = new EscapeProfile();
+		public EscapeProfile EscapeProfile = new();
 			
 		public IBodyProfile<Map, bool> MapBody = new BodyProfile<Map> {Head = "{", Tail = "}"};
 		public IBodyProfile<Set, bool> SetBody = new BodyProfile<Set> {Head = "[", Tail = "]"};
@@ -96,7 +100,7 @@ namespace Ace.Serialization
 			return
 				MapBody.CreateSingleModel(data, ref offset) ? new Map() :
 				SetBody.CreateSingleModel(data, ref offset) ? new Set() :
-				(object) new Simplex();
+				new Simplex();
 		}
 
 		public void SkipMapPairSplitter(string data, ref int offset)
@@ -133,27 +137,30 @@ namespace Ace.Serialization
 
 		public void SkipHeadIndent(string data, ref int offset)
 		{
-			while (offset < data.Length && char.IsWhiteSpace(data[offset])) offset++;
+			while (offset < data.Length && IsSkipable(data[offset])) offset++;
 		}
 
 		public void SkipTailIndent(string data, ref int offset)
 		{
-			while (offset < data.Length &&
-				   (char.IsWhiteSpace(data[offset]) ||
-					data[offset] == ',' || data[offset] == ';' || data[offset] == '.')) offset++;
+			while (offset < data.Length && IsSkipable(data[offset])) offset++;
 		}
 
 		public void SkipWhiteSpaceWithComments(string data, ref int offset)
 		{
 			do
 			{
-				while (offset < data.Length && char.IsWhiteSpace(data[offset])) offset++;
-				if (!data.Match("/", offset)) return;
+				while (offset < data.Length && IsSkipable(data[offset])) offset++;
+				if (data.Match("/", offset).Not()) return;
 				if (data.Match("/*", offset)) offset = data.IndexOf("*/", offset, StringComparison.Ordinal) + 2;
 				if (data.Match("//", offset)) offset = data.IndexOf(NewLineChars, offset, StringComparison.Ordinal) + 2;
 				if (offset < 0) offset = data.Length;
 			} while (offset < data.Length);
 		}
+
+		static readonly UnicodeCategory[] SkipableCategories = { Format, Control };
+		public bool IsSkipable(char c, string forSkip = ",;.:") => IsLetterOrDigit(c)
+			? false
+			: IsWhiteSpace(c) || IsSeparator(c) || SkipableCategories.Contains(GetUnicodeCategory(c)) || forSkip.Contains(c);
 
 		public string GetHeadIndent<TItem>(int indentLevel, ICollection<TItem> items, int index)
 		{
@@ -169,9 +176,8 @@ namespace Ace.Serialization
 			return NewLineChars + indent;
 		}
 
-		public string GetTailIndent<TItem>(int indentLevel, ICollection<TItem> items, int index) =>
-			items.Count == ++index
-				? (UseTailDelimiter ? Delimiter : null) + GetHeadIndent(indentLevel - 1, items, index)
-				: Delimiter;
+		public string GetTailIndent<TItem>(int indentLevel, ICollection<TItem> items, int index) => items.Count == ++index
+			? (UseTailDelimiter ? Delimiter : null) + GetHeadIndent(indentLevel - 1, items, index)
+			: Delimiter;
 	}
 }
