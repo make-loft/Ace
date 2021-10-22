@@ -30,6 +30,9 @@ namespace System.Linq
 			return array;
 		}
 
+		public static string Concat(this IEnumerable<string> source) =>
+			source.Aggregate(new StringBuilder(), (b, v) => b.Append(v)).ToString();
+
 		public static string ToString<T>(this IEnumerable<T> source, Func<T, string> selector, string separator = " ") =>
 			source.Select(selector).Aggregate(new StringBuilder(), (b, v) => b.Append(b.Length > 0 ? separator : "").Append(v)).ToString();
 
@@ -39,6 +42,12 @@ namespace System.Linq
 
 		public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> collection, Func<T, TKey> lookup) =>
 			collection.Distinct(new Comparer<T, TKey>(lookup));
+
+		public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source) => source.OrderBy(i => i);
+
+		public static IOrderedEnumerable<T> OrderByDescending<T>(this IEnumerable<T> source) => source.OrderByDescending(i => i);
+
+		public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(i => i);
 
 		class Comparer<T, TKey> : IEqualityComparer<T>
 		{

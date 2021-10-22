@@ -26,9 +26,8 @@ namespace Ace.Replication.MemberProviders
 			Filter = filter;
 		}
 
-		protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
-			type.EnumerateMembers(BindingFlags)
-				.Where(Filter)
-				.Where(m => !TypeOf<IEnumerable>.Raw.IsAssignableFrom(type) && m.Name.IsNot("Item"));
+		protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.EnumerateMembers(BindingFlags)
+			.Where(Filter)
+			.Where(m => !TypeOf<IEnumerable>.Raw.IsAssignableFrom(type) && m.Name.IsNot("Item"));
 	}
 }

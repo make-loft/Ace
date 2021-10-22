@@ -9,6 +9,12 @@ namespace Ace
 	// ReSharper disable InconsistentNaming
 	public static partial class LE
 	{
+		public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, object> map, TKey key, TValue fallbackValue = default) =>
+			map.TryGetValue(key, out var value) ? (TValue)value : fallbackValue;
+
+		public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, TValue> map, TKey key, TValue fallbackValue = default) =>
+			map.TryGetValue(key, out var value) ? value : fallbackValue;
+
 		public static Switch<T> ToSwitch<T>(this T value, params object[] pattern) => new(value, pattern);
 
 		public static KeyValuePair<TK, TV> Of<TK, TV>(this TK key, TV value) => new(key, value);

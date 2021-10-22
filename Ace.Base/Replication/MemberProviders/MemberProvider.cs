@@ -24,11 +24,10 @@ namespace Ace.Replication.MemberProviders
 
 		protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
 
-		protected Dictionary<Type, List<MemberInfo>> TypeToMembers = new Dictionary<Type, List<MemberInfo>>();
+		protected Dictionary<Type, List<MemberInfo>> TypeToMembers = new();
 
-		public virtual List<MemberInfo> GetDataMembers(Type type) =>
-			TypeToMembers.TryGetValue(type, out var members)
-				? members
-				: TypeToMembers[type] = GetDataMembersForCaching(type).ToList();
+		public virtual List<MemberInfo> GetDataMembers(Type type) => TypeToMembers.TryGetValue(type, out var members)
+			? members
+			: TypeToMembers[type] = GetDataMembersForCaching(type).ToList();
 	}
 }

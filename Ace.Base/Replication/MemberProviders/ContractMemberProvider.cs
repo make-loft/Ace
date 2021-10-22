@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 
 namespace Ace.Replication.MemberProviders
 {
@@ -21,18 +20,17 @@ namespace Ace.Replication.MemberProviders
 				type.IsDefined(TypeOf<CollectionDataContractAttribute>.Raw, true);
 			return hasContract
 				? members
-					.ToDictionary(i => i, i => i.GetCustomAttribute<DataMemberAttribute>())
-					.Where(p => p.Value.IsNot(null))
-					.OrderBy(p => p.Value.Order)
-					.Select(p => p.Key)
+					.ToDictionary(m => m, m => m.GetCustomAttribute<DataMemberAttribute>())
+					.Where(a => a.Value.Is())
+					.OrderBy(a => a.Value.Order)
+					.Select(a => a.Key)
 				: members;
 		}
 
-		protected readonly Dictionary<MemberInfo, string> MemberToKey = new Dictionary<MemberInfo, string>();
+		protected readonly Dictionary<MemberInfo, string> MemberToKey = new();
 
-		public override string GetCustomKey(MemberInfo member) =>
-			MemberToKey.TryGetValue(member, out var key)
-				? key
-				: MemberToKey[member] = member.GetCustomAttribute<DataMemberAttribute>()?.Name ?? member.Name;
+		public override string GetCustomKey(MemberInfo member) => MemberToKey.TryGetValue(member, out var key)
+			? key
+			: MemberToKey[member] = member.GetCustomAttribute<DataMemberAttribute>()?.Name ?? member.Name;
 	}
 }

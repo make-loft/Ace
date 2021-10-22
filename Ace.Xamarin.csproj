@@ -1,18 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
-	<EnableDefaultCompileItems>True</EnableDefaultCompileItems>
-	<TargetFramework>netstandard2.0</TargetFramework>
-  <LangVersion>latest</LangVersion>
-	<RootNamespace>Ace</RootNamespace>
-	<AssemblyName>Ace</AssemblyName>
+    <LangVersion>latest</LangVersion>
+	  <TargetFramework>netstandard2.0</TargetFramework>
+	  <RootNamespace>Ace</RootNamespace>
+	  <AssemblyName>Ace</AssemblyName>
+    <EnableDefaultCompileItems>True</EnableDefaultCompileItems>
   </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	<DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
-	<LangVersion>latest</LangVersion>
+	  <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
   </PropertyGroup>
+  
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-	<DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
+	  <DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0;XAMARIN;</DefineConstants>
   </PropertyGroup>
+  
   <ItemGroup>
     <Compile Remove="Ace.Base\bin\**" />
     <Compile Remove="Ace.Base\obj\**" />
@@ -57,27 +60,30 @@
     <None Remove="Dictionaries\**" />
     <None Remove="Properties\**" />
   </ItemGroup>
+  
   <ItemGroup>
-	<Compile Remove="Ace.Base\WildThread.cs" />
-	<Compile Remove="Ace.Core\Adapters\Net4.0.cs" />
-	<Compile Remove="Ace.Core\Adapters\System.ComponentModel.cs" />
-	<Compile Remove="Ace.Core\Adapters\System.cs" />
-	<Compile Remove="Ace.Core\Adapters\System.Runtime.Serialization.Json.cs" />
-	<Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
-	<Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
-	<Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
-	<Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
-	<Compile Remove="Ace.Zest\Dictionaries\AppConverters.xaml.cs" />
-	<Compile Remove="Ace.Zest\Markup\Picture.cs" />
-	<Compile Remove="Ace.Zest\Markup\Rack.Xamarin.cs" />
-	<Compile Remove="Ace.Zest\Specific\Core.Store.cs" />
-	<Compile Remove="Ace.Zest\Specific\KeyFileStorage.Phone.cs" />
-	<Compile Remove="Ace.Zest\Specific\KeyFileStorage.Store.cs" />
-	<Compile Remove="Ace.Zest\Sugar\BindingOperationsExt.cs" />
+	  <Compile Remove="Ace.Base\WildThread.cs" />
+	  <Compile Remove="Ace.Core\Adapters\Net4.0.cs" />
+	  <Compile Remove="Ace.Core\Adapters\System.ComponentModel.cs" />
+	  <Compile Remove="Ace.Core\Adapters\System.cs" />
+	  <Compile Remove="Ace.Core\Adapters\System.Runtime.Serialization.Json.cs" />
+	  <Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
+	  <Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
+	  <Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
+	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
+	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.xaml.cs" />
+	  <Compile Remove="Ace.Zest\Markup\Picture.cs" />
+	  <Compile Remove="Ace.Zest\Markup\Rack.Xamarin.cs" />
+	  <Compile Remove="Ace.Zest\Specific\Core.Store.cs" />
+	  <Compile Remove="Ace.Zest\Specific\KeyFileStorage.Phone.cs" />
+	  <Compile Remove="Ace.Zest\Specific\KeyFileStorage.Store.cs" />
+	  <Compile Remove="Ace.Zest\Sugar\BindingOperationsExt.cs" />
   </ItemGroup>
+  
   <ItemGroup>
     <EmbeddedResource Remove="Ace.Zest\Dictionaries\AppConverters.xaml" />
   </ItemGroup>
+  
   <ItemGroup>
     <None Remove=".git" />
     <None Remove=".gitignore" />
@@ -85,14 +91,17 @@
     <None Remove="Ace.Zest\Ace.Zest.Xamarin.csproj.DotSettings" />
     <None Remove="Ace.Zest\packages.config" />
   </ItemGroup>
+  
   <ItemGroup>
-	<PackageReference Include="Xamarin.Forms" Version="*" />
+	  <PackageReference Include="Xamarin.Forms" Version="*" />
   </ItemGroup>
+  
   <ItemGroup>
     <EmbeddedResource Update="Ace.Zest\Dictionaries\AppConverters.Xamarin.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
+  
   <ItemGroup>
     <None Update="Ace.Zest\Dictionaries\AppConverters.Xamarin.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -101,4 +110,5 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
+  
 </Project>
