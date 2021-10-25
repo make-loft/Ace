@@ -45,6 +45,8 @@ namespace Ace.Replication.Replicators
 			var members = memberProvider.GetDataMembers(type);
 			foreach (var m in members)
 			{
+				var repeats = 0;
+				Repeat:
 				try
 				{
 					var key = memberProvider.GetDataKey(m, type, members);
@@ -53,6 +55,11 @@ namespace Ace.Replication.Replicators
 				}
 				catch (Exception exception)
 				{
+					if (exception is InvalidOperationException && repeats < 8)
+					{
+						repeats++;
+						goto Repeat;
+					}
 					throw new Exception($"{memberProvider.GetDataKey(m, type, members)}", exception);
 				}
 			}
