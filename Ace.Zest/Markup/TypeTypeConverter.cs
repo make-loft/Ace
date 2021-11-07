@@ -39,7 +39,7 @@ namespace Ace.Markup
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			if (value.IsNot()) return null;
+			if (value.IsNot()) return default;
 			var typeName = value.ToString().Split(':').Last();
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 			// ReSharper disable once LoopCanBeConvertedToQuery
@@ -51,10 +51,8 @@ namespace Ace.Markup
 					return type;
 			}
 
-			return null;
+			return default;
 		}
-
-		
 
 		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture,
 			object value, Type destinationType) =>

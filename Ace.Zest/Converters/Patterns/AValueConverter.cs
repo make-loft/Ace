@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Globalization;
 #if XAMARIN
-using Xamarin.Forms;
+using IValueConverter = Xamarin.Forms.IValueConverter;
 #else
 using System.Windows.Data;
 #endif
+using System.Windows;
 
 namespace Ace.Converters.Patterns
 {
-	public abstract class AValueConverter : IValueConverter
+	public abstract class AValueConverter : DependencyObject, IValueConverter
 	{
 		public static object Stub() => throw new NotImplementedException();
 
@@ -22,7 +23,7 @@ namespace Ace.Converters.Patterns
 		public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
 			ConvertBack(value, parameter);
 
-		public abstract class Reflected : IValueConverter
+		public abstract class Reflected : DependencyObject, IValueConverter
 		{
 			public virtual object Convert(object value) => Stub();
 			public virtual object Convert(object value, object parameter) => Convert(value);

@@ -38,7 +38,7 @@ namespace Ace.Serialization
 
 	public class KeepProfile
 	{
-		public static readonly List<ASerializator> Serializators = New.List<ASerializator>
+		public List<ASerializator> Serializators = New.List<ASerializator>
 		(
 			new MapDeepSerializator(),
 			new SetDeepSerializator(),

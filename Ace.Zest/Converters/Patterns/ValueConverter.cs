@@ -5,19 +5,18 @@ namespace Ace.Converters.Patterns
 {
 	public class ValueConverter : AValueConverter.Reflected
 	{
-		protected readonly DependencyObject Attached = new();
 		public static readonly object UndefinedValue = new();
 
-		public static DependencyProperty Attach(string name, object defaultValue = default) =>
-			DependencyProperty.RegisterAttached(name, typeof(object), typeof(ValueConverter),
+		public static DependencyProperty For<T>(string name, object defaultValue = default) =>
+			DependencyProperty.Register(name, typeof(object), typeof(T),
 				new PropertyMetadata(defaultValue ?? UndefinedValue));
 
-		public static readonly DependencyProperty ByDefaultProperty = Attach(nameof(ByDefault));
+		public static readonly DependencyProperty ByDefaultProperty = For<ValueConverter>(nameof(ByDefault));
 
 		public object ByDefault
 		{
-			get => Attached.GetValue(ByDefaultProperty);
-			set => Attached.SetValue(ByDefaultProperty, value);
+			get => GetValue(ByDefaultProperty);
+			set => SetValue(ByDefaultProperty, value);
 		}
 
 		public StringComparison StringComparison { get; set; } = StringComparison.OrdinalIgnoreCase;

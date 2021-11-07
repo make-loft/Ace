@@ -12,8 +12,8 @@ namespace Ace.Converters
 
 	public class KeyToValueConverter : ValueConverter
 	{
-		public static readonly DependencyProperty KeyProperty = Attach(nameof(Key));
-		public static readonly DependencyProperty ValueProperty = Attach(nameof(Value));
+		public static readonly DependencyProperty KeyProperty = For<KeyToValueConverter>(nameof(Key));
+		public static readonly DependencyProperty ValueProperty = For<KeyToValueConverter>(nameof(Value));
 
 		public Source KeySource { get; set; } = Source.Manual;
 		public Source ValueSource { get; set; } = Source.Manual;
@@ -21,14 +21,14 @@ namespace Ace.Converters
 		/* Manual Key */
 		public object Key
 		{
-			get => Attached.GetValue(KeyProperty);
-			set => Attached.SetValue(KeyProperty, value);
+			get => GetValue(KeyProperty);
+			set => SetValue(KeyProperty, value);
 		}
 
 		public object Value
 		{
-			get => Attached.GetValue(ValueProperty);
-			set => Attached.SetValue(ValueProperty, value);
+			get => GetValue(ValueProperty);
+			set => SetValue(ValueProperty, value);
 		}
 
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
