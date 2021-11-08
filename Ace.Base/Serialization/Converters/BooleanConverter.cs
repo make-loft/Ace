@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using static System.StringComparison;
@@ -19,7 +20,7 @@ namespace Ace.Serialization.Converters
 			value.Is(true) ? ActiveTrueLiteral :
 			null;
 
-		public override object Decode(string value, string typeKey) =>
+		public override object Decode(string value, Type type) =>
 			value.Is(ActiveNoneLiteral) ? default :
 			value.Is(ActiveFakeLiteral) ? false :
 			value.Is(ActiveTrueLiteral) ? true :

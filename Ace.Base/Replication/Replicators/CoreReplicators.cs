@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ace.Replication.Replicators
 {
@@ -18,7 +19,10 @@ namespace Ace.Replication.Replicators
 			IDictionary<object, int> idCache, Type baseType = null) => value;
 
 		public override object Replicate(object value, ReplicationProfile profile,
-			IDictionary<int, object> idCache, Type baseType = null) => value;
+			IDictionary<int, object> idCache, Type baseType = null) => value.IsNot() || baseType.IsNot() || baseType.IsInstanceOfType(value)
+			? value
+			: profile.ImplicitConverters
+			.Select(c => c.Decode(value.ToStr(), baseType)).FirstOrDefault(v => v.IsNot(Serialization.Converter.Undefined));
 	}
 
 	public class CoreReplicator<TValue> : CoreReplicator

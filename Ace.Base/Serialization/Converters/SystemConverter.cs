@@ -22,7 +22,7 @@ namespace Ace.Serialization.Converters
 			_ => default
 		};
 
-		public override object Decode(string value, string typeKey) => typeKey switch
+		public override object Decode(string value, Type type) => type.Name switch
 		{
 			"Uri" => new Uri(value),
 			"Guid" => Guid.Parse(value),
@@ -30,15 +30,14 @@ namespace Ace.Serialization.Converters
 			"DateTime" => DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
 			"DateTimeOffset" => DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
 			"RuntimeType" => Type.GetType(value),
-			_ => TryParse(value, typeKey),
+			_ => TryParse(value, type),
 		};
 
 		private DateTimeStyles GetDateTimeStyle(string value) =>
 			value.EndsWith("Z") ? DateTimeStyles.AdjustToUniversal : DateTimeStyles.None;
 
-		private object TryParse(string value, string typeKey)
+		private object TryParse(string value, Type type)
 		{
-			var type = Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}, System") ?? GetType(typeKey.Split(','));
 			if (type is null) return Undefined;
 			if (type.IsEnum) return Enum.Parse(type, value, true);
 
@@ -48,8 +47,5 @@ namespace Ace.Serialization.Converters
 			var parseMethod = type.GetMethod("Parse", new[] { TypeOf.String.Raw });
 			return parseMethod?.Invoke(null, new object[] { value });
 		}
-
-		private static Type GetType(params string[] typeKeyParts) => AppDomain.CurrentDomain.GetAssemblies()
-			.FirstOrDefault(a => a.GetName().Name.Is(typeKeyParts[1]))?.GetType(typeKeyParts[0]);
 	}
 }

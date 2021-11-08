@@ -66,10 +66,16 @@ namespace Ace.Serialization.Serializators
 			var segments = simplex;
 			if (segments.Count == 3) return segments[1]; /* optimization for strings */
 			var convertedValue = segments.Count == 1 ? segments[0] : segments[1];
-			var typeCode = segments.Count == 6 ? segments[4] : null;
-			return Converters.Select(c => c.Decode(convertedValue, typeCode)).FirstOrDefault(v => v.IsNot(Converter.Undefined));
+			var typeKey = segments.Count == 6 ? segments[4] : default;
+			var type = typeKey.Is()
+				? Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}, System") ?? GetType(typeKey.Split(','))
+				: default;
+			return Converters.Select(c => c.Decode(convertedValue, type)).FirstOrDefault(v => v.IsNot(Converter.Undefined));
 		}
-		
+
+		private static Type GetType(params string[] typeKeyParts) => AppDomain.CurrentDomain.GetAssemblies()
+			.FirstOrDefault(a => a.GetName().Name.Is(typeKeyParts[1]))?.GetType(typeKeyParts[0]);
+
 		//public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
 
 		public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new();

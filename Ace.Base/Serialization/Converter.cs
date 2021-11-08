@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 
 namespace Ace.Serialization
@@ -8,6 +9,6 @@ namespace Ace.Serialization
 		public CultureInfo ActiveCulture = CultureInfo.InvariantCulture;
 
 		public virtual string Encode(object value) => value?.ToString();
-		public virtual object Decode(string value, string typeKey) => Undefined;
+		public virtual object Decode(string value, Type type) => Undefined;
 	}
 }

@@ -56,7 +56,7 @@ namespace Ace.Serialization.Converters
 			_ => default
 		};
 
-		public override object Decode(string value, string typeKey) =>
+		public override object Decode(string value, Type type) =>
 			value.Length > 0 && char.IsDigit(value.Pick(-1))
 				? DecodeWithoutKey(value, NumberStyles.Any, ActiveCulture)
 				: DecodeByKey(value.ToUpper(), NumberStyles.Any, ActiveCulture);

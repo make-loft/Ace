@@ -141,12 +141,11 @@ namespace Ace.Replication.Replicators
 
 		private static object ChangeType(object value, Type targetType, ReplicationProfile profile) =>
 			value is string @string
-				? Decode(profile, @string, targetType.Name)
+				? Decode(profile, @string, targetType)
 				: (targetType.IsPrimitive ? Convert.ChangeType(value, targetType, null) : value);
 
-		private static object Decode(ReplicationProfile profile, string s, string typeKey) =>
-			profile.ImplicitConverters.Select(c => c.Decode(s, typeKey))
-				.First(v => v.IsNot(Converter.Undefined));
+		private static object Decode(ReplicationProfile profile, string s, Type type) =>
+			profile.ImplicitConverters.Select(c => c.Decode(s, type)).First(v => v.IsNot(Converter.Undefined));
 
 		public override object ActivateInstance(Map snapshot,
 			ReplicationProfile profile, IDictionary<int, object> idCache, Type baseType = null)
