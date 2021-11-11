@@ -68,13 +68,14 @@ namespace Ace.Serialization.Serializators
 			var convertedValue = segments.Count == 1 ? segments[0] : segments[1];
 			var typeKey = segments.Count == 6 ? segments[4] : default;
 			var type = typeKey.Is()
-				? Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}, System") ?? GetType(typeKey.Split(','))
+				? Type.GetType(typeKey) ?? Type.GetType($"System.{typeKey}") ?? GetType(typeKey.Split(','))
 				: default;
 			return Converters.Select(c => c.Decode(convertedValue, type)).FirstOrDefault(v => v.IsNot(Converter.Undefined));
 		}
 
-		private static Type GetType(params string[] typeKeyParts) => AppDomain.CurrentDomain.GetAssemblies()
-			.FirstOrDefault(a => a.GetName().Name.Is(typeKeyParts[1]))?.GetType(typeKeyParts[0]);
+		private static Type GetType(params string[] typeKeyParts) => typeKeyParts.Length.Is(2)
+			? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name.Is(typeKeyParts[1]))?.GetType(typeKeyParts[0])
+			: default;
 
 		//public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
 
