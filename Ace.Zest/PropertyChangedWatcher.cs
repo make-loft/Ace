@@ -17,11 +17,12 @@ namespace Ace
 	{
 		public static readonly DependencyProperty TargetProperty =
 #if XAMARIN
-			DependencyProperty.CreateAttached("Target", typeof(object), typeof(PropertyChangedWatcher), default);
+			DependencyProperty.Create("Context", typeof(object), typeof(PropertyChangedWatcher), default);
 #else
-			DependencyProperty.RegisterAttached("Target", typeof(object), typeof(PropertyChangedWatcher), default);
+			DependencyProperty.Register("Context", typeof(object), typeof(PropertyChangedWatcher), default);
 #endif
-		public object GetTarget() => GetValue(TargetProperty);
+		public object Context { get; private set; }
+		public object Source { get; private set; }
 
 		public string PropertyName => _propertyChangedEventArgs.PropertyName;
 		readonly PropertyChangedEventArgs _propertyChangedEventArgs;
@@ -30,15 +31,20 @@ namespace Ace
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
+			Context = value;
 			PropertyChanged?.Invoke(this, _propertyChangedEventArgs);
 			return value;
 		}
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => value;
 
-		internal PropertyChangedWatcher(object source, string path = default)
+		internal PropertyChangedWatcher(object source, string path, Action<PropertyChangedWatcher> propertyChanged = default)
 		{
+			Source = source;
+			if (propertyChanged.Is())
+				PropertyChanged += (sender, args) => propertyChanged((PropertyChangedWatcher)sender);
 			_propertyChangedEventArgs = new(path?.Split('.').Last());
-			(source as DependencyObject ?? this).SetBinding(TargetProperty, new Binding(path)
+
+			this.SetBinding(TargetProperty, new(path)
 			{
 				Converter = this,
 				Source = source,

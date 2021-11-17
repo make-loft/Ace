@@ -17,6 +17,8 @@ namespace Ace.Markup
 {
 	public class Context : Patterns.AMarkupExtension
 	{
+		private PropertyChangedWatcher _keyPathWatcher, _sourcePathWatcher, _trackedPathWatcher;
+
 		public Context() => Key = default;
 		public Context(string key) => Key = key;
 
@@ -26,6 +28,7 @@ namespace Ace.Markup
 		[TypeConverter(typeof(PathConverter))] public PropertyPath SourcePath { get; set; }
 		[TypeConverter(typeof(PathConverter))] public PropertyPath TrackedPath { get; set; }
 #else
+		public PropertyPath KeyPath { get; set; }
 		public PropertyPath SourcePath { get; set; }
 		public PropertyPath TrackedPath { get; set; }
 #endif
@@ -35,19 +38,8 @@ namespace Ace.Markup
 		public override object Provide(object targetObject, object targetProperty = null)
 		{
 			var mediator = new Mediator();
-			var source = StoreKey.Is() ? Ace.Store.Get(StoreKey) : null;
-			if (source.Is() && SourcePath.IsNot())
-			{
-				mediator.Set(targetObject, GetCommandEvocator(source));
-			}
-			else if (SourcePath.Is())
-			{
-				var watcher = new PropertyChangedWatcher(source, SourcePath?.Path);
-				watcher.PropertyChanged += (sender, args) =>
-					mediator.Set(targetObject, GetCommandEvocator(watcher.GetTarget()));
-				mediator.Set(targetObject, GetCommandEvocator(watcher.GetTarget()));
-			}
-			else if (targetObject.Is(out ContextElement element))
+
+			if (targetObject.Is(out ContextElement element))
 			{
 #if XAMARIN
 				element.BindingContextChanged += Set;
@@ -55,7 +47,7 @@ namespace Ace.Markup
 				void Set(object sender, EventArgs args)
 				{
 					element.BindingContextChanged -= Set;
-					mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
+					mediator.EvokeCanExecuteChanged(element, EventArgs.Empty);
 				}
 #else
 				element.Loaded += Set;
@@ -63,15 +55,37 @@ namespace Ace.Markup
 				void Set(object sender, EventArgs args)
 				{
 					element.Loaded -= Set;
-					mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
+					mediator.EvokeCanExecuteChanged(element, EventArgs.Empty);
 				}
 #endif
-				if (TrackedPath.Is())
+			}
+
+			var source = StoreKey.Is() ? Ace.Store.Get(StoreKey) : null;
+
+			if (source.IsNot() && element.Is())
+			{
+				mediator.Set(targetObject, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
+			}
+
+			if (TrackedPath.Is())
+			{
+				_trackedPathWatcher = new(element, TrackedPath?.Path, w =>
+					mediator.Set(element, GetCommandEvocator(source ?? FindContextObject(element, RelativeContextType))));
+			}
+			else if (source.Is())
+			{
+				if (SourcePath.Is())
 				{
-					var watcher = new PropertyChangedWatcher(element, TrackedPath?.Path);
-					watcher.PropertyChanged += (sender, args) =>
-						mediator.Set(element, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
+					_sourcePathWatcher = new(source, SourcePath?.Path, w =>
+						mediator.Set(targetObject, GetCommandEvocator(w.Source)));
 				}
+				else mediator.Set(targetObject, GetCommandEvocator(source));
+			}
+
+			if (KeyPath.Is())
+			{
+				_keyPathWatcher = new(source ?? targetObject, KeyPath?.Path, w =>
+					mediator.Set(targetObject, GetCommandEvocator(w.Context)));
 			}
 
 			return mediator;
