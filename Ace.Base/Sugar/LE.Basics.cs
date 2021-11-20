@@ -11,6 +11,13 @@ namespace Ace
 		public static TX Put<T, TX>(this T o, TX x) => x;
 		public static ref TX Put<T, TX>(this T o, ref TX x) => ref x;
 
+		public static T Let<T, TX>(this T o, out TX x, TX value = default) => (x = value).Put(o);
+		public static ref T Let<T, TX>(this ref T o, out TX x, TX value = default) where T : struct
+		{
+			x = value;
+			return ref o;
+		}
+
 		/* bool */
 		public static bool Not(this in bool b) => !b;
 		public static bool IsTrue(this in bool b) => b;

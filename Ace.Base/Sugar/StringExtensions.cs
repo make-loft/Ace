@@ -1,8 +1,11 @@
 ﻿using System;
-using static System.Globalization.NumberStyles;
-using static System.Globalization.NumberFormatInfo;
 using System.Text;
 using System.Globalization;
+
+using static System.Globalization.NumberStyles;
+using static System.Globalization.NumberFormatInfo;
+using System.Collections.Generic;
+
 // ReSharper disable once CheckNamespace
 namespace Ace
 {
@@ -15,6 +18,15 @@ namespace Ace
 		public static string Format(this string value, params object[] args) => string.Format(value, args);
 		public static string Format(this string value, IFormatProvider provider, params object[] args) =>
 			string.Format(provider, value, args);
+
+		private static readonly Dictionary<string, char[]> stringToChars = new();
+
+		public static char[] GetCachedChars(this string value) => stringToChars.TryGetValue(value, out var chars)
+			? chars
+			: stringToChars[value] = value.ToCharArray();
+
+		public static string[] SplitByChars(this string value, string separators, bool keepEmptyEntries = false) =>
+			value.Split(separators.GetCachedChars(), keepEmptyEntries ? StringSplitOptions.None : StringSplitOptions.RemoveEmptyEntries);
 
 		public static bool Match(this string original, string pattern, int offset)
 		{
