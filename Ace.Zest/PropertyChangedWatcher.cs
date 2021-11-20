@@ -44,7 +44,7 @@ namespace Ace
 				PropertyChanged += (sender, args) => propertyChanged((PropertyChangedWatcher)sender);
 			_propertyChangedEventArgs = new(path?.Split('.').Last());
 
-			this.SetBinding(TargetProperty, new(path)
+			this.SetBinding(TargetProperty, new Binding(path)
 			{
 				Converter = this,
 				Source = source,

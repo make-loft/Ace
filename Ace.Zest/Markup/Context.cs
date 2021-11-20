@@ -25,6 +25,7 @@ namespace Ace.Markup
 		public string Key { get; set; }
 #if XAMARIN
 		public BindingMode Mode { get; set; }
+		[TypeConverter(typeof(PathConverter))] public PropertyPath KeyPath { get; set; }
 		[TypeConverter(typeof(PathConverter))] public PropertyPath SourcePath { get; set; }
 		[TypeConverter(typeof(PathConverter))] public PropertyPath TrackedPath { get; set; }
 #else
