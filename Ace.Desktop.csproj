@@ -117,7 +117,9 @@
     <Compile Include="Ace.Core\SmartSet.cs" />
     <Compile Include="Ace.Zest\Adapters\RoutedCommandsAdapter.cs" />
     <Compile Include="Ace.Zest\Adapters\Xamarin.Forms.cs" />
+    <Compile Include="Ace.Zest\AssemblyInfo.cs" />
     <Compile Include="Ace.Zest\Converters\AggregateConverter.cs" />
+    <Compile Include="Ace.Zest\Converters\TwoWayConverter.cs" />
     <Compile Include="Ace.Zest\Converters\Converter.cs" />
     <Compile Include="Ace.Zest\Converters\KeyToValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\LetterCaseConverter.cs" />
