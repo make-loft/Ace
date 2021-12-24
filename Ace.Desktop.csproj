@@ -151,7 +151,6 @@
     <Compile Include="Ace.Zest\Markup\StoreBinding.cs" />
     <Compile Include="Ace.Zest\Markup\TypeExtension.cs" />
     <Compile Include="Ace.Zest\Markup\TypeTypeConverter.cs" />
-    <Compile Include="Ace.Zest\Properties\AssemblyInfo.cs" />
     <Compile Include="Ace.Zest\PropertyChangedWatcher.cs" />
     <Compile Include="Ace.Zest\Specific\KeyFileStorage.Desktop.cs" />
     <Compile Include="Ace.Zest\Sugar\BindingOperationsExt.cs" />
