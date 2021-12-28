@@ -16,13 +16,17 @@ namespace Ace
 		public static readonly RipeType String = typeof(string).ToRipeType();
 		public static readonly RipeType Array = typeof(Array).ToRipeType();
 		public static readonly RipeType Type = typeof(Type).ToRipeType();
-		public static readonly RipeType List = typeof(List<>).ToRipeType();
-		public static readonly RipeType Dictionary = typeof(Dictionary<,>).ToRipeType();
-		public static readonly RipeType IList = typeof(IList<>).ToRipeType();
-		public static readonly RipeType ICollection = typeof(ICollection<>).ToRipeType();
-		public static readonly RipeType IDictionary = typeof(IDictionary<,>).ToRipeType();
-		public static readonly RipeType KeyValuePair = typeof(KeyValuePair<,>).ToRipeType();
 		public static readonly RipeType DictionaryEntry = typeof(DictionaryEntry).ToRipeType();
+
+		public static class Generic
+		{
+			public static readonly RipeType List = typeof(List<>).ToRipeType();
+			public static readonly RipeType Dictionary = typeof(Dictionary<,>).ToRipeType();
+			public static readonly RipeType IList = typeof(IList<>).ToRipeType();
+			public static readonly RipeType ICollection = typeof(ICollection<>).ToRipeType();
+			public static readonly RipeType IDictionary = typeof(IDictionary<,>).ToRipeType();
+			public static readonly RipeType KeyValuePair = typeof(KeyValuePair<,>).ToRipeType();
+		}
 
 		public static Assembly SystemAssembly => Object.Assembly;
 		public static bool IsSystemType(this Type type) => type.Assembly.Is(SystemAssembly);

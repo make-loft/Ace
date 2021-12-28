@@ -39,12 +39,8 @@ namespace System.Reflection
 			}
 		}
 
-		private static readonly string DictionaryTypeName = TypeOf.Dictionary.Name;
-		private static readonly Assembly DictionaryTypeAssembly = TypeOf.Dictionary.Assembly;
-		
 		public static bool IsGenericDictionaryWithKey<TKey>(this Type type) =>
-			type.Name.Is(DictionaryTypeName) &&
-			type.Assembly.Is(DictionaryTypeAssembly) &&
+			type.GetGenericTypeOrDefault().Is(TypeOf.Generic.Dictionary.Raw) &&
 			type.GetGenericArguments()[0].Is(TypeOf<TKey>.Raw);
 
 		public static IEnumerable<MemberInfo> EnumerateMembers(this Type type, BindingFlags bindingFlags) =>
@@ -56,5 +52,9 @@ namespace System.Reflection
 			type.BaseType?.EnumerateMember(name, bindingFlags)
 				.Concat(type.GetMember(name, bindingFlags | BindingFlags.DeclaredOnly)) ??
 			type.GetMember(name, bindingFlags);
+
+		public static Type GetGenericTypeOrDefault(this Type type) => type.IsGenericType
+			? type.GetGenericTypeDefinition()
+			: default;
 	}
 }

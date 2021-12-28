@@ -18,7 +18,7 @@ namespace Ace.Replication.Replicators
 			if (instance is IDictionary map && type.IsGenericDictionaryWithKey<string>())
 			{
 				var subtype = type.GetInterfaces()
-					.FirstOrDefault(i => i.Name.Is(TypeOf.IDictionary.Name))?
+					.FirstOrDefault(i => i.GetGenericTypeOrDefault().Is(TypeOf.Generic.IDictionary.Raw))?
 					.GetGenericArguments()[1];
 				var items = new Map(map.Cast<DictionaryEntry>()
 					.ToDictionary(p => (string) p.Key, p => profile.Translate(p.Value, idCache, subtype)));
@@ -27,7 +27,7 @@ namespace Ace.Replication.Replicators
 			else if (instance is ICollection set)
 			{
 				var subtype = type.GetInterfaces()
-					.FirstOrDefault(i => i.Name.Is(TypeOf.ICollection.Name))?
+					.FirstOrDefault(i => i.GetGenericTypeOrDefault().Is(TypeOf.Generic.ICollection.Raw))?
 					.GetGenericArguments()[0];
 				var items = new Set(set.Cast<object>().Select(i => profile.Translate(i, idCache, subtype)));
 				if (instance is Array array && array.Rank > 1)
@@ -73,7 +73,8 @@ namespace Ace.Replication.Replicators
 			if (replica is IDictionary map && type.IsGenericDictionaryWithKey<string>())
 			{
 				var subtype = type.GetInterfaces()
-					.FirstOrDefault(i => i.Name.Is(TypeOf.IDictionary.Name))?.GetGenericArguments()[1];
+					.FirstOrDefault(i => i.GetGenericTypeOrDefault().Is(TypeOf.Generic.IDictionary.Raw))
+					?.GetGenericArguments()[1];
 				var pairs = (IDictionary) snapshot[profile.MapKey];
 				foreach (DictionaryEntry pair in pairs)
 					map.Add(pair.Key, profile.Replicate(pair.Value, idCache, subtype));
@@ -102,7 +103,7 @@ namespace Ace.Replication.Replicators
 				{
 					list.Clear(); // for reconstruction
 					var subtype = type.GetInterfaces()
-						.FirstOrDefault(i => i.Name.Is(TypeOf.IList.Name))?
+						.FirstOrDefault(i => i.GetGenericTypeOrDefault().Is(TypeOf.Generic.IList.Raw))?
 						.GetGenericArguments()[0];
 					items.ForEach(i => list.Add(profile.Replicate(i, idCache, subtype)));
 				}
@@ -154,7 +155,9 @@ namespace Ace.Replication.Replicators
 
 			try
 			{
-				type = RestoreType(snapshot, profile, baseType);
+				type = TypeOf<DictionaryEntry>.Raw.Is(baseType)
+					? baseType
+					: RestoreType(snapshot, profile, baseType);
 				return CreateInstance(type, snapshot, profile);
 			}
 			catch (Exception e)

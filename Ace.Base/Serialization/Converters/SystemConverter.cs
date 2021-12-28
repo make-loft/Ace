@@ -30,6 +30,7 @@ namespace Ace.Serialization.Converters
 			"DateTime" => DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
 			"DateTimeOffset" => DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
 			"RuntimeType" => Type.GetType(value),
+			"Object" => value,
 			_ => TryParse(value, type),
 		};
 
