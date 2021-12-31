@@ -33,8 +33,8 @@ namespace Ace.Markup
 		public PropertyPath SourcePath { get; set; }
 		public PropertyPath TrackedPath { get; set; }
 #endif
+		public new object Source { get; set; }
 		[TypeConverter(typeof(TypeTypeConverter))] public Type StoreKey { get; set; }
-		[TypeConverter(typeof(TypeTypeConverter))] public Type RelativeContextType { get; set; }
 
 		public override object Provide(object targetObject, object targetProperty = null)
 		{
@@ -61,17 +61,17 @@ namespace Ace.Markup
 #endif
 			}
 
-			var source = StoreKey.Is() ? Ace.Store.Get(StoreKey) : null;
+			var source = StoreKey.Is() ? Ace.Store.Get(StoreKey) : Source;
 
 			if (source.IsNot() && element.Is())
 			{
-				mediator.Set(targetObject, GetCommandEvocator(FindContextObject(element, RelativeContextType)));
+				mediator.Set(targetObject, GetCommandEvocator(FindNearestContextObject(element, Key)));
 			}
 
 			if (TrackedPath.Is())
 			{
 				_trackedPathWatcher = new(element, TrackedPath?.Path, w =>
-					mediator.Set(element, GetCommandEvocator(source ?? FindContextObject(element, RelativeContextType))));
+					mediator.Set(element, GetCommandEvocator(source ?? FindNearestContextObject(element, Key))));
 			}
 			else if (source.Is())
 			{
@@ -97,12 +97,9 @@ namespace Ace.Markup
 #else
 		public static object GetContext(ContextElement element) => element.DataContext;
 #endif
-
-		private static ContextObject FindContextObject(ContextElement element, Type type) =>
-			type.Is() ? FindRelativeContextObject(element, type) : FindNearestContextObject(element);
-
-		private static ContextObject FindNearestContextObject(ContextElement element) =>
-			EnumerateContextObjects(element).FirstOrDefault();
+		private static ContextObject FindNearestContextObject(ContextElement element, string key) =>
+			EnumerateContextObjects(element)
+			.Where(c => c.CommandEvocators.Any(p => p.Key.Is(out Command c) && c.Name.Is(key))).FirstOrDefault();
 
 		private static ContextObject FindRelativeContextObject(ContextElement element, Type type) =>
 			EnumerateContextObjects(element).FirstOrDefault(c => c.GetType() == type);
