@@ -55,5 +55,14 @@ namespace Ace
 		public static TResult SyncAwait<TResult>(this Task<TResult> task) => task.GetAwaiter().GetResult();
 		public static void SyncAwait(this Task task) => task.GetAwaiter().GetResult();
 #endif
+
+		public static T Setup<T>(this T o, Func<T, Setup<T>> block) => block(o).Setters;
+	}
+
+	public struct Setup<T>
+	{
+		public Setup(T value) => Setters = Items = value;
+		public T Setters { get; set; }
+		public T Items { get; set; }
 	}
 }
