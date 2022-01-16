@@ -34,7 +34,7 @@ namespace Ace
 			type is null || type.IsLikeImmutable(likeImmutableTypes) ? origin :
 			originToClone.TryGetValue(origin, out var deepClone) ? deepClone :
 			(originToClone[origin] = MemberwiseCloneMethod.Invoke(origin, null))
-			.MakeDeep(type, o => GetDeepClone(o, o.GetType(), originToClone, likeImmutableTypes));
+			.MakeDeep(type, o => GetDeepClone(o, o?.GetType(), originToClone, likeImmutableTypes));
 
 		private static object MakeDeep(this object origin, Type type, Func<object, object> getDeepClone)
 		{
