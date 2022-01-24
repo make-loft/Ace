@@ -120,10 +120,10 @@ namespace System.Linq
 
 		public static IEnumerable<T> ToEnumerable<T>(this T singleItem) { yield return singleItem; }
 
-		public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T singleItem) =>
-			collection.Concat(singleItem.ToEnumerable());
+		public static IEnumerable<T> ConcatItems<T>(this IEnumerable<T> collection, T item) =>
+			collection.Concat(item.ToEnumerable());
 
-		public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, params T[] items) =>
+		public static IEnumerable<T> ConcatItems<T>(this IEnumerable<T> collection, params T[] items) =>
 			Enumerable.Concat(collection, items);
 
 		public static Dictionary<TKey, TValue>
