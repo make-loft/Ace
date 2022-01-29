@@ -7,8 +7,8 @@ namespace Ace.Replication.Replicators
 {
 	public class RegexReplicator : ACachingReplicator<Regex>
 	{
-		public string PatternKey = "#c_Pattern";
-		public string OptionsKey = "#c_Options";
+		public string PatternKey = "#Pattern";
+		public string OptionsKey = "#Options";
 
 		public override void FillMap(Map map, ref Regex instance, ReplicationProfile profile,
 			IDictionary<object, int> idCache, Type baseType = null)

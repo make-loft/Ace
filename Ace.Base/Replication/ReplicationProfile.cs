@@ -45,6 +45,9 @@ namespace Ace.Replication
 			new TimeCoreReplicator(),
 			new RegexReplicator(),
 			new StringBuilderReplicator(),
+#if DESKTOP
+			new ColorReplicator(),
+#endif
 			/* recomended position for cusom replicators */
 			new DeepReplicator()
 		);

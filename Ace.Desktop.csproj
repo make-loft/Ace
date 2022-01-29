@@ -60,6 +60,7 @@
     <Compile Include="Ace.Base\Replication\Replicator.cs" />
     <Compile Include="Ace.Base\Replication\Replicators\ACachingReplicator.cs" />
     <Compile Include="Ace.Base\Replication\Replicators\DelegateReplicator.cs" />
+    <Compile Include="Ace.Base\Replication\Replicators\ColorReplicator.cs" />
     <Compile Include="Ace.Base\Replication\Snapshot.cs" />
     <Compile Include="Ace.Base\Serialization\ASerializator.cs" />
     <Compile Include="Ace.Base\Serialization\Converters\StringConverter.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Ace.Zest\LocalizationSource.cs" />
     <Compile Include="Ace.Zest\Markup\Behaviour.cs" />
     <Compile Include="Ace.Zest\Markup\ContextBinding.cs" />
+    <Compile Include="Ace.Zest\Markup\Map.cs" />
     <Compile Include="Ace.Zest\Markup\RemoteConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Enum.cs" />
     <Compile Include="Ace.Zest\Markup\NullExtension.cs" />

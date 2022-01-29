@@ -6,9 +6,9 @@ namespace Ace.Replication.Replicators
 {
 	public class DelegateReplicator : ACachingReplicator<Delegate>
 	{
-		public string TargetKey = "#c_Target";
-		public string MethodNameKey = "#c_Method_Name";
-		public string InvocationListKey = "#c_InvocationList";
+		public string TargetKey = "#Target";
+		public string MethodNameKey = "#MethodName";
+		public string InvocationListKey = "#InvocationList";
 
 		public bool SkipMonocastInvokationList { get; set; } = true;
 
