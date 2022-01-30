@@ -27,6 +27,7 @@ namespace Ace.Markup
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 
 namespace Ace.Markup
 {
@@ -40,8 +41,8 @@ namespace Ace.Markup
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public void EvokePropertyChanged(string propertyName = "Item[]") => PropertyChanged(this, new(propertyName));
+		public void EvokePropertyChanged(string propertyName = Binding.IndexerName) =>
+			PropertyChanged?.Invoke(this, new(propertyName));
 	}
 }
-
 #endif
