@@ -26,7 +26,9 @@ namespace Ace.Replication.Replicators
 
 			var map = new Map();
 			if (profile.AttachId) map.Add(profile.IdKey, id);
-			if (profile.AttachType) map.Add(profile.TypeKey, value.GetType().GetFriendlyName());
+			var valueType = value.GetType();
+			if ((profile.AttachType is null && valueType.IsNot(baseType)) || profile.AttachType is true)
+				map.Add(profile.TypeKey, valueType.GetFriendlyName());
 			var typedValue = (T)value;
 			FillMap(map, ref typedValue, profile, idCache, baseType);
 			var snapshot = Simplify(map, value, profile, baseType);

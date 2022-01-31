@@ -18,7 +18,7 @@ namespace Ace.Replication
 		public string SetDimensionKey = "#Dimensions";
 
 		public bool AttachId = true;
-		public bool AttachType = true;
+		public bool? AttachType = default;
 		public bool SimplifySets = false;
 		public bool SimplifyMaps = false;
 		public bool TryRestoreTypeInfoImplicitly = true;
