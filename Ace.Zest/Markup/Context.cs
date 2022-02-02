@@ -99,7 +99,7 @@ namespace Ace.Markup
 #endif
 		private static ContextObject FindNearestContextObject(ContextElement element, string key) =>
 			EnumerateContextObjects(element)
-			.Where(c => c.CommandEvocators.Any(p => p.Key.Is(out Command c) && c.Name.Is(key))).FirstOrDefault();
+			.Where(c => c.CommandEvocators.Any(p => p.Key.Is(out Input.Command c) && c.Name.Is(key))).FirstOrDefault();
 
 		private static ContextObject FindRelativeContextObject(ContextElement element, Type type) =>
 			EnumerateContextObjects(element).FirstOrDefault(c => c.GetType() == type);
