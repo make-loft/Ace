@@ -57,7 +57,7 @@ namespace Ace.Input
 
 		public bool CanExecute(object parameter)
 		{
-			if (_weakEvocator.IsNot()) return true;
+			if (_weakEvocator.IsNot()) return false;
 			if (_weakEvocator.Target.To(out CommandEvocator evocator).IsNot() || _command.IsNot())
 				return _canExecuteState = false;
 
