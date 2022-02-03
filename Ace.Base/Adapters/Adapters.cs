@@ -43,23 +43,6 @@ namespace System.TypeInfoAdapter
 	}
 }
 
-namespace Ace.Adapters
-{
-	[Flags]
-	public enum BindingFlags
-	{
-		DeclaredOnly = 2,
-		ExactBinding = 65536,
-		FlattenHierarchy = 64,
-		IgnoreCase = 1,
-		Instance = 4,
-		NonPublic = 32,
-		OptionalParamBinding = 262144,
-		Public = 16,
-		Static = 8,
-	}
-}
-
 namespace Ace
 {
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum, Inherited = false)]
@@ -126,9 +109,10 @@ namespace Ace
 
 		public object Context { get; internal set; }
 
-		public override bool Equals(object obj) => obj is StreamingContext context &&
-												   context.Context == Context &&
-												   context.State == State;
+		public override bool Equals(object obj) =>
+			obj is StreamingContext context &&
+			context.Context == Context &&
+			context.State == State;
 
 		public override int GetHashCode() => (int)State;
 

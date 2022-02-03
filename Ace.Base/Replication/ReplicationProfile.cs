@@ -25,13 +25,10 @@ namespace Ace.Replication
 
 		public readonly List<Converter> ImplicitConverters = New.List<Converter>(new SystemConverter());
 
-		public static readonly Adapters.BindingFlags DefaultFlags =
-			Adapters.BindingFlags.Public | Adapters.BindingFlags.Instance;
-
 		public readonly List<MemberProvider> MemberProviders = New.List<MemberProvider>
 		(
 			new CoreMemberProviderForKeyValuePair(),
-			new ContractMemberProvider(DefaultFlags, Member.CanReadWrite)
+			new ContractMemberProvider(Member.DefaultFlags, Member.CanReadWrite)
 		);
 
 		public readonly List<Replicator> Replicators = New.List<Replicator>

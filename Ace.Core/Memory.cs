@@ -22,15 +22,19 @@ namespace Ace
 			KeyFormat = keyFormat;
 		}
 
+		protected static bool HasDataContract(Type type) =>
+			Attribute.IsDefined(type, TypeOf<DataContractAttribute>.Raw) ||
+			Attribute.IsDefined(type, TypeOf<CollectionDataContractAttribute>.Raw);
+
 		public object Revive(string key, Type type, params object[] constructorArgs) =>
-			Storage.Is() && Storage.HasKey(MakeStorageKey(key, type)) && TryDecode(key, type, out var item)
+			HasDataContract(type) && Storage.Is() && Storage.HasKey(MakeStorageKey(key, type)) && TryDecode(key, type, out var item)
 				? item
 				: ActivationRequired?.Invoke(key, type, constructorArgs) ?? Activator.CreateInstance(type, constructorArgs);
 
 		public TItem Revive<TItem>(string key = null) => (TItem)Revive(key, TypeOf<TItem>.Raw);
 
 		public bool TryKeep(object item, string key = null) =>
-			Storage.Is() && TryEncode(key, item.GetType(), in item);
+			HasDataContract(item.GetType()) && Storage.Is() && TryEncode(key, item.GetType(), in item);
 
 		private bool TryDecode(string key, Type type, out object item)
 		{

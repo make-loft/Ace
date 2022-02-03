@@ -26,9 +26,10 @@ using System.Windows.Markup;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyInformationalVersion("2.0.0.0")]
 [assembly: AssemblyCompany("Makeloft Studio")]
 [assembly: AssemblyProduct("Ace Framework")]
-[assembly: AssemblyCopyright("Copyright © Makeloft Studio")]
+[assembly: AssemblyCopyright("© Makeloft Studio")]
 [assembly: AssemblyTrademark("Ace Framework")]
 [assembly: AssemblyTitle("Ace.Zest")]
 [assembly: AssemblyDescription("http://makeloft.xyz")]

@@ -7,7 +7,7 @@ namespace Ace.Replication.MemberProviders
 {
 	public class ContractMemberProvider : CoreMemberProvider
 	{
-		public ContractMemberProvider(Adapters.BindingFlags bindingFlags, Func<MemberInfo, bool> filter) :
+		public ContractMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter) :
 			base(bindingFlags, filter)
 		{
 		}

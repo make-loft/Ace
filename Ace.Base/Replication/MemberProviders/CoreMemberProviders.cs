@@ -28,9 +28,9 @@ namespace Ace.Replication.MemberProviders
 
 		public Func<MemberInfo, bool> Filter { get; }
 
-		public CoreMemberProvider(Adapters.BindingFlags bindingFlags, Func<MemberInfo, bool> filter)
+		public CoreMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter)
 		{
-			BindingFlags = (BindingFlags) bindingFlags;
+			BindingFlags = bindingFlags;
 			Filter = filter;
 		}
 
