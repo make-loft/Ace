@@ -138,7 +138,7 @@
     <Compile Include="Ace.Zest\Markup\Map.cs" />
     <Compile Include="Ace.Zest\Markup\RemoteConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Enum.cs" />
-    <Compile Include="Ace.Zest\Markup\NullExtension.cs" />
+    <Compile Include="Ace.Zest\Markup\ValueExtensions.cs" />
     <Compile Include="Ace.Zest\Markup\Patterns\ABindingExtension.cs" />
     <Compile Include="Ace.Zest\Markup\Case.cs" />
     <Compile Include="Ace.Zest\Markup\Context.cs" />
