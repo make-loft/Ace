@@ -243,17 +243,25 @@ namespace Ace.Markup
 			var patterns = args.NewValue.As("").ToUpperInvariant().Separate();
 			var colPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && p.StartsWith("CS").Not())?.Replace("C", "");
 			var rowPattern = patterns.FirstOrDefault(p => p.StartsWith("R") && p.StartsWith("RS").Not())?.Replace("R", "");
-			var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "");
-			var colSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "");
-			var rowSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "");
+			var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "").TrimStart(TrimStartChars);
+			var colSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "").TrimStart(TrimStartChars);
+			var rowSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "").TrimStart(TrimStartChars);
 #if !WINDOWS_PHONE && !XAMARIN
 			if (sssPattern.TryParse(out bool sharedSizeScope)) Grid.SetIsSharedSizeScope(element, sharedSizeScope);
 #endif
-			if (colSpanPattern.TryParse(out int colSpan)) Grid.SetColumnSpan(element, colSpan);
-			if (rowSpanPattern.TryParse(out int rowSpan)) Grid.SetRowSpan(element, rowSpan);
-			if (colPattern.TryParse(out int col)) Grid.SetColumn(element, col);
-			if (rowPattern.TryParse(out int row)) Grid.SetRow(element, row);
+			if (colSpanPattern.TryParse(out int colSpan)) Grid.SetColumnSpan(element, AdaptSpan(colSpan));
+			if (rowSpanPattern.TryParse(out int rowSpan)) Grid.SetRowSpan(element, AdaptSpan(rowSpan));
+			if (colPattern.TryParse(out int col)) Grid.SetColumn(element, AdaptIndex(col, colSpan));
+			if (rowPattern.TryParse(out int row)) Grid.SetRow(element, AdaptIndex(row, rowSpan));
 		}
+
+		public static char[] TrimStartChars = ":=".ToCharArray();
+
+		private static int AdaptIndex(int index, int span) => span < 0 && index + span > 0 ? index + span : index;
+		private static int AdaptSpan(int span) =>
+			span > 0 ? +span :
+			span < 0 ? -span :
+			int.MaxValue;
 
 		#region Markup
 

@@ -14,15 +14,19 @@
 	<Visibility x:Key="Collapsed">Collapsed</Visibility>
 
 	<c:KeyToValueConverter x:Key="NullToTrueConverter" Key="{x:Null}" Value="{StaticResource True}" ByDefault="{StaticResource False}" />
+	<c:KeyToValueConverter x:Key="TrueToNullConverter" Key="{StaticResource True}" Value="{x:Null}" ByDefault="{StaticResource False}" />
 	<c:KeyToValueConverter x:Key="NullToFalseConverter" Key="{x:Null}" Value="{StaticResource False}" ByDefault="{StaticResource True}" />
+	<c:KeyToValueConverter x:Key="FalseToNullConverter" Key="{StaticResource False}" Value="{x:Null}" ByDefault="{StaticResource True}" />
 
 	<c:KeyToValueConverter x:Key="NullToHiddenConverter" Key="{x:Null}" Value="{StaticResource Hidden}" ByDefault="{StaticResource Visible}" />
 	<c:KeyToValueConverter x:Key="NullToVisibleConverter" Key="{x:Null}" Value="{StaticResource Visible}" ByDefault="{StaticResource Collapsed}" />
 	<c:KeyToValueConverter x:Key="NullToCollapsedConverter" Key="{x:Null}" Value="{StaticResource Collapsed}" ByDefault="{StaticResource Visible}" />
 
+	<c:KeyToValueConverter x:Key="TrueToTrueConverter" Key="{StaticResource True}" Value="{StaticResource True}" ByDefault="{StaticResource False}" />
 	<c:KeyToValueConverter x:Key="TrueToFalseConverter" Key="{StaticResource True}" Value="{StaticResource False}" ByDefault="{StaticResource True}" />
 	<c:KeyToValueConverter x:Key="FalseToTrueConverter" Key="{StaticResource False}" Value="{StaticResource True}" ByDefault="{StaticResource False}" />
-
+	<c:KeyToValueConverter x:Key="FalseToFalseConverter" Key="{StaticResource False}" Value="{StaticResource False}" ByDefault="{StaticResource True}" />
+	
 	<c:KeyToValueConverter x:Key="TrueToHiddenConverter" Key="{StaticResource True}" Value="{StaticResource Hidden}" ByDefault="{StaticResource Visible}" />
 	<c:KeyToValueConverter x:Key="TrueToVisibleConverter" Key="{StaticResource True}" Value="{StaticResource Visible}" ByDefault="{StaticResource Collapsed}" />
 	<c:KeyToValueConverter x:Key="TrueToCollapsedConverter" Key="{StaticResource True}" Value="{StaticResource Collapsed}" ByDefault="{StaticResource Visible}" />
