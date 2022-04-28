@@ -132,6 +132,8 @@
     <Compile Include="Ace.Zest\Dictionaries\AppConverters.xaml.cs">
       <DependentUpon>AppConverters.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ace.Zest\Extensions\PresentationExtensions.cs" />
+    <Compile Include="Ace.Zest\Extensions\ProjectionCameraExtensions.cs" />
     <Compile Include="Ace.Zest\LocalizationSource.cs" />
     <Compile Include="Ace.Zest\Markup\Behaviour.cs" />
     <Compile Include="Ace.Zest\Markup\ContextBinding.cs" />
