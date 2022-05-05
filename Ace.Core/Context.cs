@@ -16,6 +16,15 @@ namespace Ace
 			return ref value;
 		}
 
+		public static TValue Notify<TValue>(
+			this TValue value,
+			SmartObject smartObject,
+			[CallerMemberName]string propertyName = null) where TValue : class
+		{
+			smartObject.EvokePropertyChanged(propertyName);
+			return value;
+		}
+
 		private static readonly Dictionary<string, Command> Container = new();
 
 		public static Command Get(string key) =>
