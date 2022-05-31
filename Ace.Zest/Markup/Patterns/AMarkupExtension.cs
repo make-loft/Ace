@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace Ace.Markup.Patterns
 {
@@ -19,15 +20,15 @@ namespace Ace.Markup.Patterns
 		public abstract object Provide(object targetObject, object targetProperty = default);
 	}
 #else
-	public abstract class AMarkupExtension : ABindingExtension
+	public abstract class AMarkupExtension : MarkupExtension
 	{
-		protected AMarkupExtension() : base(new RelativeSource {Mode = RelativeSourceMode.Self}) =>
-			Mode = BindingMode.OneTime;
-
 		public abstract object Provide(object targetObject, object targetProperty = default);
 
-		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) => 
-			Provide(value);
+		public object ProvideValue(IProvideValueTarget service) =>
+			Provide(service.TargetObject, service.TargetProperty);
+
+		public override object ProvideValue(IServiceProvider provider) =>
+			Provide((IProvideValueTarget)provider.GetService(typeof(IProvideValueTarget)));
 	}
 #endif
 }

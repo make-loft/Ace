@@ -4,18 +4,36 @@ using System.Linq;
 using Ace.Input;
 using System.Windows;
 using Ace.Evocators;
+using Ace.Markup.Patterns;
 #if XAMARIN
 using Xamarin.Forms;
 using System.Windows.Data;
 using ContextElement = Xamarin.Forms.Element;
+using AContextExtension = Ace.Markup.Patterns.AMarkupExtension;
 #else
 using System.ComponentModel;
+using System.Globalization;
+using System.Windows.Data;
 using ContextElement = System.Windows.FrameworkElement;
+
+namespace Ace.Markup
+{
+	public abstract class AContextExtension : ABindingExtension
+	{
+		protected AContextExtension() : base(new RelativeSource { Mode = RelativeSourceMode.Self }) =>
+			Mode = BindingMode.OneTime;
+
+		public abstract object Provide(object targetObject, object targetProperty = default);
+
+		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+			Provide(value);
+	}
+}
 #endif
 
 namespace Ace.Markup
 {
-	public class Context : Patterns.AMarkupExtension
+	public class Context : AContextExtension
 	{
 		private PropertyChangedWatcher _keyPathWatcher, _sourcePathWatcher, _trackedPathWatcher;
 
@@ -99,10 +117,7 @@ namespace Ace.Markup
 #endif
 		private static ContextObject FindNearestContextObject(ContextElement element, string key) =>
 			EnumerateContextObjects(element)
-			.Where(c => c.CommandEvocators.Any(p => p.Key.Is(out Input.Command c) && c.Name.Is(key))).FirstOrDefault();
-
-		private static ContextObject FindRelativeContextObject(ContextElement element, Type type) =>
-			EnumerateContextObjects(element).FirstOrDefault(c => c.GetType() == type);
+			.Where(c => c.CommandEvocators.Any(p => p.Key.Is(out Command c) && c.Name.Is(key))).FirstOrDefault();
 
 		private static IEnumerable<ContextObject> EnumerateContextObjects(ContextElement target) =>
 			target.EnumerateSelfAndVisualAncestors().OfType<ContextElement>().Select(GetContext).OfType<ContextObject>();
