@@ -61,16 +61,16 @@ namespace Ace
 		public event PropertyChangedEventHandler SmartPropertyChanged;
 
 		public void EvokePropertyChanging(string propertyName) =>
-			PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+			PropertyChanging?.Invoke(this, new(propertyName));
 
 		public void EvokePropertyChanged(string propertyName) =>
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			PropertyChanged?.Invoke(this, new(propertyName));
 
 		public void EvokeSmartPropertyChanging(string propertyName) =>
-			SmartPropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+			SmartPropertyChanging?.Invoke(this, new(propertyName));
 
 		public void EvokeSmartPropertyChanged(string propertyName) =>
-			SmartPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			SmartPropertyChanged?.Invoke(this, new(propertyName));
 
 		public void EvokePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
 			EvokePropertyChanging(expression.UnboxMemberName());

@@ -8,6 +8,7 @@ using Ace.Markup.Patterns;
 #if XAMARIN
 using Xamarin.Forms;
 using System.Windows.Data;
+using Command = Ace.Input.Command;
 using ContextElement = Xamarin.Forms.Element;
 using AContextExtension = Ace.Markup.Patterns.AMarkupExtension;
 #else

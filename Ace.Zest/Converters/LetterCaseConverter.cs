@@ -1,4 +1,4 @@
-﻿using Ace.Converters.Patterns;
+﻿using Ace.Markup.Patterns;
 
 using System;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Ace.Converters
 	public static class LetterSugar
 	{
 		private static readonly Modifier[] Modifiers =
-			Enum.GetValues(typeof(Modifier)).Cast<Modifier>().Skip(1).ToArray();
+			System.Enum.GetValues(typeof(Modifier)).Cast<Modifier>().Skip(1).ToArray();
 
 		public static string Apply(this string text, Modifier modifiers) => modifiers.Is(Modifier.Original)
 			? text

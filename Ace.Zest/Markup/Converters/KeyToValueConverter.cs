@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using Ace.Converters.Patterns;
+using Ace.Markup.Patterns;
 
-namespace Ace.Converters
+namespace Ace.Markup.Converters
 {
 	public enum Source
 	{

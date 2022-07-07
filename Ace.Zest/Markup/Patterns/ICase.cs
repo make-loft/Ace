@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ace.Converters.Patterns
+namespace Ace.Markup.Patterns
 {
 	public interface ICase<TKey, TValue>
 	{

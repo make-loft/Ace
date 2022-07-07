@@ -1,10 +1,11 @@
 ﻿<ResourceDictionary
+	x:Class="Ace.Zest.Dictionaries.AppConverters"
 	xmlns="http://xamarin.com/schemas/2014/forms"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:c="clr-namespace:Ace.Converters"
+	xmlns:c="clr-namespace:Ace.Markup.Converters"
 	xmlns:m="clr-namespace:Ace.Markup"
-	x:Class="Ace.Zest.Dictionaries.AppConverters">
-
+	>
+	
 	<c:KeyToValueConverter x:Key="NullToTrueConverter" Key="{m:Null}" Value="{m:True}" ByDefault="{m:False}" />
 	<c:KeyToValueConverter x:Key="NullToFalseConverter" Key="{m:Null}" Value="{m:False}" ByDefault="{m:True}" />
 

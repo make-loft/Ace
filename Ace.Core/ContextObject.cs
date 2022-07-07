@@ -35,8 +35,8 @@ namespace Ace
 		{
 			CommandEvocators = new();
 			PropertyEvocators = new();
-			PropertyChanging += (sender, args) => GetEvocator(args.PropertyName).EvokePropertyChanging(sender, args);
-			PropertyChanged += (sender, args) => GetEvocator(args.PropertyName).EvokePropertyChanged(sender, args);
+			PropertyChanging += (sender, args) => GetEvocator(args.PropertyName).EvokeChanging(sender, args);
+			PropertyChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeChanged(sender, args);
 			ErrorsChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeErrorsChanged(sender, args);
 		}
 

@@ -1,8 +1,4 @@
-﻿// ReSharper disable RedundantUsingDirective
-using System;
-using System.Globalization;
-using System.Windows.Data;
-using System.Windows.Markup;
+﻿using System;
 
 namespace Ace.Markup.Patterns
 {
@@ -20,7 +16,7 @@ namespace Ace.Markup.Patterns
 		public abstract object Provide(object targetObject, object targetProperty = default);
 	}
 #else
-	public abstract class AMarkupExtension : MarkupExtension
+	public abstract class AMarkupExtension : System.Windows.Markup.MarkupExtension
 	{
 		public abstract object Provide(object targetObject, object targetProperty = default);
 

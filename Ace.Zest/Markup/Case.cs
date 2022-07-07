@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Markup;
 
-using Ace.Converters.Patterns;
-using static Ace.Converters.Patterns.ValueConverter;
+using Ace.Markup.Patterns;
+using static Ace.Markup.Patterns.ValueConverter;
 #if XAMARIN
 using Xamarin.Forms;
+#else
+using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup

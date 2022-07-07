@@ -72,6 +72,8 @@
 	  <Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
 	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
 	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.xaml.cs" />
+	  <Compile Remove="Ace.Zest\Extensions\PresentationExtensions.cs" />
+	  <Compile Remove="Ace.Zest\Extensions\ProjectionCameraExtensions.cs" />
 	  <Compile Remove="Ace.Zest\Markup\Picture.cs" />
 	  <Compile Remove="Ace.Zest\Markup\Rack.Xamarin.cs" />
 	  <Compile Remove="Ace.Zest\Specific\Core.Store.cs" />
@@ -109,6 +111,10 @@
     <None Update="Ace.Zest\Dictionaries\AppConverters.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Ace.Zest\Extensions\" />
   </ItemGroup>
   
 </Project>

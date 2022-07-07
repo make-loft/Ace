@@ -7,7 +7,7 @@ using System.Windows.Data;
 #endif
 using System.Windows;
 
-namespace Ace.Converters.Patterns
+namespace Ace.Markup.Patterns
 {
 	public abstract class AValueConverter : DependencyObject, IValueConverter
 	{

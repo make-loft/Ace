@@ -34,11 +34,11 @@ using System.Windows.Markup;
 //[assembly: System.Runtime.InteropServices.ComVisible(false)]
 #endif
 
-[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Converters")]
+[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup.Converters")]
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup")]
 [assembly: XmlnsPrefix("http://xamarin.com/schemas/2014/forms", "xamarin")]
 
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Dictionaries")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Converters")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup.Converters")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup")]
 [assembly: XmlnsPrefix("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "m")]

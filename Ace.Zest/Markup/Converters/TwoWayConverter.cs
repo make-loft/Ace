@@ -6,7 +6,7 @@ using Xamarin.Forms;
 using System.Windows.Data;
 #endif
 
-namespace Ace.Converters
+namespace Ace.Markup.Converters
 {
 	public class TwoWayConverter : IValueConverter
 	{

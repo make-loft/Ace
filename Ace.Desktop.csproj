@@ -119,16 +119,16 @@
     <Compile Include="Ace.Zest\Adapters\RoutedCommandsAdapter.cs" />
     <Compile Include="Ace.Zest\Adapters\Xamarin.Forms.cs" />
     <Compile Include="Ace.Zest\AssemblyInfo.cs" />
-    <Compile Include="Ace.Zest\Converters\AggregateConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\TwoWayConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\Converter.cs" />
-    <Compile Include="Ace.Zest\Converters\KeyToValueConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Converters\AggregateConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Converters\TwoWayConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Converters\Converter.cs" />
+    <Compile Include="Ace.Zest\Markup\Converters\KeyToValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\LetterCaseConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\Patterns\ICase.cs" />
-    <Compile Include="Ace.Zest\Converters\Patterns\AValueConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\Patterns\ValueConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\SplitConverter.cs" />
-    <Compile Include="Ace.Zest\Converters\SwitchConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Patterns\ICase.cs" />
+    <Compile Include="Ace.Zest\Markup\Patterns\AValueConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Patterns\ValueConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Converters\SplitConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Converters\SwitchConverter.cs" />
     <Compile Include="Ace.Zest\Dictionaries\AppConverters.xaml.cs">
       <DependentUpon>AppConverters.xaml</DependentUpon>
     </Compile>

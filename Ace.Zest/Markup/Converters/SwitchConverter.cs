@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Ace.Converters.Patterns;
+using Ace.Markup.Patterns;
 #if XAMARIN
 using Xamarin.Forms;
 #else
 using System.Windows.Markup;
 #endif
 
-namespace Ace.Converters
+namespace Ace.Markup.Converters
 {
 	[ContentProperty("Cases")]
 	public class SwitchConverter : ValueConverter

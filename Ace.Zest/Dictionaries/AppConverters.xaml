@@ -1,9 +1,10 @@
 ﻿<ResourceDictionary
+	x:Class="Ace.Dictionaries.AppConverters"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:c="clr-namespace:Ace.Converters"
+	xmlns:c="clr-namespace:Ace.Markup.Converters"
 	xmlns:m="clr-namespace:Ace.Markup"
-	x:Class="Ace.Dictionaries.AppConverters">
+	>
 
 	<!--may use this values to reduce boxing/unboxing and string conversions-->
 	<Visibility x:Key="Hidden">Hidden</Visibility>

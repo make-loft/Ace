@@ -9,7 +9,7 @@ using System.Windows.Data;
 using System.Windows.Markup;
 #endif
 
-namespace Ace.Converters
+namespace Ace.Markup.Converters
 {
 	[ContentProperty("Converters")]
 	public class AggregateConverter : IValueConverter

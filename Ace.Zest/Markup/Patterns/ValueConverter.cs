@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace Ace.Converters.Patterns
+namespace Ace.Markup.Patterns
 {
 	public class ValueConverter : AValueConverter.Reflected
 	{

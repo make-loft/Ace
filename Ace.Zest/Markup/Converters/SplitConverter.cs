@@ -1,8 +1,8 @@
-using Ace.Converters.Patterns;
+using Ace.Markup.Patterns;
 
 using System;
 
-namespace Ace.Converters
+namespace Ace.Markup.Converters
 {
 	public class SplitConverter : AValueConverter.Reflected
 	{
