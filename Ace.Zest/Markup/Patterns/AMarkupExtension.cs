@@ -16,7 +16,9 @@ namespace Ace.Markup.Patterns
 		public abstract object Provide(object targetObject, object targetProperty = default);
 	}
 #else
-	public abstract class AMarkupExtension : System.Windows.Markup.MarkupExtension
+	using System.Windows.Markup;
+
+	public abstract class AMarkupExtension : MarkupExtension
 	{
 		public abstract object Provide(object targetObject, object targetProperty = default);
 
