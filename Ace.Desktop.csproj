@@ -124,6 +124,7 @@
     <Compile Include="Ace.Zest\Markup\Converters\Converter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\KeyToValueConverter.cs" />
     <Compile Include="Ace.Zest\Converters\LetterCaseConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Patterns\ConvertArgs.cs" />
     <Compile Include="Ace.Zest\Markup\Patterns\ICase.cs" />
     <Compile Include="Ace.Zest\Markup\Patterns\AValueConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Patterns\ValueConverter.cs" />
