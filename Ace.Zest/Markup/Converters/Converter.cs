@@ -8,11 +8,24 @@ using System.Windows.Data;
 
 namespace Ace.Markup.Converters
 {
-	public delegate object Convert(object value, Type targetType, object parameter, CultureInfo culture);
+	public delegate object Convert(ConvertArgs args);
+
+	public struct ConvertArgs
+	{
+		public readonly object Value;
+		public readonly object Parameter;
+		public readonly Type TargetType;
+		public readonly CultureInfo Culture;
+
+		public ConvertArgs(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			Value = value; TargetType = targetType; Parameter = parameter; Culture = culture;
+		}
+	}
 
 	public class Converter : Patterns.AMarkupExtension, IValueConverter
 	{
-		public static readonly Convert NotImplementedException = (_, _, _, _) => throw new NotImplementedException();
+		public static readonly Convert NotImplementedException = args => throw new NotImplementedException();
 
 		public event Convert Convert;
 		public event Convert ConvertBack;
@@ -22,10 +35,10 @@ namespace Ace.Markup.Converters
 		public Converter(Convert convert, Convert convertBack) : this(convert) => ConvertBack = convertBack;
 
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			(Convert ?? ConvertBack ?? NotImplementedException)(value, targetType, parameter, culture);
+			(Convert ?? ConvertBack ?? NotImplementedException)(new(value, targetType, parameter, culture));
 
 		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			(ConvertBack ?? Convert ?? NotImplementedException)(value, targetType, parameter, culture);
+			(ConvertBack ?? Convert ?? NotImplementedException)(new(value, targetType, parameter, culture));
 
 		public override object Provide(object targetObject, object targetProperty = default) => this;
 	}
