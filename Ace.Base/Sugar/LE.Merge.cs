@@ -20,7 +20,13 @@ namespace Ace
 			return item;
 		}
 
-		public static TCollection MergeMany<TCollection, TElement>(this TCollection collection, IEnumerable<TElement> items)
+		public static void AddRange<TCollection, TElement>(this TCollection collection, IEnumerable<TElement> items)
+			where TCollection : ICollection<TElement>
+		{
+			items.ForEach(collection.Add); // foreach (var item in items) collection.Add(item);
+		}
+
+		public static TCollection AppendRange<TCollection, TElement>(this TCollection collection, IEnumerable<TElement> items)
 			where TCollection : ICollection<TElement>
 		{
 			items.ForEach(collection.Add); // foreach (var item in items) collection.Add(item);

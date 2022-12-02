@@ -26,12 +26,12 @@ namespace Ace
 		public static T[] Array<T>(params T[] items) => items;
 
 		public static List<T> List<T>(int capacity = 0) => new(capacity);
-		public static List<T> List<T>(params T[] items) => List<T>(items.Length).MergeMany(items);
+		public static List<T> List<T>(params T[] items) => List<T>(items.Length).AppendRange(items);
 
 		public static Dictionary<TK, TV> Dictionary<TK, TV>() => new();
 
 		public static Dictionary<TK, TV> Dictionary<TK, TV>(params KeyValuePair<TK, TV>[] items) =>
-			new Dictionary<TK, TV>(items.Length).MergeMany(items);
+			new Dictionary<TK, TV>(items.Length).AppendRange(items);
 
 
 		public static EventHandler EventHandler(EventHandler h) => h;

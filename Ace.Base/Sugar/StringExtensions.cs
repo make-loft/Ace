@@ -26,7 +26,7 @@ namespace Ace
 			: stringToChars[value] = value.ToCharArray();
 
 		public static string[] SplitByChars(this string value, string separators, bool keepEmptyEntries = false) =>
-			value.Split(separators.GetCachedChars(), keepEmptyEntries ? StringSplitOptions.None : StringSplitOptions.RemoveEmptyEntries);
+			value?.Split(separators.GetCachedChars(), keepEmptyEntries ? StringSplitOptions.None : StringSplitOptions.RemoveEmptyEntries);
 
 		public static bool Match(this string original, string pattern, int offset)
 		{

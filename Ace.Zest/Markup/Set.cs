@@ -8,7 +8,7 @@ namespace Ace.Markup
 	{
 		public IList Source
 		{
-			set => this.MergeMany(value.Cast<object>());
+			set => this.AppendRange(value.Cast<object>());
 		}
 	}
 }

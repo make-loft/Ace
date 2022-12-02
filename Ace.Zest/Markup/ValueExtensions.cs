@@ -1,7 +1,13 @@
 ﻿using Ace.Markup.Patterns;
+#if XAMARIN
+using Xamarin.Forms;
+#else
+using System.Windows.Markup;
+#endif
 
 namespace Ace.Markup
 {
+	[ContentProperty("Value")]
 	public abstract class ValueExtension : AMarkupExtension
 	{
 		protected object BoxedValue;

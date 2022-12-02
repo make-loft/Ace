@@ -12,6 +12,8 @@ namespace Ace
 			return o;
 		}
 
+		public static TR Call<T, TR>(this T o, Func<T, TR> func) => func(o);
+
 		public static T Use<T>(this T o, Action<T> action)
 		{
 			action(o);
@@ -19,7 +21,7 @@ namespace Ace
 		}
 
 		public static T Use<T, TR>(this T o, Func<TR> func) => func().Put(o);
-		public static T Use<T, TR>(this T o, Func<T, TR> func) => func(o).Put(o);
-		public static T Use<T, A>(this T o, out A x, A a = default(A)) => (x = a).Put(o); // o.Use(out var x, 2)...
+		public static T Uses<T, TR>(this T o, Func<T, TR> func) => func(o).Put(o);
+		public static T Use<T, A>(this T o, out A x, A a = default) => (x = a).Put(o); // o.Use(out var x, 2)...
 	}
 }

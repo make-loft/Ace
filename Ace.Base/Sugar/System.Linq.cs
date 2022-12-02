@@ -133,19 +133,6 @@ namespace System.Linq
 		public static Dictionary<TValue, TKey>
 			ToMirrorDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
 			items.ToDictionary(Pair<TKey, TValue>.Value, Pair<TKey, TValue>.Key);
-		
-		public static IList<T> AppendRange<T>(this IList<T> target, IEnumerable<T> source)
-		{
-			foreach (var item in source) target.Add(item);
-			return target;
-		}
-
-		public static IDictionary<TKey, TValue> AppendRange<TKey, TValue>(this IDictionary<TKey, TValue> target,
-			IEnumerable<KeyValuePair<TKey, TValue>> source)
-		{
-			foreach (var item in source) target.Add(item);
-			return target;
-		}
 
 		public static bool Contains(this IEnumerable<string> collection, string value, StringComparison comparison) =>
 			collection.Any(i => i.Is(value, comparison));
