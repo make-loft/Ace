@@ -34,6 +34,7 @@ namespace Ace.Input
 		private WeakReference _weakEvocator;
 		private WeakListener _weakListener;
 		private bool _canExecuteState = true;
+		public bool IsSeted => _weakEvocator.Is();
 
 		~Mediator() => _weakListener?.Dispose();
 

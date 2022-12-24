@@ -1,14 +1,17 @@
 ﻿using System;
-using System.ComponentModel;
+
 using Ace.Markup.Patterns;
+
 #if XAMARIN
-using Xamarin.Forms.Xaml;
+using Xamarin.Forms;
 #else
+using System.ComponentModel;
 using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup
 {
+	[ContentProperty(nameof(Type))]
 	public class Enum : AMarkupExtension
 	{
 		public Enum() => Type = default;

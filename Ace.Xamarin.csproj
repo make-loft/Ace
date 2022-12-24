@@ -117,4 +117,13 @@
     <Folder Include="Ace.Zest\Extensions\" />
   </ItemGroup>
   
+  <ItemGroup>
+    <Compile Update="Ace.Zest\Controls\Pick.xaml.cs">
+      <DependentUpon>Pick.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Ace.Zest\Controls\Pivot.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
 </Project>

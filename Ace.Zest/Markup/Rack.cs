@@ -25,7 +25,7 @@ using static System.Windows.Controls.ColumnDefinition;
 
 namespace Ace.Markup
 {
-	public static class Rack
+	public partial class Rack
 	{
 		#region Declarations
 
@@ -35,11 +35,11 @@ namespace Ace.Markup
 		public static bool GetShowLines(DependencyObject o) => o.GetValue(ShowLinesProperty).To<bool>();
 		public static bool GetIsTwoWayMode(DependencyObject o) => o.GetValue(IsTwoWayModeProperty).To<bool>();
 
-		public static void SetCell(this DependencyObject o, string value) => o.SetValue(CellProperty, value);
-		public static void SetRows(this DependencyObject o, string value) => o.SetValue(RowsProperty, value);
-		public static void SetColumns(this DependencyObject o, string value) => o.SetValue(ColumnsProperty, value);
-		public static void SetShowLines(this DependencyObject o, bool value) => o.SetValue(ShowLinesProperty, value);
-		public static void SetIsTwoWayMode(this DependencyObject o, bool value) => o.SetValue(IsTwoWayModeProperty, value);
+		public static void SetCell(DependencyObject o, string value) => o.SetValue(CellProperty, value);
+		public static void SetRows(DependencyObject o, string value) => o.SetValue(RowsProperty, value);
+		public static void SetColumns(DependencyObject o, string value) => o.SetValue(ColumnsProperty, value);
+		public static void SetShowLines(DependencyObject o, bool value) => o.SetValue(ShowLinesProperty, value);
+		public static void SetIsTwoWayMode(DependencyObject o, bool value) => o.SetValue(IsTwoWayModeProperty, value);
 
 		private static PropertyMetadata GetMetadata<T>(Action<T, DependencyPropertyChangedEventArgs> action)
 			where T : DependencyObject =>
@@ -51,7 +51,7 @@ namespace Ace.Markup
 
 		public static readonly DependencyProperty ShowLinesProperty = RegisterAttached(
 			"ShowLines", typeof(bool), typeof(Rack), GetMetadata<Grid>((grid, args) =>
-				grid.SetShowGridLines(args.NewValue.Is(true))));
+				SetShowGridLines(grid, args.NewValue.Is(true))));
 
 		public static readonly DependencyProperty RowsProperty = RegisterAttached(
 			"Rows", typeof(string), typeof(Rack), GetMetadata<Grid>((grid, args) => UpdateDefinitions(
@@ -79,7 +79,7 @@ namespace Ace.Markup
 			{
 				if (grid.GetValue(RowsIsInUpdateProperty).Is(True)) return;
 
-				var newRowsPattern = grid.RowDefinitions.Select(ToPattern).Glue();
+				var newRowsPattern = Glue(grid.RowDefinitions.Select(ToPattern));
 				var oldRowsPattern = grid.GetValue(RowsProperty).To<string>();
 				if (newRowsPattern.Is(oldRowsPattern)) return;
 
@@ -93,7 +93,7 @@ namespace Ace.Markup
 			{
 				if (grid.GetValue(ColsIsInUpdateProperty).Is(True)) return;
 
-				var newColsPattern = grid.ColumnDefinitions.Select(ToPattern).Glue();
+				var newColsPattern = Glue(grid.ColumnDefinitions.Select(ToPattern));
 				var oldColsPattern = grid.GetValue(ColumnsProperty).To<string>();
 				if (newColsPattern.Is(oldColsPattern)) return;
 
@@ -121,13 +121,13 @@ namespace Ace.Markup
 
 		#endregion
 
-		private static string ToPattern(this RowDefinition definition) => definition.ToPattern(
+		private static string ToPattern(RowDefinition definition) => ToPattern(definition,
 			HeightProperty, MinHeightProperty, MaxHeightProperty);
 
-		private static string ToPattern(this ColumnDefinition definition) => definition.ToPattern(
+		private static string ToPattern(ColumnDefinition definition) => ToPattern(definition,
 			WidthProperty, MinWidthProperty, MaxWidthProperty);
 
-		private static string ToPattern(this DependencyObject definition,
+		private static string ToPattern(DependencyObject definition,
 			DependencyProperty lengthProperty,
 			DependencyProperty minValueProperty,
 			DependencyProperty maxValueProperty)
@@ -159,7 +159,7 @@ namespace Ace.Markup
 			return builder.ToString();
 		}
 
-		private static void SetValues<TDefinition>(this TDefinition definition,
+		private static void SetValues<TDefinition>(TDefinition definition,
 			string pattern, Grid grid,
 			DependencyProperty lengthProperty,
 			DependencyProperty minValueProperty,
@@ -179,7 +179,18 @@ namespace Ace.Markup
 			var hasLengthInPattern = lengthPattern.IsNullOrWhiteSpace().Not();
 
 			if (hasLengthInPattern)
-				definition.SetValue(lengthProperty, lengthPattern.ToGridLength());
+#if XAMARIN
+			{
+				/* forced to use this way when Rack dirved from Grid (VisualElement) */
+
+				if (definition is RowDefinition rowDefinition)
+					rowDefinition.Height = ToGridLength(lengthPattern);
+				if (definition is ColumnDefinition colDefinition)
+					colDefinition.Width = ToGridLength(lengthPattern);
+			}
+#else
+				definition.SetValue(lengthProperty, ToGridLength(lengthPattern));
+#endif
 			else definition.ClearBinding(lengthProperty);
 			
 			if (hasMinInPattern)
@@ -231,7 +242,16 @@ namespace Ace.Markup
 			patterns.Select(p =>
 			{
 				var d = new TDefinition();
-				d.SetValues(p, grid, lengthProperty, minValueProperty, maxValueProperty, path);
+
+				try
+				{
+					SetValues(d, p, grid, lengthProperty, minValueProperty, maxValueProperty, path);
+				}
+				catch (Exception exception)
+				{
+					Console.WriteLine(exception);
+				}
+
 				return d;
 			}).ForEach(definitions.Add);
 			
@@ -240,7 +260,7 @@ namespace Ace.Markup
 
 		private static void OnCellChanged(FrameworkElement element, DependencyPropertyChangedEventArgs args)
 		{
-			var patterns = args.NewValue.As("").ToUpperInvariant().Separate();
+			var patterns = Separate(args.NewValue.As("").ToUpperInvariant());
 			var colPattern = patterns.FirstOrDefault(p => p.StartsWith("C") && p.StartsWith("CS").Not())?.Replace("C", "");
 			var rowPattern = patterns.FirstOrDefault(p => p.StartsWith("R") && p.StartsWith("RS").Not())?.Replace("R", "");
 			var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "").TrimStart(TrimStartChars);
@@ -263,20 +283,20 @@ namespace Ace.Markup
 			span < 0 ? -span :
 			int.MaxValue;
 
-		#region Markup
+#region Markup
 
 		public static string AutoKeyword { get; set; } = "^";
 		public static string ActiveSplitter { get; set; } = " ";
 		public static string[] AllowedSplitters { get; set; } = {" ", ","};
 
-		private static string[] Separate(this string pattern) =>
+		private static string[] Separate(string pattern) =>
 			pattern?.Split(AllowedSplitters, StringSplitOptions.RemoveEmptyEntries);
 
-		private static string Glue(this IEnumerable<string> patterns) =>
+		private static string Glue(IEnumerable<string> patterns) =>
 			patterns.Aggregate(new StringBuilder(), (builder, pattern) =>
 				builder.Append(builder.Length.Is(0) ? null : ActiveSplitter).Append(pattern)).ToString();
 
-		private static GridLength ToGridLength(this string pattern)
+		private static GridLength ToGridLength(string pattern)
 		{
 			var unitType = pattern.Contains("*") ? Star : Pixel;
 			pattern = unitType.Is(Star) ? pattern.Replace("*", "") : pattern;
@@ -297,12 +317,12 @@ namespace Ace.Markup
 		private static readonly DependencyProperty MaxWidthProperty = WidthProperty;
 		private static readonly DependencyProperty MinHeightProperty = HeightProperty;
 		private static readonly DependencyProperty MaxHeightProperty = HeightProperty;
-		private static void SetShowGridLines(this Grid grid, bool value) { }
+		private static void SetShowGridLines(Grid grid, bool value) { }
 #else
 		private const GridUnitType Pixel = GridUnitType.Pixel;
-		private static void SetShowGridLines(this Grid grid, bool value) => grid.ShowGridLines = value;
+		private static void SetShowGridLines(Grid grid, bool value) => grid.ShowGridLines = value;
 #endif
 
-		#endregion
+#endregion
 	}
 }

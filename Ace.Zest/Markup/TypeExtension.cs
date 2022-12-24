@@ -4,10 +4,12 @@
 using Xamarin.Forms;
 #else
 using System.ComponentModel;
+using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup
 {
+	[ContentProperty(nameof(Key))]
 	public class TypeExtension : Patterns.AMarkupExtension
 	{
 		public TypeExtension() => Key = default;

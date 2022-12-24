@@ -34,6 +34,12 @@ using System.Windows.Markup;
 //[assembly: System.Runtime.InteropServices.ComVisible(false)]
 #endif
 
+[assembly: XmlnsDefinition("ace", "Ace.Controls")]
+[assembly: XmlnsDefinition("ace", "Ace.Markup.Converters")]
+[assembly: XmlnsDefinition("ace", "Ace.Markup")]
+[assembly: XmlnsPrefix("ace", "ace")]
+
+[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Controls")]
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup.Converters")]
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup")]
 [assembly: XmlnsPrefix("http://xamarin.com/schemas/2014/forms", "xamarin")]

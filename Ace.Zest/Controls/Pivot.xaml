@@ -1,0 +1,138 @@
+﻿<c:List
+	x:Class="Ace.Controls.Pivot"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:c="clr-namespace:Ace.Controls"
+	xmlns:m="clr-namespace:Ace.Markup"
+	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
+	>
+
+	<c:List.Resources>
+		
+		<DataTemplate
+			x:Key="DefaultItemTemplate"
+			>
+			<Label
+				Text="{Binding Header}"
+				/>
+		</DataTemplate>
+		
+		<DataTemplate
+			x:Key="DefaultContentTemplate"
+			>
+			<ContentPresenter
+				Content="{Binding Content}"
+				/>
+		</DataTemplate>
+
+		<Color x:Key="RegularColor">#77CCCCCC</Color>
+
+		<LinearGradientBrush
+			x:Key="ActiveItemBrush"
+			StartPoint="0,0"
+			EndPoint="0,1"
+			>
+			<GradientStop Offset="0.0" Color="Pink" />
+			<GradientStop Offset="1.0" Color="{StaticResource RegularColor}" />
+		</LinearGradientBrush>
+
+		<LinearGradientBrush
+			x:Key="ItemBrush"
+			StartPoint="0,0"
+			EndPoint="0,1"
+			>
+			<GradientStop Offset="0.0" Color="Transparent" />
+			<GradientStop Offset="1.0" Color="Transparent" />
+		</LinearGradientBrush>
+
+		<LinearGradientBrush
+			x:Key="ContentBrush"
+			StartPoint="0,0"
+			EndPoint="0,1"
+			>
+			<GradientStop Offset="0.0" Color="{StaticResource RegularColor}" />
+			<GradientStop Offset="1.0" Color="{StaticResource RegularColor}" />
+		</LinearGradientBrush>
+
+		<SolidColorBrush
+			x:Key="RegularSolidColorBrush"
+			Color="{StaticResource RegularColor}"
+			/>
+
+		<SolidColorBrush
+			x:Key="TransparentSolidColorBrush"
+			Color="Transparent"
+			/>
+
+		<cnv:KeyToValueConverter
+			x:Key="IsActiveToBackgroundConverter"
+			Key="{True}"
+			Value="{StaticResource ActiveItemBrush}"
+			ByDefault="{StaticResource ItemBrush}"
+			/>
+
+		<cnv:KeyToValueConverter
+			x:Key="IsActiveToOpacityConverter"
+			Key="{True}"
+			Value="{Double 1.000}"
+			ByDefault="{Double 0.617}"
+			/>
+
+		<cnv:KeyToValueConverter
+			x:Key="NullToParameterConverter"
+			Key="{Null}"
+			ValueSource="ConverterParameter"
+			/>
+
+	</c:List.Resources>
+
+	<c:List.ControlTemplate>
+		<ControlTemplate>
+			<Grid
+				m:Rack.Rows="^ *"
+				>
+				<ScrollView
+					m:Rack.Cell="R0"
+					Orientation="Horizontal"
+					>
+					<StackLayout
+						Spacing="0"
+						x:Name="TabCellsLayout"
+						Orientation="Horizontal"
+						BindableLayout.ItemsSource="{TemplateBinding ItemsSource}"
+						>
+						<BindableLayout.ItemTemplate>
+							<DataTemplate>
+								<c:ItemCell
+									x:Name="ItemCell"
+									Opacity="{Binding IsActive, Source={Reference ItemCell}, Converter={StaticResource IsActiveToOpacityConverter}}"
+									Background="{Binding IsActive, Source={Reference ItemCell}, Converter={StaticResource IsActiveToBackgroundConverter}}"
+									BindingContextChanged="ItemCell_BindingContextChanged"
+									CornerRadius="0"
+									Padding="5"
+									>
+									<c:ItemCell.GestureRecognizers>
+										<TapGestureRecognizer
+											Tapped="ItemCell_Tapped"
+											/>
+									</c:ItemCell.GestureRecognizers>
+
+									<c:Slot
+										ItemTemplate="{TemplateBinding ItemTemplate, ConverterParameter={StaticResource DefaultItemTemplate}, Converter={StaticResource NullToParameterConverter}}"
+										/>
+								</c:ItemCell>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</StackLayout>
+				</ScrollView>
+
+				<c:Slot
+					m:Rack.Cell="R1"
+					Background="{StaticResource ContentBrush}"
+					ItemTemplate="{TemplateBinding ContentTemplate, ConverterParameter={StaticResource DefaultContentTemplate}, Converter={StaticResource NullToParameterConverter}}"
+					Item="{TemplateBinding ActiveItem}"
+					/>
+			</Grid>
+		</ControlTemplate>
+	</c:List.ControlTemplate>
+</c:List>

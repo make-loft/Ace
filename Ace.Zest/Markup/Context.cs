@@ -4,7 +4,6 @@ using System.Linq;
 using Ace.Input;
 using System.Windows;
 using Ace.Evocators;
-using Ace.Markup.Patterns;
 #if XAMARIN
 using Xamarin.Forms;
 using System.Windows.Data;
@@ -12,12 +11,14 @@ using Command = Ace.Input.Command;
 using ContextElement = Xamarin.Forms.Element;
 using AContextExtension = Ace.Markup.Patterns.AMarkupExtension;
 #else
+using Ace.Markup.Patterns;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Markup;
 using ContextElement = System.Windows.FrameworkElement;
 
-namespace Ace.Markup
+namespace Ace.Markup 
 {
 	public abstract class AContextExtension : ABindingExtension
 	{
@@ -34,6 +35,7 @@ namespace Ace.Markup
 
 namespace Ace.Markup
 {
+	[ContentProperty(nameof(Key))]
 	public class Context : AContextExtension
 	{
 		private PropertyChangedWatcher _keyPathWatcher, _sourcePathWatcher, _trackedPathWatcher;
@@ -61,13 +63,20 @@ namespace Ace.Markup
 
 			if (targetObject.Is(out ContextElement element))
 			{
+				void SetupMediator()
+				{
+					if (mediator.IsSeted)
+						mediator.EvokeCanExecuteChanged(element, EventArgs.Empty);
+					else
+						mediator.Set(targetObject, GetCommandEvocator(FindNearestContextObject(element, Key)));
+				}
 #if XAMARIN
 				element.BindingContextChanged += Set;
 
 				void Set(object sender, EventArgs args)
 				{
 					element.BindingContextChanged -= Set;
-					mediator.EvokeCanExecuteChanged(element, EventArgs.Empty);
+					SetupMediator();
 				}
 #else
 				element.Loaded += Set;
@@ -75,7 +84,7 @@ namespace Ace.Markup
 				void Set(object sender, EventArgs args)
 				{
 					element.Loaded -= Set;
-					mediator.EvokeCanExecuteChanged(element, EventArgs.Empty);
+					SetupMediator();
 				}
 #endif
 			}

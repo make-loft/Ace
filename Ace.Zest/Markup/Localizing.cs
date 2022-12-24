@@ -1,9 +1,17 @@
 ﻿using System;
 using System.Globalization;
+
 using Ace.Converters;
+
+#if XAMARIN
+using Xamarin.Forms;
+#else
+using System.Windows.Markup;
+#endif
 
 namespace Ace.Markup
 {
+	[ContentProperty(nameof(Key))]
 	public class Localizing : Patterns.ABindingExtension
 	{
 		public static bool ForceStringFormatByDefault = false;

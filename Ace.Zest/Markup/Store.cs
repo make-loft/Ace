@@ -1,14 +1,17 @@
 ﻿using System;
+
 using Ace.Adapters;
 
 #if XAMARIN
 using Xamarin.Forms;
 #else
 using System.ComponentModel;
+using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup
 {
+	[ContentProperty(nameof(Key))]
 	public class Store : Patterns.AMarkupExtension
 	{
 		public Store() => Key = default;
