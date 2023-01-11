@@ -35,15 +35,18 @@ using System.Windows.Markup;
 #endif
 
 [assembly: XmlnsDefinition("ace", "Ace.Controls")]
+[assembly: XmlnsDefinition("ace", "Ace.Dictionaries")]
 [assembly: XmlnsDefinition("ace", "Ace.Markup.Converters")]
 [assembly: XmlnsDefinition("ace", "Ace.Markup")]
 [assembly: XmlnsPrefix("ace", "ace")]
 
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Controls")]
+[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Dictionaries")]
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup.Converters")]
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup")]
 [assembly: XmlnsPrefix("http://xamarin.com/schemas/2014/forms", "xamarin")]
 
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Controls")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Dictionaries")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup.Converters")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup")]

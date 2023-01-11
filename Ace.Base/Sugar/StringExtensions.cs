@@ -54,16 +54,25 @@ namespace Ace
 		public static bool TryParse(this string pattern, out sbyte value) => sbyte.TryParse(pattern, Integer, InvariantInfo, out value);
 		public static bool TryParse(this string pattern, out char value) => char.TryParse(pattern, out value);
 
-		public static bool TryParse(this string pattern, out int value) => int.TryParse(pattern, Integer, InvariantInfo, out value);
-		public static bool TryParse(this string pattern, out uint value) => uint.TryParse(pattern, Integer, InvariantInfo, out value);
-		public static bool TryParse(this string pattern, out long value) => long.TryParse(pattern, Integer, InvariantInfo, out value);
-		public static bool TryParse(this string pattern, out ulong value) => ulong.TryParse(pattern, Integer, InvariantInfo, out value);
-		public static bool TryParse(this string pattern, out short value) => short.TryParse(pattern, Integer, InvariantInfo, out value);
-		public static bool TryParse(this string pattern, out ushort value) => ushort.TryParse(pattern, Integer, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out int value, NumberFormatInfo format = default) =>
+			int.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out uint value, NumberFormatInfo format = default) =>
+			uint.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out long value, NumberFormatInfo format = default) =>
+			long.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out ulong value, NumberFormatInfo format = default) =>
+			ulong.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out short value, NumberFormatInfo format = default) =>
+			short.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out ushort value, NumberFormatInfo format = default) =>
+			ushort.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
 
-		public static bool TryParse(this string pattern, out float value) => float.TryParse(pattern, Any, InvariantInfo, out value);
-		public static bool TryParse(this string pattern, out double value) => double.TryParse(pattern, Any, InvariantInfo, out value);
-		public static bool TryParse(this string pattern, out decimal value) => decimal.TryParse(pattern, Any, InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out float value, NumberFormatInfo format = default) =>
+			float.TryParse(pattern, Any, format ?? InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out double value, NumberFormatInfo format = default) =>
+			double.TryParse(pattern, Any, format ?? InvariantInfo, out value);
+		public static bool TryParse(this string pattern, out decimal value, NumberFormatInfo format = default) =>
+			decimal.TryParse(pattern, Any, format ?? InvariantInfo, out value);
 
 		public static bool TryParse(this string pattern, out DateTime value) => DateTime.TryParse(pattern, out value);
 		public static bool TryParse(this string pattern, IFormatProvider provider, out DateTime value) =>
