@@ -15,4 +15,6 @@
 	<c:KeyToValueConverter x:Key="EqualsToTrueConverter" KeySource="ConverterParameter" Value="{m:True}" ByDefault="{m:False}" />
 	<c:KeyToValueConverter x:Key="EqualsToFalseConverter" KeySource="ConverterParameter" Value="{m:False}" ByDefault="{m:True}" />
 
+	<c:LocalizingConverter x:Key="LocalizingConverter" />
+
 </ResourceDictionary>

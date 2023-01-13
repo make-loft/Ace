@@ -2,15 +2,6 @@
 
 namespace Ace.Controls
 {
-	public class Data
-	{
-		public static BindableProperty ContextProperty = BindableProperty.CreateAttached("Context", typeof(object), typeof(BindableObject), default,
-			propertyChanged: (s, o, n) => s.BindingContext = n is Markup.Patterns.AMarkupExtension ext ? ext.Provide(ContextProperty) : n);
-
-		public static void SetContext(BindableObject bindable, object value) => bindable.SetValue(ContextProperty, value);
-		public static object GetContext(BindableObject bindable) => bindable.GetValue(ContextProperty);
-	}
-
 	public static class Ext
 	{
 		public static BindableProperty ToolTipProperty = BindableProperty.CreateAttached("ToolTip", typeof(object), typeof(BindableObject), default);
