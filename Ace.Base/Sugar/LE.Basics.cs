@@ -51,7 +51,7 @@ namespace Ace
 			string.Compare(o, x, comparison);
 
 		public static bool Is(this string o, string x, StringComparison comparison) => o.Compare(x, comparison).Is(0);
-		public static bool Is(this object o, object x, StringComparison comparison) => o.Is(x) || o.ToStr().Is(x.ToStr(), comparison);
+		public static bool Is(this object o, object x, StringComparison comparison) => o.Is(x) || o.To<string>().Is(x.To<string>(), comparison);
 		public static bool IsNot(this string o, string x, StringComparison comparison) => !o.Is(x, comparison);
 		public static bool IsNot(this object o, object x, StringComparison comparison) => !o.Is(x, comparison);
 
@@ -64,8 +64,11 @@ namespace Ace
 			(x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b);
 
 		/* type casting */
-		public static object ChangeType<T>(this object o) =>
-			o is null || TypeOf<T>.IsValueType || o is IConvertible ? Convert.ChangeType(o, TypeOf<T>.Raw, null) : o;
+		public static object ChangeType<T>(this object o) => TypeOf<string>.Raw.Is(TypeOf<T>.Raw)
+			? o?.ToString()
+			: o is null || TypeOf<T>.IsValueType || o is IConvertible
+				? Convert.ChangeType(o, TypeOf<T>.Raw, null)
+				: o;
 
 		public static T To<T>(this T o) => o;
 		public static T To<T>(this object o) => (T)o.ChangeType<T>();

@@ -22,7 +22,7 @@ namespace Ace.Replication.Replicators
 			IDictionary<int, object> idCache, Type baseType = null) => value.IsNot() || baseType.IsNot() || baseType.IsInstanceOfType(value)
 			? value
 			: profile.ImplicitConverters
-			.Select(c => c.Decode(value.ToStr(), baseType)).FirstOrDefault(v => v.IsNot(Serialization.Converter.Undefined));
+			.Select(c => c.Decode(value.To<string>(), baseType)).FirstOrDefault(v => v.IsNot(Serialization.Converter.Undefined));
 	}
 
 	public class CoreReplicator<TValue> : CoreReplicator

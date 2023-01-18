@@ -34,7 +34,7 @@ namespace Ace
 			string.Compare(o, x, comparison);
 
 		public static bool Is(this string o, in string x, in StringComparison comparison) => o.Compare(x, comparison).Is(0);
-		public static bool Is(this object o, in object x, in StringComparison comparison) => o.Is(x) || o.ToStr().Is(x.ToStr(), comparison);
+		public static bool Is(this object o, in object x, in StringComparison comparison) => o.Is(x) || o.To<string>().Is(x.To<string>(), comparison);
 		public static bool IsNot(this string o, in string x, in StringComparison comparison) => !o.Is(x, comparison);
 		public static bool IsNot(this object o, in object x, in StringComparison comparison) => !o.Is(x, comparison);
 	}

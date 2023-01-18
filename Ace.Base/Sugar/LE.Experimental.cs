@@ -35,12 +35,9 @@ namespace Ace
 		public static Regex ToRegex(this string value, RegexOptions options = RegexOptions.Compiled) => new(value, options);
 		public static Guid ToGuid(this string value) => new(value);
 
-		public static string ToStr(this string o) => o;
-		public static string ToStr(this object o) => o?.ToString();
-
 		public static bool EqualsAsStrings(this object a, object b,
 			StringComparison comparison = StringComparison.CurrentCultureIgnoreCase) =>
-			ReferenceEquals(a, b) || string.Compare(a.ToStr(), b.ToStr(), comparison).Is(0);
+			ReferenceEquals(a, b) || string.Compare(a.To<string>(), b.To<string>(), comparison).Is(0);
 
 		public static string GetPath(this Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
 
