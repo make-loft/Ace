@@ -12,6 +12,7 @@ using System.Windows.Data;
 
 namespace Ace.Markup
 {
+	[ContentProperty(nameof(Set))]
 	public class Smart : Patterns.ABindingExtension
 	{
 		private object _defaultValue;
