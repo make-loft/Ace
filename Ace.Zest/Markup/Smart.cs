@@ -8,6 +8,7 @@ using Xamarin.Forms;
 #else
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup
