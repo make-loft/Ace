@@ -36,4 +36,6 @@
 	<c:KeyToValueConverter x:Key="EqualsToFalseConverter" KeySource="ConverterParameter" Value="{m:False}" ByDefault="{m:True}" />
 	<c:KeyToValueConverter x:Key="EqualsToTrueConverter" KeySource="ConverterParameter" Value="{m:True}" ByDefault="{m:False}" />
 
+	<c:Converter x:Key="NotTwoWayConverter" Convert="Not_Convert" ConvertBack="Not_Convert" />
+	
 </ResourceDictionary>
