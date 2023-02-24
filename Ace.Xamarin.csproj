@@ -70,6 +70,7 @@
 	  <Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
 	  <Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
 	  <Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
+	  <Compile Remove="Ace.Zest\Controls\Pivot.Desktop.xaml.cs" />
 	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
 	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.xaml.cs" />
 	  <Compile Remove="Ace.Zest\Extensions\PresentationExtensions.cs" />
@@ -83,6 +84,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <EmbeddedResource Remove="Ace.Zest\Controls\Pivot.Desktop.xaml" />
     <EmbeddedResource Remove="Ace.Zest\Dictionaries\AppConverters.xaml" />
   </ItemGroup>
   
@@ -95,7 +97,7 @@
   </ItemGroup>
   
   <ItemGroup>
-	  <PackageReference Include="Xamarin.Forms" Version="*" />
+	  <PackageReference Include="Xamarin.Forms" Version="5.0.0.2545" />
   </ItemGroup>
   
   <ItemGroup>

@@ -8,25 +8,36 @@ using System.Windows.Markup;
 namespace Ace.Markup
 {
 	[ContentProperty("Value")]
-	public abstract class ValueExtension : AMarkupExtension
+	public abstract class ValueExtension<TValue> : AMarkupExtension
 	{
+		public TValue Value { set => BoxedValue = value; }
+
 		protected object BoxedValue;
 		public override object Provide(object targetObject, object targetProperty) => BoxedValue;
 	}
 
-	public class Int32Extension : ValueExtension
+	public class Int32Extension : ValueExtension<int>
 	{
-		public int Value { set => BoxedValue = value; }
+		public Int32Extension(int value) => Value = value;
+		public Int32Extension() { }
 	}
 
-	public class SingleExtension : ValueExtension
+	public class SingleExtension : ValueExtension<float>
 	{
-		public float Value { set => BoxedValue = value; }
+		public SingleExtension(float value) => Value = value;
+		public SingleExtension() { }
 	}
 
-	public class DoubleExtension : ValueExtension
+	public class DoubleExtension : ValueExtension<double>
 	{
-		public double Value { set => BoxedValue = value; }
+		public DoubleExtension(double value) => Value = value;
+		public DoubleExtension() { }
+	}
+
+	public class StringExtension : ValueExtension<string>
+	{
+		public StringExtension(string value) => Value = value;
+		public StringExtension() { }
 	}
 
 	public class NullExtension : AMarkupExtension

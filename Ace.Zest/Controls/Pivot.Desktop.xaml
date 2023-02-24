@@ -1,9 +1,10 @@
 ﻿<c:List
 	x:Class="Ace.Controls.Pivot"
-    xmlns="http://xamarin.com/schemas/2014/forms"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:c="clr-namespace:Ace.Controls"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
+	xmlns:c="clr-namespace:Ace.Controls"
+	x:Name="This"
 	>
 
 	<c:List.Resources>
@@ -11,7 +12,7 @@
 		<DataTemplate
 			x:Key="DefaultItemTemplate"
 			>
-			<Label
+			<c:Title
 				Text="{Binding Header}"
 				/>
 		</DataTemplate>
@@ -20,7 +21,7 @@
 			x:Key="DefaultContentTemplate"
 			>
 			<ContentPresenter
-				Content="{Binding Content}"
+				Content="{Binding Content, FallbackValue={x:Null}}"
 				/>
 		</DataTemplate>
 
@@ -78,15 +79,23 @@
 			/>
 
 		<cnv:KeyToValueConverter
-			x:Key="NullToParameterConverter"
-			Key="{Null}"
-			ValueSource="ConverterParameter"
+			x:Key="ItemTemplateConverter"
+			Key="{x:Null}"
+			Value="{StaticResource DefaultItemTemplate}"
+			/>
+
+		<cnv:KeyToValueConverter
+			x:Key="ContentTemplateConverter"
+			Key="{x:Null}"
+			Value="{StaticResource DefaultContentTemplate}"
 			/>
 
 	</c:List.Resources>
 
-	<c:List.ControlTemplate>
-		<ControlTemplate>
+	<c:List.Template>
+		<ControlTemplate
+			TargetType="c:List"
+			>
 			<c:Rack
 				Rows="^ *"
 				>
@@ -98,26 +107,22 @@
 						Spacing="0"
 						x:Name="TabCellsLayout"
 						Orientation="Horizontal"
-						c:Children.ItemsSource="{TemplateBinding ItemsSource}"
+						c:Children.ItemsSource="{Binding ItemsSource, ElementName=This}"
 						>
 						<c:Children.ItemTemplate>
 							<DataTemplate>
 								<c:ItemCell
 									x:Name="ItemCell"
-									Opacity="{Binding IsActive, Source={Reference ItemCell}, Converter={StaticResource IsActiveToOpacityConverter}}"
-									Background="{Binding IsActive, Source={Reference ItemCell}, Converter={StaticResource IsActiveToBackgroundConverter}}"
-									BindingContextChanged="ItemCell_BindingContextChanged"
+									Opacity="{Binding IsActive, ElementName=ItemCell, Converter={StaticResource IsActiveToOpacityConverter}}"
+									Background="{Binding IsActive, ElementName=ItemCell, Converter={StaticResource IsActiveToBackgroundConverter}}"
+									DataContextChanged="ItemCell_BindingContextChanged"
+									MouseLeftButtonDown="ItemCell_MouseLeftButtonDown"
 									CornerRadius="0"
 									Padding="5"
 									>
-									<c:ItemCell.GestureRecognizers>
-										<TapGestureRecognizer
-											Tapped="ItemCell_Tapped"
-											/>
-									</c:ItemCell.GestureRecognizers>
-
-									<c:Slot
-										ItemTemplate="{TemplateBinding ItemTemplate, ConverterParameter={StaticResource DefaultItemTemplate}, Converter={StaticResource NullToParameterConverter}}"
+									<ContentControl
+										ContentTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource AncestorType=c:Pivot}, Converter={StaticResource ItemTemplateConverter}}"
+										Content="{Binding}"
 										/>
 								</c:ItemCell>
 							</DataTemplate>
@@ -125,13 +130,18 @@
 					</c:Stack>
 				</c:Scroll>
 
-				<c:Slot
+				<Border
 					c:Rack.Cell="R1"
+					BorderThickness="0"
 					Background="{StaticResource ContentBrush}"
-					ItemTemplate="{TemplateBinding ContentTemplate, ConverterParameter={StaticResource DefaultContentTemplate}, Converter={StaticResource NullToParameterConverter}}"
-					Item="{TemplateBinding ActiveItem}"
+					/>
+				<ContentControl
+					c:Rack.Cell="R1"
+					DataContext="{Binding ElementName=This}"
+					ContentTemplate="{Binding ContentTemplate, Converter={StaticResource ContentTemplateConverter}}"
+					Content="{Binding ActiveItem}"
 					/>
 			</c:Rack>
 		</ControlTemplate>
-	</c:List.ControlTemplate>
+	</c:List.Template>
 </c:List>

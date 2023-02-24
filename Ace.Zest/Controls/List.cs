@@ -1,18 +1,26 @@
 ﻿using System.Collections;
-
+#if XAMARIN
 using Xamarin.Forms;
+using Property = Xamarin.Forms.BindableProperty;
+#else
+using Property = System.Windows.DependencyProperty;
+using System.Windows.Markup;
+using System.Windows;
+#endif
 
 namespace Ace.Controls
 {
 	[ContentProperty(nameof(Items))]
 	public class List : AView<List>
 	{
+		public List() => ItemsSource = Items;
+
 		public SmartSet<object> Items { get; } = new();
 
-		public static readonly BindableProperty ContentTemplateProperty = Create(v => v.ContentTemplate);
-		public static readonly BindableProperty ItemTemplateProperty = Create(v => v.ItemTemplate);
-		public static readonly BindableProperty ItemsSourceProperty = Create(v => v.ItemsSource);
-		public static readonly BindableProperty ActiveItemProperty = Create(v => v.ActiveItem);
+		public static readonly Property ContentTemplateProperty = Create(v => v.ContentTemplate);
+		public static readonly Property ItemTemplateProperty = Create(v => v.ItemTemplate);
+		public static readonly Property ItemsSourceProperty = Create(v => v.ItemsSource);
+		public static readonly Property ActiveItemProperty = Create(v => v.ActiveItem);
 
 		public DataTemplate ItemTemplate
 		{
@@ -34,14 +42,14 @@ namespace Ace.Controls
 
 		public IEnumerable ItemsSource
 		{
-			get => Get<IEnumerable>(ItemsSourceProperty) ?? Items;
+			get => Get<IEnumerable>(ItemsSourceProperty);
 			set => Set(ItemsSourceProperty, value);
 		}
 
 		public int ActiveItemOffset
 		{
 			get => Items.IndexOf(ActiveItem);
-			set => ActiveItem = Items[value];
+			set => ActiveItem = value < Items.Count ? Items[value] : default;
 		}
 	}
 }

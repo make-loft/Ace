@@ -2,6 +2,7 @@
 
 namespace Ace.Controls
 {
+#if XAMARIN
 	public class Field : Xamarin.Forms.Entry
 	{
 		public Field()
@@ -27,4 +28,7 @@ namespace Ace.Controls
 			};
 		}
 	}
+#else
+	public class Field : System.Windows.Controls.TextBox { }
+#endif
 }

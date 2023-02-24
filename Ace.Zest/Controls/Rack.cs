@@ -23,7 +23,7 @@ using static System.Windows.Controls.RowDefinition;
 using static System.Windows.Controls.ColumnDefinition;
 #endif
 
-namespace Ace.Markup
+namespace Ace.Controls
 {
 	public partial class Rack
 	{
@@ -179,8 +179,9 @@ namespace Ace.Markup
 			var hasLengthInPattern = lengthPattern.IsNullOrWhiteSpace().Not();
 
 			if (hasLengthInPattern)
-#if XAMARIN
 			{
+				//definition.SetValue(lengthProperty, ToGridLength(lengthPattern));
+
 				/* forced to use this way when Rack dirved from Grid (VisualElement) */
 
 				if (definition is RowDefinition rowDefinition)
@@ -188,9 +189,6 @@ namespace Ace.Markup
 				if (definition is ColumnDefinition colDefinition)
 					colDefinition.Width = ToGridLength(lengthPattern);
 			}
-#else
-				definition.SetValue(lengthProperty, ToGridLength(lengthPattern));
-#endif
 			else definition.ClearBinding(lengthProperty);
 			
 			if (hasMinInPattern)

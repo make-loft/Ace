@@ -1,5 +1,8 @@
 ﻿#if XAMARIN
 using Xamarin.Forms;
+
+[assembly: XmlnsDefinition("ace", "Ace.Presentation")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Presentation")]
 #else
 using System.Reflection;
 using System.Windows.Markup;
@@ -13,9 +16,9 @@ using System.Windows.Markup;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: AssemblyVersion("3.0.0.0")]
+[assembly: AssemblyFileVersion("3.0.0.0")]
+[assembly: AssemblyInformationalVersion("3.0.0.0")]
 [assembly: AssemblyCompany("Makeloft Studio")]
 [assembly: AssemblyProduct("Ace Framework")]
 [assembly: AssemblyCopyright("© Makeloft Studio")]
@@ -40,17 +43,13 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("ace", "Ace.Markup")]
 [assembly: XmlnsPrefix("ace", "ace")]
 
-#if XAMARIN
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Controls")]
-#endif
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Dictionaries")]
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup.Converters")]
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup")]
 [assembly: XmlnsPrefix("http://xamarin.com/schemas/2014/forms", "xamarin")]
 
-#if XAMARIN
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Controls")]
-#endif
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Dictionaries")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup.Converters")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup")]

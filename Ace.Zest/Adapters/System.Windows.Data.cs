@@ -1,7 +1,5 @@
 ﻿using Ace;
 
-using System;
-using System.Globalization;
 using System.Reflection;
 using Xamarin.Forms;
 

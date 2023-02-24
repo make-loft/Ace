@@ -119,7 +119,18 @@
     <Compile Include="Ace.Zest\Adapters\RoutedCommandsAdapter.cs" />
     <Compile Include="Ace.Zest\Adapters\Xamarin.Forms.cs" />
     <Compile Include="Ace.Zest\AssemblyInfo.cs" />
+    <Compile Include="Ace.Zest\Controls\Ace.cs" />
+    <Compile Include="Ace.Zest\Controls\AView.cs" />
+    <Compile Include="Ace.Zest\Controls\Field.cs" />
+    <Compile Include="Ace.Zest\Controls\Item.cs" />
+    <Compile Include="Ace.Zest\Controls\ItemCell.cs" />
+    <Compile Include="Ace.Zest\Controls\List.cs" />
+    <Compile Include="Ace.Zest\Controls\Pivot.Desktop.xaml.cs">
+      <DependentUpon>Pivot.Desktop.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ace.Zest\Controls\Slot.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\AggregateConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Converters\LocalizingConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\TwoWayConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\Converter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\KeyToValueConverter.cs" />
@@ -139,8 +150,10 @@
     <Compile Include="Ace.Zest\Markup\Behaviour.cs" />
     <Compile Include="Ace.Zest\Markup\ContextBinding.cs" />
     <Compile Include="Ace.Zest\Markup\Map.cs" />
+    <Compile Include="Ace.Zest\Controls\Rack_.cs" />
     <Compile Include="Ace.Zest\Markup\RemoteConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Enum.cs" />
+    <Compile Include="Ace.Zest\Markup\Reference.cs" />
     <Compile Include="Ace.Zest\Markup\ValueExtensions.cs" />
     <Compile Include="Ace.Zest\Markup\Patterns\ABindingExtension.cs" />
     <Compile Include="Ace.Zest\Markup\Case.cs" />
@@ -148,7 +161,7 @@
     <Compile Include="Ace.Zest\Markup\ContextTrigger.cs" />
     <Compile Include="Ace.Zest\Markup\Localizing.cs" />
     <Compile Include="Ace.Zest\Markup\Patterns\AMarkupExtension.cs" />
-    <Compile Include="Ace.Zest\Markup\Rack.cs" />
+    <Compile Include="Ace.Zest\Controls\Rack.cs" />
     <Compile Include="Ace.Zest\Markup\SelfBinding.cs" />
     <Compile Include="Ace.Zest\Markup\Set.cs" />
     <Compile Include="Ace.Zest\Markup\Smart.cs" />
@@ -164,6 +177,9 @@
     <Compile Include="Ace.Zest\WildThread.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Ace.Zest\Controls\Pivot.Desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Ace.Zest\Dictionaries\AppConverters.xaml" />
   </ItemGroup>
   <ItemGroup>

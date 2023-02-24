@@ -1,13 +1,24 @@
-﻿using Xamarin.Forms;
+﻿#if XAMARIN
+using Xamarin.Forms;
+
+using Property = Xamarin.Forms.BindableProperty;
+#else
+using System.Windows.Controls;
+
+using Property = System.Windows.DependencyProperty;
+#endif
 
 namespace Ace.Controls
 {
-	public partial class ItemCell : Frame
+	public partial class ItemCell : Border
 	{
-		public static BindableProperty ActiveCellProperty = BindableProperty.Create(nameof(ActiveCell), typeof(ItemCell), typeof(ItemCell),
-			propertyChanged: (s, o, n) => s.To(out ItemCell cell).With(cell.IsActive = cell.ActiveCell.Is(cell)));
+		public static Property ActiveCellProperty
+			= Type<ItemCell>.Create(c => c.ActiveCell,
+				args => args.Sender.Use(c => c.IsActive = c.ActiveCell.Is(c)));
 
-		public static BindableProperty IsActiveProperty = BindableProperty.Create(nameof(IsActive), typeof(bool), typeof(ItemCell));
+		public static Property IsActiveProperty
+			= Type<ItemCell>.Create(c => c.IsActive);
+
 		public ItemCell ActiveCell
 		{
 			get => GetValue(ActiveCellProperty).To<ItemCell>();
