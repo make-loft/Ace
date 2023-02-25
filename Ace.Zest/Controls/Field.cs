@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-
-namespace Ace.Controls
+﻿namespace Ace.Controls
 {
 #if XAMARIN
+	using System.Threading.Tasks;
+
 	public class Field : Xamarin.Forms.Entry
 	{
 		public Field()
@@ -29,6 +29,34 @@ namespace Ace.Controls
 		}
 	}
 #else
-	public class Field : System.Windows.Controls.TextBox { }
+	using System;
+	using System.Windows.Controls;
+
+	public class Field : TextBox
+	{
+		public static readonly System.Collections.Generic.List<WeakReference<Field>> Entres = new();
+		readonly WeakReference<Field> _this;
+
+		public Field()
+		{
+			Entres.Add(_this = new(this));
+
+			KeyDown += (o, e) =>
+			{
+				if (e.Key != System.Windows.Input.Key.Enter)
+					return;
+
+				GetBindingExpression(Field.TextProperty).UpdateSource();
+			};
+		}
+
+		~Field() => Entres.Remove(_this);
+
+		public static void GlobalTextBindingRefresh() => Entres.ForEach(w =>
+		{
+			if (w.TryGetTarget(out var e))
+				e.GetBindingExpression(Field.TextProperty).UpdateTarget();
+		});
+	}
 #endif
 }

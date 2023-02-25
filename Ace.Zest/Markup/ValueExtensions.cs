@@ -2,7 +2,9 @@
 #if XAMARIN
 using Xamarin.Forms;
 #else
+using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Media;
 #endif
 
 namespace Ace.Markup
@@ -40,6 +42,12 @@ namespace Ace.Markup
 		public StringExtension() { }
 	}
 
+	public class ColorExtension : ValueExtension<Color>
+	{
+		public ColorExtension(Color value) => Value = value;
+		public ColorExtension() { }
+	}
+
 	public class NullExtension : AMarkupExtension
 	{
 		public static readonly object BoxedValue = null;
@@ -58,23 +66,24 @@ namespace Ace.Markup
 		public override object Provide(object targetObject, object targetProperty) => BoxedValue;
 	}
 
-#if DESKTOP
-	public class VisibleExtension : AMarkupExtension
+	public class VisibilityExtension : ValueExtension<Visibility>
 	{
-		public static readonly object BoxedValue = System.Windows.Visibility.Visible;
-		public override object Provide(object targetObject, object targetProperty) => BoxedValue;
+		public VisibilityExtension(Visibility value) => Value = value;
+		public VisibilityExtension() { }
 	}
 
-	public class CollapsedExtension : AMarkupExtension
+	public class ThicknessExtension : ValueExtension<Thickness>
 	{
-		public static readonly object BoxedValue = System.Windows.Visibility.Collapsed;
-		public override object Provide(object targetObject, object targetProperty) => BoxedValue;
+		public ThicknessExtension(Thickness value) => Value = value;
+		public ThicknessExtension() { }
 	}
+#if XAMARIN
+	public enum Visibility { Visible, Hidden, Collapsed }
 
-	public class HiddenExtension : AMarkupExtension
+	public class FontFamilyExtension : ValueExtension<string>
 	{
-		public static readonly object BoxedValue = System.Windows.Visibility.Hidden;
-		public override object Provide(object targetObject, object targetProperty) => BoxedValue;
+		public FontFamilyExtension(string value) => Value = value;
+		public FontFamilyExtension() { }
 	}
 #endif
 }

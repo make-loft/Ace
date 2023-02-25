@@ -5,11 +5,11 @@ namespace Xamarin.Forms
 	namespace Xaml
 	{
 		public enum XamlCompilationOptions { Skip, Compile }
-	}
 
-	public class XamlCompilationAttribute : System.Attribute
-	{
-		public XamlCompilationAttribute(Xaml.XamlCompilationOptions options) { }
+		public class XamlCompilationAttribute : System.Attribute
+		{
+			public XamlCompilationAttribute(XamlCompilationOptions options) { }
+		}
 	}
 
 	internal class ContentPropertyAttribute { }

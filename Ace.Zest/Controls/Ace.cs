@@ -321,33 +321,6 @@ namespace Ace.Controls
 		}
 	}
 
-	public class Entry : TextBox
-	{
-		public static readonly System.Collections.Generic.List<WeakReference<Entry>> Entres = new();
-		readonly WeakReference<Entry> _this;
-
-		public Entry()
-		{
-			Entres.Add(_this = new(this));
-
-			KeyDown += (o, e) =>
-			{
-				if (e.Key != System.Windows.Input.Key.Enter)
-					return;
-
-				GetBindingExpression(Entry.TextProperty).UpdateSource();
-			};
-		}
-
-		~Entry() => Entres.Remove(_this);
-
-		public static void GlobalTextBindingRefresh() => Entres.ForEach(w =>
-		{
-			if (w.TryGetTarget(out var e))
-				e.GetBindingExpression(Entry.TextProperty).UpdateTarget();
-		});
-	}
-
 	public class Switch : ToggleButton
 	{
 		public Switch()

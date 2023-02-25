@@ -5,33 +5,28 @@
 	xmlns:c="clr-namespace:Ace.Markup.Converters"
 	xmlns:m="clr-namespace:Ace.Markup"
 	>
-
-	<!--may use this values to reduce boxing/unboxing and string conversions-->
-	<Visibility x:Key="Hidden">Hidden</Visibility>
-	<Visibility x:Key="Visible">Visible</Visibility>
-	<Visibility x:Key="Collapsed">Collapsed</Visibility>
-
+	
 	<c:KeyToValueConverter x:Key="NullToTrueConverter" Key="{m:Null}" Value="{m:True}" ByDefault="{m:False}" />
 	<c:KeyToValueConverter x:Key="TrueToNullConverter" Key="{m:True}" Value="{m:Null}" ByDefault="{m:False}" />
 	<c:KeyToValueConverter x:Key="NullToFalseConverter" Key="{m:Null}" Value="{m:False}" ByDefault="{m:True}" />
 	<c:KeyToValueConverter x:Key="FalseToNullConverter" Key="{m:False}" Value="{m:Null}" ByDefault="{m:True}" />
 	
-	<c:KeyToValueConverter x:Key="NullToHiddenConverter" Key="{m:Null}" Value="{StaticResource Hidden}" ByDefault="{StaticResource Visible}" />
-	<c:KeyToValueConverter x:Key="NullToVisibleConverter" Key="{m:Null}" Value="{StaticResource Visible}" ByDefault="{StaticResource Collapsed}" />
-	<c:KeyToValueConverter x:Key="NullToCollapsedConverter" Key="{m:Null}" Value="{StaticResource Collapsed}" ByDefault="{StaticResource Visible}" />
+	<c:KeyToValueConverter x:Key="NullToHiddenConverter" Key="{m:Null}" Value="{m:Visibility Hidden}" ByDefault="{m:Visibility Visible}" />
+	<c:KeyToValueConverter x:Key="NullToVisibleConverter" Key="{m:Null}" Value="{m:Visibility Visible}" ByDefault="{m:Visibility Collapsed}" />
+	<c:KeyToValueConverter x:Key="NullToCollapsedConverter" Key="{m:Null}" Value="{m:Visibility Collapsed}" ByDefault="{m:Visibility Visible}" />
 
 	<c:KeyToValueConverter x:Key="TrueToTrueConverter" Key="{m:True}" Value="{m:True}" ByDefault="{m:False}" />
 	<c:KeyToValueConverter x:Key="TrueToFalseConverter" Key="{m:True}" Value="{m:False}" ByDefault="{m:True}" />
 	<c:KeyToValueConverter x:Key="FalseToTrueConverter" Key="{m:False}" Value="{m:True}" ByDefault="{m:False}" />
 	<c:KeyToValueConverter x:Key="FalseToFalseConverter" Key="{m:False}" Value="{m:False}" ByDefault="{m:True}" />
 	
-	<c:KeyToValueConverter x:Key="TrueToHiddenConverter" Key="{m:True}" Value="{StaticResource Hidden}" ByDefault="{StaticResource Visible}" />
-	<c:KeyToValueConverter x:Key="TrueToVisibleConverter" Key="{m:True}" Value="{StaticResource Visible}" ByDefault="{StaticResource Collapsed}" />
-	<c:KeyToValueConverter x:Key="TrueToCollapsedConverter" Key="{m:True}" Value="{StaticResource Collapsed}" ByDefault="{StaticResource Visible}" />
+	<c:KeyToValueConverter x:Key="TrueToHiddenConverter" Key="{m:True}" Value="{m:Visibility Hidden}" ByDefault="{m:Visibility Visible}" />
+	<c:KeyToValueConverter x:Key="TrueToVisibleConverter" Key="{m:True}" Value="{m:Visibility Visible}" ByDefault="{m:Visibility Collapsed}" />
+	<c:KeyToValueConverter x:Key="TrueToCollapsedConverter" Key="{m:True}" Value="{m:Visibility Collapsed}" ByDefault="{m:Visibility Visible}" />
 
-	<c:KeyToValueConverter x:Key="FalseToHiddenConverter" Key="{m:False}" Value="{StaticResource Hidden}" ByDefault="{StaticResource Visible}" />
-	<c:KeyToValueConverter x:Key="FalseToVisibleConverter" Key="{m:False}" Value="{StaticResource Visible}" ByDefault="{StaticResource Collapsed}" />
-	<c:KeyToValueConverter x:Key="FalseToCollapsedConverter" Key="{m:False}" Value="{StaticResource Collapsed}" ByDefault="{StaticResource Visible}" />
+	<c:KeyToValueConverter x:Key="FalseToHiddenConverter" Key="{m:False}" Value="{m:Visibility Hidden}" ByDefault="{m:Visibility Visible}" />
+	<c:KeyToValueConverter x:Key="FalseToVisibleConverter" Key="{m:False}" Value="{m:Visibility Visible}" ByDefault="{m:Visibility Collapsed}" />
+	<c:KeyToValueConverter x:Key="FalseToCollapsedConverter" Key="{m:False}" Value="{m:Visibility Collapsed}" ByDefault="{m:Visibility Visible}" />
 
 	<c:KeyToValueConverter x:Key="EqualsToFalseConverter" KeySource="ConverterParameter" Value="{m:False}" ByDefault="{m:True}" />
 	<c:KeyToValueConverter x:Key="EqualsToTrueConverter" KeySource="ConverterParameter" Value="{m:True}" ByDefault="{m:False}" />
