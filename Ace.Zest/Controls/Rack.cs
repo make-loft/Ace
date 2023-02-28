@@ -12,8 +12,6 @@ using PropertyMetadata = System.Windows.PropertyMetadata;
 using PropertyPath = System.Windows.PropertyPath;
 using Binding = System.Windows.Data.Binding;
 using static System.Windows.BindablePropertyExtensions;
-using static Xamarin.Forms.RowDefinition;
-using static Xamarin.Forms.ColumnDefinition;
 #else
 using System.Windows;
 using System.Windows.Controls;
@@ -25,8 +23,20 @@ using static System.Windows.Controls.ColumnDefinition;
 
 namespace Ace.Controls
 {
-	public partial class Rack
+	public partial class Rack : Grid
 	{
+		public string Rows
+		{
+			get => GetValue(RowsProperty).To<string>();
+			set => SetValue(RowsProperty, value);
+		}
+
+		public string Columns
+		{
+			get => GetValue(ColumnsProperty).To<string>();
+			set => SetValue(ColumnsProperty, value);
+		}
+
 		#region Declarations
 
 		public static string GetCell(DependencyObject o) => o.GetValue(CellProperty).To<string>();

@@ -10,7 +10,7 @@ namespace Ace.Controls
 	{
 		public Pivot() => InitializeComponent();
 
-		public static readonly BindableProperty ActiveCellProperty = BindableProperty.Create(nameof(ActiveCell), typeof(ItemCell), typeof(Pivot));
+		public static readonly BindableProperty ActiveCellProperty = Type<Pivot>.Create(p => p.ActiveCell);
 
 		public ItemCell ActiveCell
 		{

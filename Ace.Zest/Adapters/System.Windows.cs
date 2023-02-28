@@ -9,6 +9,8 @@ namespace System.Windows.Markup
 
 namespace System.Windows
 {
+	public enum Visibility { Visible, Hidden, Collapsed }
+
 	public delegate void PropertyChangedCallback(BindableObject d, DependencyPropertyChangedEventArgs e);
 	public delegate bool ValidateValueCallback(object o);
 

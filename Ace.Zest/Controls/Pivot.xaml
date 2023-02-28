@@ -3,11 +3,12 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:c="clr-namespace:Ace.Controls"
+	xmlns:m="clr-namespace:Ace.Markup"
 	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
 	>
 
 	<c:List.Resources>
-		
+
 		<DataTemplate
 			x:Key="DefaultItemTemplate"
 			>
@@ -15,7 +16,7 @@
 				Text="{Binding Header}"
 				/>
 		</DataTemplate>
-		
+
 		<DataTemplate
 			x:Key="DefaultContentTemplate"
 			>
@@ -23,16 +24,14 @@
 				Content="{Binding Content}"
 				/>
 		</DataTemplate>
-
-		<Color x:Key="RegularColor">#77CCCCCC</Color>
-
+		
 		<LinearGradientBrush
 			x:Key="ActiveItemBrush"
 			StartPoint="0,0"
 			EndPoint="0,1"
 			>
 			<GradientStop Offset="0.0" Color="Pink" />
-			<GradientStop Offset="1.0" Color="{StaticResource RegularColor}" />
+			<GradientStop Offset="1.0" Color="#88CCCCCC" />
 		</LinearGradientBrush>
 
 		<LinearGradientBrush
@@ -49,13 +48,13 @@
 			StartPoint="0,0"
 			EndPoint="0,1"
 			>
-			<GradientStop Offset="0.0" Color="{StaticResource RegularColor}" />
-			<GradientStop Offset="1.0" Color="{StaticResource RegularColor}" />
+			<GradientStop Offset="0.0" Color="#88CCCCCC" />
+			<GradientStop Offset="1.0" Color="#88CCCCCC" />
 		</LinearGradientBrush>
 
 		<SolidColorBrush
 			x:Key="RegularSolidColorBrush"
-			Color="{StaticResource RegularColor}"
+			Color="#88CCCCCC"
 			/>
 
 		<SolidColorBrush

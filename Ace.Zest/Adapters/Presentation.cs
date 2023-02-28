@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -13,8 +14,16 @@ namespace Ace.Presentation
 	public class ControlTemplate : Xamarin.Forms.ControlTemplate { }
 	public class ResourceDictionary : Xamarin.Forms.ResourceDictionary { }
 	public class SolidColorBrush : Xamarin.Forms.SolidColorBrush { }
-	public class LinearGradientBrush : Xamarin.Forms.LinearGradientBrush { }
+	public class LinearGradientBrush : Xamarin.Forms.LinearGradientBrush
+	{
+		public new GradientStopCollection GradientStops
+		{
+			set => value.ForEach(base.GradientStops.Add);
+		}
+	}
+
 	public class RadialGradientBrush : Xamarin.Forms.RadialGradientBrush { }
+	public class GradientStopCollection : List<GradientStop> { } //Xamarin.Forms.GradientStopCollection { }
 	public class GradientStop : Xamarin.Forms.GradientStop { }
 
 	[ContentProperty(nameof(Key))]

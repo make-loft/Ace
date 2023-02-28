@@ -1,6 +1,8 @@
 ﻿#if XAMARIN
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
+[assembly: XamlCompilation(XamlCompilationOptions.Skip)]
 [assembly: XmlnsDefinition("ace", "Ace.Presentation")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Presentation")]
 #else

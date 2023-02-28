@@ -29,4 +29,29 @@ namespace System.Windows.Media
 		private static object GetContent(this Element element) =>
 			GetContentProperty(element.GetType())?.GetValue(element);
 	}
+
+	public static class BrushBrushExtensions
+	{
+		public static Brush Clone(this Brush brush) => brush switch
+		{
+			SolidColorBrush b => b.Clone(),
+			LinearGradientBrush b => b.Clone(),
+			RadialGradientBrush b => b.Clone(),
+			_ => throw new NotImplementedException(),
+		};
+
+		public static SolidColorBrush Clone(this SolidColorBrush value) => new(value.Color);
+		public static LinearGradientBrush Clone(this LinearGradientBrush value) => new()
+		{
+			GradientStops = value.GradientStops,
+			StartPoint = value.StartPoint,
+			EndPoint = value.EndPoint,
+		};
+
+		public static RadialGradientBrush Clone(this RadialGradientBrush value) => new()
+		{
+			GradientStops = value.GradientStops,
+			Radius = value.Radius,
+		};
+	}
 }

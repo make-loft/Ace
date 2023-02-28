@@ -258,14 +258,33 @@ namespace Ace.Controls
 	//public class DataTemplate : System.Windows.DataTemplate { }
 
 #if XAMARIN
-	public class ContentView : Xamarin.Forms.ContentView { }
-	public class Title : Label { }
+	public class ContentView : Xamarin.Forms.ContentView
+	{
+		public ControlTemplate Template
+		{
+			get => ControlTemplate;
+			set => ControlTemplate = value;
+		}
+	}
+
+	public class Title : Label
+	{
+		public TextAlignment TextAlignment
+		{
+			get => HorizontalTextAlignment;
+			set => HorizontalTextAlignment = value;
+		}
+	}
+
 	public class Picker : Xamarin.Forms.Picker { }
 	public class Button : Xamarin.Forms.Button
 	{
+		public static Property ContentProperty = Type<Button>.Create(b => b.Content,
+			args => args.Sender.Text = args.NewValue.To<string>());
 		public object Content
 		{
-			set => Text = value.To<string>();
+			get => GetValue(ContentProperty);
+			set => SetValue(ContentProperty, value);
 		}
 	}
 

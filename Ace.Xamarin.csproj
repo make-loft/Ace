@@ -72,7 +72,6 @@
 	  <Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
 	  <Compile Remove="Ace.Zest\Controls\Pivot.Desktop.xaml.cs" />
 	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
-	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.xaml.cs" />
 	  <Compile Remove="Ace.Zest\Extensions\PresentationExtensions.cs" />
 	  <Compile Remove="Ace.Zest\Extensions\ProjectionCameraExtensions.cs" />
 	  <Compile Remove="Ace.Zest\Markup\Picture.cs" />
@@ -85,7 +84,6 @@
   
   <ItemGroup>
     <EmbeddedResource Remove="Ace.Zest\Controls\Pivot.Desktop.xaml" />
-    <EmbeddedResource Remove="Ace.Zest\Dictionaries\AppConverters.xaml" />
   </ItemGroup>
   
   <ItemGroup>
@@ -101,12 +99,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Update="Ace.Zest\Dictionaries\AppConverters.Xamarin.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  
-  <ItemGroup>
     <None Update="Ace.Zest\Dictionaries\AppConverters.Xamarin.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -116,6 +108,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Folder Include="Ace.Zest\Dictionaries\" />
     <Folder Include="Ace.Zest\Extensions\" />
   </ItemGroup>
   

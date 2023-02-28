@@ -1,8 +1,9 @@
 ﻿using Ace.Markup.Patterns;
+
+using System.Windows;
 #if XAMARIN
 using Xamarin.Forms;
 #else
-using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 #endif
@@ -78,8 +79,6 @@ namespace Ace.Markup
 		public ThicknessExtension() { }
 	}
 #if XAMARIN
-	public enum Visibility { Visible, Hidden, Collapsed }
-
 	public class FontFamilyExtension : ValueExtension<string>
 	{
 		public FontFamilyExtension(string value) => Value = value;
