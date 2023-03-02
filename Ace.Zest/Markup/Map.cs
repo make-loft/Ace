@@ -36,11 +36,18 @@ namespace Ace.Markup
 					yield return pair;
 				}
 			}
-
+#if XAMARIN
 			foreach (KeyValuePair<string, object> pair in dictionary)
 			{
 				yield return pair;
 			}
+#else
+
+			foreach (System.Collections.DictionaryEntry pair in dictionary)
+			{
+				yield return new((string)pair.Key, pair.Value);
+			}
+#endif
 		}
 #if XAMARIN
 		public new bool ContainsKey(string key) => Keys.Contains(key) || MergedDictionaries.Reverse().Any(d => d.Keys.Contains(key));
@@ -65,8 +72,11 @@ namespace Ace.Markup
 			set => base[key] = value;
 		}
 #else
-		public void ForEach(System.Action<KeyValuePair<string, object>> action) =>
-			this.ForEach<string, object>(action);
+		public void ForEach(System.Action<KeyValuePair<string, object>> action) => this
+			.Cast<System.Collections.DictionaryEntry>()
+			.ToDictionary(e => (string)e.Key, e => e.Value)
+			.ToList()
+			.ForEach(action);
 #endif
 	}
 }
