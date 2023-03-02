@@ -113,6 +113,18 @@ namespace System.Linq
 			foreach (var item in collection) action(item);
 		}
 
+		public static void ForEach<TKey, TValue>(this IDictionary collection,
+			Action<KeyValuePair<TKey, TValue>> action)
+		{
+			foreach (KeyValuePair<TKey, TValue> item in collection) action(item);
+		}
+
+		public static void ForEach<TKey, TValue, TR>(this IDictionary collection,
+			Func<KeyValuePair<TKey, TValue>, TR> action)
+		{
+			foreach (KeyValuePair<TKey, TValue> item in collection) action(item);
+		}
+
 		public static IEnumerable<T> Cast<T>(this IDictionary dictionary)
 		{
 			foreach (T item in dictionary) yield return item;

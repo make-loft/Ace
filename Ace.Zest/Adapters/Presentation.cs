@@ -22,7 +22,13 @@ namespace Ace.Presentation
 		}
 	}
 
-	public class RadialGradientBrush : Xamarin.Forms.RadialGradientBrush { }
+	public class RadialGradientBrush : Xamarin.Forms.RadialGradientBrush
+	{
+		public new GradientStopCollection GradientStops
+		{
+			set => value.ForEach(base.GradientStops.Add);
+		}
+	}
 	public class GradientStopCollection : List<GradientStop> { } //Xamarin.Forms.GradientStopCollection { }
 	public class GradientStop : Xamarin.Forms.GradientStop { }
 

@@ -10,8 +10,12 @@ using System.Windows;
 
 namespace Ace.Markup
 {
-	public class Map : ResourceDictionary, INotifyPropertyChanged, IDictionary<string, object>
+	public class Map : ResourceDictionary, INotifyPropertyChanged
 	{
+		public Map() { }
+		public Map(ResourceDictionary source) =>
+			EnumerateResources(source).ToList().ForEach(p => this[p.Key] = p.Value);
+
 		public ResourceDictionary BasedOn
 		{
 			get => MergedDictionaries.LastOrDefault();
@@ -23,10 +27,27 @@ namespace Ace.Markup
 		public void EvokePropertyChanged(string propertyName = Binding.IndexerName) =>
 			PropertyChanged?.Invoke(this, new(propertyName));
 
+		public static IEnumerable<KeyValuePair<string, object>> EnumerateResources(ResourceDictionary dictionary)
+		{
+			foreach (var d in dictionary.MergedDictionaries)
+			{
+				foreach(var pair in EnumerateResources(d))
+				{
+					yield return pair;
+				}
+			}
+
+			foreach (KeyValuePair<string, object> pair in dictionary)
+			{
+				yield return pair;
+			}
+		}
+#if XAMARIN
 		public new bool ContainsKey(string key) => Keys.Contains(key) || MergedDictionaries.Reverse().Any(d => d.Keys.Contains(key));
 
 		public new bool TryGetValue(string key, out object value)
 		{
+
 			if (base.TryGetValue(key, out value))
 				return true;
 
@@ -38,11 +59,14 @@ namespace Ace.Markup
 
 			return false;
 		}
-
 		public new object this[string key]
 		{
 			get => TryGetValue(key, out var value) ? value : throw new KeyNotFoundException(key);
 			set => base[key] = value;
 		}
+#else
+		public void ForEach(System.Action<KeyValuePair<string, object>> action) =>
+			this.ForEach<string, object>(action);
+#endif
 	}
 }

@@ -131,6 +131,7 @@
     <Compile Include="Ace.Zest\Controls\Slot.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\AggregateConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\LocalizingConverter.cs" />
+    <Compile Include="Ace.Zest\Markup\Converters\RemoteConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\TwoWayConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\Converter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\KeyToValueConverter.cs" />
@@ -150,8 +151,6 @@
     <Compile Include="Ace.Zest\Markup\Behaviour.cs" />
     <Compile Include="Ace.Zest\Markup\ContextBinding.cs" />
     <Compile Include="Ace.Zest\Markup\Map.cs" />
-    <Compile Include="Ace.Zest\Controls\Rack_.cs" />
-    <Compile Include="Ace.Zest\Markup\RemoteConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Enum.cs" />
     <Compile Include="Ace.Zest\Markup\Reference.cs" />
     <Compile Include="Ace.Zest\Markup\ValueExtensions.cs" />
