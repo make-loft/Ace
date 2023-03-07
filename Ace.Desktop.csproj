@@ -125,6 +125,12 @@
     <Compile Include="Ace.Zest\Controls\Item.cs" />
     <Compile Include="Ace.Zest\Controls\ItemCell.cs" />
     <Compile Include="Ace.Zest\Controls\List.cs" />
+    <Compile Include="Ace.Zest\Controls\Switch.xaml.cs">
+      <DependentUpon>Switch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ace.Zest\Controls\Pick.Desktop.xaml.cs">
+      <DependentUpon>Pick.Desktop.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ace.Zest\Controls\Pivot.Desktop.xaml.cs">
       <DependentUpon>Pivot.Desktop.xaml</DependentUpon>
     </Compile>
@@ -176,6 +182,14 @@
     <Compile Include="Ace.Zest\WildThread.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Ace.Zest\Controls\Switch.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ace.Zest\Controls\Pick.Desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Ace.Zest\Controls\Pivot.Desktop.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

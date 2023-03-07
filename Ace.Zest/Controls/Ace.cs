@@ -340,29 +340,6 @@ namespace Ace.Controls
 		}
 	}
 
-	public class Switch : ToggleButton
-	{
-		public Switch()
-		{
-			Checked += StateChanged;
-			Unchecked += StateChanged;
-		}
-
-		private void StateChanged(object sender, RoutedEventArgs e) => IsToggled = IsChecked;
-
-		public static readonly DependencyProperty IsToggledProperty =
-			DependencyProperty.Register(nameof(IsToggled), typeof(bool?), typeof(Control), new PropertyMetadata((o, e) =>
-			{
-				if (o is ToggleButton toggleButton) toggleButton.SetValue(IsCheckedProperty, e.NewValue);
-			}));
-
-		public bool? IsToggled
-		{
-			get => (bool?)GetValue(IsToggledProperty);
-			set => SetValue(IsToggledProperty, value);
-		}
-	}
-
 	public class ItemsView : ItemsControl
 	{
 		public ItemsView()

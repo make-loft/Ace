@@ -70,7 +70,9 @@
 	  <Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
 	  <Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
 	  <Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
+	  <Compile Remove="Ace.Zest\Controls\Pick.Desktop.xaml.cs" />
 	  <Compile Remove="Ace.Zest\Controls\Pivot.Desktop.xaml.cs" />
+	  <Compile Remove="Ace.Zest\Controls\Switch.xaml.cs" />
 	  <Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
 	  <Compile Remove="Ace.Zest\Extensions\PresentationExtensions.cs" />
 	  <Compile Remove="Ace.Zest\Extensions\ProjectionCameraExtensions.cs" />
@@ -83,7 +85,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <EmbeddedResource Remove="Ace.Zest\Controls\Pick.Desktop.xaml" />
     <EmbeddedResource Remove="Ace.Zest\Controls\Pivot.Desktop.xaml" />
+    <EmbeddedResource Remove="Ace.Zest\Controls\Switch.xaml" />
   </ItemGroup>
   
   <ItemGroup>

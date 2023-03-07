@@ -19,6 +19,9 @@ namespace Ace.Controls
 		public static Property Create<TValue>(Expression<Func<TView, TValue>> func, TValue defaultValue = default) =>
 			NameToProperty[func.UnboxMemberName()] = Type<TView>.Create(func, defaultValue);
 
+		public static Property Create<TValue>(Expression<Func<TView, TValue>> func, Action<ChangeArgs<TView, TValue>> changed, TValue defaultValue = default) =>
+			NameToProperty[func.UnboxMemberName()] = Type<TView>.Create(func, changed, defaultValue);
+
 		public TValue Get<TValue>(Expression<Func<TView, TValue>> func) => (TValue)GetValue(NameToProperty[func.UnboxMemberName()]);
 
 		public TValue Get<TValue>(Property property) => (TValue)GetValue(property);

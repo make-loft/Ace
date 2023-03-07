@@ -1,0 +1,45 @@
+﻿<c:List
+	x:Class="Ace.Controls.Pick"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
+	xmlns:c="clr-namespace:Ace.Controls"
+	x:Name="This"
+	>
+
+	<c:List.Resources>
+
+		<cnv:Converter
+			x:Key="DisplayMemberPathConverter"
+			Convert="Converter_Convert"
+			/>
+
+		<DataTemplate
+			x:Key="DefaultItemTemplate"
+			>
+			<c:Title
+				Text="{Binding Converter={StaticResource DisplayMemberPathConverter}}"
+				/>
+		</DataTemplate>
+
+		<cnv:KeyToValueConverter
+			x:Key="ItemTemplateConverter"
+			Key="{x:Null}"
+			Value="{StaticResource DefaultItemTemplate}"
+			/>
+
+	</c:List.Resources>
+
+	<c:List.Template>
+		<ControlTemplate
+			TargetType="c:Pick"
+			>
+			<ComboBox
+				DataContext="{Binding ElementName=This}"
+				ItemsSource="{Binding ItemsSource}"
+				SelectedItem="{Binding ActiveItem, Mode=TwoWay}"
+				ItemTemplate="{Binding ItemTemplate, Converter={StaticResource ItemTemplateConverter}}"
+				/>
+		</ControlTemplate>
+	</c:List.Template>
+</c:List>

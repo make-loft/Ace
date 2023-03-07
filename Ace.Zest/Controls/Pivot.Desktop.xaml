@@ -25,7 +25,7 @@
 				/>
 		</DataTemplate>
 
-		<Color x:Key="RegularColor">#77CCCCCC</Color>
+		<Color x:Key="RegularColor">#44FFFFFF</Color>
 
 		<LinearGradientBrush
 			x:Key="ActiveItemBrush"
@@ -117,6 +117,7 @@
 									Background="{Binding IsActive, ElementName=ItemCell, Converter={StaticResource IsActiveToBackgroundConverter}}"
 									DataContextChanged="ItemCell_BindingContextChanged"
 									MouseLeftButtonDown="ItemCell_MouseLeftButtonDown"
+									PreviewKeyDown="ItemCell_PreviewKeyDown"
 									CornerRadius="0"
 									Padding="5"
 									>

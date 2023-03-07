@@ -13,9 +13,13 @@ namespace Ace.Presentation
 	public class DataTemplate : Xamarin.Forms.DataTemplate { }
 	public class ControlTemplate : Xamarin.Forms.ControlTemplate { }
 	public class ResourceDictionary : Xamarin.Forms.ResourceDictionary { }
-	public class SolidColorBrush : Xamarin.Forms.SolidColorBrush { }
+	public class SolidColorBrush : Xamarin.Forms.SolidColorBrush
+	{
+		public double Opacity { get; set; }
+	}
 	public class LinearGradientBrush : Xamarin.Forms.LinearGradientBrush
 	{
+		public double Opacity { get; set; }
 		public new GradientStopCollection GradientStops
 		{
 			set => value.ForEach(base.GradientStops.Add);
@@ -24,6 +28,9 @@ namespace Ace.Presentation
 
 	public class RadialGradientBrush : Xamarin.Forms.RadialGradientBrush
 	{
+		public double RadiusX { get => Radius; set => Radius = value; }
+		public double RadiusY { get => Radius; set => Radius = value; }
+		public double Opacity { get; set; }
 		public new GradientStopCollection GradientStops
 		{
 			set => value.ForEach(base.GradientStops.Add);
@@ -31,6 +38,23 @@ namespace Ace.Presentation
 	}
 	public class GradientStopCollection : List<GradientStop> { } //Xamarin.Forms.GradientStopCollection { }
 	public class GradientStop : Xamarin.Forms.GradientStop { }
+
+	public class GeometryDrawing
+	{
+		public Brush Brush { get; set; }
+		public string Geometry { get; set; }
+	}
+	public class DrawingBrush : Brush
+	{
+		public override bool IsEmpty => default;
+
+		public string TileMode { get; set; }
+		public string Viewport { get; set; }
+		public string ViewportUnits { get; set; }
+		public double Opacity { get; set; }
+		public GeometryDrawing Drawing { get; set; }
+	}
+
 
 	[ContentProperty(nameof(Key))]
 	public class StaticResourceExtension : IMarkupExtension

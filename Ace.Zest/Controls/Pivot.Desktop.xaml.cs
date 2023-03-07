@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Input;
+using System.Linq;
 
 #if XAMARIN
 using Xamarin.Forms;
@@ -16,21 +18,6 @@ namespace Ace.Controls
 	public partial class Pivot
 	{
 		public Pivot() => InitializeComponent();
-
-		public static readonly Property ActiveCellProperty
-			= Type<Pivot>.Create(p => p.ActiveCell);
-
-		public ItemCell ActiveCell
-		{
-			get => GetValue(ActiveCellProperty).To<ItemCell>();
-			set => SetValue(ActiveCellProperty, value);
-		}
-
-		private void ItemCell_Tapped(object sender, EventArgs e)
-		{
-			ActiveCell = sender.To(out ItemCell cell);
-			ActiveItem = cell.GetContext();
-		}
 
 		private object IsActiveConvert(Markup.Patterns.ConvertArgs args)
 		{
@@ -59,10 +46,23 @@ namespace Ace.Controls
 			});
 		}
 
-		private void ItemCell_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		private void ItemCell_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) =>
+			ActivateCell((ItemCell)sender);
+
+		private static Key[] ActivationKeys = { Key.Enter, Key.Space };
+		private void ItemCell_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
-			ActiveCell = sender.To(out ItemCell cell);
-			ActiveItem = cell.GetContext();
+			if (ActivationKeys.Contains(e.Key))
+				ActivateCell((ItemCell)sender);
+		}
+
+		private void ActivateCell(ItemCell cell)
+		{
+			ActiveCell = cell;
+			var activeItem = cell.GetContext();
+			ActiveItem = ActiveItemUnset.Is(true) && ActiveItem.Is(activeItem)
+				? default
+				: activeItem;
 		}
 	}
 }

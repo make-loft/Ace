@@ -37,7 +37,7 @@ namespace System.Windows.Media
 			SolidColorBrush b => b.Clone(),
 			LinearGradientBrush b => b.Clone(),
 			RadialGradientBrush b => b.Clone(),
-			_ => throw new NotImplementedException(),
+			Brush b => b,
 		};
 
 		public static SolidColorBrush Clone(this SolidColorBrush value) => new(value.Color);
