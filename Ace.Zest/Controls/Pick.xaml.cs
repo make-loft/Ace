@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -10,14 +9,6 @@ namespace Ace.Controls
 	public partial class Pick
 	{
 		public Pick() => InitializeComponent();
-
-		public static readonly BindableProperty ActiveCellProperty = BindableProperty.Create(nameof(ActiveCell), typeof(ItemCell), typeof(Pivot));
-
-		public ItemCell ActiveCell
-		{
-			get => GetValue(ActiveCellProperty).To<ItemCell>();
-			set => SetValue(ActiveCellProperty, value);
-		}
 
 		private void ItemCell_Tapped(object sender, EventArgs e)
 		{
@@ -35,6 +26,10 @@ namespace Ace.Controls
 			ActiveCell = cell;
 			return cell.BindingContext.Is(ActiveItem);
 		}
+
+		private object ItemDisplayBindingConvert(Markup.Patterns.ConvertArgs args) =>
+			args.Value is Delegate d ? d.Method.Name :
+			args.Value.To(out string s).Is() && ItemTemplate.Is() ? s.Localize() : s;
 
 		Markup.Converters.Converter IsActiveConverter;
 		private void ItemCell_BindingContextChanged(object sender, EventArgs args)

@@ -117,12 +117,12 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="Ace.Zest\Controls\Pick.xaml.cs">
-      <DependentUpon>Pick.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Ace.Zest\Controls\Pivot.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
+    <EmbeddedResource Update="Ace.Zest\Controls\Pick.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Ace.Zest\Controls\Pivot.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   
 </Project>

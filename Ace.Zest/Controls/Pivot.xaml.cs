@@ -10,14 +10,6 @@ namespace Ace.Controls
 	{
 		public Pivot() => InitializeComponent();
 
-		public static readonly BindableProperty ActiveCellProperty = Type<Pivot>.Create(p => p.ActiveCell);
-
-		public ItemCell ActiveCell
-		{
-			get => GetValue(ActiveCellProperty).To<ItemCell>();
-			set => SetValue(ActiveCellProperty, value);
-		}
-
 		private void ItemCell_Tapped(object sender, EventArgs e)
 		{
 			ActiveCell = sender.To(out ItemCell cell);

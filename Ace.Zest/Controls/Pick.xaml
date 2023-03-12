@@ -3,7 +3,6 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:c="clr-namespace:Ace.Controls"
-	xmlns:m="clr-namespace:Ace.Markup"
 	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
 	x:Name="This"
 	>
@@ -40,50 +39,8 @@
 			<Picker
 				ItemsSource="{TemplateBinding ItemsSource}"
 				SelectedItem="{TemplateBinding ActiveItem, Mode=TwoWay}"
+				ItemDisplayBinding="{Binding Converter={Converter Convert=ItemDisplayBindingConvert}}"
 				/>
-			<!--<Grid
-				m:Rack.Rows="^ *"
-				>
-				<ScrollView
-					m:Rack.Cell="R0"
-					Orientation="Horizontal"
-					>
-					<StackLayout
-						Spacing="0"
-						x:Name="TabCellsLayout"
-						Orientation="Horizontal"
-						Children.ItemsSource="{Binding ItemsSource, Source={Reference This}}"
-						>
-						<Children.ItemTemplate>
-							<DataTemplate>
-								<c:ItemCell
-									x:Name="ItemCell"
-									BackgroundColor="{Binding IsActive, Source={Reference ItemCell}, Converter={StaticResource TrueToAccentConverter}}"
-									BindingContextChanged="ItemCell_BindingContextChanged"
-									CornerRadius="5"
-									Padding="5"
-									>
-									<c:ItemCell.GestureRecognizers>
-										<TapGestureRecognizer
-											Tapped="ItemCell_Tapped"
-											/>
-									</c:ItemCell.GestureRecognizers>
-
-									<c:Slot
-										ItemTemplate="{Binding ItemTemplate, Source={Reference This}, TargetNullValue={StaticResource DefaultItemTemplate}}"
-										/>
-								</c:ItemCell>
-							</DataTemplate>
-						</Children.ItemTemplate>
-					</StackLayout>
-				</ScrollView>
-
-				<c:Slot
-					m:Rack.Cell="R1"
-					ItemTemplate="{Binding ContentTemplate, Source={Reference This}, TargetNullValue={StaticResource DefaultContentTemplate}}"
-					Item="{Binding ActiveItem, Source={Reference This}}"
-					/>
-			</Grid>-->
 		</ControlTemplate>
 	</c:List.ControlTemplate>
 </c:List>
