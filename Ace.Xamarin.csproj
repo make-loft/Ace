@@ -69,6 +69,7 @@
 	  <Compile Remove="Ace.Core\Adapters\System.Runtime.Serialization.Json.cs" />
 	  <Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
 	  <Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
+	  <Compile Remove="Ace.Zest\Adapters\Xamarin.Essentials.cs" />
 	  <Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
 	  <Compile Remove="Ace.Zest\Controls\Pick.Desktop.xaml.cs" />
 	  <Compile Remove="Ace.Zest\Controls\Pivot.Desktop.xaml.cs" />
@@ -113,7 +114,6 @@
   
   <ItemGroup>
     <Folder Include="Ace.Zest\Dictionaries\" />
-    <Folder Include="Ace.Zest\Extensions\" />
   </ItemGroup>
   
   <ItemGroup>

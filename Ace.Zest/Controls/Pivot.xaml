@@ -20,7 +20,7 @@
 			x:Key="DefaultContentTemplate"
 			>
 			<ContentPresenter
-				Content="{Binding Content}"
+				Content="{Binding}"
 				/>
 		</DataTemplate>
 		

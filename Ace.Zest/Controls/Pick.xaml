@@ -3,37 +3,8 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:c="clr-namespace:Ace.Controls"
-	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
 	x:Name="This"
 	>
-
-	<c:List.Resources>
-		
-		<DataTemplate
-			x:Key="DefaultItemTemplate"
-			>
-			<Label
-				Text="{Binding Header}"
-				/>
-		</DataTemplate>
-		
-		<DataTemplate
-			x:Key="DefaultContentTemplate"
-			>
-			<ContentPresenter
-				Content="{Binding Content}"
-				/>
-		</DataTemplate>
-
-		<cnv:KeyToValueConverter
-			x:Key="TrueToAccentConverter"
-			Key="True"
-			Value="Pink"
-			ByDefault="Transparent"
-			/>
-		
-	</c:List.Resources>
-
 	<c:List.ControlTemplate>
 		<ControlTemplate>
 			<Picker

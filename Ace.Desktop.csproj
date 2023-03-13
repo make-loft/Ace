@@ -198,6 +198,9 @@
   <ItemGroup>
     <Compile Include="Ace.Base\Sugar\LE.Interpop.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ace.Zest\Adapters\Xamarin.Essentials.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

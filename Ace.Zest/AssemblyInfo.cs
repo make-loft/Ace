@@ -37,6 +37,8 @@ using System.Windows.Markup;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 //[assembly: System.Runtime.InteropServices.Guid("6daeb5df-e3e1-4745-b274-bbf44d6906d5")]
 //[assembly: System.Runtime.InteropServices.ComVisible(false)]
+
+[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Xamarin.Forms")]
 #endif
 
 [assembly: XmlnsDefinition("ace", "Ace.Controls")]

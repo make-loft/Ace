@@ -1,3 +1,5 @@
+using Ace.Extensions;
+
 using System;
 using System.Collections.Generic;
 
@@ -10,8 +12,8 @@ namespace Ace.Presentation
 	public class Switch : Xamarin.Forms.Switch { }
 	public class Slider : Xamarin.Forms.Slider { }
 
-	public class DataTemplate : Xamarin.Forms.DataTemplate { }
-	public class ControlTemplate : Xamarin.Forms.ControlTemplate { }
+	//public class DataTemplate : Xamarin.Forms.DataTemplate { }
+	//public class ControlTemplate : Xamarin.Forms.ControlTemplate { }
 	public class ResourceDictionary : Xamarin.Forms.ResourceDictionary { }
 	public class SolidColorBrush : Xamarin.Forms.SolidColorBrush
 	{

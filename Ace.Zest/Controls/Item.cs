@@ -13,22 +13,14 @@ using Property = System.Windows.DependencyProperty;
 
 namespace Ace.Controls
 {
-	[ContentProperty(nameof(Content))]
-	public class Item : View
+	public class Item : ContentView
 	{
 		public static readonly Property HeaderProperty = Type<Item>.Create(v => v.Header);
-		public static readonly Property ContentProperty = Type<Item>.Create(v => v.Content);
 
 		public object Header
 		{
 			get => GetValue(HeaderProperty);
 			set => Set(HeaderProperty, value);
-		}
-
-		public object Content
-		{
-			get => GetValue(ContentProperty);
-			set => Set(ContentProperty, value);
 		}
 
 		void Set(Property property, object value)

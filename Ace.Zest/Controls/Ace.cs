@@ -309,7 +309,10 @@ namespace Ace.Controls
 	public class RackSplitter : GridSplitter { }
 	//public class Frame : Border { }
 	//public class Button : System.Windows.Controls.Button { }
-	public class Title : TextBlock { }
+	public class Title : TextBlock
+	{
+		public string FontAttributes { get; set; }
+	}
 	public class Picker : ComboBox
 	{
 		public Binding ItemDisplayBinding
@@ -318,9 +321,23 @@ namespace Ace.Controls
 		}
 	}
 
-	public class Slider : System.Windows.Controls.Slider
+	public class Grip : Slider
 	{
-		public Slider()
+		public static Property FromProperty = Type<Grip>.Create(g => g.From, args => args.Sender.Minimum = args.NewValue);
+		public double From
+		{
+			get => GetValue(FromProperty).To<double>();
+			set => SetValue(FromProperty, value);
+		}
+
+		public static Property TillProperty = Type<Grip>.Create(g => g.Till, args => args.Sender.Maximum = args.NewValue);
+		public double Till
+		{
+			get => GetValue(TillProperty).To<double>();
+			set => SetValue(TillProperty, value);
+		}
+
+		public Grip()
 		{
 			PreviewKeyDown += (o, e) =>
 			{

@@ -27,6 +27,12 @@
 				isCaptured = false;
 			};
 		}
+
+		public Xamarin.Forms.TextAlignment TextAlignment
+		{
+			get => HorizontalTextAlignment;
+			set => HorizontalTextAlignment = value;
+		}
 	}
 #else
 	using System;
@@ -57,6 +63,13 @@
 			if (w.TryGetTarget(out var e))
 				e.GetBindingExpression(Field.TextProperty).UpdateTarget();
 		});
+
+		public string Keyboard { get; set; }
+		public System.Windows.TextAlignment HorizontalTextAligment
+		{
+			get => TextAlignment;
+			set => TextAlignment = value;
+		}
 	}
 #endif
 }

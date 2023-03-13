@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Ace.Extensions;
+
+using System;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -27,9 +29,13 @@ namespace Ace.Controls
 			return cell.BindingContext.Is(ActiveItem);
 		}
 
+		public string DisplayMemberPath { get; set; }
+
 		private object ItemDisplayBindingConvert(Markup.Patterns.ConvertArgs args) =>
 			args.Value is Delegate d ? d.Method.Name :
-			args.Value.To(out string s).Is() && ItemTemplate.Is() ? s.Localize() : s;
+			args.Value.To(out string s).Is() && ItemTemplate.Is() ? s.Localize() :
+			DisplayMemberPath.Is() ? args.Value?.Get(DisplayMemberPath).To<string>()?.Localize() :
+			s;
 
 		Markup.Converters.Converter IsActiveConverter;
 		private void ItemCell_BindingContextChanged(object sender, EventArgs args)
