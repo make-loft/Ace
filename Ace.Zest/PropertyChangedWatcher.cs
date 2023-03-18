@@ -18,8 +18,12 @@ namespace Ace
 		public static readonly DependencyProperty TargetProperty =
 #if XAMARIN
 			DependencyProperty.Create("Context", typeof(object), typeof(PropertyChangedWatcher), default);
+
+		const string ContextPath = "BindingContext";
 #else
 			DependencyProperty.Register("Context", typeof(object), typeof(PropertyChangedWatcher), default);
+
+		const string ContextPath = "DataContext";
 #endif
 		public object Context { get; private set; }
 		public object Source { get; private set; }
@@ -40,8 +44,12 @@ namespace Ace
 		internal PropertyChangedWatcher(object source, string path, Action<PropertyChangedWatcher> propertyChanged = default)
 		{
 			Source = source;
+
 			if (propertyChanged.Is())
 				PropertyChanged += (sender, args) => propertyChanged((PropertyChangedWatcher)sender);
+
+			path = path.IsNullOrWhiteSpace() ? ContextPath : path;
+
 			_propertyChangedEventArgs = new(path?.Split('.').Last());
 
 			this.SetBinding(TargetProperty, new Binding(path)

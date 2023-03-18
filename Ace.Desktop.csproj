@@ -36,7 +36,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>rd "$(ProjectDir)obj" /s /q</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -135,6 +136,7 @@
       <DependentUpon>Pivot.Desktop.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ace.Zest\Controls\Slot.cs" />
+    <Compile Include="Ace.Zest\Extensions\Colority.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\AggregateConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\LocalizingConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\RemoteConverter.cs" />
@@ -207,6 +209,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>del "$(ProjectDir)\obj\project.assets.json"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	   Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

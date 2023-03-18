@@ -3,9 +3,9 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Ace.Zest.Extensions
+namespace Ace.Extensions
 {
-	public static class PresentationExtensions
+	public static class Presentation
 	{
 		public static double GetDpiScaleX(this Visual visual) => PresentationSource.FromVisual(visual).GetDpiScaleX();
 		public static double GetDpiScaleY(this Visual visual) => PresentationSource.FromVisual(visual).GetDpiScaleY();

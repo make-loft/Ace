@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media.Media3D;
 
-namespace Ace.Zest.Extensions
+namespace Ace.Extensions
 {
 	public static class ProjectionCameraExtensions
 	{
