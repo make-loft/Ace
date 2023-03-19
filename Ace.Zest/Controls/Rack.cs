@@ -17,12 +17,35 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using static System.Windows.DependencyProperty;
-using static System.Windows.Controls.RowDefinition;
-using static System.Windows.Controls.ColumnDefinition;
 #endif
 
 namespace Ace.Controls
 {
+	public struct DefinitionProperties
+	{
+		public static DefinitionProperties Rows = new()
+		{
+#if !XAMARIN
+			Min = RowDefinition.MinHeightProperty,
+			Max = RowDefinition.MaxHeightProperty,
+#endif
+			Length = RowDefinition.HeightProperty,
+		};
+
+		public static DefinitionProperties Cols = new()
+		{
+#if !XAMARIN
+			Min = ColumnDefinition.MinWidthProperty,
+			Max = ColumnDefinition.MinWidthProperty,
+#endif
+			Length = ColumnDefinition.WidthProperty,
+		};
+
+		public DependencyProperty Length { get; set; }
+		public DependencyProperty Min { get; set; }
+		public DependencyProperty Max { get; set; }
+	}
+
 	public partial class Rack : Grid
 	{
 		public string Rows
@@ -66,13 +89,13 @@ namespace Ace.Controls
 		public static readonly DependencyProperty RowsProperty = RegisterAttached(
 			"Rows", typeof(string), typeof(Rack), GetMetadata<Grid>((grid, args) => UpdateDefinitions(
 				grid, grid.RowDefinitions, args.NewValue?.ToString(),
-				HeightProperty, MinHeightProperty, MaxHeightProperty,
+				DefinitionProperties.Rows,
 				RowsIsInUpdateProperty, RowsUpdateTriggerPropertyPath)));
 
 		public static readonly DependencyProperty ColumnsProperty = RegisterAttached(
 			"Columns", typeof(string), typeof(Rack), GetMetadata<Grid>((grid, args) => UpdateDefinitions(
 				grid, grid.ColumnDefinitions, args.NewValue?.ToString(),
-				WidthProperty, MinWidthProperty, MaxWidthProperty,
+				DefinitionProperties.Cols,
 				ColsIsInUpdateProperty, ColsUpdateTriggerPropertyPath)));
 
 		public static readonly DependencyProperty CellProperty = RegisterAttached(
@@ -117,12 +140,12 @@ namespace Ace.Controls
 			{
 				UpdateDefinitions(
 					grid, grid.RowDefinitions, GetRows(grid),
-					HeightProperty, MinHeightProperty, MaxHeightProperty,
+					DefinitionProperties.Rows,
 					RowsIsInUpdateProperty, RowsUpdateTriggerPropertyPath);
 
 				UpdateDefinitions(
 					grid, grid.ColumnDefinitions, GetColumns(grid),
-					WidthProperty, MinWidthProperty, MaxWidthProperty,
+					DefinitionProperties.Cols,
 					ColsIsInUpdateProperty, ColsUpdateTriggerPropertyPath);
 			}));
 
@@ -131,24 +154,19 @@ namespace Ace.Controls
 
 		#endregion
 
-		private static string ToPattern(RowDefinition definition) => ToPattern(definition,
-			HeightProperty, MinHeightProperty, MaxHeightProperty);
+		private static string ToPattern(RowDefinition definition) => ToPattern(definition, DefinitionProperties.Rows);
 
-		private static string ToPattern(ColumnDefinition definition) => ToPattern(definition,
-			WidthProperty, MinWidthProperty, MaxWidthProperty);
+		private static string ToPattern(ColumnDefinition definition) => ToPattern(definition, DefinitionProperties.Cols);
 
-		private static string ToPattern(DependencyObject definition,
-			DependencyProperty lengthProperty,
-			DependencyProperty minValueProperty,
-			DependencyProperty maxValueProperty)
+		private static string ToPattern(DependencyObject definition, DefinitionProperties properties)
 		{
-			var lengthBinding = definition.GetBinding(lengthProperty);
-			var minValueBinding = definition.GetBinding(minValueProperty);
-			var maxValueBinding = definition.GetBinding(maxValueProperty);
+			var lengthBinding = definition.GetBinding(properties.Length);
+			var minValueBinding = definition.GetBinding(properties.Min);
+			var maxValueBinding = definition.GetBinding(properties.Max);
 
-			var length = definition.GetValue(lengthProperty).To<GridLength>();
-			var minValue = definition.GetValue(minValueProperty);
-			var maxValue = definition.GetValue(maxValueProperty);
+			var length = definition.GetValue(properties.Length).To<GridLength>();
+			var minValue = definition.GetValue(properties.Min);
+			var maxValue = definition.GetValue(properties.Max);
 
 			var builder = new StringBuilder();
 
@@ -171,9 +189,7 @@ namespace Ace.Controls
 
 		private static void SetValues<TDefinition>(TDefinition definition,
 			string pattern, Grid grid,
-			DependencyProperty lengthProperty,
-			DependencyProperty minValueProperty,
-			DependencyProperty maxValueProperty,
+			DefinitionProperties properties,
 			PropertyPath updateTriggerPropertyPath)
 			where TDefinition : DependencyObject, new()
 		{
@@ -188,35 +204,27 @@ namespace Ace.Controls
 			var lengthPattern = pattern.Substring(start, finish - start);
 			var hasLengthInPattern = lengthPattern.IsNullOrWhiteSpace().Not();
 
-			if (hasLengthInPattern)
+			if (GetIsTwoWayMode(grid).Is(True))
 			{
-				//definition.SetValue(lengthProperty, ToGridLength(lengthPattern));
-
-				/* forced to use this way when Rack dirved from Grid (VisualElement) */
-
-				if (definition is RowDefinition rowDefinition)
-					rowDefinition.Height = ToGridLength(lengthPattern);
-				if (definition is ColumnDefinition colDefinition)
-					colDefinition.Width = ToGridLength(lengthPattern);
+				if (hasLengthInPattern && definition.GetBinding(properties.Length).IsNot())
+					Bind(grid, definition, properties.Length, updateTriggerPropertyPath);
+				if (hasMinInPattern && definition.GetBinding(properties.Min).IsNot())
+					Bind(grid, definition, properties.Min, updateTriggerPropertyPath);
+				if (hasMaxInPattern && definition.GetBinding(properties.Max).IsNot())
+					Bind(grid, definition, properties.Max, updateTriggerPropertyPath);
 			}
-			else definition.ClearBinding(lengthProperty);
+
+			if (hasLengthInPattern)
+				definition.SetValue(properties.Length, ToGridLength(lengthPattern));
+			else definition.ClearBinding(properties.Length);
 			
 			if (hasMinInPattern)
-				definition.SetValue(minValueProperty, minPattern.TryParse(out double minValue) ? minValue : .0);
-			else definition.ClearBinding(minValueProperty);
+				definition.SetValue(properties.Min, minPattern.TryParse(out double minValue) ? minValue : .0);
+			else definition.ClearBinding(properties.Min);
 			
 			if (hasMaxInPattern)
-				definition.SetValue(maxValueProperty, maxPattern.TryParse(out double maxValue) ? maxValue : double.PositiveInfinity);
-			else definition.ClearBinding(maxValueProperty);
-
-			if (GetIsTwoWayMode(grid).IsNot(True)) return;
-
-			if (hasLengthInPattern && definition.GetBinding(lengthProperty).IsNot())
-				Bind(grid, definition, lengthProperty, updateTriggerPropertyPath);
-			if (hasMinInPattern && definition.GetBinding(minValueProperty).IsNot())
-				Bind(grid, definition, minValueProperty, updateTriggerPropertyPath);
-			if (hasMaxInPattern && definition.GetBinding(maxValueProperty).IsNot())
-				Bind(grid, definition, maxValueProperty, updateTriggerPropertyPath);
+				definition.SetValue(properties.Max, maxPattern.TryParse(out double maxValue) ? maxValue : double.PositiveInfinity);
+			else definition.ClearBinding(properties.Max);
 		}
 
 		private static void Bind(Grid grid, DependencyObject definition, DependencyProperty property,
@@ -224,18 +232,14 @@ namespace Ace.Controls
 			definition.SetBinding(property, new Binding
 			{
 				Source = grid,
-#if !WINDOWS_PHONE || !XAMARIN
 				Path = updateTriggerPropertyPath,
 				Mode = BindingMode.OneWayToSource,
-#endif
 				FallbackValue = definition.GetValue(property)
 			});
 
 		private static void UpdateDefinitions<TDefinition>(Grid grid,
 			ICollection<TDefinition> definitions, string pattern,
-			DependencyProperty lengthProperty,
-			DependencyProperty minValueProperty,
-			DependencyProperty maxValueProperty,
+			DefinitionProperties properties,
 			DependencyProperty isInUpdateProperty,
 			PropertyPath path)
 			where TDefinition : DependencyObject, new()
@@ -253,7 +257,7 @@ namespace Ace.Controls
 
 				try
 				{
-					SetValues(d, p, grid, lengthProperty, minValueProperty, maxValueProperty, path);
+					SetValues(d, p, grid, properties, path);
 				}
 				catch (Exception exception)
 				{
@@ -262,7 +266,7 @@ namespace Ace.Controls
 
 				return d;
 			}).ForEach(definitions.Add);
-			
+
 			grid.SetValue(isInUpdateProperty, False);
 		}
 
@@ -274,13 +278,13 @@ namespace Ace.Controls
 			var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "").TrimStart(TrimStartChars);
 			var colSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "").TrimStart(TrimStartChars);
 			var rowSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "").TrimStart(TrimStartChars);
-#if !WINDOWS_PHONE && !XAMARIN
-			if (sssPattern.TryParse(out bool sharedSizeScope)) Grid.SetIsSharedSizeScope(element, sharedSizeScope);
+#if !XAMARIN
+			if (sssPattern.TryParse(out bool sharedSizeScope)) SetIsSharedSizeScope(element, sharedSizeScope);
 #endif
-			if (colSpanPattern.TryParse(out int colSpan)) Grid.SetColumnSpan(element, AdaptSpan(colSpan));
-			if (rowSpanPattern.TryParse(out int rowSpan)) Grid.SetRowSpan(element, AdaptSpan(rowSpan));
-			if (colPattern.TryParse(out int col)) Grid.SetColumn(element, AdaptIndex(col, colSpan));
-			if (rowPattern.TryParse(out int row)) Grid.SetRow(element, AdaptIndex(row, rowSpan));
+			if (colSpanPattern.TryParse(out int colSpan)) SetColumnSpan(element, AdaptSpan(colSpan));
+			if (rowSpanPattern.TryParse(out int rowSpan)) SetRowSpan(element, AdaptSpan(rowSpan));
+			if (colPattern.TryParse(out int col)) SetColumn(element, AdaptIndex(col, colSpan));
+			if (rowPattern.TryParse(out int row)) SetRow(element, AdaptIndex(row, rowSpan));
 		}
 
 		public static char[] TrimStartChars = ":=".ToCharArray();
@@ -321,10 +325,6 @@ namespace Ace.Controls
 		private const GridUnitType Star = GridUnitType.Star;
 #if XAMARIN
 		private const GridUnitType Pixel = GridUnitType.Absolute;
-		private static readonly DependencyProperty MinWidthProperty = WidthProperty;
-		private static readonly DependencyProperty MaxWidthProperty = WidthProperty;
-		private static readonly DependencyProperty MinHeightProperty = HeightProperty;
-		private static readonly DependencyProperty MaxHeightProperty = HeightProperty;
 		private static void SetShowGridLines(Grid grid, bool value) { }
 #else
 		private const GridUnitType Pixel = GridUnitType.Pixel;
