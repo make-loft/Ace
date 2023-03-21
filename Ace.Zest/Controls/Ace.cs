@@ -289,6 +289,9 @@ namespace Ace.Controls
 	}
 
 	public class Border : Frame { }
+
+	public class GridSplitter : Grid { }
+	public class RackSplitter : GridSplitter { }
 #else
 
 	public enum Orientation { Both, Vertical, Horizontal }
