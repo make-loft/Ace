@@ -15,7 +15,7 @@
 			var type = value.GetType();
 			var propertyNames = DisplayMemberPath.Split('.');
 			foreach (var propertyName in propertyNames)
-				value = type.GetProperty(propertyName).GetValue(value);
+				value = type.GetProperty(propertyName)?.GetValue(value);
 			return value;
 		}
 	}
