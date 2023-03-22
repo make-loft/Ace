@@ -34,7 +34,7 @@ namespace Ace.Controls
 			if (items.IsNot()) return;
 
 			var activeItem = 0 <= value && value < items.Count ? items[value] : default;
-			if (args.Sender.ActiveItem.IsNot(activeItem) && activeItem.IsNot(default))
+			if (args.Sender.ActiveItem.IsNot(activeItem))
 				args.Sender.ActiveItem = activeItem;
 		});
 
@@ -43,6 +43,9 @@ namespace Ace.Controls
 			var value = args.NewValue;
 			var items = args.Sender.ItemsSource;
 			if (items.IsNot()) return;
+
+			if (args.NewValue.IsNot() && args.Sender.ActiveItemUnset.Is(false))
+				return;
 
 			var activeItemOffset = items.Is() ? items.IndexOf(value) : -1;
 			if (args.Sender.ActiveItemOffset.IsNot(activeItemOffset))
