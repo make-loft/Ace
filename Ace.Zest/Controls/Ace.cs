@@ -76,24 +76,6 @@ namespace Ace.Controls
 			_ => throw new NotImplementedException(),
 		};
 
-		public static Property Attach<TProperty>(string name, Type declareType) =>
-			Property.CreateAttached(name, TypeOf<TProperty>.Raw, declareType, default(TProperty));
-		public static Property Attach<TProperty>(string name, Type declareType, TProperty defaultValue, Action<ChangeArgs<View, TProperty>> changed = default) =>
-			Property.CreateAttached(name, TypeOf<TProperty>.Raw, declareType, defaultValue,
-				propertyChanged: (s, o, n) => changed(new((View)s, (TProperty)o, (TProperty)n)));
-		public static Property Attach<TProperty>(string name, Type declareType, Action<ChangeArgs<View, TProperty>> changed) =>
-			Property.CreateAttached(name, TypeOf<TProperty>.Raw, declareType, default(TProperty),
-				propertyChanged: (s, o, n) => changed(new((View)s, (TProperty)o, (TProperty)n)));
-
-		public static Property Attach<TView, TProperty>(string name, Type declareType, TProperty defaultValue, Action<ChangeArgs<TView, TProperty>> changed = default)
-			where TView : View =>
-			Property.CreateAttached(name, TypeOf<TProperty>.Raw, declareType, defaultValue,
-				propertyChanged: (s, o, n) => changed(new((TView)s, (TProperty)o, (TProperty)n)));
-		public static Property Attach<TView, TProperty>(string name, Type declareType, Action<ChangeArgs<TView, TProperty>> changed)
-			where TView : View =>
-			Property.CreateAttached(name, TypeOf<TProperty>.Raw, declareType, default(TProperty),
-				propertyChanged: (s, o, n) => changed(new((TView)s, (TProperty)o, (TProperty)n)));
-
 		public static void ContextChanged<TView>(this TView element, Action<ChangeArgs<TView, object>> onContextChanged) where TView : View =>
 			element.BindingContextChanged += (o, e) => onContextChanged(new(element, default, element.BindingContext));
 #else
@@ -126,24 +108,10 @@ namespace Ace.Controls
 			AligmentOptions.Stretch => VerticalAlignment.Stretch,
 			_ => throw new NotImplementedException(),
 		};
-
-		public static Property Attach<TProperty>(string name, Type declareType) =>
-			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, declareType);
-		public static Property Attach<TProperty>(string name, Type declareType, TProperty defaultValue, Action<ChangeArgs<View, TProperty>> changed = default) =>
-			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, declareType, new(defaultValue, (s, args) => changed(new((View)s, args))));
-		public static Property Attach<TProperty>(string name, Type declareType, Action<ChangeArgs<View, TProperty>> changed) =>
-			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, declareType, new((s, args) => changed(new((View)s, args))));
-
-		public static Property Attach<TView, TProperty>(string name, Type declareType, TProperty defaultValue, Action<ChangeArgs<TView, TProperty>> changed = default)
-			where TView : View =>
-			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, declareType, new(defaultValue, (s, args) => changed(new((TView)s, args))));
-		public static Property Attach<TView, TProperty>(string name, Type declareType, Action<ChangeArgs<TView, TProperty>> changed)
-			where TView : View =>
-			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, declareType, new((s, args) => changed(new((TView)s, args))));
 #endif
 	}
 
-	public static class Type<TOwner> where TOwner : View
+	public static class Type<TOwner>
 	{
 #if XAMARIN
 		public static Property Create<TProperty>(Expression<Func<TOwner, TProperty>> func) =>
@@ -154,7 +122,25 @@ namespace Ace.Controls
 
 		public static Property Create<TProperty>(Expression<Func<TOwner, TProperty>> func, Action<ChangeArgs<TOwner, TProperty>> changed, TProperty defaultValue = default) =>
 			Property.Create(func.UnboxMemberName(), TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, defaultValue,
-				propertyChanged: (s, o, n) => changed(new((TOwner)s, (TProperty)o, (TProperty)n)));
+				propertyChanged: (s, o, n) => changed(new((TOwner)(object)s, (TProperty)o, (TProperty)n)));
+
+		public static Property Attach<TProperty>(string name) =>
+			Property.CreateAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, default(TProperty));
+		public static Property Attach<TProperty>(string name, TProperty defaultValue, Action<ChangeArgs<View, TProperty>> changed = default) =>
+			Property.CreateAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, defaultValue,
+				propertyChanged: (s, o, n) => changed(new((View)s, (TProperty)o, (TProperty)n)));
+		public static Property Attach<TProperty>(string name, Action<ChangeArgs<View, TProperty>> changed) =>
+			Property.CreateAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, default(TProperty),
+				propertyChanged: (s, o, n) => changed(new((View)s, (TProperty)o, (TProperty)n)));
+
+		public static Property Attach<TView, TProperty>(string name, TProperty defaultValue, Action<ChangeArgs<TView, TProperty>> changed = default)
+			where TView : View =>
+			Property.CreateAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, defaultValue,
+				propertyChanged: (s, o, n) => changed(new((TView)s, (TProperty)o, (TProperty)n)));
+		public static Property Attach<TView, TProperty>(string name, Action<ChangeArgs<TView, TProperty>> changed)
+			where TView : View =>
+			Property.CreateAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, default(TProperty),
+				propertyChanged: (s, o, n) => changed(new((TView)s, (TProperty)o, (TProperty)n)));
 #else
 		public static Property Create<TProperty>(Expression<Func<TOwner, TProperty>> func) =>
 			Property.Register(func.UnboxMemberName(), TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw);
@@ -163,13 +149,27 @@ namespace Ace.Controls
 			Property.Register(func.UnboxMemberName(), TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue));
 
 		public static Property Create<TProperty>(Expression<Func<TOwner, TProperty>> func, Action<ChangeArgs<TOwner, TProperty>> changed, TProperty defaultValue = default) =>
-			Property.Register(func.UnboxMemberName(), TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((TOwner)s, args))));
+			Property.Register(func.UnboxMemberName(), TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((TOwner)(object)s, args))));
+
+		public static Property Attach<TProperty>(string name) =>
+			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw);
+		public static Property Attach<TProperty>(string name, TProperty defaultValue, Action<ChangeArgs<View, TProperty>> changed = default) =>
+			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((View)s, args))));
+		public static Property Attach<TProperty>(string name, Action<ChangeArgs<View, TProperty>> changed) =>
+			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new((s, args) => changed(new((View)s, args))));
+
+		public static Property Attach<TView, TProperty>(string name, TProperty defaultValue, Action<ChangeArgs<TView, TProperty>> changed = default)
+			where TView : View =>
+			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((TView)s, args))));
+		public static Property Attach<TView, TProperty>(string name, Action<ChangeArgs<TView, TProperty>> changed)
+			where TView : View =>
+			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new((s, args) => changed(new((TView)s, args))));
 #endif
 	}
 
-	public static class Ext
+	public class Ext
 	{
-		public static Property ToolTipProperty = New.Attach<object>("ToolTip", typeof(Ext));
+		public static Property ToolTipProperty = Type<Ext>.Attach<object>("ToolTip");
 
 		public static void SetToolTip(BindableObject bindable, object value) => bindable.SetValue(ToolTipProperty, value);
 		public static object GetToolTip(BindableObject bindable) => bindable.GetValue(ToolTipProperty);
@@ -177,10 +177,10 @@ namespace Ace.Controls
 
 	public enum AligmentOptions { Default, Center, From, Till, Stretch };
 
-	public static class Alignment
+	public class Alignment
 	{
-		public static Property YProperty = New.Attach<AligmentOptions>("Y", typeof(Alignment), args => args.Sender.SetAligmentY(args.NewValue));
-		public static Property XProperty = New.Attach<AligmentOptions>("X", typeof(Alignment), args => args.Sender.SetAligmentX(args.NewValue));
+		public static Property YProperty = Type<Alignment>.Attach("Y", AligmentOptions.Default, args => args.Sender.SetAligmentY(args.NewValue));
+		public static Property XProperty = Type<Alignment>.Attach("X", AligmentOptions.Default, args => args.Sender.SetAligmentX(args.NewValue));
 
 		public static void SetY(BindableObject bindable, AligmentOptions value) => bindable.SetValue(YProperty, value);
 		public static void SetX(BindableObject bindable, AligmentOptions value) => bindable.SetValue(XProperty, value);
@@ -188,10 +188,10 @@ namespace Ace.Controls
 		public static object GetX(BindableObject bindable) => bindable.GetValue(XProperty);
 	}
 
-	public static class Length
+	public class Length
 	{
-		public static Property XProperty = New.Attach<double>("X", typeof(Length), args => args.Sender.SetLengthX(args.NewValue));
-		public static Property YProperty = New.Attach<double>("Y", typeof(Length), args => args.Sender.SetLengthY(args.NewValue));
+		public static Property XProperty = Type<Length>.Attach("X", 0d, args => args.Sender.SetLengthX(args.NewValue));
+		public static Property YProperty = Type<Length>.Attach("Y", 0d, args => args.Sender.SetLengthY(args.NewValue));
 
 		public static void SetX(BindableObject bindable, double value) => bindable.SetValue(XProperty, value);
 		public static void SetY(BindableObject bindable, double value) => bindable.SetValue(YProperty, value);
@@ -199,21 +199,21 @@ namespace Ace.Controls
 		public static double GetY(BindableObject bindable) => (double)bindable.GetValue(YProperty);
 	}
 
-	public static class Data
+	public class Data
 	{
-		public static Property ContextProperty = New.Attach<object>("Context", typeof(Data), args => args.Sender.SetContext(args.NewValue));
+		public static Property ContextProperty = Type<Data>.Attach("Context", default(object), args => args.Sender.SetContext(args.NewValue));
 
 		public static void SetContext(BindableObject bindable, object value) => bindable.SetValue(ContextProperty, value);
 		public static object GetContext(BindableObject bindable) => bindable.GetValue(ContextProperty);
 	}
 
-	public static class Children
+	public class Children
 	{
 		public static Property ItemsSourceProperty
-			= New.Attach<Panel, IEnumerable>("ItemsSource", typeof(Children), args =>
+			= Type<Children>.Attach<Panel, IEnumerable>("ItemsSource", args =>
 			{
 				// todo: weak subscription
-				void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => args.Sender.UpdateContent();
+				void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => UpdateContent(args.Sender);
 
 				if (args.OldValue.Is(out INotifyCollectionChanged oldCollection))
 				{
@@ -225,13 +225,13 @@ namespace Ace.Controls
 					newCollection.CollectionChanged += OnCollectionChanged;
 				}
 
-				args.Sender.UpdateContent();
+				UpdateContent(args.Sender);
 			});
 
 		public static Property ItemTemplateProperty
-			= New.Attach<Panel, DataTemplate>("ItemTemplate", typeof(Children), args => args.Sender.UpdateContent());
+			= Type<Children>.Attach<Panel, DataTemplate>("ItemTemplate", args => UpdateContent(args.Sender));
 
-		static void UpdateContent(this Panel panel)
+		static void UpdateContent(Panel panel)
 		{
 			var itemTemplate = GetItemTemplate(panel);
 			var itemsSource = GetItemsSource(panel);
@@ -258,6 +258,18 @@ namespace Ace.Controls
 	//public class DataTemplate : System.Windows.DataTemplate { }
 
 #if XAMARIN
+	//public static class RowDefinition
+	//{
+	//	public static readonly Property MinWidthProperty = Type<ColumnDefinition>.Attach("MinWidth", double.NegativeInfinity);
+	//	public static readonly Property MaxWidthProperty = Type<ColumnDefinition>.Attach("MaxWidth", double.PositiveInfinity);
+	//}
+
+	//public static class ColumnDefinition
+	//{
+	//	public static readonly Property MinWidthProperty = Type<ColumnDefinition>.Attach("MinWidth", double.NegativeInfinity);
+	//	public static readonly Property MaxWidthProperty = Type<ColumnDefinition>.Attach("MaxWidth", double.PositiveInfinity);
+	//}
+
 	public class ContentView : Xamarin.Forms.ContentView
 	{
 		public ControlTemplate Template

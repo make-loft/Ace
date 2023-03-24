@@ -204,27 +204,23 @@ namespace Ace.Controls
 			var lengthPattern = pattern.Substring(start, finish - start);
 			var hasLengthInPattern = lengthPattern.IsNullOrWhiteSpace().Not();
 
-			if (GetIsTwoWayMode(grid).Is(True))
-			{
-				if (hasLengthInPattern && definition.GetBinding(properties.Length).IsNot())
-					Bind(grid, definition, properties.Length, updateTriggerPropertyPath);
-				if (hasMinInPattern && definition.GetBinding(properties.Min).IsNot())
-					Bind(grid, definition, properties.Min, updateTriggerPropertyPath);
-				if (hasMaxInPattern && definition.GetBinding(properties.Max).IsNot())
-					Bind(grid, definition, properties.Max, updateTriggerPropertyPath);
-			}
-
 			if (hasLengthInPattern)
 				definition.SetValue(properties.Length, ToGridLength(lengthPattern));
-			else definition.ClearBinding(properties.Length);
 			
 			if (hasMinInPattern)
-				definition.SetValue(properties.Min, minPattern.TryParse(out double minValue) ? minValue : .0);
-			else definition.ClearBinding(properties.Min);
+				definition.SetValue(properties.Min, minPattern.TryParse(out double minValue) ? minValue : double.NegativeInfinity);
 			
 			if (hasMaxInPattern)
 				definition.SetValue(properties.Max, maxPattern.TryParse(out double maxValue) ? maxValue : double.PositiveInfinity);
-			else definition.ClearBinding(properties.Max);
+
+			if (GetIsTwoWayMode(grid).IsNot(True)) return;
+
+			if (hasLengthInPattern)
+				Bind(grid, definition, properties.Length, updateTriggerPropertyPath);
+			if (hasMinInPattern)
+				Bind(grid, definition, properties.Min, updateTriggerPropertyPath);
+			if (hasMaxInPattern)
+				Bind(grid, definition, properties.Max, updateTriggerPropertyPath);
 		}
 
 		private static void Bind(Grid grid, DependencyObject definition, DependencyProperty property,
