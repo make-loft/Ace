@@ -7,19 +7,10 @@ namespace Ace
 {
 	public static class Context
 	{
-		public static ref TValue Notify<TValue>(
-			this ref TValue value,
-			SmartObject smartObject,
-			[CallerMemberName]string propertyName = null) where TValue : struct
-		{
-			smartObject.EvokePropertyChanged(propertyName);
-			return ref value;
-		}
-
 		public static TValue Notify<TValue>(
 			this TValue value,
 			SmartObject smartObject,
-			[CallerMemberName]string propertyName = null) where TValue : class
+			[CallerMemberName]string propertyName = null)
 		{
 			smartObject.EvokePropertyChanged(propertyName);
 			return value;

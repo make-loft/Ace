@@ -72,9 +72,9 @@ namespace Ace
 
 		public static T To<T>(this T o) => o;
 		public static T To<T>(this object o) => (T)o.ChangeType<T>();
-		public static ref T To<T>(this T o, out T x) { x = o; return ref x; }
-		public static ref T To<T>(this object o, out T x) { x = (T)o.ChangeType<T>(); return ref x; }
-		public static ref T? To<T>(this object o, out T? x) where T : struct { x = (T?)o; return ref x; }
+		public static T To<T>(this T o, out T x)  => x = o;
+		public static T To<T>(this object o, out T x) => x = (T)o.ChangeType<T>();
+		public static T? To<T>(this object o, out T? x) where T : struct => x = (T?)o;
 
 		public static T As<T>(this T o) => o;
 		public static T As<T>(this T o, out T x) => x = o;
