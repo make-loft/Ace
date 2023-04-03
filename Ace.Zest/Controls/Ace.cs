@@ -288,10 +288,9 @@ namespace Ace.Controls
 		}
 	}
 
-	public class Picker : Xamarin.Forms.Picker { }
-	public class Button : Xamarin.Forms.Button
+	public class Knob : Button
 	{
-		public static Property ContentProperty = Type<Button>.Create(b => b.Content,
+		public static Property ContentProperty = Type<Knob>.Create(b => b.Content,
 			args => args.Sender.Text = args.NewValue.To<string>());
 		public object Content
 		{

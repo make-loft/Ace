@@ -11,6 +11,8 @@ namespace Ace.Presentation
 	public class Grid : Xamarin.Forms.Grid { }
 	public class Switch : Xamarin.Forms.Switch { }
 	public class Slider : Xamarin.Forms.Slider { }
+	public class Picker : Xamarin.Forms.Picker { }
+	public class Button : Xamarin.Forms.Button { }
 
 	//public class DataTemplate : Xamarin.Forms.DataTemplate { }
 	//public class ControlTemplate : Xamarin.Forms.ControlTemplate { }
