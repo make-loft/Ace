@@ -258,27 +258,6 @@ namespace Ace.Controls
 	//public class DataTemplate : System.Windows.DataTemplate { }
 
 #if XAMARIN
-	//public static class RowDefinition
-	//{
-	//	public static readonly Property MinWidthProperty = Type<ColumnDefinition>.Attach("MinWidth", double.NegativeInfinity);
-	//	public static readonly Property MaxWidthProperty = Type<ColumnDefinition>.Attach("MaxWidth", double.PositiveInfinity);
-	//}
-
-	//public static class ColumnDefinition
-	//{
-	//	public static readonly Property MinWidthProperty = Type<ColumnDefinition>.Attach("MinWidth", double.NegativeInfinity);
-	//	public static readonly Property MaxWidthProperty = Type<ColumnDefinition>.Attach("MaxWidth", double.PositiveInfinity);
-	//}
-
-	public class ContentView : Xamarin.Forms.ContentView
-	{
-		public ControlTemplate Template
-		{
-			get => ControlTemplate;
-			set => ControlTemplate = value;
-		}
-	}
-
 	public class Title : Label
 	{
 		public TextAlignment TextAlignment
