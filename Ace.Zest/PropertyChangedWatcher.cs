@@ -19,11 +19,13 @@ namespace Ace
 #if XAMARIN
 			DependencyProperty.Create("Context", typeof(object), typeof(PropertyChangedWatcher), default);
 
-		const string ContextPath = "BindingContext";
+		public new event PropertyChangedEventHandler PropertyChanged;
+		public const string ContextPath = "BindingContext";
 #else
 			DependencyProperty.Register("Context", typeof(object), typeof(PropertyChangedWatcher), default);
 
-		const string ContextPath = "DataContext";
+		public event PropertyChangedEventHandler PropertyChanged;
+		public const string ContextPath = "DataContext";
 #endif
 		public object Context { get; private set; }
 		public object Source { get; private set; }
@@ -31,7 +33,6 @@ namespace Ace
 		public string PropertyName => _propertyChangedEventArgs.PropertyName;
 		readonly PropertyChangedEventArgs _propertyChangedEventArgs;
 
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{

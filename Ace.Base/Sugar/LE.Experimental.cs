@@ -30,7 +30,9 @@ namespace Ace
 			typeof(Environment).GetProperties()[0].Name != "CommandLine";
 
 		public static Uri ToUri(this string value) => new(value);
+
 		/* use 'typeof(Uri).SetNonPublicStaticField("s_IriParsing", false); // s_IdnScope = 2||0' to allow 'skipEscape' */
+		[Obsolete]
 		public static Uri ToUri(this string value, bool skipEscape = false) => new(value, skipEscape);
 		public static Regex ToRegex(this string value, RegexOptions options = RegexOptions.Compiled) => new(value, options);
 		public static Guid ToGuid(this string value) => new(value);

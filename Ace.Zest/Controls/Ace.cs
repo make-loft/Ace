@@ -292,6 +292,7 @@ namespace Ace.Controls
 
 	//public class ResourceDictionary : System.Windows.ResourceDictionary { }
 
+	public class Knob : Button { }
 	public class ContentPresenter : System.Windows.Controls.ContentPresenter { }
 	public class ContentView : ContentControl { }
 	public class Stack : StackPanel

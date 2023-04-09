@@ -8,6 +8,7 @@ using System.Windows.Markup;
 using System.Windows;
 #endif
 
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
 namespace Ace.Controls
 {
 	[ContentProperty(nameof(Items))]
