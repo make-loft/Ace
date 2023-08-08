@@ -42,7 +42,8 @@ namespace Ace.Replication.Replicators
 			var hasKey = map.TryGetValue(profile.IdKey, out var key);
 			var id = hasKey ? (int)key : idCache.Count;
 			if (idCache.TryGetValue(id, out var replica) && hasKey && map.Count.Is(1)) return replica;
-			var typedReplica = (T)(idCache[id] = replica ?? ActivateInstance(map, profile, idCache, baseType));
+			var isReusable = baseType.Is() && baseType.IsAssignableFrom(replica?.GetType());
+			var typedReplica = (T)(idCache[id] = isReusable ? replica : ActivateInstance(map, profile, idCache, baseType));
 			if (typedReplica.Is()) FillInstance(map, ref typedReplica, profile, idCache, baseType);
 			return typedReplica;
 		}
