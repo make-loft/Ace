@@ -18,6 +18,8 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Collections.Specialized;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Ace.Controls
 {
@@ -142,14 +144,19 @@ namespace Ace.Controls
 			Property.CreateAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, default(TProperty),
 				propertyChanged: (s, o, n) => changed(new((TView)s, (TProperty)o, (TProperty)n)));
 #else
+		public static Dictionary<string, Property> NameToProperty = new();
+
 		public static Property Create<TProperty>(Expression<Func<TOwner, TProperty>> func) =>
-			Property.Register(func.UnboxMemberName(), TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw);
+			NameToProperty[func.UnboxMemberName().To(out var name)] =
+				Property.Register(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw);
 
 		public static Property Create<TProperty>(Expression<Func<TOwner, TProperty>> func, TProperty defaultValue) =>
-			Property.Register(func.UnboxMemberName(), TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue));
+			NameToProperty[func.UnboxMemberName().To(out var name)] =
+				Property.Register(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue));
 
 		public static Property Create<TProperty>(Expression<Func<TOwner, TProperty>> func, Action<ChangeArgs<TOwner, TProperty>> changed, TProperty defaultValue = default) =>
-			Property.Register(func.UnboxMemberName(), TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((TOwner)(object)s, args))));
+			NameToProperty[func.UnboxMemberName().To(out var name)] =
+				Property.Register(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((TOwner)(object)s, args))));
 
 		public static Property Attach<TProperty>(string name) =>
 			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw);
@@ -165,6 +172,24 @@ namespace Ace.Controls
 			where TView : View =>
 			Property.RegisterAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new((s, args) => changed(new((TView)s, args))));
 #endif
+	}
+
+	public static class BindableExtantions
+	{
+		public static TValue Get<TBindable, TValue>(this TBindable bindable,
+			TValue value = default, [CallerMemberName] string name = default)
+			where TBindable : BindableObject =>
+			(TValue)bindable.GetValue(Type<TBindable>.NameToProperty[name]);
+
+		public static void Set<TBindable, TValue>(this TBindable bindable,
+			TValue value = default, [CallerMemberName]string name = default)
+			where TBindable : BindableObject =>
+			bindable.SetValue(Type<TBindable>.NameToProperty[name], value);
+
+		public static TValue Get<TValue>(this BindableObject bindable, Property property, TValue value = default) =>
+			(TValue)bindable.GetValue(property);
+		public static void Set<TValue>(this BindableObject bindable, Property property, TValue value) =>
+			bindable.SetValue(property, value);
 	}
 
 	public class Ext

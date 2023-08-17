@@ -136,6 +136,9 @@
       <DependentUpon>Pivot.Desktop.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ace.Zest\Controls\Slot.cs" />
+    <Compile Include="Ace.Zest\Controls\NumericField.xaml.cs">
+      <DependentUpon>NumericField.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ace.Zest\Extensions\Colority.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\AggregateConverter.cs" />
     <Compile Include="Ace.Zest\Markup\Converters\LocalizingConverter.cs" />
@@ -193,6 +196,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Ace.Zest\Controls\Pivot.Desktop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ace.Zest\Controls\NumericField.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ace.Zest\Dictionaries\AppConverters.xaml" />
