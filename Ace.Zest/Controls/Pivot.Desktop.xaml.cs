@@ -1,20 +1,9 @@
-﻿using System;
+﻿using System.Linq;
 using System.Windows.Input;
-using System.Linq;
-
-#if XAMARIN
-using Xamarin.Forms;
-using Property = Xamarin.Forms.Property;
-#else
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using Property = System.Windows.DependencyProperty;
-using Binding =  System.Windows.Data.Binding;
-#endif
+using Binding = System.Windows.Data.Binding;
 
 namespace Ace.Controls
 {
-	[XamlCompilation(XamlCompilationOptions.Skip)]
 	public partial class Pivot
 	{
 		public Pivot() => InitializeComponent();
@@ -46,10 +35,15 @@ namespace Ace.Controls
 			});
 		}
 
-		private void ItemCell_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) =>
-			ActivateCell((ItemCell)sender);
+		private void ItemCell_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount.IsNot(1))
+				return;
 
-		private static Key[] ActivationKeys = { Key.Enter, Key.Space };
+			ActivateCell((ItemCell)sender);
+		}
+
+		private static readonly Key[] ActivationKeys = { Key.Enter, Key.Space };
 		private void ItemCell_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
 			if (ActivationKeys.Contains(e.Key))
