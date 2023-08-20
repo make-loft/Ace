@@ -50,6 +50,5 @@
 		Text="{Binding Value, ElementName=This, Mode=TwoWay, Converter={StaticResource FormatConverter}}"
 		PreviewKeyDown="ValueField_PreviewKeyDown"
 		GotFocus="ValueField_GotFocus"
-		KeyUp="ValueField_KeyUp"
 		/>
 </c:Rack>

@@ -74,8 +74,9 @@ namespace Ace.Controls
 			}
 			else
 			{
-				value = value < from ? value + (till - from) : value;
-				value = value > till ? value - (till - from) : value;
+				var length = till - from;
+				value = value < from ? (value + length) % length : value;
+				value = value > till ? (value - length) % length : value;
 			}
 
 			text = value.ToString(DoubleFixedPointFormat);
@@ -146,9 +147,7 @@ namespace Ace.Controls
 			TryRotate(default);
 		}
 
-		private static readonly Key[] HandleKeys = { Key.Left, Key.Right };
-
-		private void ValueField_KeyUp(object sender, KeyEventArgs e) => TryRotate(default);
+		private static readonly Key[] HandleKeys = { Key.Left, Key.Right, Key.Enter };
 
 		private void ValueField_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
@@ -161,7 +160,11 @@ namespace Ace.Controls
 				_ => false
 			};
 
-			e.Handled &= HandleKeys.Contains(e.Key);
+			var isKeyHandled = HandleKeys.Contains(e.Key);
+			if (isKeyHandled)
+				TryRotate(default);
+
+			e.Handled &= isKeyHandled;
 		}
 
 		private bool TryMoveCaret(int offset)
