@@ -79,5 +79,19 @@ namespace Ace
 			DateTime.TryParse(pattern, provider, default, out value);
 		public static bool TryParse(this string pattern, IFormatProvider provider, DateTimeStyles styles, out DateTime value) =>
 			DateTime.TryParse(pattern, provider, styles, out value);
+
+		public static bool TryParse<TValue>(this string text, out TValue value, Func<string, TValue> parse)
+		{
+			try
+			{
+				value = parse(text);
+				return true;
+			}
+			catch
+			{
+				value = default;
+				return false;
+			}
+		}
 	}
 }

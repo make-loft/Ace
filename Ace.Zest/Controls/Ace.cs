@@ -20,6 +20,7 @@ using System.Linq;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace Ace.Controls
 {
@@ -144,7 +145,47 @@ namespace Ace.Controls
 			Property.CreateAttached(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, default(TProperty),
 				propertyChanged: (s, o, n) => changed(new((TView)s, (TProperty)o, (TProperty)n)));
 #else
-		public static Dictionary<string, Property> NameToProperty = new();
+		private static readonly Dictionary<string, Property> NameToProperty = new();
+
+		public static Property GetProperty<TProperty>(
+			Expression<Func<TOwner, TProperty>> func,
+			TProperty defaultValue = default) =>
+			GetProperty(func.UnboxMemberName(), defaultValue);
+		
+		public static Property GetProperty<TProperty>(string name, TProperty defaultValue)
+		{
+			if (NameToProperty.TryGetValue(name, out var property))
+				return property;
+
+			property = Handler<TProperty>.NameToHandler.TryGetValue(name, out var handler)
+				? Property.Register(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => handler.EvokeChanged(new(s.To<TOwner>(), args))))
+				: Property.Register(name, TypeOf<TProperty>.Raw, TypeOf<TOwner>.Raw, new(defaultValue));
+
+			return NameToProperty[name] = property;
+		}
+
+		public static void CreateProperties(params Type[] types)
+		{
+			var ownerType = TypeOf<TOwner>.Raw;
+			var instance = Activator.CreateInstance(TypeOf<TOwner>.Raw);
+			var flags = BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+			var properties = TypeOf<TOwner>.Raw.GetProperties(flags)
+				.Where(p => ownerType.Is(p.DeclaringType) || types.Contains(p.DeclaringType))
+				.ToArray();
+			properties.ForEach(p => p.GetValue(instance));
+		}
+
+		public static Handler<TProperty> When<TProperty>(Expression<Func<TOwner, TProperty>> func) => 
+			Handler<TProperty>.NameToHandler.TryGetValue(func.UnboxMemberName().To(out var name), out var handler)
+				? handler
+				: Handler<TProperty>.NameToHandler[name] = new();
+
+		public class Handler<TProperty>
+		{
+			public static Dictionary<string, Handler<TProperty>> NameToHandler = new();
+			public event Action<ChangeArgs<TOwner, TProperty>> Changed;
+			public void EvokeChanged(ChangeArgs<TOwner, TProperty> args) => Changed?.Invoke(args);
+		}
 
 		public static Property Create<TProperty>(Expression<Func<TOwner, TProperty>> func) =>
 			NameToProperty[func.UnboxMemberName().To(out var name)] =
@@ -177,14 +218,18 @@ namespace Ace.Controls
 	public static class BindableExtantions
 	{
 		public static TValue Get<TBindable, TValue>(this TBindable bindable,
-			TValue value = default, [CallerMemberName] string name = default)
+			TValue defaultValue = default, [CallerMemberName] string name = default)
 			where TBindable : BindableObject =>
-			(TValue)bindable.GetValue(Type<TBindable>.NameToProperty[name]);
+			bindable.GetValue(Type<TBindable>.GetProperty(name, defaultValue)).Is(out TValue value)
+				? value
+				: defaultValue;
 
 		public static void Set<TBindable, TValue>(this TBindable bindable,
-			TValue value = default, [CallerMemberName]string name = default)
-			where TBindable : BindableObject =>
-			bindable.SetValue(Type<TBindable>.NameToProperty[name], value);
+			TValue value = default, [CallerMemberName] string name = default)
+			where TBindable : BindableObject
+		{
+			bindable.SetValue(Type<TBindable>.GetProperty(name, value), value);
+		}
 
 		public static TValue Get<TValue>(this BindableObject bindable, Property property, TValue value = default) =>
 			(TValue)bindable.GetValue(property);

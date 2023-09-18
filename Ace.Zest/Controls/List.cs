@@ -6,14 +6,46 @@ using Property = Xamarin.Forms.BindableProperty;
 using Property = System.Windows.DependencyProperty;
 using System.Windows.Markup;
 using System.Windows;
+
+using View = System.Windows.Controls.ContentControl;
 #endif
 
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
 namespace Ace.Controls
 {
 	[ContentProperty(nameof(Items))]
-	public class List : AView<List>
+	public class List : View
 	{
+		static List()
+		{
+			Type<List>.When(v => v.ActiveItemOffset).Changed += args =>
+			{
+				var value = args.NewValue;
+				var items = args.Sender.ItemsSource;
+				if (items.IsNot()) return;
+
+				var activeItem = 0 <= value && value < items.Count ? items[value] : default;
+				if (args.Sender.ActiveItem.IsNot(activeItem))
+					args.Sender.ActiveItem = activeItem;
+			};
+
+			Type<List>.When(v => v.ActiveItemOffset).Changed += args =>
+			{
+				var value = args.NewValue;
+				var items = args.Sender.ItemsSource;
+				if (items.IsNot()) return;
+
+				if (args.NewValue.IsNot() && args.Sender.ActiveItemUnset.Is(false))
+					return;
+
+				var activeItemOffset = items.Is() ? items.IndexOf(value) : -1;
+				if (args.Sender.ActiveItemOffset.IsNot(activeItemOffset))
+					args.Sender.ActiveItemOffset = activeItemOffset;
+			};
+
+			Type<List>.CreateProperties();
+		}
+
 		public List()
 		{
 			Items.CollectionChanged += (o, e) => ItemsSource = Items;
@@ -24,77 +56,46 @@ namespace Ace.Controls
 
 		public SmartSet<object> Items { get; } = new();
 
-		public static readonly Property ContentTemplateProperty = Create(v => v.ContentTemplate);
-		public static readonly Property ItemTemplateProperty = Create(v => v.ItemTemplate);
-		public static readonly Property ItemsSourceProperty = Create(v => v.ItemsSource);
-
-		public static readonly Property ActiveItemOffsetProperty = Create(v => v.ActiveItemOffset, args =>
-		{
-			var value = args.NewValue;
-			var items = args.Sender.ItemsSource;
-			if (items.IsNot()) return;
-
-			var activeItem = 0 <= value && value < items.Count ? items[value] : default;
-			if (args.Sender.ActiveItem.IsNot(activeItem))
-				args.Sender.ActiveItem = activeItem;
-		});
-
-		public static readonly Property ActiveItemProperty = Create(v => v.ActiveItem, args =>
-		{
-			var value = args.NewValue;
-			var items = args.Sender.ItemsSource;
-			if (items.IsNot()) return;
-
-			if (args.NewValue.IsNot() && args.Sender.ActiveItemUnset.Is(false))
-				return;
-
-			var activeItemOffset = items.Is() ? items.IndexOf(value) : -1;
-			if (args.Sender.ActiveItemOffset.IsNot(activeItemOffset))
-				args.Sender.ActiveItemOffset = activeItemOffset;
-		});
-
 		public DataTemplate ItemTemplate
 		{
-			get => Get<DataTemplate>(ItemTemplateProperty);
-			set => Set(ItemTemplateProperty, value);
+			get => this.Get(default(DataTemplate));
+			set => this.Set(value);
 		}
 
 		public DataTemplate ContentTemplate
 		{
-			get => Get<DataTemplate>(ContentTemplateProperty);
-			set => Set(ContentTemplateProperty, value);
+			get => this.Get(default(DataTemplate));
+			set => this.Set(value);
 		}
 
 		public object ActiveItem
 		{
-			get => Get<object>(ActiveItemProperty);
-			set => Set(ActiveItemProperty, value);
+			get => this.Get(default(object));
+			set => this.Set(value);
 		}
 
 		public IList ItemsSource
 		{
-			get => Get<IList>(ItemsSourceProperty);
-			set => Set(ItemsSourceProperty, value);
+			get => this.Get(default(IList));
+			set => this.Set(value);
 		}
 
 		public int ActiveItemOffset
 		{
-			get => Get<int>(ActiveItemOffsetProperty);
-			set => Set(ActiveItemOffsetProperty, value);
+			get => this.Get(default(int));
+			set => this.Set(value);
 		}
 
-		public static readonly Property ActiveItemUnsetProperty = Type<List>.Create(p => p.ActiveItemUnset, true);
 		public bool ActiveItemUnset
 		{
-			get => GetValue(ActiveItemUnsetProperty).To<bool>();
-			set => SetValue(ActiveItemUnsetProperty, value);
+			get => this.Get(true);
+			set => this.Set(value);
 		}
 
-		public static readonly Property ActiveCellProperty = Type<List>.Create(p => p.ActiveCell);
 		public ItemCell ActiveCell
 		{
-			get => GetValue(ActiveCellProperty).To<ItemCell>();
-			set => SetValue(ActiveCellProperty, value);
+			get => this.Get(default(ItemCell));
+			set => this.Set(value);
 		}
 	}
 }

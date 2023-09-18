@@ -1,0 +1,169 @@
+﻿<ContentControl
+	x:Class="Ace.Controls.AField"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
+	xmlns:c="clr-namespace:Ace.Controls"
+	xmlns:m="clr-namespace:Ace.Markup"
+	ToolTipService.ShowDuration="60000"
+	x:Name="This"
+	>
+	<Control.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="../../../Dictionaries/AppConverters.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+			<cnv:Converter
+				x:Key="FormatConverter"
+				Convert="FormatConverter_Convert"
+				ConvertBack="FormatConverter_ConvertBack"
+				/>
+			<cnv:Converter
+				x:Key="ToolTipConverter"
+				Convert="ToolTipConverter_Convert"
+				/>
+			<Style
+				TargetType="c:Title"
+				>
+				<Setter Property="Margin" Value="5 0" />
+				<Setter Property="FontFamily" Value="Consolas" />
+				<Setter Property="HorizontalAlignment" Value="Right" />
+			</Style>
+			<Style
+				TargetType="RepeatButton"
+				>
+				<Setter Property="Margin" Value="0" />
+				<Setter Property="FontSize" Value="7" />
+				<Setter Property="Foreground" Value="DimGray" />
+				<Setter Property="IsEnabled" Value="{Binding IsReadOnly, Converter={StaticResource TrueToFalseConverter}}" />
+			</Style>
+		</ResourceDictionary>
+	</Control.Resources>
+
+	<Control.ToolTip>
+		<ToolTip>
+			<c:Rack
+				Rows="^ ^"
+				DataContext="{Binding RelativeSource={RelativeSource AncestorType=ToolTip}, Path=PlacementTarget}"
+				>
+				<GroupBox
+					c:Rack.Cell="R0"
+					>
+					<GroupBox.Header>
+						<c:Stack
+							Orientation="Horizontal"
+							>
+							<c:Title
+								c:Rack.Cell="R4 C0"
+								Text="{m:Localizing Value}"
+								/>
+							<c:Title
+								c:Rack.Cell="R4 C5"
+								Text="{Binding Value}"
+								/>
+						</c:Stack>
+					</GroupBox.Header>
+					<c:Rack
+						Rows="^ ^"
+						Columns="* ^"
+						>
+						<c:Title
+							c:Rack.Cell="R0 C0"
+							Text="{m:Localizing Step, StringFormat='▲ {0}'}"
+							/>
+						<c:Title
+							c:Rack.Cell="R1 C0"
+							Text="{m:Localizing Step, StringFormat='▼ {0}'}"
+							/>
+
+						<c:Title
+							c:Rack.Cell="R0 C3"
+							Text="{Binding Step, StringFormat='+{0}'}"
+							/>
+						<c:Title
+							c:Rack.Cell="R1 C4"
+							Text="{Binding Step, StringFormat='-{0}'}"
+							/>
+					</c:Rack>
+				</GroupBox>
+				<GroupBox
+					c:Rack.Cell="R2 CS2"
+					>
+					<GroupBox.Header>
+						<c:Stack
+							Orientation="Horizontal"
+							>
+							<c:Title
+								c:Rack.Cell="R4 C0"
+								Text="{m:Localizing Length}"
+								/>
+							<c:Title
+								c:Rack.Cell="R4 C5"
+								Text="{Binding Length}"
+								/>
+						</c:Stack>
+					</GroupBox.Header>
+					<c:Rack
+						Rows="^ ^"
+						Columns="* ^"
+						>
+						<c:Title
+							c:Rack.Cell="R0 C0"
+							Text="{m:Localizing From}"
+							/>
+						<c:Title
+							c:Rack.Cell="R1 C0"
+							Text="{m:Localizing Till}"
+							/>
+
+						<c:Title
+							c:Rack.Cell="R0 C3"
+							Text="{Binding From}"
+							/>
+						<c:Title
+							c:Rack.Cell="R1 C4"
+							Text="{Binding Till}"
+							/>
+					</c:Rack>
+				</GroupBox>
+			</c:Rack>
+		</ToolTip>
+	</Control.ToolTip>
+
+	<c:Rack
+		Columns="^ *"
+		DataContext="{m:Reference This}"
+		>
+		<c:Rack
+			c:Rack.Cell="C0"
+			Rows="* *"
+			Margin="0 0 -1 0"
+			Visibility="{Binding IsKeyboardFocusWithin, Converter={StaticResource TrueToVisibleConverter}}"
+			PreviewGotKeyboardFocus="Skip_PreviewGotKeyboardFocus"
+			>
+			<RepeatButton
+				c:Rack.Cell="R0"
+				Click="TillButton_Click"
+				Content="▲"
+				/>
+			<RepeatButton
+				c:Rack.Cell="R1"
+				Click="FromButton_Click"
+				Content="▼"
+				/>
+		</c:Rack>
+
+		<c:Field
+			c:Rack.Cell="C1"
+			x:Name="ValueField"
+			Margin="0"
+			BorderThickness="1"
+			IsReadOnlyCaretVisible="True"
+			IsReadOnly="{Binding IsReadOnly}"
+			Text="{Binding Value, Mode=TwoWay, Converter={StaticResource FormatConverter}}"
+			SelectionChanged="ValueField_SelectionChanged"
+			PreviewKeyDown="ValueField_PreviewKeyDown"
+			GotFocus="ValueField_GotFocus"
+			/>
+	</c:Rack>
+</ContentControl>

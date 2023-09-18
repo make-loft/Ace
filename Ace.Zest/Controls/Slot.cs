@@ -26,14 +26,14 @@ namespace Ace.Controls
 
 		public DataTemplate ItemTemplate
 		{
-			get => GetValue(ItemTemplateProperty).To<DataTemplate>();
-			set => SetValue(ItemTemplateProperty, value);
+			get => this.Get(default(DataTemplate));
+			set => this.Set(value);
 		}
 
 		public object Item
 		{
-			get => GetValue(ItemProperty);
-			set => SetValue(ItemProperty, value);
+			get => this.Get(default(object));
+			set => this.Set(value);
 		}
 
 		private void ApplyContent() => Content = (Item ?? this.GetContext()).Is(out var item) && ItemTemplate.Is(out var template)

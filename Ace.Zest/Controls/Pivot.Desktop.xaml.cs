@@ -26,7 +26,7 @@ namespace Ace.Controls
 		{
 			sender.To(out ItemCell cell);
 
-			cell.SetBinding(ItemCell.IsActiveProperty, new Binding
+			cell.SetBinding(Type<ItemCell>.GetProperty(v => v.IsActive), new Binding
 			{
 				Path = new(nameof(ActiveItem)),
 				Source = this,

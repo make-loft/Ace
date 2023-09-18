@@ -36,10 +36,7 @@
 	}
 #else
 	using System;
-	using System.Globalization;
-	using System.Threading.Tasks;
 	using System.Windows.Controls;
-	using System.Windows.Input;
 
 	public class Field : TextBox
 	{
@@ -56,7 +53,7 @@
 		public static void GlobalTextBindingRefresh() => Entres.ForEach(w =>
 		{
 			if (w.TryGetTarget(out var e))
-				e.GetBindingExpression(TextProperty).UpdateTarget();
+				e.GetBindingExpression(TextProperty)?.UpdateTarget();
 		});
 
 		public string Keyboard { get; set; }

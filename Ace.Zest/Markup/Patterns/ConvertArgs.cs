@@ -5,12 +5,12 @@ namespace Ace.Markup.Patterns
 {
 	public delegate object Convert(ConvertArgs args);
 
-	public struct ConvertArgs
+	public readonly struct ConvertArgs
 	{
-		public readonly object Value;
-		public readonly object Parameter;
-		public readonly Type TargetType;
-		public readonly CultureInfo Culture;
+		public object Value { get; }
+		public object Parameter { get; }
+		public Type TargetType { get; }
+		public CultureInfo Culture { get; }
 
 		public ConvertArgs(object value, Type targetType, object parameter, CultureInfo culture)
 		{

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
+using Ace.Controls;
 #if XAMARIN
 using ResourceDictionary = Xamarin.Forms.ResourceDictionary;
 #else
@@ -10,8 +11,36 @@ using System.Windows;
 
 namespace Ace.Markup
 {
+	public readonly struct MapChangeArgs
+	{
+		public Map Sender { get; }
+		public object Key { get; }
+		public object OldValue { get; }
+		public object NewValue { get; }
+
+		public bool IsValueChanged => NewValue.IsNot(OldValue);
+
+		public MapChangeArgs(Map sender,  object key, object oldValue, object newValue)
+		{
+			Sender = sender; Key = key; OldValue = oldValue; NewValue = newValue;
+		}
+	}
+
 	public class Map : ResourceDictionary, INotifyPropertyChanged
 	{
+		public event System.Action<MapChangeArgs> Changed;
+		
+		public new object this[object key]
+		{
+			get => base[key];
+			set
+			{
+				var oldValue = base[key];
+				base[key] = value;
+				Changed?.Invoke(new(this, key, oldValue, value));
+			} 
+		}
+
 		public Map() { }
 		public Map(ResourceDictionary source) =>
 			EnumerateResources(source).ToList().ForEach(p => this[p.Key] = p.Value);
