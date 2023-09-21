@@ -29,7 +29,7 @@ namespace Ace.Controls
 					args.Sender.ActiveItem = activeItem;
 			};
 
-			Type<List>.When(v => v.ActiveItemOffset).Changed += args =>
+			Type<List>.When(v => v.ActiveItem).Changed += args =>
 			{
 				var value = args.NewValue;
 				var items = args.Sender.ItemsSource;

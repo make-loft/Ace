@@ -7,7 +7,6 @@ using Panel = Xamarin.Forms.Layout<Xamarin.Forms.View>;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using View = System.Windows.FrameworkElement;
 using Property = System.Windows.DependencyProperty;
 using BindableObject = System.Windows.DependencyObject;
@@ -24,17 +23,14 @@ using System.Reflection;
 
 namespace Ace.Controls
 {
-	public struct ChangeArgs<TSender, TValue>
+	public readonly struct ChangeArgs<TSender, TValue>
 	{
 		public ChangeArgs(TSender sender, DependencyPropertyChangedEventArgs args)
 			: this(sender, (TValue)args.OldValue, (TValue)args.NewValue) { }
 
 		public ChangeArgs(TSender sender, TValue oldValue, TValue newValue)
 		{
-			Sender = sender;
-
-			OldValue = oldValue;
-			NewValue = newValue;
+			Sender = sender; OldValue = oldValue; NewValue = newValue;
 		}
 
 		public TSender Sender { get; }
