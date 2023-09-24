@@ -5,6 +5,8 @@
 
 	public class Field : Xamarin.Forms.Entry
 	{
+		public int CaretIndex { get; set; }
+
 		public Field()
 		{
 			bool isCaptured = false;

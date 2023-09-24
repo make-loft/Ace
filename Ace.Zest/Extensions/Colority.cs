@@ -26,7 +26,14 @@ namespace Ace.Extensions
 		public static Color FromRGBA(byte r, byte g, byte b, byte a = 0xFF) => Color.FromRgba(r, g, b, a);
 		public static Color FromRGBA(int r, int g, int b, int a = 255) => Color.FromRgba(r, g, b, a);
 
-		public static Color FromHEX(string value) => Color.FromHex(value);
+		public static Color FromHEX(string code) => Color.FromHex(code);
+
+		public static Color ToColor(this string code) => Color.FromHex(code);
+
+		public static int GetA(this in Color color) => (int)(color.A * 255d);
+		public static int GetR(this in Color color) => (int)(color.R * 255d);
+		public static int GetG(this in Color color) => (int)(color.G * 255d);
+		public static int GetB(this in Color color) => (int)(color.B * 255d);
 
 		public static Color Mix(this Color color, Channel channel, byte value) => channel switch
 		{
@@ -47,7 +54,12 @@ namespace Ace.Extensions
 		public static Color FromRGBA(byte r, byte g, byte b, byte a = 0xFF) => Color.FromArgb(a, r, g, b);
 		public static Color FromRGBA(int r, int g, int b, int a = 255) => Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b);
 
-		public static Color FromHEX(string value) => (Color)ColorConverter.ConvertFromString(value);
+		public static Color ToColor(this string code) => (Color)ColorConverter.ConvertFromString(code);
+
+		public static int GetA(this in Color color) => (int)(color.A * 255d);
+		public static int GetR(this in Color color) => color.R;
+		public static int GetG(this in Color color) => color.G;
+		public static int GetB(this in Color color) => color.B;
 
 		public static Color Mix(this Color color, Channel channel, byte value) => channel switch
 		{

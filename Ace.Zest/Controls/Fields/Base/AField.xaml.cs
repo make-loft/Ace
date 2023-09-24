@@ -1,7 +1,12 @@
 ﻿using System.Windows;
-using System.Windows.Input;
 using System.Linq;
+using System.Windows.Input;
+
+#if XAMARIN
 using Xamarin.Forms;
+
+using Keyboard = System.Windows.Input.Keyboard;
+#endif
 
 namespace Ace.Controls
 {
@@ -58,9 +63,9 @@ namespace Ace.Controls
 		protected void UpdateValueField(in string text, in int caretIndex)
 		{
 			WriteValueField(in text, in caretIndex);
-
+#if !XAMARIN
 			ValueField.GetBindingExpression(Field.TextProperty)?.UpdateSource();
-
+#endif
 			WriteValueField(in text, in caretIndex);
 		}
 
@@ -86,10 +91,10 @@ namespace Ace.Controls
 		protected static void Initialize<TField>() where TField : AField<TValue>, new()
 		{
 			Type<TField>.Create(v => v.Value);
-
+#if !XAMARIN
 			Type<TField>.When(v => v.Format).Changed += args =>
 				args.Sender.ValueField.GetBindingExpression(Field.TextProperty)?.UpdateTarget();
-
+#endif
 			Type<TField>.When(v => v.From).Changed += args =>
 				args.Sender.To(out var v).Length = v.GetLength();
 

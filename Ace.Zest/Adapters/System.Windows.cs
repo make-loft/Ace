@@ -2,11 +2,6 @@
 
 using Xamarin.Forms;
 
-// ReSharper disable once EmptyNamespace
-namespace System.Windows.Markup
-{
-}
-
 namespace System.Windows
 {
 	public enum Visibility { Visible, Hidden, Collapsed }
@@ -103,4 +98,8 @@ namespace System.Windows
 
 		private static object GetValidDefaultValue(Type type) => type.IsValueType ? Activator.CreateInstance(type) : default;
 	}
+
+	public class RoutedEventArgs { public bool Handled { get; set; } }
+	public class KeyboardFocusChangedEventArgs : RoutedEventArgs { }
+	public class KeyEventArgs : RoutedEventArgs { public Input.Key Key { get; set; } }
 }

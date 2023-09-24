@@ -2,7 +2,6 @@
 using System.Reflection;
 using Xamarin.Forms;
 
-// ReSharper disable once CheckNamespace
 namespace System.Windows.Media
 {
 	public static class VisualTreeHelper

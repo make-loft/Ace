@@ -122,6 +122,7 @@
     <Compile Include="Ace.Zest\AssemblyInfo.cs" />
     <Compile Include="Ace.Zest\Controls\Ace.cs" />
     <Compile Include="Ace.Zest\Controls\AView.cs" />
+    <Compile Include="Ace.Zest\Controls\ContentControl.cs" />
     <Compile Include="Ace.Zest\Controls\Field.cs" />
     <Compile Include="Ace.Zest\Controls\Fields\Base\AField.xaml.cs">
       <DependentUpon>AField.xaml</DependentUpon>

@@ -29,17 +29,6 @@ namespace Ace.Markup
 	public class Map : ResourceDictionary, INotifyPropertyChanged
 	{
 		public event System.Action<MapChangeArgs> Changed;
-		
-		public new object this[object key]
-		{
-			get => base[key];
-			set
-			{
-				var oldValue = base[key];
-				base[key] = value;
-				Changed?.Invoke(new(this, key, oldValue, value));
-			} 
-		}
 
 		public Map() { }
 		public Map(ResourceDictionary source) =>
@@ -98,9 +87,25 @@ namespace Ace.Markup
 		public new object this[string key]
 		{
 			get => TryGetValue(key, out var value) ? value : throw new KeyNotFoundException(key);
-			set => base[key] = value;
+			set
+			{
+				var oldValue = base[key];
+				base[key] = value;
+				Changed?.Invoke(new(this, key, oldValue, value));
+			}
 		}
 #else
+		public new object this[object key]
+		{
+			get => base[key];
+			set
+			{
+				var oldValue = base[key];
+				base[key] = value;
+				Changed?.Invoke(new(this, key, oldValue, value));
+			}
+		}
+
 		public void ForEach(System.Action<KeyValuePair<string, object>> action) => this
 			.Cast<System.Collections.DictionaryEntry>()
 			.ToDictionary(e => (string)e.Key, e => e.Value)

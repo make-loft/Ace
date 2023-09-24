@@ -1,8 +1,18 @@
-﻿using Ace.Mathematics;
+﻿using Ace.Extensions;
+using Ace.Mathematics;
 
 using System.Threading.Tasks;
 using System.Windows;
+
+#if XAMARIN
+using Xamarin.Forms;
+
+using Colors = Xamarin.Forms.Color;
+#else
 using System.Windows.Media;
+#endif
+
+using static Ace.Extensions.Colority;
 
 namespace Ace.Controls
 {
@@ -10,8 +20,8 @@ namespace Ace.Controls
 	{
 		static ColorField() => Initialize<ColorField>();
 
-		Color DefaultFrom { get; } = Color.FromArgb(0x00, 0x00, 0x00, 0x00);
-		Color DefaultTill { get; } = Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF);
+		Color DefaultFrom { get; } = FromARGB(0x00, 0x00, 0x00, 0x00);
+		Color DefaultTill { get; } = FromARGB(0xFF, 0xFF, 0xFF, 0xFF);
 		Color DefaultValue { get; } = Colors.DimGray;
 		Color DefaultStep { get; } = Colors.Transparent;
 		Color DefaultLength { get; } = Colors.Transparent;
@@ -36,24 +46,24 @@ namespace Ace.Controls
 				return false;
 
 			var offset = text.Length - caretIndex;
-			var stepA = (byte)(offset.Is(7) ? 0x10 : offset.Is(6) ? 0x01 : 0x00);
-			var stepR = (byte)(offset.Is(5) ? 0x10 : offset.Is(4) ? 0x01 : 0x00);
-			var stepG = (byte)(offset.Is(3) ? 0x10 : offset.Is(2) ? 0x01 : 0x00);
-			var stepB = (byte)(offset.Is(1) ? 0x10 : offset.Is(0) ? 0x01 : 0x00);
+			var stepA = offset.Is(7) ? 0x10 : offset.Is(6) ? 0x01 : 0x00;
+			var stepR = offset.Is(5) ? 0x10 : offset.Is(4) ? 0x01 : 0x00;
+			var stepG = offset.Is(3) ? 0x10 : offset.Is(2) ? 0x01 : 0x00;
+			var stepB = offset.Is(1) ? 0x10 : offset.Is(0) ? 0x01 : 0x00;
 
-			var step = Color.FromArgb(stepA, stepR, stepG, stepB);
+			var step = FromARGB(stepA, stepR, stepG, stepB);
 
 			static int InvertSign(int d, bool? negate) =>
 				negate is true ? -d : negate is false ? +d : 0;
 
 			bool? negate = positive is true ? false : positive is false ? true : null;
 			
-			var valueA = (byte)value.A.To<int>().Rotate(InvertSign(stepA, negate), From.A, Till.A);
-			var valueR = (byte)value.R.To<int>().Rotate(InvertSign(stepR, negate), From.R, Till.R);
-			var valueG = (byte)value.G.To<int>().Rotate(InvertSign(stepG, negate), From.G, Till.G);
-			var valueB = (byte)value.B.To<int>().Rotate(InvertSign(stepB, negate), From.B, Till.B);
+			var valueA = value.GetA().Rotate(InvertSign(stepA, negate), From.GetA(), Till.GetA());
+			var valueR = value.GetR().Rotate(InvertSign(stepR, negate), From.GetR(), Till.GetA());
+			var valueG = value.GetG().Rotate(InvertSign(stepG, negate), From.GetG(), Till.GetG());
+			var valueB = value.GetB().Rotate(InvertSign(stepB, negate), From.GetB(), Till.GetB());
 
-			value = Color.FromArgb(valueA, valueR, valueG, valueB);
+			value = FromARGB(valueA, valueR, valueG, valueB);
 
 			Step = step;
 			Value = value;
@@ -71,7 +81,7 @@ namespace Ace.Controls
 
 			ReadValueField(out var text, out var caretIndex);
 
-			Value = (Color)ColorConverter.ConvertFromString(text);
+			Value = text.ToColor();
 
 			text = Value.ToString();
 
@@ -95,6 +105,6 @@ namespace Ace.Controls
 			value.To(out text).Is();
 
 		protected override bool TryParse(in string text, out Color value) =>
-			text.TryParse(out value, text => (Color)ColorConverter.ConvertFromString(text));
+			text.TryParse(out value, text => text.ToColor());
 	}
 }
