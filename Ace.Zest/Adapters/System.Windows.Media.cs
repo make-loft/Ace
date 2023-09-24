@@ -16,11 +16,13 @@ namespace System.Windows.Media
 			? listedContent.Count
 			: content is null
 				? 0
-				: 1;
+				: 1
+			;
 
 		private static Element GetChildren(object content, int index) => content is IList<View> listedContent
 			? listedContent[index]
-			: content as Element;
+			: content as Element
+			;
 
 		private static PropertyInfo GetContentProperty(Type type) =>
 			type.GetRuntimeProperty("Children") ?? type.GetRuntimeProperty("Content");

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq;
 using System.Resources;
+
 using Ace.Patterns;
 
 namespace Ace

@@ -56,7 +56,7 @@ namespace Ace.Extensions
 
 		public static Color ToColor(this string code) => (Color)ColorConverter.ConvertFromString(code);
 
-		public static int GetA(this in Color color) => (int)(color.A * 255d);
+		public static int GetA(this in Color color) => color.A;
 		public static int GetR(this in Color color) => color.R;
 		public static int GetG(this in Color color) => color.G;
 		public static int GetB(this in Color color) => color.B;
@@ -76,7 +76,6 @@ namespace Ace.Extensions
 		public static Color Mix(this Color color, Channel channel, double value) => color.Mix(channel, Byte(value));
 		public static Color Mix(this Color color, Channel channel, float value) => color.Mix(channel, Byte(value));
 		public static Color Mix(this Color color, Channel channel, int value) => color.Mix(channel, (byte)value);
-
 
 		public struct GradientPoint
 		{
