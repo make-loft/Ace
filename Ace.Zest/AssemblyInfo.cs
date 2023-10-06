@@ -18,17 +18,17 @@ using System.Windows.Markup;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.0.0")]
-[assembly: AssemblyInformationalVersion("3.0.0.0")]
+[assembly: AssemblyVersion("3.2.0.0")]
+[assembly: AssemblyFileVersion("3.2.0.0")]
+//[assembly: AssemblyInformationalVersion("3.2.0.0")]
 [assembly: AssemblyCompany("Makeloft Studio")]
 [assembly: AssemblyProduct("Ace Framework")]
-[assembly: AssemblyCopyright("© Makeloft Studio")]
-[assembly: AssemblyTrademark("Ace Framework")]
-[assembly: AssemblyTitle("Ace.Zest")]
-[assembly: AssemblyDescription("http://makeloft.xyz")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCulture("")]
+//[assembly: AssemblyCopyright("© Makeloft Studio")]
+//[assembly: AssemblyTrademark("Ace Framework")]
+//[assembly: AssemblyTitle("Ace.Zest")]
+//[assembly: AssemblyDescription("Developed by Makeloft Studio")]
+//[assembly: AssemblyConfiguration("")]
+//[assembly: AssemblyCulture("")]
 
 
 // Setting ComVisible to false makes the types in this assembly not visible 

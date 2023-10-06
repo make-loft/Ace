@@ -15,6 +15,12 @@ namespace Ace.Extensions
 		private static byte Byte(in double value) => (byte)(255d * value);
 		private static byte Byte(in float value) => (byte)(255f * value);
 
+		private static readonly Dictionary<Color, SolidColorBrush> ColorToBrush = new();
+		public static SolidColorBrush ToBrush(this in Color color) => ColorToBrush.TryGetValue(color, out var brush)
+			? brush
+			: ColorToBrush[color] = new(color)
+			;
+
 #if XAMARIN
 		public static Color FromARGB(double a, double r, double g, double b) => Color.FromRgba(r, g, b, a);
 		public static Color FromARGB(float a, float r, float g, float b) => Color.FromRgba(r, g, b, a);

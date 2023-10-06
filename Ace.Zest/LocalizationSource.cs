@@ -20,13 +20,15 @@ namespace Ace
 			? ActiveManager?.GetString(key) ??
 			  MergedManagers.Select(m => m.GetString(key)).FirstOrDefault() ??
 			  GetDefault(key)
-			: default;
+			: default
+			;
 
 		public override string this[string key, CultureInfo culture] => key.Is()
 			? ActiveManager?.GetString(key, culture) ??
 			  MergedManagers.Select(m => m.GetString(key, culture)).FirstOrDefault() ??
 			  GetDefault(key, culture)
-			: default;
+			: default
+			;
 
 		public virtual string GetDefault(string key, CultureInfo culture = null) => $":{key}•";
 	}
