@@ -6,6 +6,7 @@ using System.Windows.Data;
 #if XAMARIN
 using Xamarin.Forms;
 
+using Binding = Xamarin.Forms.Binding;
 using Keyboard = System.Windows.Input.Keyboard;
 #endif
 
