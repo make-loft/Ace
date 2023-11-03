@@ -10,7 +10,7 @@ namespace Ace
 	[DataContract]
 	public class SmartObject : INotifyPropertyChanging, INotifyPropertyChanged
 	{
-		public static object UndefinedSmartValue = null;
+		public static object UndefinedSmartValue = default;
 		private Dictionary<string, object> _smartContainer;
 		protected Dictionary<string, object> SmartContainer => New.Lazy(ref _smartContainer);
 

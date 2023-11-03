@@ -35,9 +35,9 @@ namespace Ace
 		{
 			CommandEvocators = new();
 			PropertyEvocators = new();
-			PropertyChanging += (sender, args) => GetEvocator(args.PropertyName).EvokeChanging(sender, args);
-			PropertyChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeChanged(sender, args);
-			ErrorsChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeErrorsChanged(sender, args);
+			PropertyChanging += (sender, args) => GetEvocator(args.PropertyName).EvokeChanging(new(sender, args.PropertyName));
+			PropertyChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeChanged(new(sender, args.PropertyName));
+			ErrorsChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeErrorsChanged(new(sender, args.PropertyName));
 		}
 
 		#region Validation Core
@@ -54,7 +54,7 @@ namespace Ace
 			protected set => Set(() => HasErrors, value);
 		}
 
-		public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = (sender, args) => { };
+		public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
 		public IEnumerable GetErrors(string propertyName) =>
 			PropertyEvocators.TryGetValue(propertyName, out var evocator)

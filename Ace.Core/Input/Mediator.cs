@@ -63,14 +63,14 @@ namespace Ace.Input
 				return _canExecuteState = false;
 
 			var sender = _weakSender.Target;
-			var args = new CanExecuteEventArgs(evocator.Command, parameter, false, evocator.HasExecuted());
+			var args = new CanExecuteEventArgs(sender, evocator.Command, parameter, false, evocator.HasExecuted());
 			if (evocator.HasPreviewCanExecute())
 			{
-				evocator.EvokePreviewCanExecute(sender, args);
+				evocator.EvokePreviewCanExecute(args);
 				args.Handled = args.Handled || args.CanExecute;
 			}
 
-			if (evocator.HasCanExecute() && !args.Handled) evocator.EvokeCanExecute(sender, args);
+			if (evocator.HasCanExecute() && !args.Handled) evocator.EvokeCanExecute(args);
 			return _canExecuteState = args.CanExecute;
 		}
 
@@ -81,18 +81,18 @@ namespace Ace.Input
 				return;
 
 			var sender = _weakSender.Target;
-			var args = new ExecutedEventArgs(_command, parameter, false);
+			var args = new ExecutedEventArgs(sender, _command, parameter, false);
 			if (evocator.HasPreviewExecuted())
 			{
-				evocator.EvokePreviewExecuted(sender, args);
+				evocator.EvokePreviewExecuted(args);
 				args.Handled = true;
 			}
-			else if (evocator.HasExecuted() && _canExecuteState) evocator.EvokeExecuted(sender, args);
+			else if (evocator.HasExecuted() && _canExecuteState) evocator.EvokeExecuted(args);
 
 			EvokeCanExecuteChanged(sender, EventArgs.Empty);
 		}
 
-		public void EvokeCanExecuteChanged(object o, EventArgs args) => CanExecuteChanged(o, args);
+		public void EvokeCanExecuteChanged(object sender, EventArgs args) => CanExecuteChanged(sender, args);
 
 		public event EventHandler CanExecuteChanged = (sender, args) => { };
 	}
