@@ -30,7 +30,7 @@ namespace Ace.Serialization
 
 		public bool Match(string data, ref int offset, string pattern)
 		{
-			var isMatched = data.Substring(offset, pattern.Length) == pattern;
+			var isMatched = data.Length > pattern.Length && data.Substring(offset, pattern.Length) == pattern;
 			offset = isMatched ? offset + Tail.Length : offset;
 			return isMatched;
 		}

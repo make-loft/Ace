@@ -64,7 +64,8 @@ namespace Ace.Serialization.Serializators
 		public object Decode(Simplex simplex)
 		{
 			var segments = simplex;
-			if (segments.Count == 3) return segments[1]; /* optimization for strings */
+			if (segments.Count is 3) return segments[1]; /* optimization for strings */
+			if (segments.Count is 0) return default;
 			var convertedValue = segments.Count == 1 ? segments[0] : segments[1];
 			var typeKey = segments.Count == 6 ? segments[4] : default;
 			var type = typeKey.Is()
