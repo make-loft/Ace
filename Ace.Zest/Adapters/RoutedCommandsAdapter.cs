@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+
 using Ace.Evocators;
 
 namespace Ace.Adapters
@@ -34,15 +35,15 @@ namespace Ace.Adapters
 		{
 			void OnExecuted(object sender, ExecutedRoutedEventArgs args)
 			{
-				var e = new ExecutedEventArgs(args.Command, args.Parameter, args.Handled);
-				evocator.EvokeExecuted(sender, e);
+				var e = new ExecutedEventArgs(sender, args.Command, args.Parameter, args.Handled);
+				evocator.EvokeExecuted(e);
 				args.Handled = e.Handled;
 			}
 
 			void OnCanExecute(object sender, CanExecuteRoutedEventArgs args)
 			{
-				var e = new CanExecuteEventArgs(args.Command, args.Parameter, args.Handled, evocator.HasExecuted());
-				evocator.EvokeCanExecute(sender, e);
+				var e = new CanExecuteEventArgs(sender, args.Command, args.Parameter, args.Handled, evocator.HasExecuted());
+				evocator.EvokeCanExecute(e);
 				args.CanExecute = e.CanExecute;
 				args.Handled = e.Handled;
 			}
