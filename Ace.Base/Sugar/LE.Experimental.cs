@@ -49,11 +49,10 @@ namespace Ace
 			return builder;
 		}
 
-#if NET45 || XAMARIN
+		public static TResult AwaitSync<TResult>(this Task<TResult> task) => task.GetAwaiter().GetResult();
+		public static void AwaitSync(this Task task) => task.GetAwaiter().GetResult();
+		public static void RunAsync(this Task task) => new Action(async () => await task).Invoke();
 		public static async Task<TResult> ToAsync<TResult>(this TResult result) => await Task.FromResult(result);
-		public static TResult SyncAwait<TResult>(this Task<TResult> task) => task.GetAwaiter().GetResult();
-		public static void SyncAwait(this Task task) => task.GetAwaiter().GetResult();
-#endif
 
 		public static T Setup<T>(this T o, Func<T, Setup<T>> block) => block(o).Setters;
 	}
