@@ -49,7 +49,7 @@ namespace System.Linq
 
 		public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(i => i);
 
-		class Comparer<T, TKey> : IEqualityComparer<T>
+		public class Comparer<T, TKey> : IEqualityComparer<T>
 		{
 			private readonly Func<T, TKey> _lookup;
 			public Comparer(Func<T, TKey> lookup) => _lookup = lookup;
@@ -57,28 +57,53 @@ namespace System.Linq
 			public int GetHashCode(T obj) => _lookup(obj).GetHashCode();
 		}
 
-		public static int[] IndexesOf<T>(this IEnumerable<T> collection, T value)
+		public static int OffsetOf<T>(this IEnumerable<T> collection, Func<T, int, bool> match)
 		{
-			var indexes = new List<int>();
-			var i = 0;
+			var offset = 0;
 			foreach (var item in collection)
 			{
-				if (item.Is(value)) indexes.Add(i);
-				i++;
+				if (match(item, offset))
+					return offset;
+
+				offset++;
 			}
-			
-			return indexes.ToArray();
+
+			return -1;
 		}
-		
+
+		public static int OffsetOf<T>(this IEnumerable<T> collection, Func<T, bool> match) =>
+			collection.OffsetOf((item, offset) => match(item));
+
+		public static int OffsetOf<T>(this IEnumerable<T> collection, T value) =>
+			collection.OffsetOf((item, offset) => item.Is(value));
+
+		public static IEnumerable<int> OffsetsOf<T>(this IEnumerable<T> collection, Func<T, int, bool> match)
+		{
+			var offset = 0;
+			foreach (var item in collection)
+			{
+				if (match(item, offset))
+					yield return offset;
+
+				offset++;
+			}
+		}
+
+		public static IEnumerable<int> OffsetsOf<T>(this IEnumerable<T> collection, Func<T, bool> match) =>
+			collection.OffsetsOf((item, offset) => match(item));
+
+		public static IEnumerable<int> OffsetsOf<T>(this IEnumerable<T> collection, T value) =>
+			collection.OffsetsOf((item, offset) => item.Is(value));
+
 		public static int ClearFrom<T>(this IList<T> collection, T value)
 		{
-			var indexes = collection.IndexesOf(value);
-			for (var i = indexes.Length - 1; i >= 0; i--)
+			var offsets = collection.OffsetsOf(value).ToList();
+			for (var i = offsets.Count - 1; i >= 0; i--)
 			{
-				collection.RemoveAt(indexes[i]);
+				collection.RemoveAt(offsets[i]);
 			}
 			
-			return indexes.Length;
+			return offsets.Count;
 		}
 
 		public static IList<T> Trim<T>(this IList<T> collection, int index)
