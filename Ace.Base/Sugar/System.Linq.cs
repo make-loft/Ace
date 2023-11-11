@@ -128,6 +128,13 @@ namespace System.Linq
 			return collection;
 		}
 
+		public static IDictionary<TKey, TValue> ForEach<TKey, TValue>
+			(this IDictionary<TKey, TValue> dictionary, Action<TKey, TValue> action)
+		{
+			foreach (var pair in dictionary) action(pair.Key, pair.Value);
+			return dictionary;
+		}
+
 		public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
 		{
 			foreach (var item in collection) action(item);
