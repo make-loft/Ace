@@ -101,6 +101,7 @@
     <Compile Include="Ace.Base\Sugar\Switch.cs" />
     <Compile Include="Ace.Base\Sugar\System.Linq.cs" />
     <Compile Include="Ace.Base\Sugar\RipeType.cs" />
+    <Compile Include="Ace.Base\Sugar\Try.cs" />
     <Compile Include="Ace.Base\Sugar\TypeOf.cs" />
     <Compile Include="Ace.Core\Adapters\Net4.0.cs" />
     <Compile Include="Ace.Core\Evocators\CommandEvocator.cs" />

@@ -29,5 +29,28 @@ namespace Ace.Mathematics
 
 			finish?.Invoke();
 		}
+
+		public static async void Animate(Action<double> action,
+			double from,
+			double till,
+			int rate = 4,
+			int length = 192)
+		{
+			var framesCount = (double)length / rate;
+			var step = 1d / framesCount;
+
+			var len = till - from;
+			var x = 0d;
+			var i = 0;
+
+			do
+			{
+				var scale = 1d - Math.Pow(1d - x, 3d);
+				action(from + scale * len);
+				await Task.Delay(rate);
+				x += step;
+			}
+			while (i++ < framesCount);
+		}
 	}
 }
