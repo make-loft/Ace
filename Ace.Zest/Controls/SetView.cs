@@ -21,7 +21,7 @@ namespace Ace.Markup
 	{
 		public class Cell : Rack
 		{
-			private static readonly Color TranparentGray = new(0.5, 0.5, 0.5, 0.0); 
+			private static readonly Color TranparentGray = new(0.5, 0.5, 0.5, 0.0);
 
 			public void SetState(bool isSelected, SetView setView)
 			{
@@ -48,29 +48,29 @@ namespace Ace.Markup
 
 		public Cell CreateCell(object item, ItemMakerDelegate maker, EventHandler tapped,
 			double size, ScrollOrientation orientation) => new Cell()
-		{
-			HeightRequest = orientation.Is(Vertical)
-				? size
-				: ItemLength > 0 ? ItemLength : Height
-				,
-			WidthRequest = orientation.Is(Horizontal)
-				? size
-				: ItemLength > 0 ? ItemLength : Width
-				,
-			BindingContext = item,
-			Children =
 			{
-				new Frame { CornerRadius = 5f, HasShadow = false },
-				maker().To(out var content).Is(out ViewCell cell)
-					? cell.View
-					: content.As<View>()
-			},
-			GestureRecognizers =
-			{
-				new TapGestureRecognizer().Use(r => r.Tapped += tapped)
+				HeightRequest = orientation.Is(Vertical)
+					? size
+					: ItemLength > 0 ? ItemLength : Height
+					,
+				WidthRequest = orientation.Is(Horizontal)
+					? size
+					: ItemLength > 0 ? ItemLength : Width
+					,
+				BindingContext = item,
+				Children =
+				{
+					new Frame { CornerRadius = 5f, HasShadow = false },
+					maker().To(out var content).Is(out ViewCell cell)
+						? cell.View
+						: content.As<View>()
+				},
+				GestureRecognizers =
+				{
+					new TapGestureRecognizer().Use(r => r.Tapped += tapped)
+				}
 			}
-		}
-		.Use(c => c.SetState(item.Is(SelectedItem), this));
+			.Use(c => c.SetState(item.Is(SelectedItem), this));
 
 		public async void TryScrollTo(double scrollX, double scrollY, bool animated = true)
 		{
@@ -94,19 +94,16 @@ namespace Ace.Markup
 			var items = ItemsSource;
 			if (items.IsNot()) return;
 
-			var group = lineGroups.FirstOrDefault(g => g.Contains(item));
+			var group = groups.FirstOrDefault(g => g.Contains(item));
 			if (group.IsNot()) return;
 
 			var isGrouping = GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
 
 			var itemSize = ItemSize;
 			var groupHeaderSize = GroupHeaderSize;
-			var groupOffset = isGrouping
-				? GetOffset(lineGroups, group, itemSize, groupHeaderSize)
-				: lineGroups.IndexOf(group) * itemSize
-				;
+			var groupOffset = GetGroupOffset(groups, group);
 
-			var itemIndex = group.IndexOf(item);
+			var itemIndex = group.OffsetOf(item);
 			var offset = isGrouping
 				? groupOffset + itemIndex * itemSize + groupHeaderSize
 				: groupOffset
@@ -116,7 +113,7 @@ namespace Ace.Markup
 			var length =
 				position.Is(Start) ? -itemSizeHalf :
 				position.Is(Center) ? -scrollView.Height / 2 + itemSizeHalf :
-				position.Is(End) ? +scrollView.Height + itemSizeHalf  :
+				position.Is(End) ? +scrollView.Height + itemSizeHalf :
 				0d;
 
 			var from = scrollView.Orientation switch
@@ -135,6 +132,7 @@ namespace Ace.Markup
 		}
 
 		private INotifyCollectionChanged _collection;
+		private int itemsInLineCount;
 
 		void Changed()
 		{
@@ -181,24 +179,33 @@ namespace Ace.Markup
 
 				var itemSize = ItemSize;
 				var itemLength = ItemLength;
-				var itemsInLineCount = itemLength > 0d ? (int)(lineSize / itemLength) : 1;
+				itemsInLineCount = itemLength > 0d ? (int)(lineSize / itemLength) : 1;
 				var isGrouping = GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
 				groups = isGrouping
 					? items.Cast<IGrouping<object, object>>().ToList()
-					: items.GroupBy(o => (object)(items.IndexOf(o) / itemsInLineCount)).ToList()
+					: items.GroupBy(o => (object)0, o => o).ToList()
 					;
 
-				lineGroups = groups.Cast<IEnumerable>().Select(g => g.Cast<object>().ToList()).ToList();
 				indexToGroupContainer.Clear();
+				if (Orientation.Is(Vertical)) content.HeightRequest = 0d;
+				if (Orientation.Is(Horizontal)) content.WidthRequest = 0d;
 
-				var totalLinesCount = (int)Math.Ceiling((double)(items.Count / itemsInLineCount));
-				var totalSize = isGrouping
-					? GetGroupsSize(lineGroups, itemLength, GroupHeaderSize)
-					: totalLinesCount * itemSize
-					;
+				groupToLines.Clear();
 
-				if (Orientation.Is(Vertical)) content.HeightRequest = totalSize;
-				if (Orientation.Is(Horizontal)) content.WidthRequest = totalSize;
+				foreach (var group in groups)
+				{
+					var groupItems = group.ToList();
+					var lines = groupItems
+						.GroupBy(o => (object)(groupItems.IndexOf(o) / itemsInLineCount))
+						.Select(g => g.Cast<object>().ToList()).ToList()
+						;
+
+					groupToLines[group] = lines;
+				}
+
+				var groupsSize = GetGroupsSize(groups);
+				if (Orientation.Is(Vertical)) content.HeightRequest = groupsSize;
+				if (Orientation.Is(Horizontal)) content.WidthRequest = groupsSize;
 
 				if (items.Count > scrollView.Height / itemLength)
 					await Task.Delay(8);
@@ -209,21 +216,21 @@ namespace Ace.Markup
 			};
 		}
 
-		public static BindableProperty IsLoadedProperty = Type<SetView>.Create(v => v.IsLoaded);
-		public bool IsLoaded
-		{
-			get => GetValue(IsLoadedProperty).To<bool>();
-			set => SetValue(IsLoadedProperty, value);
-		}
-
-		Dictionary<int, View> indexToGroupContainer;
+		Dictionary<int, Controls.Stack> indexToGroupContainer;
 		List<IGrouping<object, object>> groups = default;
-		List<List<object>> lineGroups = default;
+		Dictionary<IGrouping<object, object>, List<List<object>>> groupToLines = new();
+		Dictionary<List<object>, View> lineToLineContainer = new();
 
-		void SetRange(ScrollView scrollView, Func<List<object>, double> getGroupSize, out int fromIndex, out int tillIndex)
+		void SetRange(ScrollView scrollView,
+			out int fromGroupIndex, out int tillGroupIndex,
+			out int fromLineIndex, out int tillLineIndex
+			)
 		{
-			fromIndex = 0;
-			tillIndex = lineGroups.Count - 1;
+			fromGroupIndex = 0;
+			tillGroupIndex = groups.Count - 1;
+
+			fromLineIndex = 0;
+			tillLineIndex = 0;
 
 			var scrollOffset = scrollView.Orientation switch
 			{
@@ -243,22 +250,29 @@ namespace Ace.Markup
 			var tillOffset = scrollOffset + 2 * viewScopeSize;
 
 			var activeOffset = 0d;
-			for (var groupIndex = 0; groupIndex < lineGroups.Count; groupIndex++)
+			for (var groupIndex = 0; groupIndex < groups.Count; groupIndex++)
 			{
-				var group = lineGroups[groupIndex];
-				var groupSize = getGroupSize(group);
+				var group = groups[groupIndex];
+				var lines = groupToLines[group];
 
-				activeOffset += groupSize;
+				tillLineIndex = lines.Count;
 
-				if (activeOffset < fromOffset)
+				foreach (var line in lines)
 				{
-					fromIndex = groupIndex;
-				}
+					activeOffset += ItemSize;
 
-				if (activeOffset > tillOffset)
-				{
-					tillIndex = groupIndex;
-					break;
+					if (activeOffset < fromOffset)
+					{
+						fromGroupIndex = groupIndex;
+						fromLineIndex = lines.IndexOf(line);
+					}
+
+					if (activeOffset > tillOffset)
+					{
+						tillGroupIndex = groupIndex;
+						tillLineIndex = lines.IndexOf(line);
+						return;
+					}
 				}
 			}
 		}
@@ -298,85 +312,100 @@ namespace Ace.Markup
 				ItemSelected?.Invoke(SelectedItem, new(item, items.IndexOf(item)));
 			}
 
-			var isGrouping = GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
+			var isGrouping = IsGrouping;
 
-			double GetSize(List<object> group) => isGrouping
-					? GetGroupSize(group, itemSize, groupHeaderSize)
-					: itemSize
-					;
 
-			SetRange(scrollView, GetSize,
-				out var fromIndex, out var tillIndex);
+			SetRange(scrollView,
+				out var fromGroupIndex, out var tillGroupIndex,
+				out var fromLineIndex, out var tillLineIndex
+				);
 
 			var headerMaker = GroupHeaderMaker ?? new(() => GroupHeaderTemplate?.CreateContent());
 			var itemMaker = ItemMaker ?? new(() => ItemTemplate?.CreateContent());
 
-			for (var groupIndex = fromIndex; groupIndex <= tillIndex; groupIndex++)
+			for (var groupIndex = fromGroupIndex; groupIndex <= tillGroupIndex; groupIndex++)
 			{
-				var lineGroup = lineGroups[groupIndex];
-
-				if (indexToGroupContainer.TryGetValue(groupIndex, out var view))
-					continue;
-
+				var group = groups[groupIndex];
+				var lines = groupToLines[group];
 				var lineOrientation =
-					isGrouping ? Vertical :
-					Orientation.Is(Vertical) ? Horizontal : 
-					Orientation.Is(Horizontal) ? Vertical : 
+					Orientation.Is(Vertical) ? Horizontal :
+					Orientation.Is(Horizontal) ? Vertical :
 					throw new NotSupportedException();
 
-				var lineContainer = CreateStack(lineOrientation);
-				var groupContainer = CreateStack(Orientation);
-
-				indexToGroupContainer[groupIndex] = groupContainer;
-
-				lineGroup
-					.Cast<object>()
-					.Select(i => CreateCell(i, itemMaker, tapped, itemSize, scrollView.Orientation))
-					.ForEach(lineContainer.Children.Add)
-					;
-
-				if (isGrouping)
+				if (indexToGroupContainer.TryGetValue(groupIndex, out var groupContainer) is false)
 				{
-					CreateCell(groups[groupIndex], headerMaker, default, groupHeaderSize, scrollView.Orientation)
-						.Use(groupContainer.Children.Add);
+					groupContainer = CreateStack(Orientation);
+					var linesContainer = new Rack();
+
+					indexToGroupContainer[groupIndex] = groupContainer;
+
+					if (isGrouping)
+					{
+						CreateCell(groups[groupIndex], headerMaker, default, groupHeaderSize, scrollView.Orientation)
+							.Use(groupContainer.Children.Add);
+					}
+
+					linesContainer.Use(groupContainer.Children.Add);
+					groupContainer.Use(content.Children.Add);
+
+					var groupOffset = GetGroupOffset(groups, group);
+					var groupSize = GetGroupSize(group);
+
+					if (Orientation.Is(Vertical))
+					{
+						groupContainer.Margin = new(0, groupOffset, 0, 0);
+						groupContainer.HeightRequest = groupSize;
+					}
+
+					if (Orientation.Is(Horizontal))
+					{
+						groupContainer.Margin = new(groupOffset, 0, 0, 0);
+						groupContainer.WidthRequest = groupSize;
+					}
 				}
 
-				groupContainer.Children.Add(lineContainer);
-				groupContainer.Use(content.Children.Add);
-
-				var groupOffset = isGrouping
-					? GetOffset(lineGroups, lineGroup, itemSize, groupHeaderSize)
-					: itemSize * groupIndex
-					;
-
-				if (Orientation.Is(Vertical))
+				foreach (var line in lines)
 				{
-					groupContainer.Margin = new(0, groupOffset, 0, 0);
-					groupContainer.HeightRequest = isGrouping
-						? itemSize * (lineGroup.Count + 1)
-						: itemSize
-						;
-				}
+					var lineIndex = lines.IndexOf(line);
 
-				if (Orientation.Is(Horizontal))
-				{
-					groupContainer.Margin = new(groupOffset, 0, 0, 0);
-					groupContainer.WidthRequest = isGrouping
-						? itemSize * (lineGroup.Count + 1)
-						: itemSize
+					if (groupIndex.Is(fromGroupIndex) && lineIndex < fromLineIndex)
+						continue;
+
+					if (groupIndex.Is(tillGroupIndex) && lineIndex > tillLineIndex)
+						break;
+
+					if (lineToLineContainer.ContainsKey(line))
+						continue;
+
+					var lineContainer = CreateStack(lineOrientation);
+					lineToLineContainer[line] = lineContainer;
+
+					line
+						.Select(i => CreateCell(i, itemMaker, tapped, itemSize, scrollView.Orientation))
+						.ForEach(lineContainer.Children.Add)
 						;
+
+					var lineOffset = ItemSize * lineIndex;
+					lineContainer.Margin = Orientation switch
+					{
+						Vertical => new(0d, lineOffset, 0d, 0d),
+						Horizontal => new(lineOffset, 0d, 0d, 0d),
+						_ => throw new NotImplementedException()
+					};
+
+					groupContainer.Children.Last().To<Rack>().Children.Add(lineContainer);
 				}
 			}
 		}
 
+		double GetGroupsSize(List<IGrouping<object, object>> groups) =>
+			groups.Aggregate(0d, (s, g) => s + GetGroupSize(g));
 
-		double GetGroupsSize(List<List<object>> groups, double itemSize, double groupHeaderSize) =>
-			groups.Aggregate(0d, (s, g) => s + GetGroupSize(g, itemSize, groupHeaderSize));
+		bool IsGrouping => GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
+		double GetGroupSize(IGrouping<object, object> group) =>
+			groupToLines[group].Count * ItemSize + (IsGrouping ? GroupHeaderSize : 0);
 
-		double GetGroupSize(List<object> group, double itemSize, double groupHeaderSize) =>
-			group.Count * itemSize + groupHeaderSize;
-
-		double GetOffset(List<List<object>> groups, List<object> group, double itemSize, double groupHeaderSize)
+		double GetGroupOffset(List<IGrouping<object, object>> groups, IGrouping<object, object> group)
 		{
 			var offset = 0d;
 			for (var index = 0; index < groups.Count; index++)
@@ -384,11 +413,19 @@ namespace Ace.Markup
 				var g = groups[index];
 				if (g.Is(group))
 					return offset;
-				var groupSize = GetGroupSize(g, itemSize, groupHeaderSize);
+				var groupSize = GetGroupSize(g);
 				offset += groupSize;
 			}
 
 			return offset;
+		}
+
+		#region Properties
+		public static BindableProperty IsLoadedProperty = Type<SetView>.Create(v => v.IsLoaded);
+		public bool IsLoaded
+		{
+			get => GetValue(IsLoadedProperty).To<bool>();
+			set => SetValue(IsLoadedProperty, value);
 		}
 
 		public static BindableProperty SelectedItemProperty = Type<SetView>.Create(v => v.SelectedItem, args =>
@@ -448,5 +485,6 @@ namespace Ace.Markup
 		public double ItemLength { get; set; } = 0d;
 		public double GroupHeaderSize { get; set; } = 48d;
 		public bool AllowSelectedItemReset { get; set; } = true;
+		#endregion
 	}
 }
