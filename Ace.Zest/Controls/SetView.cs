@@ -1,4 +1,5 @@
 ﻿using Ace.Controls;
+using Ace.Mathematics;
 
 using System;
 using System.Collections;
@@ -21,7 +22,7 @@ namespace Ace.Markup
 	{
 		public class Cell : Rack
 		{
-			private static readonly Color TranparentGray = new(0.5, 0.5, 0.5, 0.0);
+			private static readonly Color TransparentGray = new(0.5, 0.5, 0.5, 0.0);
 
 			public void SetState(bool isSelected, SetView setView)
 			{
@@ -33,7 +34,7 @@ namespace Ace.Markup
 
 				Children[0].BackgroundColor = isSelected
 					? Color.Orange
-					: TranparentGray
+					: TransparentGray
 					;
 			}
 
@@ -101,13 +102,11 @@ namespace Ace.Markup
 
 			var itemSize = ItemSize;
 			var groupHeaderSize = GroupHeaderSize;
-			var groupOffset = GetGroupOffset(groups, group);
+			var groupVisualOffset = GetGroupVisualOffset(groups, group);
 
-			var itemIndex = group.OffsetOf(item);
-			var offset = isGrouping
-				? groupOffset + itemIndex * itemSize + groupHeaderSize
-				: groupOffset
-				;
+			var itemOffset = group.OffsetOf(item);
+			var offset = groupVisualOffset + itemOffset * itemSize / itemsInLineCount
+				+ (isGrouping ? groupHeaderSize : 0d);
 
 			var itemSizeHalf = itemSize / 2d;
 			var length =
@@ -123,12 +122,23 @@ namespace Ace.Markup
 				_ => throw new NotImplementedException()
 			};
 
+			var scrollToAction = scrollView.Orientation switch
+			{
+				Vertical => New.Action(async (double value) => await scrollView.ScrollToAsync(0, value, false)),
+				Horizontal => New.Action(async (double value) => await scrollView.ScrollToAsync(value, 0, false)),
+				_ => throw new NotImplementedException()
+			};
+
+
 			var till = offset + length;
 			if (animated)
-				Mathematics.Visualisation
-					.Animate(async v => await scrollView.ScrollToAsync(0, v, false), from, till);
+				scrollToAction.Animate(
+					change: value => from + (1d - Math.Pow(1d - value, 3d)) * till,
+
+					framesCount: 48,
+					frameDuration_Milliseconds: 4);
 			else
-				await scrollView.ScrollToAsync(0, till, animated);
+				scrollToAction(till);
 		}
 
 		private INotifyCollectionChanged _collection;
@@ -203,9 +213,9 @@ namespace Ace.Markup
 					groupToLines[group] = lines;
 				}
 
-				var groupsSize = GetGroupsSize(groups);
-				if (Orientation.Is(Vertical)) content.HeightRequest = groupsSize;
-				if (Orientation.Is(Horizontal)) content.WidthRequest = groupsSize;
+				var groupsVisualSize = GetGroupsVisualSize(groups);
+				if (Orientation.Is(Vertical)) content.HeightRequest = groupsVisualSize;
+				if (Orientation.Is(Horizontal)) content.WidthRequest = groupsVisualSize;
 
 				if (items.Count > scrollView.Height / itemLength)
 					await Task.Delay(8);
@@ -218,8 +228,8 @@ namespace Ace.Markup
 
 		Dictionary<int, Controls.Stack> indexToGroupContainer;
 		List<IGrouping<object, object>> groups = default;
-		Dictionary<IGrouping<object, object>, List<List<object>>> groupToLines = new();
-		Dictionary<List<object>, View> lineToLineContainer = new();
+		readonly Dictionary<IGrouping<object, object>, List<List<object>>> groupToLines = new();
+		readonly Dictionary<List<object>, View> lineToLineContainer = new();
 
 		void SetRange(ScrollView scrollView,
 			out int fromGroupIndex, out int tillGroupIndex,
@@ -348,19 +358,19 @@ namespace Ace.Markup
 					linesContainer.Use(groupContainer.Children.Add);
 					groupContainer.Use(content.Children.Add);
 
-					var groupOffset = GetGroupOffset(groups, group);
-					var groupSize = GetGroupSize(group);
+					var groupVisualOffset = GetGroupVisualOffset(groups, group);
+					var groupVisualSize = GetGroupVisualSize(group);
 
 					if (Orientation.Is(Vertical))
 					{
-						groupContainer.Margin = new(0, groupOffset, 0, 0);
-						groupContainer.HeightRequest = groupSize;
+						groupContainer.Margin = new(0, groupVisualOffset, 0, 0);
+						groupContainer.HeightRequest = groupVisualSize;
 					}
 
 					if (Orientation.Is(Horizontal))
 					{
-						groupContainer.Margin = new(groupOffset, 0, 0, 0);
-						groupContainer.WidthRequest = groupSize;
+						groupContainer.Margin = new(groupVisualOffset, 0, 0, 0);
+						groupContainer.WidthRequest = groupVisualSize;
 					}
 				}
 
@@ -398,29 +408,30 @@ namespace Ace.Markup
 			}
 		}
 
-		double GetGroupsSize(List<IGrouping<object, object>> groups) =>
-			groups.Aggregate(0d, (s, g) => s + GetGroupSize(g));
+		double GetGroupsVisualSize(List<IGrouping<object, object>> groups) =>
+			groups.Aggregate(0d, (s, g) => s + GetGroupVisualSize(g));
 
-		bool IsGrouping => GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
-		double GetGroupSize(IGrouping<object, object> group) =>
+		double GetGroupVisualSize(IGrouping<object, object> group) =>
 			groupToLines[group].Count * ItemSize + (IsGrouping ? GroupHeaderSize : 0);
 
-		double GetGroupOffset(List<IGrouping<object, object>> groups, IGrouping<object, object> group)
+		double GetGroupVisualOffset(List<IGrouping<object, object>> groups, IGrouping<object, object> group)
 		{
-			var offset = 0d;
-			for (var index = 0; index < groups.Count; index++)
+			var visualOffset = 0d;
+			for (var i = 0; i < groups.Count; i++)
 			{
-				var g = groups[index];
+				var g = groups[i];
 				if (g.Is(group))
-					return offset;
-				var groupSize = GetGroupSize(g);
-				offset += groupSize;
+					return visualOffset;
+				var groupSize = GetGroupVisualSize(g);
+				visualOffset += groupSize;
 			}
 
-			return offset;
+			return visualOffset;
 		}
 
 		#region Properties
+		bool IsGrouping => GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
+		
 		public static BindableProperty IsLoadedProperty = Type<SetView>.Create(v => v.IsLoaded);
 		public bool IsLoaded
 		{
