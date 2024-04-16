@@ -94,7 +94,7 @@
 					<GroupBox Grid.Row="1" Header="{Localizing Inline}">
 						<Grid Rack.Columns="* 200\Auto">
 							<Grid.Resources>
-								<InlineConverter x:Key="InlineConverter" Converting="InlineConverter_OnConverting"/>
+								<Converter x:Key="InlineConverter" Convert="Converter_Convert"/>
 							</Grid.Resources>
 							<TextBox Style="{StaticResource SampleTextBoxStyle}" Text="{Localizing InlineConverterSample}"/>
 							<TextBlock Grid.Column="1" TextWrapping="Wrap" Text="{Binding Number, Converter={StaticResource InlineConverter}}" FontSize="10"/>
@@ -118,7 +118,7 @@
 						<Grid Rack.Columns="* 200\Auto">
 							<Grid.Resources>
 								<KeyToValueConverter x:Key="YesNoConverter" Key="True" Value="Yes" ByDefault="No"/>
-								<SwitchConverter 
+								<SwitchConverter
 									x:Key="CompositeSwitchConverter"
 									ByDefault="True">
 									<Case Key="0" Value="False"/>

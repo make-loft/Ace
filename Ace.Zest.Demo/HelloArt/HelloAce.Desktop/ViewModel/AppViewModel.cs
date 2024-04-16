@@ -12,22 +12,22 @@ namespace HelloAce.ViewModel
 		[DataMember]
 		public double Number
 		{
-			get { return Get(() => Number); }
-			set { Set(() => Number, value); }
+			get => Get(() => Number);
+			set => Set(() => Number, value);
 		}
 
 		[DataMember]
 		public string Mouse
 		{
-			get { return Get(() => Mouse, "Mouse"); }
-			set { Set(() => Mouse, value); }
+			get => Get(() => Mouse, "Mouse");
+			set => Set(() => Mouse, value);
 		}
 
 		[DataMember]
 		public string Rabbit
 		{
-			get { return Get(() => Rabbit, "Rabbit"); }
-			set { Set(() => Rabbit, value); }
+			get => Get(() => Rabbit, "Rabbit");
+			set => Set(() => Rabbit, value);
 		}
 
 		public void Expose()
@@ -39,25 +39,23 @@ namespace HelloAce.ViewModel
 
 			// async validation way with INotifyDataErrorInfo
 			// Text="{Binding Mouse, Mode=TwoWay, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}"
-			this[() => Mouse].PropertyChanged += (sender, args) => RaiseErrorsChanged(() => Mouse);
-			this[() => Mouse].ErrorsChanged += (sender, args) => HasErrors = !(5 < Mouse.Length && Mouse.Length < 20);
+			this[() => Mouse].Changed += args => EvokeErrorsChanged(() => Mouse);
+			this[() => Mouse].ErrorsChanged += args => HasErrors = !(5 < Mouse.Length && Mouse.Length < 20);
 			this[() => Mouse].ValidationRules += s => 5 < Mouse.Length && Mouse.Length < 20 ? null : "Invalid Length";
-			RaiseErrorsChanged(() => Mouse);
 
-			//PropertyChanged += (sender, args) => Context.Make.RaiseCanExecuteChanged();
-			this[() => Rabbit].PropertyChanged += (sender, args) => Context.Make.RaiseCanExecuteChanged();
-			this[() => Mouse].PropertyChanged += (sender, args) => Context.Make.RaiseCanExecuteChanged();
+			EvokeErrorsChanged(() => Mouse);
 
-			this[Context.Make].CanExecute += (sender, args) => args.CanExecute = !HasErrors;
-			this[Context.Get("Make")].Executed += (sender, args) =>
-				MessageBox.Show("Make!");
-			this[Context.Make].Executed += async (sender, args) =>
-				await Task.Factory.StartNew(() => MessageBox.Show("Make async!"));
+			//Changed += (sender, args) => Context.Make.EvokeCanExecuteChanged();
+			this[() => Rabbit].Changed += args => Context.Make.EvokeCanExecuteChanged();
+			this[() => Mouse].Changed += args => Context.Make.EvokeCanExecuteChanged();
 
-			this[NavigationCommands.GoToPage].CanExecute += (sender, args) => args.CanExecute = Error == null;
-			this[NavigationCommands.GoToPage].Executed += (sender, args) => Navigator.Navigate(args.Parameter);
+			this[Context.Make].CanExecute += args => args.CanExecute = !HasErrors;
+			this[Context.Make].Executed += async args => await Task.Factory.StartNew(() => MessageBox.Show("Make async!"));
 
-			this[Context.Get("Hello")].Executed += (sender, args) => MessageBox.Show("Hello Command!");
+			this[Context.Get("Hello")].Executed += args => MessageBox.Show("Hello Command!");
+
+			this[NavigationCommands.GoToPage].CanExecute += args => args.CanExecute = Error == null;
+			this[NavigationCommands.GoToPage].Executed += args => Navigator.Navigate(args.Parameter);
 		}
 	}
 }

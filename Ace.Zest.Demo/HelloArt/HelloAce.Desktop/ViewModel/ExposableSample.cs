@@ -16,16 +16,16 @@ namespace HelloAce.ViewModel
 		{
 			var girlViewModel = Store.Get<GirlViewModel>();
 
-			this[() => Kisses].PropertyChanged += (sender, args) =>
+			this[() => Kisses].Changed += args =>
 			{
-				Context.Get("KissGirl").RaiseCanExecuteChanged();
-				Context.Get("KissGuy").RaiseCanExecuteChanged();
+				Context.Get("KissGirl").EvokeCanExecuteChanged();
+				Context.Get("KissGuy").EvokeCanExecuteChanged();
 			};
 
-			this[Context.Get("KissGirl")].CanExecute += (sender, args) => 
+			this[Context.Get("KissGirl")].CanExecute += args => 
 				args.CanExecute = Kisses > girlViewModel.Kisses - 2;
 
-			this[Context.Get("KissGirl")].Executed += (sender, args) => 
+			this[Context.Get("KissGirl")].Executed += args => 
 				girlViewModel.Kisses++;
 		}
 	}
@@ -44,16 +44,16 @@ namespace HelloAce.ViewModel
 		{
 			var guyViewModel = Store.Get<GuyViewModel>();
 
-			this[() => Kisses].PropertyChanged += (sender, args) =>
+			this[() => Kisses].Changed += args =>
 			{
-				Context.Get("KissGirl").RaiseCanExecuteChanged();
-				Context.Get("KissGuy").RaiseCanExecuteChanged();
+				Context.Get("KissGirl").EvokeCanExecuteChanged();
+				Context.Get("KissGuy").EvokeCanExecuteChanged();
 			};
 
-			this[Context.Get("KissGuy")].CanExecute += (sender, args) =>
+			this[Context.Get("KissGuy")].CanExecute += args =>
 				args.CanExecute = Kisses > guyViewModel.Kisses - 3;
 
-			this[Context.Get("KissGuy")].Executed += (sender, args) =>
+			this[Context.Get("KissGuy")].Executed += args =>
 				guyViewModel.Kisses++;
 		}
 	}

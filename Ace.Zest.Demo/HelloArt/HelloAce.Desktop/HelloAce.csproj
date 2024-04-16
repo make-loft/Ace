@@ -10,12 +10,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HelloAce</RootNamespace>
     <AssemblyName>HelloAce</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -124,17 +125,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Ace.Base\Ace.Base.Profile158.csproj">
-      <Project>{2fedb2cb-1b48-411f-a546-762bc9a688cb}</Project>
-      <Name>Ace.Base.Profile158</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Ace.Core\Ace.Core.Desktop.csproj">
-      <Project>{2582f9f6-c381-475e-b454-4c1e4d323269}</Project>
-      <Name>Ace.Core.Desktop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Ace.Zest\Ace.Zest.Desktop.csproj">
-      <Project>{a78c2d1c-9446-4b87-915b-2615f98f63c1}</Project>
-      <Name>Ace.Zest.Desktop</Name>
+    <ProjectReference Include="..\..\..\Ace.Win.csproj">
+      <Project>{72f032c7-6cd2-4ece-8f8a-ea42742a59c6}</Project>
+      <Name>Ace.Win</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,29 +9,29 @@ namespace HelloAce.ViewModel
 		[DataMember]
 		public string Language
 		{
-			get { return Get(() => Language); }
-			set { Set(() => Language, value); }
+			get => Get(() => Language);
+			set => Set(() => Language, value);
 		}
 
 		public SmartSet<string> Languages { get; set; }
 
 		public void Expose()
 		{
-			Languages = new SmartSet<string> {"Russian", "English"};
+			Languages = new SmartSet<string> { "Russian", "English" };
 
-			this[Context.Get("SetLanguage")].CanExecute += (sender, args) =>
+			this[Context.Get("SetLanguage")].CanExecute += args =>
 				args.CanExecute = Language != args.Parameter.ToString();
 
-			this[Context.Get("SetLanguage")].Executed += (sender, args) =>
+			this[Context.Get("SetLanguage")].Executed += args =>
 				Language = args.Parameter.ToString();
 
-			this[() => Language].PropertyChanged += (sender, args) =>
+			this[() => Language].Changed += args =>
 			{
 				LocalizationSource.Wrap.ActiveManager = Language == "Russian"
 					? Russian.ResourceManager
 					: English.ResourceManager;
 
-				Context.Get("SetLanguage").RaiseCanExecuteChanged();
+				Context.Get("SetLanguage").EvokeCanExecuteChanged();
 			};
 
 			EvokePropertyChanged(() => Language);

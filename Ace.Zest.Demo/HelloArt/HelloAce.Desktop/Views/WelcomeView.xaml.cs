@@ -1,21 +1,10 @@
-﻿using Ace.Converters.Patterns;
-
-namespace HelloAceViews
+﻿namespace HelloAceViews
 {
 	public partial class AppView
 	{
-		public AppView()
-		{
-			InitializeComponent();
-		}
+		public AppView() => InitializeComponent();
 
-		private void InlineConverter_OnConverting(object sender, ConverterEventArgs e)
-		{
-			e.ConvertedValue =
-				string.Format("Title: {0} \nDataContext:\n{1} \nConverter Value: {2}",
-					Title,
-					DataContext,
-					e.Value);
-		}
+		private object Converter_Convert(Ace.Markup.Patterns.ConvertArgs args) =>
+				$"Title: {Title}\nDataContext:\n{DataContext}\nConverter Value: {args.Value}";
 	}
 }
