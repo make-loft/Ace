@@ -31,6 +31,7 @@ namespace Ace
 		public static Assembly SystemAssembly => Object.Assembly;
 		public static bool IsSystemType(this Type type) => type.Assembly.Is(SystemAssembly);
 		public static bool IsSystemType(this RipeType type) => type.Assembly.Is(SystemAssembly);
+		public static bool IsMatch<T>(this Type type) => type.Is(TypeOf<T>.Raw);
 
 		//static TypeOf() { } // see: https://github.com/dotnet/coreclr/issues/17981
 	}
@@ -72,6 +73,9 @@ namespace Ace
 		public static bool IsSpecialName => Ripe.IsSpecialName;
 		public static bool IsValueType => Ripe.IsValueType;
 		public static bool IsVisible => Ripe.IsVisible;
+
+		public static bool IsMatch(Type type) => Raw.Is(type);
+		public static bool IsMatch<TType>() => Raw.Is(TypeOf<TType>.Raw);
 
 		//static TypeOf() { } // see: https://github.com/dotnet/coreclr/issues/17981
 	}

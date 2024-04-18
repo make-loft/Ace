@@ -149,20 +149,10 @@ namespace Ace.Markup
 
 			var tillVisualOffset = itemVisualOffset - positionVisualOffset;
 
-			var activeVisualOffset = getScrollOffset();
-
 			var scrollToAction = scrollView.Orientation switch
 			{
-				Vertical => New.Action(async (double value) =>
-				{
-					await scrollView.ScrollToAsync(0, value, false);
-					activeVisualOffset = getScrollOffset();
-				}),
-				Horizontal => New.Action(async (double value) =>
-				{
-					await scrollView.ScrollToAsync(value, 0, false);
-					activeVisualOffset = getScrollOffset();
-				}),
+				Vertical => New.Action(async (double value) => await scrollView.ScrollToAsync(0, value, false)),
+				Horizontal => New.Action(async (double value) => await scrollView.ScrollToAsync(value, 0, false)),
 				_ => throw new NotImplementedException()
 			};
 
@@ -171,7 +161,6 @@ namespace Ace.Markup
 					change: value =>
 						fromVisualOffset + (1d - Math.Pow(1d - value, 3d)) * (tillVisualOffset - fromVisualOffset),
 
-					@break: () => getScrollOffset().IsNot(activeVisualOffset),
 					framesCount: 48,
 					frameDuration_Milliseconds: 4);
 			else
@@ -258,7 +247,7 @@ namespace Ace.Markup
 				if (TryGetItemVisualOffset(SelectedItem, out var itemVisualOffset))
 				{
 					var selectedItemOffset = items.OffsetOf(SelectedItem);
-					var animationVisualOffset = items.Count / 2 < selectedItemOffset ? -scrollView.Height : +itemSize; 
+					var animationVisualOffset = items.Count / 2 < selectedItemOffset ? itemSize - scrollView.Height : +0d; 
 				
 					if (Orientation is Vertical)
 					{

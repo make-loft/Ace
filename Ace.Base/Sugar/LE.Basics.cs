@@ -68,7 +68,7 @@ namespace Ace
 			(x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b).Not();
 
 		/* type casting */
-		public static object ChangeType<T>(this object o) => TypeOf<string>.Raw.Is(TypeOf<T>.Raw)
+		public static object ChangeType<T>(this object o) => TypeOf<T>.IsMatch<string>()
 			? o?.ToString()
 			: o is null || TypeOf<T>.IsValueType || o is IConvertible
 				? Convert.ChangeType(o, TypeOf<T>.Raw, null)

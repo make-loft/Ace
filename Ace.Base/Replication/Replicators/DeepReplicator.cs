@@ -155,7 +155,7 @@ namespace Ace.Replication.Replicators
 
 			try
 			{
-				type = TypeOf<DictionaryEntry>.Raw.Is(baseType)
+				type = baseType.IsMatch<DictionaryEntry>()
 					? baseType
 					: RestoreType(snapshot, profile, baseType);
 				return CreateInstance(type, snapshot, profile);
