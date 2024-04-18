@@ -8,8 +8,8 @@ namespace HelloAce.ViewModel
 		[DataMember]
 		public int Kisses
 		{
-			get { return Get(() => Kisses); }
-			set { Set(() => Kisses, value); }
+			get => Get(() => Kisses);
+			set => Set(() => Kisses, value);
 		}
 
 		public void Expose()
@@ -36,8 +36,8 @@ namespace HelloAce.ViewModel
 		[DataMember]
 		public int Kisses
 		{
-			get { return Get(() => Kisses); }
-			set { Set(() => Kisses, value); }
+			get => Get(() => Kisses);
+			set => Set(() => Kisses, value);
 		}
 
 		public void Expose()

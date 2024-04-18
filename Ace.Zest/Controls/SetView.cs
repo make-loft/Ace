@@ -73,23 +73,44 @@ namespace Ace.Markup
 			}
 			.Use(c => c.SetState(item.Is(SelectedItem), this));
 
-		public async void TryScrollTo(double scrollX, double scrollY, bool animated = true)
+		public async Task TryScrollTo(double scrollX, double scrollY, bool animated = true)
 		{
-			var scrollView = (ScrollView)Content;
-			if (scrollView.IsNot()) return;
+			if (Content.IsNot(out ScrollView scrollView)) return;
 
-			while (IsLoaded.Not() || scrollView.Content.HeightRequest < 0)
+			while (scrollView.Content.HeightRequest < 0)
 				await Task.Delay(32);
 
 			await scrollView.ScrollToAsync(scrollX, scrollY, animated);
 		}
 
-		public async void TryScrollTo(object item, ScrollToPosition position = Center, bool animated = true)
+		public bool TryGetItemVisualOffset(object item, out double itemVisualOffset)
 		{
-			var scrollView = (ScrollView)Content;
-			if (scrollView.IsNot()) return;
+			itemVisualOffset = double.NaN;
 
-			while (IsLoaded.Not() || scrollView.Content.HeightRequest < 0)
+			var items = ItemsSource;
+			if (items.IsNot()) return false;
+
+			var group = groups.FirstOrDefault(g => g.Contains(item));
+			if (group.IsNot()) return false;
+
+			var isGrouping = GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
+
+			var itemSize = ItemSize;
+			var groupHeaderSize = GroupHeaderSize;
+			var groupVisualOffset = GetGroupVisualOffset(groups, group);
+
+			var itemOffset = group.OffsetOf(item);
+			itemVisualOffset = groupVisualOffset + itemOffset * itemSize / itemsInLineCount
+				+ (isGrouping ? groupHeaderSize : 0d);
+
+			return true;
+		}
+
+		public async Task TryScrollTo(object item, ScrollToPosition position = Center, bool animated = true)
+		{
+			if (Content.IsNot(out ScrollView scrollView) || IsLoaded is false) return;
+
+			while (scrollView.Content.HeightRequest < 0)
 				await Task.Delay(32);
 
 			var items = ItemsSource;
@@ -105,40 +126,56 @@ namespace Ace.Markup
 			var groupVisualOffset = GetGroupVisualOffset(groups, group);
 
 			var itemOffset = group.OffsetOf(item);
-			var offset = groupVisualOffset + itemOffset * itemSize / itemsInLineCount
+			var itemVisualOffset = groupVisualOffset + itemOffset * itemSize / itemsInLineCount
 				+ (isGrouping ? groupHeaderSize : 0d);
 
-			var itemSizeHalf = itemSize / 2d;
-			var length =
-				position.Is(Start) ? -itemSizeHalf :
-				position.Is(Center) ? -scrollView.Height / 2 + itemSizeHalf :
-				position.Is(End) ? +scrollView.Height + itemSizeHalf :
-				0d;
-
-			var from = scrollView.Orientation switch
+			double getScrollOffset() => scrollView.Orientation switch
 			{
 				Vertical => scrollView.ScrollY,
 				Horizontal => scrollView.ScrollX,
 				_ => throw new NotImplementedException()
 			};
 
-			var scrollToAction = scrollView.Orientation switch
+			var fromVisualOffset = getScrollOffset();
+
+			var positionVisualOffset = (scrollView.Height - itemSize) * position switch
 			{
-				Vertical => New.Action(async (double value) => await scrollView.ScrollToAsync(0, value, false)),
-				Horizontal => New.Action(async (double value) => await scrollView.ScrollToAsync(value, 0, false)),
+				Start => 0d,
+				Center => 0.5d,
+				End => 1d,
+				MakeVisible => fromVisualOffset < itemOffset ? 0d : fromVisualOffset > itemOffset ? 1d : 0.5d,
 				_ => throw new NotImplementedException()
 			};
 
+			var tillVisualOffset = itemVisualOffset - positionVisualOffset;
 
-			var till = offset + length;
+			var activeVisualOffset = getScrollOffset();
+
+			var scrollToAction = scrollView.Orientation switch
+			{
+				Vertical => New.Action(async (double value) =>
+				{
+					await scrollView.ScrollToAsync(0, value, false);
+					activeVisualOffset = getScrollOffset();
+				}),
+				Horizontal => New.Action(async (double value) =>
+				{
+					await scrollView.ScrollToAsync(value, 0, false);
+					activeVisualOffset = getScrollOffset();
+				}),
+				_ => throw new NotImplementedException()
+			};
+
 			if (animated)
 				scrollToAction.Animate(
-					change: value => from + (1d - Math.Pow(1d - value, 3d)) * till,
+					change: value =>
+						fromVisualOffset + (1d - Math.Pow(1d - value, 3d)) * (tillVisualOffset - fromVisualOffset),
 
+					@break: () => getScrollOffset().IsNot(activeVisualOffset),
 					framesCount: 48,
 					frameDuration_Milliseconds: 4);
 			else
-				scrollToAction(till);
+				scrollToAction(tillVisualOffset);
 		}
 
 		private INotifyCollectionChanged _collection;
@@ -196,10 +233,8 @@ namespace Ace.Markup
 					: items.GroupBy(o => (object)0, o => o).ToList()
 					;
 
+				content.Children.Clear();
 				indexToGroupContainer.Clear();
-				if (Orientation.Is(Vertical)) content.HeightRequest = 0d;
-				if (Orientation.Is(Horizontal)) content.WidthRequest = 0d;
-
 				groupToLines.Clear();
 
 				foreach (var group in groups)
@@ -220,9 +255,26 @@ namespace Ace.Markup
 				if (items.Count > scrollView.Height / itemLength)
 					await Task.Delay(8);
 
+				if (TryGetItemVisualOffset(SelectedItem, out var itemVisualOffset))
+				{
+					var selectedItemOffset = items.OffsetOf(SelectedItem);
+					var animationVisualOffset = items.Count / 2 < selectedItemOffset ? -scrollView.Height : +itemSize; 
+				
+					if (Orientation is Vertical)
+					{
+						await scrollView.ScrollToAsync(scrollView.ScrollX, itemVisualOffset + animationVisualOffset, false);
+					}
+					if (Orientation is Horizontal)
+					{
+						await scrollView.ScrollToAsync(itemVisualOffset + animationVisualOffset, scrollView.ScrollY, false);
+					}
+				}
+
 				FillContent(scrollView, content);
 
 				IsLoaded = true;
+
+				await TryScrollTo(SelectedItem);
 			};
 		}
 
@@ -233,8 +285,7 @@ namespace Ace.Markup
 
 		void SetRange(ScrollView scrollView,
 			out int fromGroupIndex, out int tillGroupIndex,
-			out int fromLineIndex, out int tillLineIndex
-			)
+			out int fromLineIndex, out int tillLineIndex)
 		{
 			fromGroupIndex = 0;
 			tillGroupIndex = groups.Count - 1;
@@ -323,7 +374,6 @@ namespace Ace.Markup
 			}
 
 			var isGrouping = IsGrouping;
-
 
 			SetRange(scrollView,
 				out var fromGroupIndex, out var tillGroupIndex,
@@ -441,29 +491,36 @@ namespace Ace.Markup
 
 		public static BindableProperty SelectedItemProperty = Type<SetView>.Create(v => v.SelectedItem, args =>
 		{
-			var lines = args.Sender.To(out var setView)
+			var groupContainers = args.Sender.To(out var setView)
 				.Content?.To<ScrollView>()
 				.Content?.To<Rack>()
-				.Children.OfType<Layout<View>>();
+				.Children.OfType<Layout<View>>()
+				;
 
-			if (lines.IsNot()) return;
+			if (groupContainers.IsNot()) return;
 
-			foreach (var line in lines)
+			foreach (var groupContainer in groupContainers)
 			{
-				var cell = line.Children.OfType<Cell>().FirstOrDefault(c => c.BindingContext.Is(args.NewValue));
-				if (cell.Is())
+				var lines = groupContainer.Children.Last().To<Rack>().Children.OfType<Layout<View>>();
+				if (lines.IsNot()) return;
+
+				foreach (var line in lines)
 				{
-					if (setView._selectedCell.Is(cell))
+					var cell = line.Children.OfType<Cell>().FirstOrDefault(c => c.BindingContext.Is(args.NewValue));
+					if (cell.Is())
+					{
+						if (setView._selectedCell.Is(cell))
+							return;
+
+						cell.SetState(true, setView);
 						return;
-
-					cell.SetState(true, setView);
-					return;
+					}
 				}
-			}
 
-			if (setView.SelectedItem.Is()) return;
-			setView._selectedCell?.SetState(false, setView);
-			setView._selectedCell = default;
+				if (setView.SelectedItem.Is()) return;
+				setView._selectedCell?.SetState(false, setView);
+				setView._selectedCell = default;
+			}
 		});
 
 		public object SelectedItem

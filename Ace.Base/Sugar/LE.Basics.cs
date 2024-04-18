@@ -63,12 +63,17 @@ namespace Ace
 		public static bool Is<T>(this object o, out T x, T fallbackValue = default) =>
 			(x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b);
 
+		public static bool IsNot<T>(this T o, out T x) => (x = o).IsNot();
+		public static bool IsNot<T>(this object o, out T x, T fallbackValue = default) =>
+			(x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b).Not();
+
 		/* type casting */
 		public static object ChangeType<T>(this object o) => TypeOf<string>.Raw.Is(TypeOf<T>.Raw)
 			? o?.ToString()
 			: o is null || TypeOf<T>.IsValueType || o is IConvertible
 				? Convert.ChangeType(o, TypeOf<T>.Raw, null)
-				: o;
+				: o
+			;
 
 		public static T To<T>(this T o) => o;
 		public static T To<T>(this object o) => (T)o.ChangeType<T>();
