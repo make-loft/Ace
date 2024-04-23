@@ -22,7 +22,8 @@ namespace Ace.Markup
 	{
 		public class Cell : Rack
 		{
-			private static readonly Color TransparentGray = new(0.5, 0.5, 0.5, 0.0);
+			private static readonly Color TransparentGrayColor = new(0.5, 0.5, 0.5, 0.0);
+			private static readonly Brush TransparentGrayBrush = new SolidColorBrush(TransparentGrayColor);
 
 			public void SetState(bool isSelected, SetView setView)
 			{
@@ -33,8 +34,13 @@ namespace Ace.Markup
 				}
 
 				Children[0].BackgroundColor = isSelected
-					? Color.Orange
-					: TransparentGray
+					? setView.SelectionBackgroundColor
+					: TransparentGrayColor
+					;
+
+				Children[0].Background = isSelected
+					? setView.SelectionBackground
+					: TransparentGrayBrush
 					;
 			}
 
@@ -542,6 +548,9 @@ namespace Ace.Markup
 		public double ItemLength { get; set; } = 0d;
 		public double GroupHeaderSize { get; set; } = 48d;
 		public bool AllowSelectedItemReset { get; set; } = true;
+
+		public Color SelectionBackgroundColor { get; set; } = Color.Orange;
+		public Brush SelectionBackground { get; set; }
 		#endregion
 	}
 }
