@@ -30,6 +30,12 @@ namespace System.Windows.Input
 		public static ModifierKeys Modifiers { get; set; }
 	}
 
+	public class MouseWheelEventArgs : EventArgs
+	{
+		public bool Handled { get; set; }
+		public int Delta { get; set; }
+	}
+
 	public class ApplicationCommands
 	{
 		public static Command Cut => Get();

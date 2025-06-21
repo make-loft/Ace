@@ -8,6 +8,7 @@ using Xamarin.Forms;
 
 using Binding = Xamarin.Forms.Binding;
 using Keyboard = System.Windows.Input.Keyboard;
+using RoutedEventArgs = System.EventArgs;
 #endif
 
 namespace Ace.Controls
@@ -24,19 +25,65 @@ namespace Ace.Controls
 		protected virtual bool TryMoveCaret(int offset) => default;
 		protected virtual bool TryRotate(bool? positive) => default;
 
-		private static readonly Key[] HandleKeys = { Key.Left, Key.Right, Key.Enter };
+		public bool Handle(Key key) => key switch
+		{
+			Key.Up => TryRotate(true),
+			Key.Down => TryRotate(false),
+			Key.Left => TryMoveCaret(-1),
+			Key.Right => TryMoveCaret(+1),
+			_ => false
+		};
+
+		public static Key Modify(Key key) => key switch
+		{
+			Key.Up => Key.Left,
+			Key.Down => Key.Right,
+			Key.Left => Key.Down,
+			Key.Right => Key.Up,
+			_ => key
+		};
+
+		public ModifierKeys[] AllowedModifiers { get; set; } =
+			{ ModifierKeys.Control, ModifierKeys.Shift, ModifierKeys.Alt };
+
+		public bool IsModifiedMode(ModifierKeys modifiers) => AllowedModifiers
+			.Any(m => modifiers.HasFlag(m));
+
+		private void ValueField_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			if (ValueField.IsKeyboardFocused.IsNot(true))
+				return;
+
+			var key = IsModifiedMode(Keyboard.Modifiers)
+				?
+				(
+					e.Delta > +0 ? Key.Left :
+					e.Delta < -0 ? Key.Right :
+					Key.Enter
+				)
+				:
+				(
+					e.Delta > +0 ? Key.Up :
+					e.Delta < -0 ? Key.Down :
+					Key.Enter
+				)
+				;
+
+			e.Handled = Handle(key);
+		}
+
+		private static readonly Key[] HandleKeys = { Key.Up, Key.Down, Key.Left, Key.Right, Key.Enter };
+
 		protected virtual void ValueField_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
-			e.Handled = e.Key switch
-			{
-				Key.Up => TryRotate(true),
-				Key.Down => TryRotate(false),
-				Key.Left => TryMoveCaret(-1),
-				Key.Right => TryMoveCaret(+1),
-				_ => false
-			};
+			var key = IsModifiedMode(Keyboard.Modifiers)
+				? Modify(e.Key)
+				: e.Key
+				;
 
-			var isKeyHandled = HandleKeys.Contains(e.Key);
+			e.Handled = Handle(key);
+
+			var isKeyHandled = HandleKeys.Contains(key);
 			if (isKeyHandled)
 				TryRotate(default);
 
@@ -75,11 +122,9 @@ namespace Ace.Controls
 
 		protected virtual void TillButton_Click(object sender, RoutedEventArgs e) => Click(true);
 
-		protected void Skip_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) =>
-			e.Handled = true;
+		protected void Skip_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) => e.Handled = true;
 
-		protected virtual object ToolTipConverter_Convert(Markup.Patterns.ConvertArgs args) =>
-			args.Value;
+		protected virtual object ToolTipConverter_Convert(Markup.Patterns.ConvertArgs args) => args.Value;
 		
 		protected virtual object FormatConverter_Convert(Markup.Patterns.ConvertArgs args) => args.Value;
 

@@ -163,6 +163,7 @@
 			Text="{Binding Value, Mode=TwoWay, Converter={StaticResource FormatConverter}}"
 			SelectionChanged="ValueField_SelectionChanged"
 			PreviewKeyDown="ValueField_PreviewKeyDown"
+			PreviewMouseWheel="ValueField_PreviewMouseWheel"
 			GotFocus="ValueField_GotFocus"
 			/>
 	</c:Rack>
