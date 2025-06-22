@@ -1,11 +1,24 @@
 ﻿namespace Ace.Controls
 {
+	using System;
 #if XAMARIN
 	using System.Threading.Tasks;
+	using System.Windows;
+	using System.Windows.Input;
 
-	public class Field : Xamarin.Forms.Entry
+	using Xamarin.Forms;
+
+	public class Field : Entry
 	{
 		public int CaretIndex { get; set; }
+		public bool IsKeyboardFocused { get; set; }
+		public bool IsReadOnlyCaretVisible { get; set; }
+		public Thickness BorderThickness { get; set; }
+
+		public event Action<object, RoutedEventArgs> SelectionChanged;
+		public event Action<object, RoutedEventArgs> GotFocus;
+		public event Action<object, KeyEventArgs> PreviewKeyDown;
+		public event Action<object, MouseWheelEventArgs> PreviewMouseWheel;
 
 		public Field()
 		{
@@ -30,7 +43,7 @@
 			};
 		}
 
-		public Xamarin.Forms.TextAlignment TextAlignment
+		public TextAlignment TextAlignment
 		{
 			get => HorizontalTextAlignment;
 			set => HorizontalTextAlignment = value;

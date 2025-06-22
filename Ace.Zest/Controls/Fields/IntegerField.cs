@@ -68,7 +68,7 @@ namespace Ace.Controls
 			return true;
 		}
 
-		protected override void ValueField_SelectionChanged(object sender, RoutedEventArgs e)
+		protected override void ValueField_SelectionChanged(object sender, RoutedEventArgs args)
 		{
 			ReadValueField(out var text, out var caretIndex);
 

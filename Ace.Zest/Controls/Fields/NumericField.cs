@@ -85,7 +85,7 @@ namespace Ace.Controls
 
 		int _floatLength;
 
-		protected override void ValueField_SelectionChanged(object sender, RoutedEventArgs e)
+		protected override void ValueField_SelectionChanged(object sender, RoutedEventArgs args)
 		{
 			ReadValueField(out var text, out var caretIndex);
 
@@ -106,7 +106,7 @@ namespace Ace.Controls
 			Step = step;
 		}
 
-		protected override async void ValueField_GotFocus(object sender, RoutedEventArgs e)
+		protected override async void ValueField_GotFocus(object sender, RoutedEventArgs args)
 		{
 			await Task.Delay(200);
 

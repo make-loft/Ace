@@ -75,7 +75,7 @@ namespace Ace.Controls
 			return true;
 		}
 
-		protected override async void ValueField_GotFocus(object sender, RoutedEventArgs e)
+		protected override async void ValueField_GotFocus(object sender, RoutedEventArgs args)
 		{
 			await Task.Delay(200);
 

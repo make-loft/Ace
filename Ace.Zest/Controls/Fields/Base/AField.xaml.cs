@@ -1,14 +1,12 @@
 ﻿using System.Windows;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Data;
+using Ace.Markup.Patterns;
 
 #if XAMARIN
-using Xamarin.Forms;
-
 using Binding = Xamarin.Forms.Binding;
-using Keyboard = System.Windows.Input.Keyboard;
-using RoutedEventArgs = System.EventArgs;
+#else
+using System.Windows.Data;
 #endif
 
 namespace Ace.Controls
@@ -20,7 +18,7 @@ namespace Ace.Controls
 		public string Format { get => this.Get(default(string)); set => this.Set(value); }
 		public bool IsReadOnly { get => this.Get(false); set => this.Set(value); }
 
-		protected virtual void ValueField_GotFocus(object sender, RoutedEventArgs e) { }
+		protected virtual void ValueField_GotFocus(object sender, RoutedEventArgs args) { }
 
 		protected virtual bool TryMoveCaret(int offset) => default;
 		protected virtual bool TryRotate(bool? positive) => default;
@@ -49,7 +47,7 @@ namespace Ace.Controls
 		public bool IsModifiedMode(ModifierKeys modifiers) => AllowedModifiers
 			.Any(m => modifiers.HasFlag(m));
 
-		private void ValueField_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+		private void ValueField_PreviewMouseWheel(object sender, MouseWheelEventArgs args)
 		{
 			if (ValueField.IsKeyboardFocused.IsNot(true))
 				return;
@@ -57,37 +55,37 @@ namespace Ace.Controls
 			var key = IsModifiedMode(Keyboard.Modifiers)
 				?
 				(
-					e.Delta > +0 ? Key.Left :
-					e.Delta < -0 ? Key.Right :
+					args.Delta > +0 ? Key.Left :
+					args.Delta < -0 ? Key.Right :
 					Key.Enter
 				)
 				:
 				(
-					e.Delta > +0 ? Key.Up :
-					e.Delta < -0 ? Key.Down :
+					args.Delta > +0 ? Key.Up :
+					args.Delta < -0 ? Key.Down :
 					Key.Enter
 				)
 				;
 
-			e.Handled = Handle(key);
+			args.Handled = Handle(key);
 		}
 
 		private static readonly Key[] HandleKeys = { Key.Up, Key.Down, Key.Left, Key.Right, Key.Enter };
 
-		protected virtual void ValueField_PreviewKeyDown(object sender, KeyEventArgs e)
+		protected virtual void ValueField_PreviewKeyDown(object sender, KeyEventArgs args)
 		{
 			var key = IsModifiedMode(Keyboard.Modifiers)
-				? Modify(e.Key)
-				: e.Key
+				? Modify(args.Key)
+				: args.Key
 				;
 
-			e.Handled = Handle(key);
+			args.Handled = Handle(key);
 
 			var isKeyHandled = HandleKeys.Contains(key);
 			if (isKeyHandled)
 				TryRotate(default);
 
-			e.Handled &= isKeyHandled;
+			args.Handled &= isKeyHandled;
 		}
 
 		protected virtual void Click(bool positive)
@@ -118,19 +116,20 @@ namespace Ace.Controls
 			WriteValueField(in text, in caretIndex);
 		}
 
-		protected virtual void FromButton_Click(object sender, RoutedEventArgs e) => Click(false);
+		protected virtual void FromButton_Click(object sender, RoutedEventArgs args) => Click(false);
 
-		protected virtual void TillButton_Click(object sender, RoutedEventArgs e) => Click(true);
+		protected virtual void TillButton_Click(object sender, RoutedEventArgs args) => Click(true);
 
-		protected void Skip_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) => e.Handled = true;
+		protected void Skip_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs args) =>
+			args.Handled = true;
 
-		protected virtual object ToolTipConverter_Convert(Markup.Patterns.ConvertArgs args) => args.Value;
+		protected virtual object ToolTipConverter_Convert(ConvertArgs args) => args.Value;
 		
-		protected virtual object FormatConverter_Convert(Markup.Patterns.ConvertArgs args) => args.Value;
+		protected virtual object FormatConverter_Convert(ConvertArgs args) => args.Value;
 
-		protected virtual object FormatConverter_ConvertBack(Markup.Patterns.ConvertArgs args) => args.Value;
+		protected virtual object FormatConverter_ConvertBack(ConvertArgs args) => args.Value;
 
-		protected virtual void ValueField_SelectionChanged(object sender, RoutedEventArgs e) { }
+		protected virtual void ValueField_SelectionChanged(object sender, RoutedEventArgs args) { }
 	}
 
 	public abstract class AField<TValue> : AField
@@ -162,13 +161,12 @@ namespace Ace.Controls
 		protected virtual bool TryFormat(in TValue value, out string text) => value.Is(out text);
 		protected virtual bool TryParse(in string text, out TValue value) => text.Is(out value);
 
-		protected override object ToolTipConverter_Convert(Markup.Patterns.ConvertArgs args) =>
-			args.Value;
+		protected override object ToolTipConverter_Convert(ConvertArgs args) => args.Value;
 
-		protected override object FormatConverter_Convert(Markup.Patterns.ConvertArgs args) =>
+		protected override object FormatConverter_Convert(ConvertArgs args) =>
 			TryFormat(args.Value.To<TValue>(), out var text) ? text : Binding.DoNothing;
 
-		protected override object FormatConverter_ConvertBack(Markup.Patterns.ConvertArgs args) =>
+		protected override object FormatConverter_ConvertBack(ConvertArgs args) =>
 			TryParse(args.Value.To<string>(), out var value) ? value : Binding.DoNothing;
 	}
 }
