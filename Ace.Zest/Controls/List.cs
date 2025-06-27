@@ -42,8 +42,6 @@ namespace Ace.Controls
 				if (args.Sender.ActiveItemOffset.IsNot(activeItemOffset))
 					args.Sender.ActiveItemOffset = activeItemOffset;
 			};
-
-			Type<List>.CreateProperties();
 		}
 
 		public List()
@@ -51,47 +49,55 @@ namespace Ace.Controls
 			Items.CollectionChanged += (o, e) => ItemsSource = Items;
 			Items.CollectionChanged += (o, e) => ActiveItem = 0 <= ActiveItemOffset && ActiveItemOffset < ItemsSource.Count
 				? ItemsSource[ActiveItemOffset]
-				: ActiveItem;
+				: ActiveItem
+				;
 		}
 
 		public SmartSet<object> Items { get; } = new();
 
+		[RegisterProperty]
 		public DataTemplate ItemTemplate
 		{
 			get => this.Get(default(DataTemplate));
 			set => this.Set(value);
 		}
 
+		[RegisterProperty]
 		public DataTemplate ContentTemplate
 		{
 			get => this.Get(default(DataTemplate));
 			set => this.Set(value);
 		}
 
+		[RegisterProperty]
 		public object ActiveItem
 		{
 			get => this.Get(default(object));
 			set => this.Set(value);
 		}
 
+		[RegisterProperty]
 		public IList ItemsSource
 		{
 			get => this.Get(default(IList));
 			set => this.Set(value);
 		}
 
+		[RegisterProperty]
 		public int ActiveItemOffset
 		{
 			get => this.Get(default(int));
 			set => this.Set(value);
 		}
 
+		[RegisterProperty]
 		public bool ActiveItemUnset
 		{
 			get => this.Get(true);
 			set => this.Set(value);
 		}
 
+		[RegisterProperty]
 		public ItemCell ActiveCell
 		{
 			get => this.Get(default(ItemCell));

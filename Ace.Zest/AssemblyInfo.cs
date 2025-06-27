@@ -18,9 +18,9 @@ using System.Windows.Markup;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("3.2.0.0")]
-[assembly: AssemblyFileVersion("3.2.0.0")]
-//[assembly: AssemblyInformationalVersion("3.2.0.0")]
+[assembly: AssemblyVersion("3.3.0.0")]
+[assembly: AssemblyFileVersion("3.3.0.0")]
+//[assembly: AssemblyInformationalVersion("3.3.0.0")]
 [assembly: AssemblyCompany("Makeloft Studio")]
 [assembly: AssemblyProduct("Ace Framework")]
 //[assembly: AssemblyCopyright("© Makeloft Studio")]

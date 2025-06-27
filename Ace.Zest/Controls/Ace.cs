@@ -182,14 +182,18 @@ namespace Ace.Controls
 			if (NameToProperty.TryGetValue(name, out var property))
 				return property;
 
-			property = Handler<TValue>.NameToHandler.TryGetValue(name, out var handler)
+			var handler = Handler<TValue>.NameToHandler.TryGetValue(name, out var h)
+				? h
+				: Handler<TValue>.NameToHandler[name] = new()
+				;
+
+			property =
 #if XAMARIN
-				? Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue, propertyChanged: (s, o, n) =>
+				Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue, propertyChanged: (s, o, n) =>
 					handler.EvokeChanged(new((TOwner)(object)s, (TValue)o, (TValue)n)))
-				: Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue)
 #else
-				? Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => handler.EvokeChanged(new(s.To<TOwner>(), args))))
-				: Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue))
+				Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, a) =>
+					handler.EvokeChanged(new(s.To<TOwner>(), a))))
 #endif
 				;
 
@@ -203,14 +207,16 @@ namespace Ace.Controls
 			var flags = BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 			var properties = TypeOf<TOwner>.Raw.GetProperties(flags)
 				.Where(p => ownerType.Is(p.DeclaringType) || types.Contains(p.DeclaringType))
-				.ToArray();
+				.ToArray()
+				;
 			properties.ForEach(p => p.GetValue(instance));
 		}
 
 		public static Handler<TValue> When<TValue>(Expression<Func<TOwner, TValue>> func) =>
 			Handler<TValue>.NameToHandler.TryGetValue(func.UnboxMemberName().To(out var name), out var handler)
 				? handler
-				: Handler<TValue>.NameToHandler[name] = new();
+				: Handler<TValue>.NameToHandler[name] = new()
+			;
 
 		public class Handler<TValue>
 		{
@@ -220,8 +226,39 @@ namespace Ace.Controls
 		}
 	}
 
+	public class RegisterPropertyAttribute : Attribute
+	{
+		static RegisterPropertyAttribute()
+		{
+			var attributeInfos = AppDomain.CurrentDomain.GetAssemblies()
+				.SelectMany(a => a.GetTypes())
+				.SelectMany(t => t.GetProperties())
+				.Select(p => new { Property = p, RegisterAttribute = p.GetCustomAttribute<RegisterPropertyAttribute>() })
+				.Where(d => d.RegisterAttribute.Is())
+				.ToList()
+				;
+
+			foreach (var attributeInfo in attributeInfos)
+			{
+				var property = attributeInfo.Property;
+				var type = typeof(Type<>).MakeGenericType(property.DeclaringType);
+				var getPropertyMethod = type.GetMethods()
+					.FirstOrDefault(m =>
+						m.Name.Is("GetProperty") &&
+						TypeOf<string>.Raw.Is(m.GetParameters().FirstOrDefault()?.ParameterType))
+					.MakeGenericMethod(property.PropertyType);
+				var p = getPropertyMethod.Invoke(default, new[] { property.Name, attributeInfo.RegisterAttribute.DefaultValue });
+			}
+		}
+
+		public object DefaultValue { get; set; }
+	}
+
 	public static class BindableExtantions
 	{
+		public static Property Register(this PropertyInfo info, PropertyMetadata metadata = default) =>
+			Property.Register(info.Name, info.PropertyType, info.DeclaringType, metadata);
+
 		public static TValue Get<TBindable, TValue>(this TBindable bindable,
 			TValue defaultValue = default, [CallerMemberName] string name = default)
 			where TBindable : BindableObject =>
@@ -321,13 +358,6 @@ namespace Ace.Controls
 		public static DataTemplate GetItemTemplate(Panel b) => (DataTemplate)b.GetValue(ItemTemplateProperty);
 	}
 
-	//public class Binding : System.Windows.Data.Binding { }
-	//public class TemplateBindingExtension : System.Windows.TemplateBindingExtension { }
-	//public class StaticResourceExtension : System.Windows.StaticResourceExtension { }
-	//public class DynamicResourceExtension : System.Windows.DynamicResourceExtension { }
-	//public class ControlTemplate : System.Windows.Controls.ControlTemplate { }
-	//public class DataTemplate : System.Windows.DataTemplate { }
-
 #if XAMARIN
 	public class Title : Label
 	{
@@ -361,8 +391,6 @@ namespace Ace.Controls
 		public Orientation Orientation { get; set; }
 	}
 
-	//public class ResourceDictionary : System.Windows.ResourceDictionary { }
-
 	public class Knob : Button { }
 	public class ContentPresenter : System.Windows.Controls.ContentPresenter { }
 	public class ContentView : ContentControl { }
@@ -372,8 +400,7 @@ namespace Ace.Controls
 	}
 
 	public class RackSplitter : GridSplitter { }
-	//public class Frame : Border { }
-	//public class Button : System.Windows.Controls.Button { }
+
 	public class Title : TextBlock
 	{
 		public string FontAttributes { get; set; }
@@ -453,19 +480,6 @@ namespace Ace.Controls
 			return false; // wrap always
 		}
 	}
-
-	//public class SolidColorBrush : System.Windows.Media.SolidColorBrush { }
-	//public class LinearGradientBrush : System.Windows.Media.LinearGradientBrush { }
-
-	//public class Expander : System.Windows.Controls.Expander { }
-
-	//public class Popup : System.Windows.Controls.Primitives.Popup { }
-
-	//public class GroupBox : System.Windows.Controls.GroupBox { }
-
-	//public class Style : System.Windows.Style { }
-
-	//public class Setter : System.Windows.Setter { }
 }
 
 namespace Xamarin.Forms

@@ -18,10 +18,10 @@ namespace System.Reflection
 		public static bool CanReadWrite(this MemberInfo member) =>
 			CanRead(member) && CanWrite(member);
 
-		public static object GetValue(this MemberInfo member, object obj) =>
-			member is PropertyInfo property
-				? property.GetValue(obj, null)
-				: (member as FieldInfo)?.GetValue(obj);
+		public static object GetValue(this MemberInfo member, object obj) => member is PropertyInfo property
+			? property.GetValue(obj, null)
+			: (member as FieldInfo)?.GetValue(obj)
+			;
 
 		public static Type GetMemberType(this MemberInfo member) =>
 			(member as PropertyInfo)?.PropertyType ?? (member as FieldInfo)?.FieldType;
@@ -55,6 +55,11 @@ namespace System.Reflection
 
 		public static Type GetGenericTypeOrDefault(this Type type) => type.IsGenericType
 			? type.GetGenericTypeDefinition()
-			: default;
+			: default
+			;
+
+		public static MethodInfo GetMethod(this Type type, string name, params Type[] signature) => type.GetMethods()
+			.FirstOrDefault(m => m.Name.Is(name) && m.GetParameters().Select(i => i.ParameterType).IsStrictMatch(signature))
+			;
 	}
 }

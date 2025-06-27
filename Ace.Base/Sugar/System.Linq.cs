@@ -30,6 +30,26 @@ namespace System.Linq
 			return array;
 		}
 
+		public static bool IsStrictMatch<TValue>(this IEnumerable<TValue> source, IEnumerable<TValue> target)
+		{
+			var sourceEnumerator = source.GetEnumerator();
+			var targetEnumerator = target.GetEnumerator();
+
+			do
+			{
+				var isSourceMoved = sourceEnumerator.MoveNext();
+				var isTargetMoved = targetEnumerator.MoveNext();
+
+				if (isSourceMoved is false && isTargetMoved is false)
+					return true;
+				if ((isSourceMoved && isTargetMoved) is false)
+					return false;
+
+			} while (sourceEnumerator.Current.Equals(targetEnumerator.Current));
+
+			return false;
+		}
+
 		public static string Concat(this IEnumerable<string> source) =>
 			source.Aggregate(new StringBuilder(), (b, v) => b.Append(v)).ToString();
 

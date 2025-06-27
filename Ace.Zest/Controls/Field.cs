@@ -50,7 +50,6 @@
 		}
 	}
 #else
-	using System;
 	using System.Windows.Controls;
 
 	public class Field : TextBox

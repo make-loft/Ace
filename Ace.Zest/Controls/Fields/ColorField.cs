@@ -20,11 +20,11 @@ namespace Ace.Controls
 	{
 		static ColorField() => Initialize<ColorField>();
 
-		Color DefaultFrom { get; } = FromARGB(0x00, 0x00, 0x00, 0x00);
-		Color DefaultTill { get; } = FromARGB(0xFF, 0xFF, 0xFF, 0xFF);
-		Color DefaultValue { get; } = Colors.DimGray;
-		Color DefaultStep { get; } = Colors.Transparent;
-		Color DefaultLength { get; } = Colors.Transparent;
+		static Color DefaultValue = Colors.DimGray;
+		static Color DefaultFrom = FromARGB(0xFF, 0x00, 0x00, 0x00);
+		static Color DefaultTill = FromARGB(0xFF, 0xFF, 0xFF, 0xFF);
+		static Color DefaultStep = FromARGB(0x00, 0x01, 0x01, 0x01);
+		static Color DefaultLength = FromARGB(0x00, 0xFF, 0xFF, 0xFF);
 
 		public override Color From { get => this.Get(DefaultFrom); set => this.Set(value); }
 		public override Color Till { get => this.Get(DefaultTill); set => this.Set(value); }
