@@ -129,7 +129,6 @@
       <DependentUpon>AField.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ace.Zest\Controls\Fields\ColorField.cs" />
-    <Compile Include="Ace.Zest\Controls\Fields\IntegerField.cs" />
     <Compile Include="Ace.Zest\Controls\Fields\NumericField.cs" />
     <Compile Include="Ace.Zest\Controls\Item.cs" />
     <Compile Include="Ace.Zest\Controls\ItemCell.cs" />

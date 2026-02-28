@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows.Input;
 using Ace.Markup.Patterns;
+using Ace.Mathematics;
+
 
 #if XAMARIN
 using Binding = Xamarin.Forms.Binding;
@@ -18,6 +20,7 @@ namespace Ace.Controls
 		public string Format { get => this.Get(default(string)); set => this.Set(value); }
 		public bool IsReadOnly { get => this.Get(false); set => this.Set(value); }
 
+		protected virtual void ValueField_LostFocus(object sender, RoutedEventArgs args) { }
 		protected virtual void ValueField_GotFocus(object sender, RoutedEventArgs args) { }
 
 		protected virtual bool TryMoveCaret(int offset) => default;
@@ -70,7 +73,7 @@ namespace Ace.Controls
 			args.Handled = Handle(key);
 		}
 
-		private static readonly Key[] HandleKeys = { Key.Up, Key.Down, Key.Left, Key.Right, Key.Enter };
+		private static readonly Key[] HandleKeys = { Key.Up, Key.Down, Key.Left, Key.Right, Key.Enter, Key.Escape };
 
 		protected virtual void ValueField_PreviewKeyDown(object sender, KeyEventArgs args)
 		{
@@ -83,10 +86,19 @@ namespace Ace.Controls
 
 			var isKeyHandled = HandleKeys.Contains(key);
 			if (isKeyHandled)
-				TryRotate(default);
+			{
+				if (key.Is(Key.Enter))
+					MakeChanges();
+
+				if (key.Is(Key.Escape))
+					UndoChanges();
+			}
 
 			args.Handled &= isKeyHandled;
 		}
+
+		protected abstract void MakeChanges();
+		protected abstract void UndoChanges();
 
 		protected virtual void Click(bool positive)
 		{
@@ -161,12 +173,30 @@ namespace Ace.Controls
 		protected virtual bool TryFormat(in TValue value, out string text) => value.Is(out text);
 		protected virtual bool TryParse(in string text, out TValue value) => text.Is(out value);
 
+		protected override void MakeChanges()
+		{
+			ReadValueField(out var text, out var caretIndex);
+			if (TryParse(text, out var value))
+				Value = value;
+			else UndoChanges();
+		}
+
+		protected override void UndoChanges()
+		{
+			ReadValueField(out var text, out var caretIndex);
+			var deltaIndex = text.Length - caretIndex;
+			if (TryFormat(Value, out text).Is(false))
+				return;
+			var targetIndex = (text.Length - deltaIndex).Clip(0, text.Length);
+			WriteValueField(text, targetIndex);
+		}
+
 		protected override object ToolTipConverter_Convert(ConvertArgs args) => args.Value;
 
 		protected override object FormatConverter_Convert(ConvertArgs args) =>
 			TryFormat(args.Value.To<TValue>(), out var text) ? text : Binding.DoNothing;
 
 		protected override object FormatConverter_ConvertBack(ConvertArgs args) =>
-			TryParse(args.Value.To<string>(), out var value) ? value : Binding.DoNothing;
+			Binding.DoNothing;
 	}
 }

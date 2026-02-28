@@ -164,6 +164,7 @@
 			SelectionChanged="ValueField_SelectionChanged"
 			PreviewKeyDown="ValueField_PreviewKeyDown"
 			PreviewMouseWheel="ValueField_PreviewMouseWheel"
+			LostFocus="ValueField_LostFocus"
 			GotFocus="ValueField_GotFocus"
 			/>
 	</c:Rack>
