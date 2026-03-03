@@ -1,15 +1,16 @@
-﻿using System.Windows;
+﻿using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
-using Ace.Markup.Patterns;
-using Ace.Mathematics;
-
-
+using System.Windows.Controls;
 #if XAMARIN
 using Binding = Xamarin.Forms.Binding;
 #else
 using System.Windows.Data;
 #endif
+
+using Ace.Markup.Patterns;
+using Ace.Mathematics;
 
 namespace Ace.Controls
 {
@@ -25,6 +26,8 @@ namespace Ace.Controls
 
 		protected virtual bool TryMoveCaret(int offset) => default;
 		protected virtual bool TryRotate(bool? positive) => default;
+
+		internal virtual void Update(object value) { }
 
 		public bool Handle(Key key) => key switch
 		{
@@ -142,6 +145,21 @@ namespace Ace.Controls
 		protected virtual object FormatConverter_ConvertBack(ConvertArgs args) => args.Value;
 
 		protected virtual void ValueField_SelectionChanged(object sender, RoutedEventArgs args) { }
+
+		private ValidationResult CustomRule_Validation(ValidationArgs args)
+		{
+			try
+			{
+				Update(args.Value);
+				return ValidationResult.ValidResult;
+			}
+			catch (Exception exception)
+			{
+				return new(false, exception.Message);
+			}
+		}
+
+		private object DoNothing(ConvertArgs args) => Binding.DoNothing;
 	}
 
 	public abstract class AField<TValue> : AField

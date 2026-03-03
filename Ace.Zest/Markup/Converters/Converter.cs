@@ -8,7 +8,7 @@ using System.Windows.Data;
 
 namespace Ace.Markup.Converters
 {
-	using Convert = Patterns.Convert;
+	public delegate object Convert(Patterns.ConvertArgs args);
 
 	public class Converter : Patterns.AMarkupExtension, IValueConverter
 	{

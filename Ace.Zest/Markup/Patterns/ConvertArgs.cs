@@ -3,18 +3,11 @@ using System.Globalization;
 
 namespace Ace.Markup.Patterns
 {
-	public delegate object Convert(ConvertArgs args);
-
-	public readonly struct ConvertArgs
+	public readonly struct ConvertArgs(object value, Type targetType, object parameter, CultureInfo culture)
 	{
-		public object Value { get; }
-		public object Parameter { get; }
-		public Type TargetType { get; }
-		public CultureInfo Culture { get; }
-
-		public ConvertArgs(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			Value = value; TargetType = targetType; Parameter = parameter; Culture = culture;
-		}
+		public object Value { get; } = value;
+		public object Parameter { get; } = parameter;
+		public Type TargetType { get; } = targetType;
+		public CultureInfo Culture { get; } = culture;
 	}
 }

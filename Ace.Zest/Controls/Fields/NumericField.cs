@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Ace.Controls
 {
@@ -23,7 +24,7 @@ namespace Ace.Controls
 
 		protected bool FormatIsIntegral => Format.Is() && (Format.Is("X") || Format.StartsWith("D"));
 
-		public static readonly string DoubleFixedPointFormat = "0." + new string('#', 339);
+		public static readonly string StrictDecimalFormat = "0." + new string('#', 339);
 
 		protected override double GetLength() => Till - From;
 
@@ -39,12 +40,11 @@ namespace Ace.Controls
 			if (TryParse(text, out var value).Is(false))
 				return false;
 
-			var containsPoint = text.Contains(DecimalSeparator);
-			text = containsPoint.Is(true) ? text : text + DecimalSeparator;
-
-			var pointIndex = text.IndexOf(DecimalSeparator);
-			var digitIndex = pointIndex - caretIndex;
 			var hasSign = StartWithSignSymbol(text);
+			var hasPoint = text.Contains(DecimalSeparator);
+
+			var pointIndex = hasPoint ? text.IndexOf(DecimalSeparator) : text.Length;
+			var digitIndex = pointIndex - caretIndex;
 
 			var useMirrorTransform = caretIndex.Is(0) || (hasSign && caretIndex.Is(1));
 			var step = GetStep(positive, digitIndex, value, useMirrorTransform);
@@ -57,7 +57,7 @@ namespace Ace.Controls
 
 			text = FormatIsIntegral
 				? value.To<long>().ToString(Format)
-				: value.ToString(DoubleFixedPointFormat)
+				: value.ToString(StrictDecimalFormat)
 				;
 
 			if (caretIndex == 0)
@@ -87,7 +87,7 @@ namespace Ace.Controls
 				caretIndex--;
 			}
 
-			if (containsPoint.Is(false) && text.EndsWith(DecimalSeparator))
+			if (hasPoint.Is(false) && text.EndsWith(DecimalSeparator))
 			{
 				text = text.Substring(0, text.Length - DecimalSeparator.Length);
 			}
@@ -104,7 +104,7 @@ namespace Ace.Controls
 
 		private double GetStep(bool? positive, int digitIndex, double value, bool useMirrorTransform) =>
 			useMirrorTransform
-				? (positive.Is(true) ? -2d : +2d) * value
+				? (positive.Is(true) ? +2d : -2d) * value
 				: Math.Pow(StepBase, digitIndex)
 				;
 
@@ -152,7 +152,7 @@ namespace Ace.Controls
 			{
 				_floatLength = text.Contains(DecimalSeparator) ? text.Length - text.IndexOf(DecimalSeparator) : 0;
 
-				text = Value.ToString(DoubleFixedPointFormat);
+				text = Value.ToString(StrictDecimalFormat);
 				if (caretIndex.Is(0) && StartWithSignSymbol(text).Is(false))
 				{
 					text = $"+{text}";
@@ -182,6 +182,17 @@ namespace Ace.Controls
 
 			WriteValueField(text, caretIndex);
 			return false;
+		}
+
+		internal override void Update(object value)
+		{
+			var isValidNumber = TryParse(value.To<string>(), out var number);
+			if (isValidNumber.Not())
+				throw new FormatException();
+			if (number < From || Till < number)
+				throw new ArgumentOutOfRangeException();
+
+			Value = number;
 		}
 
 		protected override bool TryFormat(in double value, out string text) => FormatIsIntegral

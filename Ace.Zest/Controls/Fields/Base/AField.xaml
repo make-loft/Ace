@@ -41,24 +41,55 @@
 	</Control.Resources>
 
 	<Control.ToolTip>
-		<ToolTip>
-			<c:Rack
-				Rows="^ ^"
-				DataContext="{Binding RelativeSource={RelativeSource AncestorType=ToolTip}, Path=PlacementTarget}"
-				>
+		<ToolTip
+			Name="ValueToolTip"
+			DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}"
+			IsOpen="{Binding (Validation.HasError), Source={x:Reference ValueField}, Mode=OneWay}"
+			>
+			<c:Stack>
 				<GroupBox
-					c:Rack.Cell="R0"
+					DataContext="{x:Reference ValueField}"
+					Visibility="{Binding (Validation.HasError), Converter={StaticResource FalseToCollapsedConverter}}"
 					>
+					<GroupBox.Header>
+						<c:Title
+							Background="Firebrick"
+							Foreground="White"
+							FontWeight="Bold"
+							Text="{m:Localizing Error}"
+							/>
+					</GroupBox.Header>
+					<StackPanel
+						MaxWidth="256"
+						Orientation="Vertical"
+						>
+						<c:Stack
+							c:Children.ItemsSource="{Binding (Validation.Errors)}"
+							>
+							<c:Children.ItemTemplate>
+								<DataTemplate>
+									<TextBlock
+										TextWrapping="Wrap"
+										Text="{Binding ErrorContent}"
+										/>
+								</DataTemplate>
+							</c:Children.ItemTemplate>
+						</c:Stack>
+					</StackPanel>
+				</GroupBox>
+				<GroupBox>
 					<GroupBox.Header>
 						<c:Stack
 							Orientation="Horizontal"
 							>
 							<c:Title
 								c:Rack.Cell="R4 C0"
+								FontWeight="Bold"
 								Text="{m:Localizing Value}"
 								/>
 							<c:Title
 								c:Rack.Cell="R4 C5"
+								FontWeight="Bold"
 								Text="{Binding Value}"
 								/>
 						</c:Stack>
@@ -86,19 +117,19 @@
 							/>
 					</c:Rack>
 				</GroupBox>
-				<GroupBox
-					c:Rack.Cell="R2 CS2"
-					>
+				<GroupBox>
 					<GroupBox.Header>
 						<c:Stack
 							Orientation="Horizontal"
 							>
 							<c:Title
 								c:Rack.Cell="R4 C0"
+								FontWeight="Bold"
 								Text="{m:Localizing Length}"
 								/>
 							<c:Title
 								c:Rack.Cell="R4 C5"
+								FontWeight="Bold"
 								Text="{Binding Length}"
 								/>
 						</c:Stack>
@@ -126,7 +157,7 @@
 							/>
 					</c:Rack>
 				</GroupBox>
-			</c:Rack>
+			</c:Stack>
 		</ToolTip>
 	</Control.ToolTip>
 
@@ -160,12 +191,27 @@
 			BorderThickness="1"
 			IsReadOnlyCaretVisible="True"
 			IsReadOnly="{Binding IsReadOnly}"
-			Text="{Binding Value, Mode=TwoWay, Converter={StaticResource FormatConverter}}"
 			SelectionChanged="ValueField_SelectionChanged"
 			PreviewKeyDown="ValueField_PreviewKeyDown"
 			PreviewMouseWheel="ValueField_PreviewMouseWheel"
 			LostFocus="ValueField_LostFocus"
 			GotFocus="ValueField_GotFocus"
-			/>
+			>
+			<c:Field.Text>
+				<Binding
+					Path="Value"
+					Mode="TwoWay"
+					Converter="{StaticResource FormatConverter}"
+					UpdateSourceTrigger="PropertyChanged"
+					>
+					<Binding.ValidationRules>
+						<m:CustomRule
+							ValidationStep="RawProposedValue"
+							Validation="CustomRule_Validation"
+							/>
+					</Binding.ValidationRules>
+				</Binding>
+			</c:Field.Text>
+		</c:Field>
 	</c:Rack>
 </c:ContentControl>
