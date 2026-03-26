@@ -1,10 +1,9 @@
-﻿using Ace.Mathematics;
-
-using System;
+﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+
+using Ace.Mathematics;
 
 namespace Ace.Controls
 {
@@ -24,11 +23,11 @@ namespace Ace.Controls
 
 		protected bool FormatIsIntegral => Format.Is() && (Format.Is("X") || Format.StartsWith("D"));
 
-		public static readonly string StrictDecimalFormat = "0." + new string('#', 339);
+		protected static readonly string StrictDecimalFormat = "0." + new string('#', 339);
 
 		protected override double GetLength() => Till - From;
 
-		static bool StartWithSignSymbol(string text) => text.StartsWith("+") || text.StartsWith("-");
+		protected static bool StartWithSignSymbol(string text) => text.StartsWith("+") || text.StartsWith("-");
 
 		protected override bool TryRotate(bool? positive)
 		{
@@ -47,7 +46,7 @@ namespace Ace.Controls
 			var digitIndex = pointIndex - caretIndex;
 
 			var useMirrorTransform = caretIndex.Is(0) || (hasSign && caretIndex.Is(1));
-			var step = GetStep(positive, digitIndex, value, useMirrorTransform);
+			var step = GetStep(StepBase, positive, digitIndex, value, useMirrorTransform);
 
 			step = positive.Is(true) ? +step : positive.Is(false) ? -step : 0d;
 			value = value.Rotate(step, From, Till);
@@ -93,7 +92,7 @@ namespace Ace.Controls
 			}
 			else
 			{
-				for (var i = text.Length - text.IndexOf(DecimalSeparator); i < _floatLength; i++)
+				for (var i = text.Length - text.IndexOf(DecimalSeparator); i < GotFocusFloatLength; i++)
 					text = $"{text}0";
 			}
 
@@ -102,13 +101,13 @@ namespace Ace.Controls
 			return true;
 		}
 
-		private double GetStep(bool? positive, int digitIndex, double value, bool useMirrorTransform) =>
+		protected static double GetStep(double stepBase, bool? positive, int digitIndex, double value, bool useMirrorTransform) =>
 			useMirrorTransform
 				? (positive.Is(true) ? +2d : -2d) * value
-				: Math.Pow(StepBase, digitIndex)
+				: Math.Pow(stepBase, digitIndex)
 				;
 
-		int _floatLength;
+		protected int GotFocusFloatLength;
 
 		protected override void ValueField_SelectionChanged(object sender, RoutedEventArgs args)
 		{
@@ -124,24 +123,32 @@ namespace Ace.Controls
 				return;
 
 			var useMirrorTransform = caretIndex.Is(0) || (hasSign && caretIndex.Is(1));
-			var step = GetStep(positive: true, digitIndex, value, useMirrorTransform);
+			var step = GetStep(StepBase, positive: true, digitIndex, value, useMirrorTransform);
 			step = From < Till ? +step : -step;
 			Step = step;
 		}
 
+		protected int LostFocusCaretIndex = -1;
 		protected override void ValueField_LostFocus(object sender, RoutedEventArgs e)
 		{
-			ReadValueField(out var text, out var caretIndex);
+			ReadValueField(out var text, out LostFocusCaretIndex);
 			if (TryParse(text, out _).Is(false))
-				WriteValueField(text, caretIndex);
+				WriteValueField(text, LostFocusCaretIndex);
 			TryRotate(default);
+
+			TryFormat(Value, out text);
+
+			AcceptUpdateFlag = true;
+			WriteValueField(text, LostFocusCaretIndex);
+			AcceptUpdateFlag = false;
 		}
 
 		protected override async void ValueField_GotFocus(object sender, RoutedEventArgs args)
 		{
-			await Task.Delay(200);
+			await Task.Delay(128);
 
 			ReadValueField(out var text, out var caretIndex);
+			caretIndex = LostFocusCaretIndex < 0 ? caretIndex : LostFocusCaretIndex;
 
 			var textLength = text.Length;
 			if (FormatIsIntegral)
@@ -150,7 +157,7 @@ namespace Ace.Controls
 			}
 			else
 			{
-				_floatLength = text.Contains(DecimalSeparator) ? text.Length - text.IndexOf(DecimalSeparator) : 0;
+				GotFocusFloatLength = text.Contains(DecimalSeparator) ? text.Length - text.IndexOf(DecimalSeparator) : 0;
 
 				text = Value.ToString(StrictDecimalFormat);
 				if (caretIndex.Is(0) && StartWithSignSymbol(text).Is(false))
@@ -184,15 +191,26 @@ namespace Ace.Controls
 			return false;
 		}
 
+		private bool AcceptUpdateFlag;
+
 		internal override void Update(object value)
 		{
+			if (AcceptUpdateFlag.Is(true))
+				return;
+
 			var isValidNumber = TryParse(value.To<string>(), out var number);
 			if (isValidNumber.Not())
 				throw new FormatException();
-			if (number < From || Till < number)
+			if (number.IsOutOfRange(From, Till))
 				throw new ArgumentOutOfRangeException();
 
+			AcceptUpdateFlag = true;
+			ReadValueField(out var text, out var caretIndex);
+
 			Value = number;
+
+			WriteValueField(value.To<string>(), caretIndex);
+			AcceptUpdateFlag = false;
 		}
 
 		protected override bool TryFormat(in double value, out string text) => FormatIsIntegral

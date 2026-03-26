@@ -1,37 +1,36 @@
-﻿namespace Ace.Mathematics
+﻿namespace Ace.Mathematics;
+
+public static class ExtensionsDouble
 {
-	public static class ExtensionsDouble
+	public static double Clip(in double value, in double from, in double till) => from < till
+		? value < from ? from : till < value ? till : value
+		: value > from ? from : till > value ? till : value
+		;
+
+	public static bool IsOutOfRange(this in double value, in double from, in double till) => from < till
+		? till < value || value < from
+		: till < value && value < from
+		;
+
+	public static double Rotate(this double value, in double step, in double from, in double till)
 	{
-		public static double Clip(in double value, in double from, in double till) => from < till
-			? value < from ? from : till < value ? till : value
-			: value > from ? from : till > value ? till : value
-			;
+		value += step;
 
-		public static bool IsMissIntervalCloseClose(this in double value, in double from, in double till) => from < till
-			? till < value || value < from
-			: till < value && value < from
-			;
-
-		public static double Rotate(this double value, in double step, in double from, in double till)
+		var isOutOfRange = value.IsOutOfRange(from, till);
+		if (isOutOfRange)
 		{
-			value += step;
+			var length = till - from;
 
-			var isMissInterval = value.IsMissIntervalCloseClose(from, till);
-			if (isMissInterval)
-			{
-				var length = till - from;
+			if (value < from)
+				value += length;
+			else
+			if (value > till)
+				value -= length;
 
-				if (value < from)
-					value += length;
-				else
-				if (value > till)
-					value -= length;
-
-				if (from < till)
-					value %= length;
-			}
-
-			return value;
+			if (from < till)
+				value %= length;
 		}
+
+		return value;
 	}
 }

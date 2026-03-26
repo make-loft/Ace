@@ -6,6 +6,7 @@
 	xmlns:c="clr-namespace:Ace.Controls"
 	xmlns:m="clr-namespace:Ace.Markup"
 	ToolTipService.ShowDuration="60000"
+	GotFocus="This_GotFocus"
 	x:Name="This"
 	>
 	<Control.Resources>
@@ -46,8 +47,12 @@
 			DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}"
 			IsOpen="{Binding (Validation.HasError), Source={x:Reference ValueField}, Mode=OneWay}"
 			>
-			<c:Stack>
+			<c:Rack
+				c:Rack.Rows="^ ^"
+				c:Rack.Columns="* ^"
+				>
 				<GroupBox
+					c:Rack.Cell="R0 RS2 C1"
 					DataContext="{x:Reference ValueField}"
 					Visibility="{Binding (Validation.HasError), Converter={StaticResource FalseToCollapsedConverter}}"
 					>
@@ -56,6 +61,7 @@
 							Background="Firebrick"
 							Foreground="White"
 							FontWeight="Bold"
+							Padding="4 0"
 							Text="{m:Localizing Error}"
 							/>
 					</GroupBox.Header>
@@ -70,72 +76,69 @@
 								<DataTemplate>
 									<TextBlock
 										TextWrapping="Wrap"
-										Text="{Binding ErrorContent}"
+										Text="{Binding ErrorContent, Converter={StaticResource LocalizingConverter}}"
 										/>
 								</DataTemplate>
 							</c:Children.ItemTemplate>
 						</c:Stack>
 					</StackPanel>
 				</GroupBox>
-				<GroupBox>
+				<GroupBox
+					c:Rack.Cell="R0 C0"
+					>
 					<GroupBox.Header>
-						<c:Stack
-							Orientation="Horizontal"
-							>
-							<c:Title
-								c:Rack.Cell="R4 C0"
-								FontWeight="Bold"
-								Text="{m:Localizing Value}"
-								/>
-							<c:Title
-								c:Rack.Cell="R4 C5"
-								FontWeight="Bold"
-								Text="{Binding Value}"
-								/>
-						</c:Stack>
+						<c:Title
+							c:Rack.Cell="R1 C0"
+							FontWeight="Bold"
+							Text="{m:Localizing Step}"
+							/>
 					</GroupBox.Header>
 					<c:Rack
-						Rows="^ ^"
+						Rows="^ ^ ^"
 						Columns="* ^"
 						>
 						<c:Title
 							c:Rack.Cell="R0 C0"
-							Text="{m:Localizing Step, StringFormat='▲ {0}'}"
+							Text="▲"
 							/>
 						<c:Title
 							c:Rack.Cell="R1 C0"
-							Text="{m:Localizing Step, StringFormat='▼ {0}'}"
+							FontWeight="Bold"
+							HorizontalAlignment="Left"
+							Text="{m:Localizing Value}"
+							/>
+						<c:Title
+							c:Rack.Cell="R2 C0"
+							Text="▼"
 							/>
 
 						<c:Title
-							c:Rack.Cell="R0 C3"
+							c:Rack.Cell="R0 C1"
 							Text="{Binding Step, StringFormat='+{0}'}"
 							/>
 						<c:Title
-							c:Rack.Cell="R1 C4"
+							c:Rack.Cell="R1 C1"
+							FontWeight="Bold"
+							Text="{Binding Value}"
+							/>
+						<c:Title
+							c:Rack.Cell="R2 C1"
 							Text="{Binding Step, StringFormat='-{0}'}"
 							/>
 					</c:Rack>
 				</GroupBox>
-				<GroupBox>
+				<GroupBox
+					c:Rack.Cell="R1 C0"
+					>
 					<GroupBox.Header>
-						<c:Stack
-							Orientation="Horizontal"
-							>
-							<c:Title
-								c:Rack.Cell="R4 C0"
-								FontWeight="Bold"
-								Text="{m:Localizing Length}"
-								/>
-							<c:Title
-								c:Rack.Cell="R4 C5"
-								FontWeight="Bold"
-								Text="{Binding Length}"
-								/>
-						</c:Stack>
+						<c:Title
+							c:Rack.Cell="R4 C0"
+							FontWeight="Bold"
+							Text="{m:Localizing Range}"
+							/>
 					</GroupBox.Header>
 					<c:Rack
-						Rows="^ ^"
+						Rows="^ ^ ^"
 						Columns="* ^"
 						>
 						<c:Title
@@ -144,20 +147,31 @@
 							/>
 						<c:Title
 							c:Rack.Cell="R1 C0"
+							FontWeight="Bold"
+							HorizontalAlignment="Left"
+							Text="{m:Localizing Length}"
+							/>
+						<c:Title
+							c:Rack.Cell="R2 C0"
 							Text="{m:Localizing Till}"
 							/>
 
 						<c:Title
-							c:Rack.Cell="R0 C3"
+							c:Rack.Cell="R0 C1"
 							Text="{Binding From}"
 							/>
 						<c:Title
-							c:Rack.Cell="R1 C4"
+							c:Rack.Cell="R1 C1"
+							FontWeight="Bold"
+							Text="{Binding Length}"
+							/>
+						<c:Title
+							c:Rack.Cell="R2 C1"
 							Text="{Binding Till}"
 							/>
 					</c:Rack>
 				</GroupBox>
-			</c:Stack>
+			</c:Rack>
 		</ToolTip>
 	</Control.ToolTip>
 
@@ -207,7 +221,7 @@
 					<Binding.ValidationRules>
 						<m:CustomRule
 							ValidationStep="RawProposedValue"
-							Validation="CustomRule_Validation"
+							Validation="RawProposedValue_Validation"
 							/>
 					</Binding.ValidationRules>
 				</Binding>

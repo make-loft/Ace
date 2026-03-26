@@ -128,7 +128,6 @@ namespace Ace.Controls
 #if !XAMARIN
 			ValueField.GetBindingExpression(Field.TextProperty)?.UpdateSource();
 #endif
-			WriteValueField(in text, in caretIndex);
 		}
 
 		protected virtual void FromButton_Click(object sender, RoutedEventArgs args) => Click(false);
@@ -139,14 +138,14 @@ namespace Ace.Controls
 			args.Handled = true;
 
 		protected virtual object ToolTipConverter_Convert(ConvertArgs args) => args.Value;
-		
+
 		protected virtual object FormatConverter_Convert(ConvertArgs args) => args.Value;
 
 		protected virtual object FormatConverter_ConvertBack(ConvertArgs args) => args.Value;
 
 		protected virtual void ValueField_SelectionChanged(object sender, RoutedEventArgs args) { }
 
-		private ValidationResult CustomRule_Validation(ValidationArgs args)
+		private ValidationResult RawProposedValue_Validation(ValidationArgs args)
 		{
 			try
 			{
@@ -155,11 +154,20 @@ namespace Ace.Controls
 			}
 			catch (Exception exception)
 			{
-				return new(false, exception.Message);
+				var errorContent = exception switch
+				{
+					FormatException => "FormatError",
+					ArgumentException => "RangeError",
+					_ => "UnidentifiedError",
+				};
+
+				return new(false, errorContent);
 			}
 		}
 
 		private object DoNothing(ConvertArgs args) => Binding.DoNothing;
+
+		private void This_GotFocus(object sender, RoutedEventArgs e) => ValueField.Focus();
 	}
 
 	public abstract class AField<TValue> : AField
@@ -201,12 +209,16 @@ namespace Ace.Controls
 
 		protected override void UndoChanges()
 		{
-			ReadValueField(out var text, out var caretIndex);
-			var deltaIndex = text.Length - caretIndex;
-			if (TryFormat(Value, out text).Is(false))
+			ReadValueField(out var currentText, out var caretIndex);
+			if (TryParse(currentText, out var value).Is(true))
 				return;
-			var targetIndex = (text.Length - deltaIndex).Clip(0, text.Length);
-			WriteValueField(text, targetIndex);
+
+			var deltaIndex = currentText.Length - caretIndex;
+			if (TryFormat(Value, out var validText).Is(false))
+				return;
+
+			var targetIndex = (validText.Length - deltaIndex).Clip(0, validText.Length);
+			WriteValueField(validText, targetIndex);
 		}
 
 		protected override object ToolTipConverter_Convert(ConvertArgs args) => args.Value;
