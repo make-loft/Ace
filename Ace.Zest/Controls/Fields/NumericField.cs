@@ -11,8 +11,8 @@ namespace Ace.Controls
 	{
 		static NumericField() => Initialize<NumericField>();
 
-		public override double Value { get => this.Get(0d); set => this.Set(value); }
-		public override double Step { get => this.Get(0d); protected set => this.Set(value); }
+		public override double Value { get => this.Get(double.NaN); set => this.Set(value); }
+		public override double Step { get => this.Get(double.NaN); protected set => this.Set(value); }
 		public override double From { get => this.Get(double.NegativeInfinity); set => this.Set(value); }
 		public override double Till { get => this.Get(double.PositiveInfinity); set => this.Set(value); }
 		public override double Length { get => this.Get(0d); protected set => this.Set(value); }
@@ -86,7 +86,7 @@ namespace Ace.Controls
 				caretIndex--;
 			}
 
-			if (hasPoint.Is(false) && text.EndsWith(DecimalSeparator))
+			if (hasPoint.Is(false) && text.EndsWith(DecimalSeparator) && FormatIsIntegral)
 			{
 				text = text.Substring(0, text.Length - DecimalSeparator.Length);
 			}
@@ -113,8 +113,8 @@ namespace Ace.Controls
 		{
 			ReadValueField(out var text, out var caretIndex);
 
-			var containsPoint = text.Contains(DecimalSeparator);
-			text = containsPoint.Is(true) ? text : text + DecimalSeparator;
+			var hasPoint = text.Contains(DecimalSeparator);
+			text = hasPoint.Is(true) ? text : text + DecimalSeparator;
 
 			var pointIndex = text.IndexOf(DecimalSeparator);
 			var digitIndex = pointIndex - caretIndex;

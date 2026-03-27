@@ -93,5 +93,64 @@ namespace Ace
 				return false;
 			}
 		}
+
+		public static int Align(this string value, int offset) =>
+			offset < 0 ? value.Length - offset : offset;
+
+		public static string Trim(this string value, int from, int till)
+		{
+			from = value.Align(from);
+			till = value.Align(till);
+			return from > till
+				? value.Substring(from) + value.Substring(0, till)
+				: value.Substring(from, till - from)
+				;
+		}
+
+		public static string TrimHead(this string value, string pattern, int till = int.MaxValue)
+		{
+			till = value.Align(till);
+			for (var offset = 0; offset < till && value.StartsWith(value); offset += pattern.Length)
+				value = value.Substring(pattern.Length);
+			return value;
+		}
+
+		public static string TrimTail(this string value, string pattern, int from = int.MinValue)
+		{
+			from = value.Align(from);
+			for (var offset = value.Length; offset > from && value.StartsWith(value); offset -= pattern.Length)
+				value = value.Substring(pattern.Length);
+			return value;
+		}
+
+		public static string Trim(this string value, string pattern,
+			int from = int.MinValue, int till = int.MaxValue) =>
+			value.TrimHead(pattern, from).TrimTail(pattern, till);
+
+		public static string Repeat(this char value, int count) =>
+			count > 0 ? new(value, count) : default;
+
+		public static string Repeat(this string value, int count) => count switch
+		{
+			0 => default,	
+			1 => value,
+			_ => value.Length switch
+			{
+				0 => "",
+				1 => value[0].Repeat(count),
+				_ => value.RepeatViaArray(count)
+			}
+		};
+
+		private static string RepeatViaArray(this string value, int count)
+		{
+			if (count < 1)
+				return default;
+
+			var chars = new char[count * value.Length];
+			for (var i = 0; i < count; i++)
+				value.CopyTo(0, chars, i * value.Length, value.Length);
+			return new(chars);
+		}
 	}
 }

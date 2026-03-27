@@ -176,7 +176,7 @@ namespace Ace.Controls
 		{
 			Type<TField>.Create(v => v.Value);
 #if !XAMARIN
-			Type<TField>.When(v => v.Format).Changed += args =>
+			Type<AField>.When(v => v.Format).Changed += args =>
 				args.Sender.ValueField.GetBindingExpression(Field.TextProperty)?.UpdateTarget();
 #endif
 			Type<TField>.When(v => v.From).Changed += args =>

@@ -23,20 +23,14 @@ using System.Reflection;
 
 namespace Ace.Controls
 {
-	public readonly struct ChangeArgs<TSender, TValue>
+	public readonly struct ChangeArgs<TSender, TValue>(TSender sender, TValue oldValue, TValue newValue)
 	{
 		public ChangeArgs(TSender sender, DependencyPropertyChangedEventArgs args)
 			: this(sender, (TValue)args.OldValue, (TValue)args.NewValue) { }
 
-		public ChangeArgs(TSender sender, TValue oldValue, TValue newValue)
-		{
-			Sender = sender; OldValue = oldValue; NewValue = newValue;
-		}
-
-		public TSender Sender { get; }
-
-		public TValue OldValue { get; }
-		public TValue NewValue { get; }
+		public TSender Sender { get; } = sender;
+		public TValue OldValue { get; } = oldValue;
+		public TValue NewValue { get; } = newValue;
 	}
 
 	public static class New
