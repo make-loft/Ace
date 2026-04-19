@@ -5,7 +5,7 @@ namespace Ace.Comparers
 {
 	public class ReferenceComparer<T> : IEqualityComparer<T>
 	{
-		public static readonly ReferenceComparer<T> Default = new ReferenceComparer<T>();
+		public static readonly ReferenceComparer<T> Default = new();
 		
 		public int GetHashCode(T obj) => RuntimeHelpers.GetHashCode(obj);
 		

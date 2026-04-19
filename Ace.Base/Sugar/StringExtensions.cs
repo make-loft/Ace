@@ -23,7 +23,8 @@ namespace Ace
 
 		public static char[] GetCachedChars(this string value) => stringToChars.TryGetValue(value, out var chars)
 			? chars
-			: stringToChars[value] = value.ToCharArray();
+			: stringToChars[value] = value.ToCharArray()
+			;
 
 		public static string[] SplitByChars(this string value, string separators, bool keepEmptyEntries = false) =>
 			value?.Split(separators.GetCachedChars(), keepEmptyEntries ? StringSplitOptions.None : StringSplitOptions.RemoveEmptyEntries);

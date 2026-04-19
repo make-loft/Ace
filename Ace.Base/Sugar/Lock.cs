@@ -4,12 +4,12 @@ namespace Ace.Sugar
 {
 	public static class Lock<TResult>
 	{
-		public static readonly object GlobalSyncContext = new object();
+		public static readonly object GlobalSyncContext = new();
 	}
 	
 	public static class Lock
 	{
-		public static readonly object GlobalSyncContext = new object();
+		public static readonly object GlobalSyncContext = new();
 		
 		public static void Invoke(Action action)
 		{

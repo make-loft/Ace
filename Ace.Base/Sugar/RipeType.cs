@@ -13,7 +13,8 @@ namespace Ace
 		public static RipeType Get(Type raw) => Lock.Invoke(RawToRipe, _ =>
 			RawToRipe.TryGetValue(raw, out var ripe)
 				? ripe
-				: RawToRipe[raw] = new(raw));
+				: RawToRipe[raw] = new(raw))
+				;
 		
 		private RipeType(Type raw)
 		{
