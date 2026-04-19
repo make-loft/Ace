@@ -3,35 +3,24 @@ using System.Windows.Input;
 
 namespace Ace.Evocators;
 
-public abstract class CommandEventArgs : EventArgs
+public abstract class CommandEventArgs(object sender, ICommand command, object parameter, bool handled)
+	: EventArgs
 {
-	protected CommandEventArgs(object sender, ICommand command, object parameter, bool handled)
-	{
-		Sender = sender;
-		Command = command;
-		Parameter = parameter;
-		Handled = handled;
-	}
-
-	public object Sender { get; }
-	public ICommand Command { get; }
-	public object Parameter { get; }
-	public bool Handled { get; set; }
+	public object Sender { get; } = sender;
+	public ICommand Command { get; } = command;
+	public object Parameter { get; } = parameter;
+	public bool Handled { get; set; } = handled;
 }
 
-public class ExecutedEventArgs : CommandEventArgs
+public class ExecutedEventArgs(object sender, ICommand command, object parameter, bool handled)
+	: CommandEventArgs(sender, command, parameter, handled)
 {
-	public ExecutedEventArgs(object sender, ICommand command, object parameter, bool handled) :
-		base(sender, command, parameter, handled)
-	{ }
 }
 
-public class CanExecuteEventArgs : CommandEventArgs
+public class CanExecuteEventArgs(object sender, ICommand command, object parameter, bool handled, bool canExecute)
+	: CommandEventArgs(sender, command, parameter, handled)
 {
-	public CanExecuteEventArgs(object sender, ICommand command, object parameter, bool handled, bool canExecute) :
-		base(sender, command, parameter, handled) => CanExecute = canExecute;
-
-	public bool CanExecute { get; set; }
+	public bool CanExecute { get; set; } = canExecute;
 }
 
 public class CommandEvocator<TExecutedArgs, TCanExecuteArgs>
@@ -54,8 +43,8 @@ public class CommandEvocator<TExecutedArgs, TCanExecuteArgs>
 	public bool HasPreviewCanExecute() => PreviewCanExecute.Is();
 }
 
-public class CommandEvocator : CommandEvocator<ExecutedEventArgs, CanExecuteEventArgs>
+public class CommandEvocator(ICommand command)
+	: CommandEvocator<ExecutedEventArgs, CanExecuteEventArgs>
 {
-	public CommandEvocator(ICommand command) => Command = command;
-	public ICommand Command { get; }
+	public ICommand Command { get; } = command;
 }

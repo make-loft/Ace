@@ -7,20 +7,14 @@ using Ace.Serialization;
 
 namespace Ace;
 
-public class Memory : IMemoryBox
+public class Memory(IStorage storage, string keyFormat = "{0}.json") : IMemoryBox
 {
-	public IStorage Storage { get; }
-	public string KeyFormat { get; set; }
+	public IStorage Storage { get; } = storage;
+	public string KeyFormat { get; set; } = keyFormat;
 
 	public KeepProfile KeepProfile = new() {MapPairSplitter = "\t", Delimiter = ""};
 
 	public ReplicationProfile ReplicationProfile = new() {SimplifyMaps = true, SimplifySets = true};
-
-	public Memory(IStorage storage, string keyFormat = "{0}.json")
-	{
-		Storage = storage;
-		KeyFormat = keyFormat;
-	}
 
 	public object Revive(string key, Type type, params object[] constructorArgs) =>
 		Storage.Is() && Storage.HasKey(MakeStorageKey(key, type)) && TryDecode(key, type, out var item)

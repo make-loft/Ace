@@ -6,7 +6,8 @@ using System.Reflection;
 
 namespace Ace.Replication.MemberProviders;
 
-public class CoreMemberProviderForKeyValuePair : MemberProvider
+public class CoreMemberProviderForKeyValuePair
+	: MemberProvider
 {
 	public override bool CanApply(Type type) =>
 		type.GetGenericTypeOrDefault().Is(TypeOf.Generic.KeyValuePair.Raw);
@@ -22,19 +23,15 @@ public class CoreMemberProviderForKeyValuePair : MemberProvider
 		name;
 }
 
-public class CoreMemberProvider : MemberProvider
+public class CoreMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter)
+	: MemberProvider
 {
-	public BindingFlags BindingFlags { get; }
+	public BindingFlags BindingFlags { get; } = bindingFlags;
 
-	public Func<MemberInfo, bool> Filter { get; }
-
-	public CoreMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter)
-	{
-		BindingFlags = bindingFlags;
-		Filter = filter;
-	}
+	public Func<MemberInfo, bool> Filter { get; } = filter;
 
 	protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.EnumerateMembers(BindingFlags)
 		.Where(Filter)
-		.Where(m => !TypeOf<IEnumerable>.Raw.IsAssignableFrom(type) && m.Name.IsNot("Item"));
+		.Where(m => !TypeOf<IEnumerable>.Raw.IsAssignableFrom(type) && m.Name.IsNot("Item"))
+		;
 }

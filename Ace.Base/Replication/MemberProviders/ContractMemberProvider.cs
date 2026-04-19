@@ -5,13 +5,9 @@ using System.Reflection;
 
 namespace Ace.Replication.MemberProviders;
 
-public class ContractMemberProvider : CoreMemberProvider
+public class ContractMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter) 
+	: CoreMemberProvider(bindingFlags, filter)
 {
-	public ContractMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter) :
-		base(bindingFlags, filter)
-	{
-	}
-
 	protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type)
 	{
 		var members = base.GetDataMembersForCaching(type);
@@ -24,12 +20,14 @@ public class ContractMemberProvider : CoreMemberProvider
 				.Where(a => a.Value.Is())
 				.OrderBy(a => a.Value.Order)
 				.Select(a => a.Key)
-			: members;
+			: members
+			;
 	}
 
 	protected readonly Dictionary<MemberInfo, string> MemberToKey = new();
 
 	public override string GetCustomKey(MemberInfo member) => MemberToKey.TryGetValue(member, out var key)
 		? key
-		: MemberToKey[member] = member.GetCustomAttribute<DataMemberAttribute>()?.Name ?? member.Name;
+		: MemberToKey[member] = member.GetCustomAttribute<DataMemberAttribute>()?.Name ?? member.Name
+		;
 }

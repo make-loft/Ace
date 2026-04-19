@@ -11,19 +11,14 @@ using System.Windows;
 
 namespace Ace.Markup;
 
-public readonly struct MapChangeArgs
+public readonly struct MapChangeArgs(Map sender, object key, object oldValue, object newValue)
 {
-	public Map Sender { get; }
-	public object Key { get; }
-	public object OldValue { get; }
-	public object NewValue { get; }
+	public Map Sender { get; } = sender;
+	public object Key { get; } = key;
+	public object OldValue { get; } = oldValue;
+	public object NewValue { get; } = newValue;
 
 	public bool IsValueChanged => NewValue.IsNot(OldValue);
-
-	public MapChangeArgs(Map sender,  object key, object oldValue, object newValue)
-	{
-		Sender = sender; Key = key; OldValue = oldValue; NewValue = newValue;
-	}
 }
 
 public class Map : ResourceDictionary, INotifyPropertyChanged

@@ -6,9 +6,8 @@ namespace Xamarin.Forms
 	{
 		public enum XamlCompilationOptions { Skip, Compile }
 
-		public class XamlCompilationAttribute : System.Attribute
+		public class XamlCompilationAttribute(XamlCompilationOptions options) : System.Attribute
 		{
-			public XamlCompilationAttribute(XamlCompilationOptions options) { }
 		}
 	}
 
@@ -20,9 +19,8 @@ namespace Xamarin.Forms
 	public class DataTemplate : System.Windows.DataTemplate { }
 	public class ControlTemplate : System.Windows.Controls.ControlTemplate { }
 	public class ResourceDictionary : System.Windows.ResourceDictionary { }
-	public class StaticResourceExtension : System.Windows.StaticResourceExtension
+	public class StaticResourceExtension(string key) : System.Windows.StaticResourceExtension(key)
 	{
-		public StaticResourceExtension(string key) : base(key) { }
 	}
 	public class DynamicResourceExtension : System.Windows.DynamicResourceExtension { }
 	public class Binding : System.Windows.Data.Binding

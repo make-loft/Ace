@@ -28,5 +28,6 @@ public class MemberProvider
 
 	public virtual List<MemberInfo> GetDataMembers(Type type) => TypeToMembers.TryGetValue(type, out var members)
 		? members
-		: TypeToMembers[type] = GetDataMembersForCaching(type).ToList();
+		: TypeToMembers[type] = GetDataMembersForCaching(type).ToList()
+		;
 }

@@ -69,10 +69,10 @@ public static class EnumerableExtensions
 
 	public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(i => i);
 
-	public class Comparer<T, TKey> : IEqualityComparer<T>
+	public class Comparer<T, TKey>(Func<T, TKey> lookup) : IEqualityComparer<T>
 	{
-		private readonly Func<T, TKey> _lookup;
-		public Comparer(Func<T, TKey> lookup) => _lookup = lookup;
+		private readonly Func<T, TKey> _lookup = lookup;
+
 		public bool Equals(T x, T y) => LE.Equals(_lookup(x), _lookup(y));
 		public int GetHashCode(T obj) => _lookup(obj).GetHashCode();
 	}

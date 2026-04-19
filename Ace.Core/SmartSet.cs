@@ -11,7 +11,7 @@ namespace Ace;
 public class SmartSet<T> : SmartSet<T, List<T>>
 {
 	public SmartSet() => Initialize();
-	public SmartSet(IEnumerable<T> collection) => Initialize(new List<T>(collection));
+	public SmartSet(IEnumerable<T> collection) => Initialize(new(collection));
 }
 
 [DataContract]
@@ -62,7 +62,7 @@ public class SmartSet<T, TList> : SmartObject, IList<T>, IList, INotifyCollectio
 	public bool Remove(T value) => Change(Action.Remove, value) == 1;
 	public void Remove(object value) => Change(Action.Remove, (T)value);
 	public void RemoveAt(int index) => Change(Action.Remove, Source[index], index);
-	public void Clear() => Change(Action.Reset, default(T));
+	public void Clear() => Change(Action.Reset, default);
 
 	public T this[int index]
 	{

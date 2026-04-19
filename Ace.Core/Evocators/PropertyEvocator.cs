@@ -4,15 +4,10 @@ using System.Linq;
 
 namespace Ace.Evocators;
 
-public class PropertyArgs : EventArgs
+public class PropertyArgs(object sender, string propertyName) : EventArgs
 {
-	public object Sender { get; }
-	public string PropertyName { get; }
-	public PropertyArgs(object sender, string propertyName)
-	{
-		Sender = sender;
-		PropertyName = propertyName;
-	}
+	public object Sender { get; } = sender;
+	public string PropertyName { get; } = propertyName;
 }
 
 public class PropertyEvocator<TPropertyChanging, TPropertyChanged, TErrorsChanged>
@@ -34,9 +29,8 @@ public class PropertyEvocator<TPropertyChanging, TPropertyChanged, TErrorsChange
 			.Select(validationHandler => validationHandler(propertyName));
 }
 
-public class PropertyEvocator
-	: PropertyEvocator<PropertyArgs, PropertyArgs, PropertyArgs>
+public class PropertyEvocator(string propertyName)
+		: PropertyEvocator<PropertyArgs, PropertyArgs, PropertyArgs>
 {
-	public PropertyEvocator(string propertyName) => Name = propertyName;
-	public string Name { get; }
+	public string Name { get; } = propertyName;
 }

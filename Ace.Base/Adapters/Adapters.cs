@@ -99,15 +99,9 @@ namespace Ace
 	{
 	}
 
-	public struct StreamingContext
+	public struct StreamingContext(StreamingContextStates state, object additional = null)
 	{
-		public StreamingContext(StreamingContextStates state, object additional = null)
-		{
-			State = state;
-			Context = additional;
-		}
-
-		public object Context { get; internal set; }
+		public object Context { get; internal set; } = additional;
 
 		public override bool Equals(object obj) =>
 			obj is StreamingContext context &&
@@ -116,7 +110,7 @@ namespace Ace
 
 		public override int GetHashCode() => (int)State;
 
-		public StreamingContextStates State { get; internal set; }
+		public StreamingContextStates State { get; internal set; } = state;
 	}
 
 	// **********************************************************

@@ -1,12 +1,11 @@
 ﻿// ReSharper disable once CheckNamespace
 namespace Ace;
 
-public class Switch<T>
+public class Switch<T>(T value)
 {
-	private readonly object _value;
+	private readonly object _value = value;
 	private object[] _pattern;
 
-	public Switch(T value) => _value = value;
 	public Switch(T value, object[] pattern) : this(value) => _pattern = pattern;
 
 	public bool Case(params object[] pattern)
