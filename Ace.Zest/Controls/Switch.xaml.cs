@@ -1,26 +1,25 @@
 ﻿using System.Windows;
 
-namespace Ace.Controls
+namespace Ace.Controls;
+
+public partial class Switch
 {
-	public partial class Switch
+	public Switch()
 	{
-		public Switch()
-		{
-			InitializeComponent();
+		InitializeComponent();
 
-			void StateChanged(object sender, RoutedEventArgs e) => IsToggled = IsChecked;
+		void StateChanged(object sender, RoutedEventArgs e) => IsToggled = IsChecked;
 
-			Checked += StateChanged;
-			Unchecked += StateChanged;
-		}
+		Checked += StateChanged;
+		Unchecked += StateChanged;
+	}
 
-		public static readonly DependencyProperty IsToggledProperty = Type<Switch>.Create(s => s.IsToggled,
-			args => args.Sender.IsChecked = args.NewValue);
+	public static readonly DependencyProperty IsToggledProperty = Type<Switch>.Create(s => s.IsToggled,
+		args => args.Sender.IsChecked = args.NewValue);
 
-		public bool? IsToggled
-		{
-			get => GetValue(IsToggledProperty).To<bool?>();
-			set => SetValue(IsToggledProperty, value);
-		}
+	public bool? IsToggled
+	{
+		get => GetValue(IsToggledProperty).To<bool?>();
+		set => SetValue(IsToggledProperty, value);
 	}
 }

@@ -6,27 +6,26 @@ using Xamarin.Forms;
 using System.Windows.Data;
 #endif
 
-namespace Ace.Markup.Converters
+namespace Ace.Markup.Converters;
+
+public delegate object Convert(Patterns.ConvertArgs args);
+
+public class Converter : Patterns.AMarkupExtension, IValueConverter
 {
-	public delegate object Convert(Patterns.ConvertArgs args);
+	public static readonly Convert NotImplementedException = args => throw new NotImplementedException();
 
-	public class Converter : Patterns.AMarkupExtension, IValueConverter
-	{
-		public static readonly Convert NotImplementedException = args => throw new NotImplementedException();
+	public event Convert Convert;
+	public event Convert ConvertBack;
 
-		public event Convert Convert;
-		public event Convert ConvertBack;
+	public Converter() { }
+	public Converter(Convert convert) => Convert = convert;
+	public Converter(Convert convert, Convert convertBack) : this(convert) => ConvertBack = convertBack;
 
-		public Converter() { }
-		public Converter(Convert convert) => Convert = convert;
-		public Converter(Convert convert, Convert convertBack) : this(convert) => ConvertBack = convertBack;
+	object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+		(Convert ?? ConvertBack ?? NotImplementedException)(new(value, targetType, parameter, culture));
 
-		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			(Convert ?? ConvertBack ?? NotImplementedException)(new(value, targetType, parameter, culture));
+	object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+		(ConvertBack ?? Convert ?? NotImplementedException)(new(value, targetType, parameter, culture));
 
-		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			(ConvertBack ?? Convert ?? NotImplementedException)(new(value, targetType, parameter, culture));
-
-		public override object Provide(object targetObject, object targetProperty = default) => this;
-	}
+	public override object Provide(object targetObject, object targetProperty = default) => this;
 }

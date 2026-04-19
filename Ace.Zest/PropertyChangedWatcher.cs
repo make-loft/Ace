@@ -11,55 +11,54 @@ using System.Windows;
 using System.Windows.Data;
 #endif
 
-namespace Ace
+namespace Ace;
+
+internal class PropertyChangedWatcher : DependencyObject, INotifyPropertyChanged, IValueConverter
 {
-	internal class PropertyChangedWatcher : DependencyObject, INotifyPropertyChanged, IValueConverter
-	{
-		public static readonly DependencyProperty TargetProperty =
+	public static readonly DependencyProperty TargetProperty =
 #if XAMARIN
-			DependencyProperty.Create("Context", typeof(object), typeof(PropertyChangedWatcher), default);
+		DependencyProperty.Create("Context", typeof(object), typeof(PropertyChangedWatcher), default);
 
-		public new event PropertyChangedEventHandler PropertyChanged;
-		public const string ContextPath = "BindingContext";
+	public new event PropertyChangedEventHandler PropertyChanged;
+	public const string ContextPath = "BindingContext";
 #else
-			DependencyProperty.Register("Context", typeof(object), typeof(PropertyChangedWatcher), default);
+		DependencyProperty.Register("Context", typeof(object), typeof(PropertyChangedWatcher), default);
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		public const string ContextPath = "DataContext";
+	public event PropertyChangedEventHandler PropertyChanged;
+	public const string ContextPath = "DataContext";
 #endif
-		public object Context { get; private set; }
-		public object Source { get; private set; }
+	public object Context { get; private set; }
+	public object Source { get; private set; }
 
-		public string PropertyName => _propertyChangedEventArgs.PropertyName;
-		readonly PropertyChangedEventArgs _propertyChangedEventArgs;
+	public string PropertyName => _propertyChangedEventArgs.PropertyName;
+	readonly PropertyChangedEventArgs _propertyChangedEventArgs;
 
 
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		Context = value;
+		PropertyChanged?.Invoke(this, _propertyChangedEventArgs);
+		return value;
+	}
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => value;
+
+	internal PropertyChangedWatcher(object source, string path, Action<PropertyChangedWatcher> propertyChanged = default)
+	{
+		Source = source;
+
+		if (propertyChanged.Is())
+			PropertyChanged += (sender, args) => propertyChanged((PropertyChangedWatcher)sender);
+
+		path = path.IsNullOrWhiteSpace() ? ContextPath : path;
+
+		_propertyChangedEventArgs = new(path?.Split('.').Last());
+
+		this.SetBinding(TargetProperty, new Binding(path)
 		{
-			Context = value;
-			PropertyChanged?.Invoke(this, _propertyChangedEventArgs);
-			return value;
-		}
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => value;
-
-		internal PropertyChangedWatcher(object source, string path, Action<PropertyChangedWatcher> propertyChanged = default)
-		{
-			Source = source;
-
-			if (propertyChanged.Is())
-				PropertyChanged += (sender, args) => propertyChanged((PropertyChangedWatcher)sender);
-
-			path = path.IsNullOrWhiteSpace() ? ContextPath : path;
-
-			_propertyChangedEventArgs = new(path?.Split('.').Last());
-
-			this.SetBinding(TargetProperty, new Binding(path)
-			{
-				Converter = this,
-				Source = source,
-				Mode = BindingMode.OneWay,
-				FallbackValue = Binding.DoNothing
-			});
-		}
+			Converter = this,
+			Source = source,
+			Mode = BindingMode.OneWay,
+			FallbackValue = Binding.DoNothing
+		});
 	}
 }

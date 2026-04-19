@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Ace.Replication.Models
+namespace Ace.Replication.Models;
+
+public class Set : List<object>, INotifyPropertyChanged
 {
-	public class Set : List<object>, INotifyPropertyChanged
-	{
-		public Set() { }
-		public Set(IEnumerable<object> collection) : base(collection) { }
+	public Set() { }
+	public Set(IEnumerable<object> collection) : base(collection) { }
 
-		public event PropertyChangedEventHandler PropertyChanged;
+	public event PropertyChangedEventHandler PropertyChanged;
 
-		public void EvokePropertyChanged(string propertyName = "Item[]") =>
-			PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-	}
+	public void EvokePropertyChanged(string propertyName = "Item[]") =>
+		PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 }

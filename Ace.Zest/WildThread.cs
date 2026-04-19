@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Threading;
 
-namespace Ace
+namespace Ace;
+
+public class WildThread : IDisposable
 {
-	public class WildThread : IDisposable
+	public ThreadPriority Priority { get; set; } = ThreadPriority.Lowest;
+
+	private Thread _thread;
+
+	public void Run(Action action)
 	{
-		public ThreadPriority Priority { get; set; } = ThreadPriority.Lowest;
+		Dispose();
 
-		private Thread _thread;
+		_thread = new(() => action?.Invoke()) { IsBackground = true, Priority = Priority };
+		_thread.Start();
+	}
 
-		public void Run(Action action)
-		{
-			Dispose();
-
-			_thread = new(() => action?.Invoke()) { IsBackground = true, Priority = Priority };
-			_thread.Start();
-		}
-
-		public void Dispose()
-		{
-			_thread?.Abort();
-			_thread = null;
-		}
+	public void Dispose()
+	{
+		_thread?.Abort();
+		_thread = null;
 	}
 }

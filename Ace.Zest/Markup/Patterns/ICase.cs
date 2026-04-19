@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Ace.Markup.Patterns
+namespace Ace.Markup.Patterns;
+
+public interface ICase<TKey, TValue>
 {
-	public interface ICase<TKey, TValue>
-	{
-		TKey Key { get; set; }
-		TValue Value { get; set; }
-		bool MatchByKey(TKey key, StringComparison comparison);
-	}
+	TKey Key { get; set; }
+	TValue Value { get; set; }
+	bool MatchByKey(TKey key, StringComparison comparison);
 }

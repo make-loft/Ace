@@ -11,23 +11,22 @@ using View = System.Windows.FrameworkElement;
 using Property = System.Windows.DependencyProperty;
 #endif
 
-namespace Ace.Controls
+namespace Ace.Controls;
+
+public class Item : ContentView
 {
-	public class Item : ContentView
+	public static readonly Property HeaderProperty = Type<Item>.Create(v => v.Header);
+
+	public object Header
 	{
-		public static readonly Property HeaderProperty = Type<Item>.Create(v => v.Header);
+		get => GetValue(HeaderProperty);
+		set => Set(HeaderProperty, value);
+	}
 
-		public object Header
-		{
-			get => GetValue(HeaderProperty);
-			set => Set(HeaderProperty, value);
-		}
-
-		void Set(Property property, object value)
-		{
-			if (value is Binding binding)
-				SetBinding(property, binding);
-			else SetValue(property, value);
-		}
+	void Set(Property property, object value)
+	{
+		if (value is Binding binding)
+			SetBinding(property, binding);
+		else SetValue(property, value);
 	}
 }

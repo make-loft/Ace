@@ -9,20 +9,19 @@ using System.Windows.Data;
 using System.Windows.Markup;
 #endif
 
-namespace Ace.Markup.Converters
+namespace Ace.Markup.Converters;
+
+[ContentProperty("Converters")]
+public class AggregateConverter : IValueConverter
 {
-	[ContentProperty("Converters")]
-	public class AggregateConverter : IValueConverter
-	{
-		public bool BackReverse { get; set; } = true;
+	public bool BackReverse { get; set; } = true;
 
-		public List<IValueConverter> Converters { get; } = new();
+	public List<IValueConverter> Converters { get; } = new();
 
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			Converters.Aggregate(value, (v, c) => c.Convert(v, targetType, parameter, culture));
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+		Converters.Aggregate(value, (v, c) => c.Convert(v, targetType, parameter, culture));
 
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			(BackReverse ? Converters.Reverse<IValueConverter>() : Converters)
-			.Aggregate(value, (v, c) => c.ConvertBack(v, targetType, parameter, culture));
-	}
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+		(BackReverse ? Converters.Reverse<IValueConverter>() : Converters)
+		.Aggregate(value, (v, c) => c.ConvertBack(v, targetType, parameter, culture));
 }

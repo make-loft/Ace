@@ -1,81 +1,80 @@
-﻿namespace Ace.Controls
-{
-	using System;
+﻿namespace Ace.Controls;
+
+using System;
 #if XAMARIN
-	using System.Threading.Tasks;
-	using System.Windows;
-	using System.Windows.Input;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
-	using Xamarin.Forms;
+using Xamarin.Forms;
 
-	public class Field : Entry
+public class Field : Entry
+{
+	public int CaretIndex { get; set; }
+	public bool IsKeyboardFocused { get; set; }
+	public bool IsReadOnlyCaretVisible { get; set; }
+	public Thickness BorderThickness { get; set; }
+
+	public event Action<object, RoutedEventArgs> SelectionChanged;
+	public event Action<object, RoutedEventArgs> GotFocus;
+	public event Action<object, KeyEventArgs> PreviewKeyDown;
+	public event Action<object, MouseWheelEventArgs> PreviewMouseWheel;
+
+	public Field()
 	{
-		public int CaretIndex { get; set; }
-		public bool IsKeyboardFocused { get; set; }
-		public bool IsReadOnlyCaretVisible { get; set; }
-		public Thickness BorderThickness { get; set; }
+		bool isCaptured = false;
 
-		public event Action<object, RoutedEventArgs> SelectionChanged;
-		public event Action<object, RoutedEventArgs> GotFocus;
-		public event Action<object, KeyEventArgs> PreviewKeyDown;
-		public event Action<object, MouseWheelEventArgs> PreviewMouseWheel;
-
-		public Field()
+		TextChanged += async (o, e) =>
 		{
-			bool isCaptured = false;
+			if (isCaptured || IsEnabled.Not())
+				return;
 
-			TextChanged += async (o, e) =>
-			{
-				if (isCaptured || IsEnabled.Not())
-					return;
+			IsEnabled = false;
+			await Task.Delay(2000);
+			IsEnabled = true;
+		};
 
-				IsEnabled = false;
-				await Task.Delay(2000);
-				IsEnabled = true;
-			};
+		Focused += (o, e) => isCaptured = true;
 
-			Focused += (o, e) => isCaptured = true;
-
-			Unfocused += async (o, e) =>
-			{
-				await Task.Delay(1000);
-				isCaptured = false;
-			};
-		}
-
-		public TextAlignment TextAlignment
+		Unfocused += async (o, e) =>
 		{
-			get => HorizontalTextAlignment;
-			set => HorizontalTextAlignment = value;
-		}
+			await Task.Delay(1000);
+			isCaptured = false;
+		};
 	}
-#else
-	using System.Windows.Controls;
 
-	public class Field : TextBox
+	public TextAlignment TextAlignment
 	{
-		public static readonly System.Collections.Generic.List<WeakReference<Field>> Entres = new();
-		readonly WeakReference<Field> _this;
-
-		public Field()
-		{
-			Entres.Add(_this = new(this));
-		}
-
-		~Field() => Entres.Remove(_this);
-
-		public static void GlobalTextBindingRefresh() => Entres.ForEach(w =>
-		{
-			if (w.TryGetTarget(out var e))
-				e.GetBindingExpression(TextProperty)?.UpdateTarget();
-		});
-
-		public string Keyboard { get; set; }
-		public System.Windows.TextAlignment HorizontalTextAligment
-		{
-			get => TextAlignment;
-			set => TextAlignment = value;
-		}
+		get => HorizontalTextAlignment;
+		set => HorizontalTextAlignment = value;
 	}
-#endif
 }
+#else
+using System.Windows.Controls;
+
+public class Field : TextBox
+{
+	public static readonly System.Collections.Generic.List<WeakReference<Field>> Entres = new();
+	readonly WeakReference<Field> _this;
+
+	public Field()
+	{
+		Entres.Add(_this = new(this));
+	}
+
+	~Field() => Entres.Remove(_this);
+
+	public static void GlobalTextBindingRefresh() => Entres.ForEach(w =>
+	{
+		if (w.TryGetTarget(out var e))
+			e.GetBindingExpression(TextProperty)?.UpdateTarget();
+	});
+
+	public string Keyboard { get; set; }
+	public System.Windows.TextAlignment HorizontalTextAligment
+	{
+		get => TextAlignment;
+		set => TextAlignment = value;
+	}
+}
+#endif

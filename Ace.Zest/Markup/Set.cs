@@ -2,13 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Ace.Markup
+namespace Ace.Markup;
+
+public class Set : ObservableCollection<object>
 {
-	public class Set : ObservableCollection<object>
+	public IList Source
 	{
-		public IList Source
-		{
-			set => this.AppendRange(value.Cast<object>());
-		}
+		set => this.AppendRange(value.Cast<object>());
 	}
 }

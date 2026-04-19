@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ace.Replication.Models
+namespace Ace.Replication.Models;
+
+public class Simplex : List<string>
 {
-	public class Simplex : List<string>
-	{
-		public override string ToString() => this.Aggregate("", (a, b) => a + b);
-	}
+	public override string ToString() => this.Aggregate("", (a, b) => a + b);
 }

@@ -3,31 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Ace.Replication.MemberProviders
+namespace Ace.Replication.MemberProviders;
+
+public class MemberProvider
 {
-	public class MemberProvider
-	{
-		public bool PreferFullKeyWhenInheritance { get; set; }
+	public bool PreferFullKeyWhenInheritance { get; set; }
 
-		public virtual bool CanApply(Type type) => true;
+	public virtual bool CanApply(Type type) => true;
 
-		public virtual string GetCustomKey(MemberInfo member) => member.Name;
+	public virtual string GetCustomKey(MemberInfo member) => member.Name;
 
-		private bool IsFullKeyRequried(MemberInfo member, IList<MemberInfo> members) =>
-			PreferFullKeyWhenInheritance || members.Any(m => m.Name.Is(member.Name) && m.IsNot(member));
+	private bool IsFullKeyRequried(MemberInfo member, IList<MemberInfo> members) =>
+		PreferFullKeyWhenInheritance || members.Any(m => m.Name.Is(member.Name) && m.IsNot(member));
 
-		public string GetDataKey(MemberInfo member, Type activeType, IList<MemberInfo> members) =>
-			(member.DeclaringType.IsNot(activeType) && IsFullKeyRequried(member, members)
-				? member.DeclaringType?.Name + "."
-				: default)
-			+ GetCustomKey(member);
+	public string GetDataKey(MemberInfo member, Type activeType, IList<MemberInfo> members) =>
+		(member.DeclaringType.IsNot(activeType) && IsFullKeyRequried(member, members)
+			? member.DeclaringType?.Name + "."
+			: default)
+		+ GetCustomKey(member);
 
-		protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
+	protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
 
-		protected Dictionary<Type, List<MemberInfo>> TypeToMembers = new();
+	protected Dictionary<Type, List<MemberInfo>> TypeToMembers = new();
 
-		public virtual List<MemberInfo> GetDataMembers(Type type) => TypeToMembers.TryGetValue(type, out var members)
-			? members
-			: TypeToMembers[type] = GetDataMembersForCaching(type).ToList();
-	}
+	public virtual List<MemberInfo> GetDataMembers(Type type) => TypeToMembers.TryGetValue(type, out var members)
+		? members
+		: TypeToMembers[type] = GetDataMembersForCaching(type).ToList();
 }

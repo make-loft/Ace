@@ -4,67 +4,66 @@ using System.Linq;
 using System.Text;
 using Ace.Serialization;
 
-namespace Ace.Replication
+namespace Ace.Replication;
+
+public static class Cache
 {
-	public static class Cache
+	public static Dictionary<int, object> NewForReplication() => new(32);
+}
+
+public class Snapshot
+{
+	//static Snapshot()
+	//{
+		//if (DateTime.Now > new DateTime(2017, 9, 1))
+		//	throw new Exception(
+		//		"Trial version has been expired. Please, write to 'makeman@tut.by' for getting licence.");
+	//}
+
+	public static ReplicationProfile DefaultReplicationProfile = new() { AttachId = true};
+	public static KeepProfile DefaultKeepProfile = KeepProfile.GetFormatted();
+
+	public object MasterState { get; set; }
+	public DateTime Timestamp { get; } = DateTime.Now;
+
+	public ReplicationProfile ActiveReplicationProfile = new();
+	public KeepProfile ActiveKeepProfile = KeepProfile.GetFormatted();
+
+	public static Snapshot Create(
+		object masterGraph,
+		Dictionary<object, int> idCache = null,
+		ReplicationProfile replicationProfile = null,
+		KeepProfile keepProfile = null,
+		Type baseType = null) => new()
 	{
-		public static Dictionary<int, object> NewForReplication() => new(32);
-	}
+		MasterState = replicationProfile.Or(DefaultReplicationProfile).Translate(masterGraph, idCache.OrNew(), baseType),
+		ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
+		ActiveKeepProfile = keepProfile.Or(DefaultKeepProfile)
+	};
 
-	public class Snapshot
+	public static Snapshot Parse(
+		string matrix,
+		ReplicationProfile replicationProfile = null,
+		KeepProfile keepProfile = null) => new()
 	{
-		//static Snapshot()
-		//{
-			//if (DateTime.Now > new DateTime(2017, 9, 1))
-			//	throw new Exception(
-			//		"Trial version has been expired. Please, write to 'makeman@tut.by' for getting licence.");
-		//}
+		MasterState = matrix.Capture(keepProfile.Or(DefaultKeepProfile)),
+		ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
+		ActiveKeepProfile = keepProfile.Or(DefaultKeepProfile)
+	};
 
-		public static ReplicationProfile DefaultReplicationProfile = new() { AttachId = true};
-		public static KeepProfile DefaultKeepProfile = KeepProfile.GetFormatted();
+	public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
 
-		public object MasterState { get; set; }
-		public DateTime Timestamp { get; } = DateTime.Now;
+	public string ToString(KeepProfile profile) => MasterState.SnapshotToString(profile);
 
-		public ReplicationProfile ActiveReplicationProfile = new();
-		public KeepProfile ActiveKeepProfile = KeepProfile.GetFormatted();
+	public string ToString(StringBuilder builder) =>
+		MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
-		public static Snapshot Create(
-			object masterGraph,
-			Dictionary<object, int> idCache = null,
-			ReplicationProfile replicationProfile = null,
-			KeepProfile keepProfile = null,
-			Type baseType = null) => new()
-		{
-			MasterState = replicationProfile.Or(DefaultReplicationProfile).Translate(masterGraph, idCache.OrNew(), baseType),
-			ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
-			ActiveKeepProfile = keepProfile.Or(DefaultKeepProfile)
-		};
+	public object ReplicateGraph(Type baseType, ReplicationProfile replicationProfile = null) =>
+		(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), baseType);
 
-		public static Snapshot Parse(
-			string matrix,
-			ReplicationProfile replicationProfile = null,
-			KeepProfile keepProfile = null) => new()
-		{
-			MasterState = matrix.Capture(keepProfile.Or(DefaultKeepProfile)),
-			ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
-			ActiveKeepProfile = keepProfile.Or(DefaultKeepProfile)
-		};
+	public TRoot ReplicateGraph<TRoot>(ReplicationProfile replicationProfile = null) =>
+		(TRoot)(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), TypeOf<TRoot>.Raw);
 
-		public override string ToString() => MasterState.SnapshotToString(ActiveKeepProfile);
-
-		public string ToString(KeepProfile profile) => MasterState.SnapshotToString(profile);
-
-		public string ToString(StringBuilder builder) =>
-			MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
-
-		public object ReplicateGraph(Type baseType, ReplicationProfile replicationProfile = null) =>
-			(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), baseType);
-
-		public TRoot ReplicateGraph<TRoot>(ReplicationProfile replicationProfile = null) =>
-			(TRoot)(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), TypeOf<TRoot>.Raw);
-
-		public object ReconstructGraph(IDictionary<object, int> cache, ReplicationProfile replicationProfile = null) =>
-			(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, cache?.ToMirrorDictionary());
-	}
+	public object ReconstructGraph(IDictionary<object, int> cache, ReplicationProfile replicationProfile = null) =>
+		(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, cache?.ToMirrorDictionary());
 }

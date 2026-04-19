@@ -1,27 +1,26 @@
 ﻿using System.ComponentModel;
 
-namespace Ace
+namespace Ace;
+
+[DataContract]
+public class Segregator : Segregator<object> { }
+
+[DataContract]
+public class Segregator<TValue> : INotifyPropertyChanging, INotifyPropertyChanged
 {
-	[DataContract]
-	public class Segregator : Segregator<object> { }
+	public event PropertyChangingEventHandler PropertyChanging;
+	public event PropertyChangedEventHandler PropertyChanged;
+	private TValue _value;
 
-	[DataContract]
-	public class Segregator<TValue> : INotifyPropertyChanging, INotifyPropertyChanged
+	[DataMember]
+	public TValue Value
 	{
-		public event PropertyChangingEventHandler PropertyChanging;
-		public event PropertyChangedEventHandler PropertyChanged;
-		private TValue _value;
-
-		[DataMember]
-		public TValue Value
+		get => _value;
+		set
 		{
-			get => _value;
-			set
-			{
-				PropertyChanging?.Invoke(this, new PropertyChangingEventArgs("Value"));
-				_value = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
-			}
+			PropertyChanging?.Invoke(this, new PropertyChangingEventArgs("Value"));
+			_value = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
 		}
 	}
 }

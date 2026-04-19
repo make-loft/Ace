@@ -14,97 +14,96 @@ using System.Windows.Media;
 
 using static Ace.Extensions.Colority;
 
-namespace Ace.Controls
+namespace Ace.Controls;
+
+public partial class ColorField : AField<Color>
 {
-	public partial class ColorField : AField<Color>
+	static ColorField() => Initialize<ColorField>();
+
+	static Color DefaultValue = Colors.DimGray;
+	static Color DefaultFrom = FromARGB(0xFF, 0x00, 0x00, 0x00);
+	static Color DefaultTill = FromARGB(0xFF, 0xFF, 0xFF, 0xFF);
+	static Color DefaultStep = FromARGB(0x00, 0x01, 0x01, 0x01);
+	static Color DefaultLength = FromARGB(0x00, 0xFF, 0xFF, 0xFF);
+
+	public override Color From { get => this.Get(DefaultFrom); set => this.Set(value); }
+	public override Color Till { get => this.Get(DefaultTill); set => this.Set(value); }
+	public override Color Length { get => this.Get(DefaultLength); protected set => this.Set(value); }
+
+	public override Color Value { get => this.Get(DefaultValue); set => this.Set(value); }
+	public override Color Step { get => this.Get(DefaultStep); protected set => this.Set(value); }
+
+	public static readonly string DoubleFixedPointFormat = "0." + new string('#', 339);
+
+	protected override bool TryRotate(bool? positive)
 	{
-		static ColorField() => Initialize<ColorField>();
+		if (IsReadOnly)
+			return false;
 
-		static Color DefaultValue = Colors.DimGray;
-		static Color DefaultFrom = FromARGB(0xFF, 0x00, 0x00, 0x00);
-		static Color DefaultTill = FromARGB(0xFF, 0xFF, 0xFF, 0xFF);
-		static Color DefaultStep = FromARGB(0x00, 0x01, 0x01, 0x01);
-		static Color DefaultLength = FromARGB(0x00, 0xFF, 0xFF, 0xFF);
+		ReadValueField(out var text, out var caretIndex);
 
-		public override Color From { get => this.Get(DefaultFrom); set => this.Set(value); }
-		public override Color Till { get => this.Get(DefaultTill); set => this.Set(value); }
-		public override Color Length { get => this.Get(DefaultLength); protected set => this.Set(value); }
+		if (TryParse(text, out var value).Is(false))
+			return false;
 
-		public override Color Value { get => this.Get(DefaultValue); set => this.Set(value); }
-		public override Color Step { get => this.Get(DefaultStep); protected set => this.Set(value); }
+		var offset = text.Length - caretIndex;
+		var stepA = offset.Is(7) ? 0x10 : offset.Is(6) ? 0x01 : 0x00;
+		var stepR = offset.Is(5) ? 0x10 : offset.Is(4) ? 0x01 : 0x00;
+		var stepG = offset.Is(3) ? 0x10 : offset.Is(2) ? 0x01 : 0x00;
+		var stepB = offset.Is(1) ? 0x10 : offset.Is(0) ? 0x01 : 0x00;
 
-		public static readonly string DoubleFixedPointFormat = "0." + new string('#', 339);
+		var step = FromARGB(stepA, stepR, stepG, stepB);
 
-		protected override bool TryRotate(bool? positive)
-		{
-			if (IsReadOnly)
-				return false;
+		static int InvertSign(int d, bool? negate) =>
+			negate is true ? -d : negate is false ? +d : 0;
 
-			ReadValueField(out var text, out var caretIndex);
+		bool? negate = positive is true ? false : positive is false ? true : null;
+		
+		var valueA = value.GetA().Rotate(InvertSign(stepA, negate), From.GetA(), Till.GetA());
+		var valueR = value.GetR().Rotate(InvertSign(stepR, negate), From.GetR(), Till.GetA());
+		var valueG = value.GetG().Rotate(InvertSign(stepG, negate), From.GetG(), Till.GetG());
+		var valueB = value.GetB().Rotate(InvertSign(stepB, negate), From.GetB(), Till.GetB());
 
-			if (TryParse(text, out var value).Is(false))
-				return false;
+		value = FromARGB(valueA, valueR, valueG, valueB);
 
-			var offset = text.Length - caretIndex;
-			var stepA = offset.Is(7) ? 0x10 : offset.Is(6) ? 0x01 : 0x00;
-			var stepR = offset.Is(5) ? 0x10 : offset.Is(4) ? 0x01 : 0x00;
-			var stepG = offset.Is(3) ? 0x10 : offset.Is(2) ? 0x01 : 0x00;
-			var stepB = offset.Is(1) ? 0x10 : offset.Is(0) ? 0x01 : 0x00;
+		Step = step;
+		Value = value;
 
-			var step = FromARGB(stepA, stepR, stepG, stepB);
+		text = value.ToString();
 
-			static int InvertSign(int d, bool? negate) =>
-				negate is true ? -d : negate is false ? +d : 0;
+		UpdateValueField(text, caretIndex);
 
-			bool? negate = positive is true ? false : positive is false ? true : null;
-			
-			var valueA = value.GetA().Rotate(InvertSign(stepA, negate), From.GetA(), Till.GetA());
-			var valueR = value.GetR().Rotate(InvertSign(stepR, negate), From.GetR(), Till.GetA());
-			var valueG = value.GetG().Rotate(InvertSign(stepG, negate), From.GetG(), Till.GetG());
-			var valueB = value.GetB().Rotate(InvertSign(stepB, negate), From.GetB(), Till.GetB());
-
-			value = FromARGB(valueA, valueR, valueG, valueB);
-
-			Step = step;
-			Value = value;
-
-			text = value.ToString();
-
-			UpdateValueField(text, caretIndex);
-
-			return true;
-		}
-
-		protected override async void ValueField_GotFocus(object sender, RoutedEventArgs args)
-		{
-			await Task.Delay(200);
-
-			ReadValueField(out var text, out var caretIndex);
-
-			Value = text.ToColor();
-
-			text = Value.ToString();
-
-			WriteValueField(text, caretIndex);
-
-			TryRotate(default);
-		}
-
-		protected override bool TryMoveCaret(int offset)
-		{
-			ReadValueField(out var text, out var caretIndex);
-
-			var targetIndex = (caretIndex + offset).Clip(0, text.Length);
-
-			WriteValueField(text, targetIndex);
-
-			return IsReadOnly || TryRotate(default);
-		}
-
-		protected override bool TryFormat(in Color value, out string text) =>
-			value.To(out text).Is();
-
-		protected override bool TryParse(in string text, out Color value) =>
-			text.TryParse(out value, text => text.ToColor());
+		return true;
 	}
+
+	protected override async void ValueField_GotFocus(object sender, RoutedEventArgs args)
+	{
+		await Task.Delay(200);
+
+		ReadValueField(out var text, out var caretIndex);
+
+		Value = text.ToColor();
+
+		text = Value.ToString();
+
+		WriteValueField(text, caretIndex);
+
+		TryRotate(default);
+	}
+
+	protected override bool TryMoveCaret(int offset)
+	{
+		ReadValueField(out var text, out var caretIndex);
+
+		var targetIndex = (caretIndex + offset).Clip(0, text.Length);
+
+		WriteValueField(text, targetIndex);
+
+		return IsReadOnly || TryRotate(default);
+	}
+
+	protected override bool TryFormat(in Color value, out string text) =>
+		value.To(out text).Is();
+
+	protected override bool TryParse(in string text, out Color value) =>
+		text.TryParse(out value, text => text.ToColor());
 }
