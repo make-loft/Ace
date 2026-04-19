@@ -33,8 +33,8 @@ public class ContextObject : SmartObject, INotifyDataErrorInfo, IDataErrorInfo
 	[OnDeserializing]
 	public void Initialize(StreamingContext context = default)
 	{
-		CommandEvocators = new();
-		PropertyEvocators = new();
+		CommandEvocators = [];
+		PropertyEvocators = [];
 		PropertyChanging += (sender, args) => GetEvocator(args.PropertyName).EvokeChanging(new(sender, args.PropertyName));
 		PropertyChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeChanged(new(sender, args.PropertyName));
 		ErrorsChanged += (sender, args) => GetEvocator(args.PropertyName).EvokeErrorsChanged(new(sender, args.PropertyName));

@@ -16,7 +16,7 @@ public static class Context
 		return value;
 	}
 
-	private static readonly Dictionary<string, Command> Container = new();
+	private static readonly Dictionary<string, Command> Container = [];
 
 	public static Command Get(string key) =>
 		Container.TryGetValue(key, out var value) ? value : Container[key] = new Command(key);

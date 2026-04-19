@@ -5,7 +5,7 @@ namespace Ace.Patterns;
 
 public abstract class AResourceWrap<TKey, TValue, TCulture, TManager> : INotifyPropertyChanged
 {
-	public readonly ObservableCollection<TManager> MergedManagers = new();
+	public readonly ObservableCollection<TManager> MergedManagers = [];
 
 	public virtual string ActivePath => "ActiveManager";
 

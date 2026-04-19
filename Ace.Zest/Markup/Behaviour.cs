@@ -38,7 +38,7 @@ public static class Behaviour
 	{
 		var contextTriggers = (Set)element.GetValue(ContextTriggersProperty);
 		if (contextTriggers.Is()) return contextTriggers;
-		contextTriggers = new Set();
+		contextTriggers = [];
 		contextTriggers.CollectionChanged += (sender, args) =>
 			args.NewItems.Cast<ContextTrigger>().ForEach(t => Subscribe(element, t));
 		element.SetValue(ContextTriggersProperty, contextTriggers);

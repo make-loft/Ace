@@ -24,7 +24,7 @@ public class ContractMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, 
 			;
 	}
 
-	protected readonly Dictionary<MemberInfo, string> MemberToKey = new();
+	protected readonly Dictionary<MemberInfo, string> MemberToKey = [];
 
 	public override string GetCustomKey(MemberInfo member) => MemberToKey.TryGetValue(member, out var key)
 		? key

@@ -17,7 +17,7 @@ public class SwitchConverter : ValueConverter
 {
 	public string DiagnosticKey { get; set; }
 
-	public List<ICase<object, object>> Cases { get; } = new();
+	public List<ICase<object, object>> Cases { get; } = [];
 
 	public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{

@@ -164,7 +164,7 @@ namespace Ace.Controls
 			where TView : View =>
 			Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new((s, args) => changed(new((TView)s, args))));
 #endif
-		private static readonly Dictionary<string, Property> NameToProperty = new();
+		private static readonly Dictionary<string, Property> NameToProperty = [];
 
 		public static Property GetProperty<TValue>(
 			Expression<Func<TOwner, TValue>> func,
@@ -214,7 +214,7 @@ namespace Ace.Controls
 
 		public class Handler<TValue>
 		{
-			public static Dictionary<string, Handler<TValue>> NameToHandler = new();
+			public static Dictionary<string, Handler<TValue>> NameToHandler = [];
 			public event Action<ChangeArgs<TOwner, TValue>> Changed;
 			public void EvokeChanged(ChangeArgs<TOwner, TValue> args) => Changed?.Invoke(args);
 		}

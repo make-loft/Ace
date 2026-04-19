@@ -111,7 +111,7 @@ public class KeepProfile
 
 	public string CaptureKey(string data, ref int offset)
 	{
-		var segments = CaptureSimplex(new Simplex(), data, ref offset);
+		var segments = CaptureSimplex([], data, ref offset);
 		return segments.Count > 1 ? segments[1] : segments[0];
 	}
 	

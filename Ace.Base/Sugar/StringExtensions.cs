@@ -19,7 +19,7 @@ public static class StringExtensions
 	public static string Format(this string value, IFormatProvider provider, params object[] args) =>
 		string.Format(provider, value, args);
 
-	private static readonly Dictionary<string, char[]> stringToChars = new();
+	private static readonly Dictionary<string, char[]> stringToChars = [];
 
 	public static char[] GetCachedChars(this string value) => stringToChars.TryGetValue(value, out var chars)
 		? chars

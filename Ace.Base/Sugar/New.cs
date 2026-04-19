@@ -28,7 +28,7 @@ public static partial class New
 	public static List<T> List<T>(int capacity = 0) => new(capacity);
 	public static List<T> List<T>(params T[] items) => List<T>(items.Length).AppendRange(items);
 
-	public static Dictionary<TK, TV> Dictionary<TK, TV>() => new();
+	public static Dictionary<TK, TV> Dictionary<TK, TV>() => [];
 
 	public static Dictionary<TK, TV> Dictionary<TK, TV>(params KeyValuePair<TK, TV>[] items) =>
 		new Dictionary<TK, TV>(items.Length).AppendRange(items);

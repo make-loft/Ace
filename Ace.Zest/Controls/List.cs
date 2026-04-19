@@ -53,7 +53,7 @@ public class List : View
 			;
 	}
 
-	public SmartSet<object> Items { get; } = new();
+	public SmartSet<object> Items { get; } = [];
 
 	[RegisterProperty]
 	public DataTemplate ItemTemplate

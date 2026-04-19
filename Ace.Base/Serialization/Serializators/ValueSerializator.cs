@@ -37,7 +37,7 @@ public class ValueSerializator : ASerializator
 			? type.FullName.Substring(type.FullName.IndexOf('.') + 1)
 			: type.GetFriendlyName();
 	
-	protected readonly Simplex Simplex = new();
+	protected readonly Simplex Simplex = [];
 
 	public Simplex Encode(object value, KeepProfile profile)
 	{
@@ -80,7 +80,7 @@ public class ValueSerializator : ASerializator
 
 	//public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
 
-	public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = new();
+	public Dictionary<int, StringBuilder> ThreadIdToStringBuilder = [];
 	
 	public Simplex Escape(EscapeProfile escaper, Simplex segments,  int segmentIndex)
 	{

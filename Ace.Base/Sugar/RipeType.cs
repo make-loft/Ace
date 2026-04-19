@@ -8,7 +8,7 @@ namespace Ace;
 
 public class RipeType
 {
-	private static readonly Dictionary<Type, RipeType> RawToRipe = new();
+	private static readonly Dictionary<Type, RipeType> RawToRipe = [];
 
 	public static RipeType Get(Type raw) => Lock.Invoke(RawToRipe, _ =>
 		RawToRipe.TryGetValue(raw, out var ripe)

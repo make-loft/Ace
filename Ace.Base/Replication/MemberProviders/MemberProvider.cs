@@ -24,7 +24,7 @@ public class MemberProvider
 
 	protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
 
-	protected Dictionary<Type, List<MemberInfo>> TypeToMembers = new();
+	protected Dictionary<Type, List<MemberInfo>> TypeToMembers = [];
 
 	public virtual List<MemberInfo> GetDataMembers(Type type) => TypeToMembers.TryGetValue(type, out var members)
 		? members

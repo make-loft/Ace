@@ -11,7 +11,7 @@ public static class Store
 {
 	public static Memory ActiveBox { get; set; } = new(new KeyFileStorage());
 
-	private static readonly Dictionary<Type, object> Container = new();
+	private static readonly Dictionary<Type, object> Container = [];
 
 	public static bool HasDataContract(object item) => HasDataContract(item.GetType());
 	public static bool HasDataContract(Type type) =>

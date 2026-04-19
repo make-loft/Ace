@@ -54,7 +54,7 @@ using System.Windows.Controls;
 
 public class Field : TextBox
 {
-	public static readonly System.Collections.Generic.List<WeakReference<Field>> Entres = new();
+	public static readonly System.Collections.Generic.List<WeakReference<Field>> Entres = [];
 	readonly WeakReference<Field> _this;
 
 	public Field()

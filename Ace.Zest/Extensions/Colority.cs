@@ -15,7 +15,7 @@ public static class Colority
 	private static byte Byte(in double value) => (byte)(255d * value);
 	private static byte Byte(in float value) => (byte)(255f * value);
 
-	private static readonly Dictionary<Color, SolidColorBrush> ColorToBrush = new();
+	private static readonly Dictionary<Color, SolidColorBrush> ColorToBrush = [];
 	public static SolidColorBrush ToBrush(this in Color color) => ColorToBrush.TryGetValue(color, out var brush)
 		? brush
 		: ColorToBrush[color] = new(color)
