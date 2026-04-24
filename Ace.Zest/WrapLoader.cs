@@ -1,7 +1,6 @@
-﻿namespace Ace
-{
-    public static class WrapLoader
-    {
-        public static void Load() { }
-    }
-}
+﻿namespace Ace;
+
+  public static class WrapLoader
+  {
+    public static void Load() { }
+  }

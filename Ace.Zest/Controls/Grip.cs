@@ -2,75 +2,74 @@
 
 using Property = Xamarin.Forms.BindableProperty;
 
-namespace Ace.Controls
+namespace Ace.Controls;
+
+public partial class Grip : AView<Grip>
 {
-	public partial class Grip : AView<Grip>
+	public static Property FromProperty = Create(g => g.From);
+	public double From
 	{
-		public static Property FromProperty = Create(g => g.From);
-		public double From
+		get => GetValue(FromProperty).To<double>();
+		set => SetValue(FromProperty, value);
+	}
+
+	public static Property TillProperty = Create(g => g.Till);
+	public double Till
+	{
+		get => GetValue(TillProperty).To<double>();
+		set => SetValue(TillProperty, value);
+	}
+
+	public static Property ValueProperty = Create(g => g.Value);
+	public double Value
+	{
+		get => GetValue(ValueProperty).To<double>();
+		set => SetValue(ValueProperty, value);
+	}
+
+	public Grip()
+	{
+		Content = new Xamarin.Forms.Slider().To(out var slider);
+
+		void SetupSlider(double minimum, double maximum, double value)
 		{
-			get => GetValue(FromProperty).To<double>();
-			set => SetValue(FromProperty, value);
+			slider.Maximum = double.PositiveInfinity;
+			slider.Minimum = double.NegativeInfinity;
+
+			slider.Maximum = minimum;
+			slider.Minimum = maximum;
+
+			slider.Value = value;
 		}
 
-		public static Property TillProperty = Create(g => g.Till);
-		public double Till
+		slider.PropertyChanged += (o, e) =>
 		{
-			get => GetValue(TillProperty).To<double>();
-			set => SetValue(TillProperty, value);
-		}
+			if (e.PropertyName.Is(nameof(slider.Value)))
+				Value = slider.Value;
+		};
 
-		public static Property ValueProperty = Create(g => g.Value);
-		public double Value
+		var gripProperties = new string[] { nameof(From), nameof(Till), nameof(Value) };
+
+		PropertyChanged += (o, e) =>
 		{
-			get => GetValue(ValueProperty).To<double>();
-			set => SetValue(ValueProperty, value);
-		}
+			if (gripProperties.Contains(e.PropertyName).Not())
+				return;
 
-		public Grip()
-		{
-			Content = new Xamarin.Forms.Slider().To(out var slider);
-
-			void SetupSlider(double minimum, double maximum, double value)
+			if (From < Till)
 			{
-				slider.Maximum = double.PositiveInfinity;
-				slider.Minimum = double.NegativeInfinity;
+				if (Value < From) Value = From;
+				if (Value > Till) Value = Till;
 
-				slider.Maximum = minimum;
-				slider.Minimum = maximum;
-
-				slider.Value = value;
+				SetupSlider(Till, From, Value);
 			}
 
-			slider.PropertyChanged += (o, e) =>
+			if (From > Till)
 			{
-				if (e.PropertyName.Is(nameof(slider.Value)))
-					Value = slider.Value;
-			};
+				if (Value > From) Value = From;
+				if (Value < Till) Value = Till;
 
-			var gripProperties = new string[] { nameof(From), nameof(Till), nameof(Value) };
-
-			PropertyChanged += (o, e) =>
-			{
-				if (gripProperties.Contains(e.PropertyName).Not())
-					return;
-
-				if (From < Till)
-				{
-					if (Value < From) Value = From;
-					if (Value > Till) Value = Till;
-
-					SetupSlider(Till, From, Value);
-				}
-
-				if (From > Till)
-				{
-					if (Value > From) Value = From;
-					if (Value < Till) Value = Till;
-
-					SetupSlider(From, Till, Value);
-				}
-			};
-		}
+				SetupSlider(From, Till, Value);
+			}
+		};
 	}
 }

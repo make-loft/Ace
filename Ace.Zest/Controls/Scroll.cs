@@ -1,6 +1,5 @@
-﻿namespace Ace.Controls
+﻿namespace Ace.Controls;
+
+public class Scroll : Xamarin.Forms.ScrollView
 {
-	public class Scroll : Xamarin.Forms.ScrollView
-	{
-	}
 }

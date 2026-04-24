@@ -28,14 +28,15 @@ public class ValueSerializator : ASerializator
 
 	public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel) =>
 		Encode(value, profile);
-	   
+
 	public static readonly Assembly SystemAssembly = TypeOf<object>.Assembly;
 	public static readonly Assembly ExtendedAssembly = TypeOf<Uri>.Assembly;
 
 	public virtual string GetTypeName(Type type) =>
 		type.Assembly.Is(SystemAssembly) || type.Assembly.Is(ExtendedAssembly)
 			? type.FullName.Substring(type.FullName.IndexOf('.') + 1)
-			: type.GetFriendlyName();
+			: type.GetFriendlyName()
+			;
 	
 	protected readonly Simplex Simplex = [];
 

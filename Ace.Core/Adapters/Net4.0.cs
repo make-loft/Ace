@@ -6,30 +6,30 @@ using System.Collections;
 
 namespace System.ComponentModel
 {
-    public class DataErrorsChangedEventArgs : EventArgs
-    {
-        public DataErrorsChangedEventArgs(string propertyName) => PropertyName = propertyName;
+  public class DataErrorsChangedEventArgs : EventArgs
+  {
+    public DataErrorsChangedEventArgs(string propertyName) => PropertyName = propertyName;
 
-        public virtual string PropertyName { get; }
-    }
+    public virtual string PropertyName { get; }
+  }
 
-    public interface INotifyDataErrorInfo
-    {
-        bool HasErrors { get; }
+  public interface INotifyDataErrorInfo
+  {
+    bool HasErrors { get; }
 
-        IEnumerable GetErrors(string propertyName);
+    IEnumerable GetErrors(string propertyName);
 
-        event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-    }
+    event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+  }
 }
 
 namespace System.Reflection
 {
-    public static class ReflectionExtensions
-    {
-        public static MethodInfo GetRuntimeMethod(this Type type, string name, Type[] types) => type.GetMethod(name, types);  
-        public static EventInfo GetRuntimeEvent(this Type type, string name) => type.GetEvent(name);
-    }
+  public static class ReflectionExtensions
+  {
+    public static MethodInfo GetRuntimeMethod(this Type type, string name, Type[] types) => type.GetMethod(name, types);  
+    public static EventInfo GetRuntimeEvent(this Type type, string name) => type.GetEvent(name);
+  }
 }
 
 namespace System.Runtime.CompilerServices

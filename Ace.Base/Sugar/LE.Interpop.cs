@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Ace;
 
-    static partial class LE
-    {
+  static partial class LE
+  {
 	public static T To<T>(this byte[] bytes)
 	{
 		{

@@ -1,7 +1,7 @@
 ﻿<c:List
 	x:Class="Ace.Controls.Pivot"
-    xmlns="http://xamarin.com/schemas/2014/forms"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:c="clr-namespace:Ace.Controls"
 	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
 	>

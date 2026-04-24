@@ -1,6 +1,5 @@
-﻿namespace Ace.Controls
+﻿namespace Ace.Controls;
+
+public class Stack : Xamarin.Forms.StackLayout
 {
-	public class Stack : Xamarin.Forms.StackLayout
-	{
-	}
 }
