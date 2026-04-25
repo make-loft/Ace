@@ -60,7 +60,7 @@ public class DeepReplicator : ACachingReplicator<object>
 					repeats++;
 					goto Repeat;
 				}
-				throw new Exception($"{memberProvider.GetDataKey(m, type, members)}", exception);
+				throw new($"{memberProvider.GetDataKey(m, type, members)}", exception);
 			}
 		}
 	}
@@ -143,7 +143,8 @@ public class DeepReplicator : ACachingReplicator<object>
 	private static object ChangeType(object value, Type targetType, ReplicationProfile profile)
 		=> value is string @string
 			? Decode(profile, @string, targetType)
-			: (targetType.IsPrimitive ? Convert.ChangeType(value, targetType, null) : value);
+			: (targetType.IsPrimitive ? Convert.ChangeType(value, targetType, null) : value)
+			;
 
 	private static object Decode(ReplicationProfile profile, string s, Type type)
 		=> profile.ImplicitConverters.Select(c => c.Decode(s, type)).First(v => v.IsNot(Converter.Undefined));
@@ -157,25 +158,29 @@ public class DeepReplicator : ACachingReplicator<object>
 		{
 			type = baseType.IsMatch<DictionaryEntry>()
 				? baseType
-				: RestoreType(snapshot, profile, baseType);
+				: RestoreType(snapshot, profile, baseType)
+				;
 			return CreateInstance(type, snapshot, profile);
 		}
-		catch (Exception e)
+		catch (Exception exception)
 		{
-			throw new Exception($"{e.Message}\n{type?.FullName}\n{snapshot.SnapshotToString(Snapshot.DefaultKeepProfile)}", e);
+			throw new($"{exception.Message}\n{type?.FullName}\n{snapshot.SnapshotToString(Snapshot.DefaultKeepProfile)}",
+				exception);
 		}
 	}
 
 	private static Type RestoreType(Map snapshot, ReplicationProfile profile, Type baseType)
 		=> snapshot.TryGetValue(profile.TypeKey, out var typeName)
 			? Type.GetType(typeName.ToString(), true)
-			: baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
+			: baseType ?? throw new("Missed type info. Can not restore implicitly.")
+			;
 
 	private static object CreateInstance(Type type, Map snapshot, ReplicationProfile profile)
 		=> type.IsArray && type.GetElementType() is Type elementType
 			? (snapshot.TryGetValue(profile.SetDimensionKey, out var dimensions)
 				? Array.CreateInstance(elementType, ((Set) dimensions).Cast<int>().ToArray())
 				: Array.CreateInstance(elementType, ((Set) snapshot[profile.SetKey]).Count))
-			: Activator.CreateInstance(type);
+			: Activator.CreateInstance(type)
+			;
 }
   

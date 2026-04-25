@@ -46,8 +46,8 @@ public class List : View
 
 	public List()
 	{
-		Items.CollectionChanged += (o, e) => ItemsSource = Items;
-		Items.CollectionChanged += (o, e) => ActiveItem = 0 <= ActiveItemOffset && ActiveItemOffset < ItemsSource.Count
+		Items.CollectionChanged += (sender, args) => ItemsSource = Items;
+		Items.CollectionChanged += (sender, args) => ActiveItem = 0 <= ActiveItemOffset && ActiveItemOffset < ItemsSource.Count
 			? ItemsSource[ActiveItemOffset]
 			: ActiveItem
 			;

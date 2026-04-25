@@ -35,18 +35,18 @@ public partial class Pivot
 		});
 	}
 
-	private void ItemCell_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+	private void ItemCell_MouseLeftButtonDown(object sender, MouseButtonEventArgs args)
 	{
-		if (e.ClickCount.IsNot(1))
+		if (args.ClickCount.IsNot(1))
 			return;
 
 		ActivateCell((ItemCell)sender);
 	}
 
 	private static readonly Key[] ActivationKeys = { Key.Enter, Key.Space };
-	private void ItemCell_PreviewKeyDown(object sender, KeyEventArgs e)
+	private void ItemCell_PreviewKeyDown(object sender, KeyEventArgs args)
 	{
-		if (ActivationKeys.Contains(e.Key))
+		if (ActivationKeys.Contains(args.Key))
 			ActivateCell((ItemCell)sender);
 	}
 

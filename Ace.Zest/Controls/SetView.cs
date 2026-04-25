@@ -189,7 +189,7 @@ public class SetView : ContentView
 		indexToGroupContainer = new();
 
 		scrollView.Content = content;
-		scrollView.Scrolled += (o, e) => FillContent(scrollView, content);
+		scrollView.Scrolled += (sender, args) => FillContent(scrollView, content);
 
 		void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
 			=> FillContent(scrollView, content);
@@ -205,7 +205,7 @@ public class SetView : ContentView
 			_collection.CollectionChanged += CollectionChanged;
 		}
 
-		content.SizeChanged += async (o, e) =>
+		content.SizeChanged += async (sender, args) =>
 		{
 			if (ItemsSource.IsNot()) return;
 

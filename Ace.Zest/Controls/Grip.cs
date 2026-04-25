@@ -42,17 +42,17 @@ public partial class Grip : AView<Grip>
 			slider.Value = value;
 		}
 
-		slider.PropertyChanged += (o, e) =>
+		slider.PropertyChanged += (sender, args) =>
 		{
-			if (e.PropertyName.Is(nameof(slider.Value)))
+			if (args.PropertyName.Is(nameof(slider.Value)))
 				Value = slider.Value;
 		};
 
 		var gripProperties = new string[] { nameof(From), nameof(Till), nameof(Value) };
 
-		PropertyChanged += (o, e) =>
+		PropertyChanged += (sender, args) =>
 		{
-			if (gripProperties.Contains(e.PropertyName).Not())
+			if (gripProperties.Contains(args.PropertyName).Not())
 				return;
 
 			if (From < Till)

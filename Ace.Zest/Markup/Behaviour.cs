@@ -76,16 +76,16 @@ public static class Behaviour
 
 	public static readonly DependencyProperty DragMoveHandlerProperty =
 		RegisterAttached("DragMoveHandler", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool),
-			(o, args) =>
+			(sender, args) =>
 			{
-				if (o.Is(out FrameworkElement element).Not()) return;
+				if (sender.Is(out FrameworkElement element).Not()) return;
 
 				if (args.NewValue.Is(true))
 					element.MouseMove += OnMouseMove;
 				else if (args.NewValue.Is(false))
 					element.MouseMove -= OnMouseMove;
 
-				static void OnMouseMove(object sender, MouseEventArgs e) => e.Handled = true;
+				static void OnMouseMove(object sender, MouseEventArgs args) => args.Handled = true;
 			}));
 
 	private static void DragMoveChangedCallback(Target o, DependencyPropertyChangedEventArgs args)
@@ -98,16 +98,16 @@ public static class Behaviour
 		else if (args.NewValue.Is(false))
 			element.MouseMove -= OnMouseMove;		
 		
-		void OnMouseMove(object sender, MouseEventArgs e)
+		void OnMouseMove(object sender, MouseEventArgs args)
 		{
-			if (e.Handled) return;
+			if (args.Handled) return;
 			var window = sender as Window ?? o.EnumerateVisualAncestors().OfType<Window>().FirstOrDefault();
 			if (window.IsNot()) return;
-			var currentPosition = e.GetPosition(element);
+			var currentPosition = args.GetPosition(element);
 			var dx = currentPosition.X - lastPosition.X;
 			var dy = currentPosition.Y - lastPosition.Y;
 			var delta = dx * dx + dy * dy;
-			if (e.LeftButton.Is(MouseButtonState.Pressed) && lastPosition.IsNot(currentPosition) && delta > 25)
+			if (args.LeftButton.Is(MouseButtonState.Pressed) && lastPosition.IsNot(currentPosition) && delta > 25)
 				window.DragMove();
 			lastPosition = currentPosition;
 		}

@@ -24,7 +24,7 @@ public class Field : Entry
 	{
 		bool isCaptured = false;
 
-		TextChanged += async (o, e) =>
+		TextChanged += async (sender, args) =>
 		{
 			if (isCaptured || IsEnabled.Not())
 				return;
@@ -34,9 +34,9 @@ public class Field : Entry
 			IsEnabled = true;
 		};
 
-		Focused += (o, e) => isCaptured = true;
+		Focused += (sender, args) => isCaptured = true;
 
-		Unfocused += async (o, e) =>
+		Unfocused += async (sender, args) =>
 		{
 			await Task.Delay(1000);
 			isCaptured = false;

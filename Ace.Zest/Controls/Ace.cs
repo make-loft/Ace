@@ -70,11 +70,11 @@ public static class New
 	};
 
 	public static void ContextChanged<TView>(this TView element, Action<ChangeArgs<TView, object>> onContextChanged) where TView : View =>
-		element.BindingContextChanged += (o, e) => onContextChanged(new(element, default, element.BindingContext));
+		element.BindingContextChanged += (sender, args) => onContextChanged(new(element, default, element.BindingContext));
 #else
 
 	public static void ContextChanged<TView>(this TView element, Action<ChangeArgs<TView, object>> onContextChanged) where TView : FrameworkElement =>
-		element.DataContextChanged += (o, e) => onContextChanged(new(element, e));
+		element.DataContextChanged += (sender, args) => onContextChanged(new(element, args));
 
 	public static object GetContext(this View view) => view.DataContext;
 	public static object SetContext(this View view, object value) => view.DataContext = value;
@@ -425,20 +425,22 @@ public class Grip : Slider
 
 	public Grip()
 	{
-		PreviewKeyDown += (o, e) =>
+		PreviewKeyDown += (sender, args) =>
 		{
+			var key = args.Key;
 			if (Value == Minimum)
-				if (e.Key is Key.Left || e.Key is Key.Down)
+				if (key is Key.Left || key is Key.Down)
 					Value = Maximum;
 			if (Value == Maximum)
-				if (e.Key is Key.Right || e.Key is Key.Up)
+				if (key is Key.Right || key is Key.Up)
 					Value = Minimum;
 		};
 
-		MouseWheel += (o, e) =>
+		MouseWheel += (sender, args) =>
 		{
-			var delta = (Maximum - Minimum) / 256;
-			Value += e.Delta < 0 ? +delta : e.Delta > 0 ? -delta : 0;
+			var delta = args.Delta;
+			var length = (Maximum - Minimum) / 256;
+			Value += delta < 0 ? +length : delta > 0 ? -length : 0;
 		};
 	}
 }
@@ -447,7 +449,7 @@ public class ItemsView : ItemsControl
 {
 	public ItemsView()
 	{
-		DataContextChanged += (o, e) =>
+		DataContextChanged += (sender, args) =>
 		{
 			foreach (var item in Items.OfType<FrameworkElement>())
 				item.DataContext = DataContext;
@@ -455,9 +457,9 @@ public class ItemsView : ItemsControl
 	}
 
 	public static readonly Property BindingContextProperty
-		= Property.Register(nameof(BindingContext), typeof(object), typeof(ItemsView), new PropertyMetadata((o, e) =>
+		= Property.Register(nameof(BindingContext), typeof(object), typeof(ItemsView), new PropertyMetadata((sender, args) =>
 		{
-			if (o is ItemsView control) control.SetValue(DataContextProperty, e.NewValue);
+			if (sender is ItemsView control) control.SetValue(DataContextProperty, args.NewValue);
 		}));
 
 	public object BindingContext
@@ -470,7 +472,7 @@ public class ItemsView : ItemsControl
 
 	protected override bool IsItemItsOwnContainerOverride(object item)
 	{
-		if (item is View e && e.DataContext is null) e.DataContext = DataContext;
+		if (item is View view && view.DataContext is null) view.DataContext = DataContext;
 		return false; // wrap always
 	}
 }

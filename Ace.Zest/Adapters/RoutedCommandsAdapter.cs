@@ -37,15 +37,15 @@ public static class RoutedCommandsAdapter
 		{
 			var e = new ExecutedEventArgs(sender, args.Command, args.Parameter, args.Handled);
 			evocator.EvokeExecuted(e);
-			args.Handled = e.Handled;
+			args.Handled = args.Handled;
 		}
 
 		void OnCanExecute(object sender, CanExecuteRoutedEventArgs args)
 		{
 			var e = new CanExecuteEventArgs(sender, args.Command, args.Parameter, args.Handled, evocator.HasExecuted());
 			evocator.EvokeCanExecute(e);
-			args.CanExecute = e.CanExecute;
-			args.Handled = e.Handled;
+			args.CanExecute = args.CanExecute;
+			args.Handled = args.Handled;
 		}
 
 		var commandBinding = new CommandBinding(evocator.Command);
