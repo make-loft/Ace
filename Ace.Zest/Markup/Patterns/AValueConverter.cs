@@ -16,24 +16,24 @@ public abstract class AValueConverter : DependencyObject, IValueConverter
 	public virtual object Convert(object value) => Stub();
 	public virtual object Convert(object value, object parameter) => Convert(value);
 	public virtual object Convert(ConvertArgs args) => Convert(args.Value, args.Parameter);
-	public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-		Convert(new(value, targetType, parameter, culture));
+	public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		=> Convert(new(value, targetType, parameter, culture));
 
 	public virtual object ConvertBack(object value) => Stub();
 	public virtual object ConvertBack(object value, object parameter) => ConvertBack(value);
 	public virtual object ConvertBack(ConvertArgs args) => ConvertBack(args.Value, args.Parameter);
-	public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-		ConvertBack(new(value, targetType, parameter, culture));
+	public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		=> ConvertBack(new(value, targetType, parameter, culture));
 
 	public abstract class Reflected : DependencyObject, IValueConverter
 	{
 		public virtual object Convert(object value) => Stub();
 		public virtual object Convert(object value, object parameter) => Convert(value);
 		public virtual object Convert(ConvertArgs args) => Convert(args.Value, args.Parameter);
-		public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			Convert(new(value, targetType, parameter, culture));
+		public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+			=> Convert(new(value, targetType, parameter, culture));
 
-		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-			Convert(new(value, targetType, parameter, culture));
+		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+			=> Convert(new(value, targetType, parameter, culture));
 	}
 }

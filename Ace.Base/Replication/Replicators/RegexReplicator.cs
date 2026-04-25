@@ -11,20 +11,21 @@ public class RegexReplicator : ACachingReplicator<Regex>
 	public string OptionsKey = "#Options";
 
 	public override void FillMap(Map map, ref Regex instance, ReplicationProfile profile,
-		IDictionary<object, int> idCache, Type baseType = null)
+		IDictionary<object, int> cache, Type baseType = null)
 	{
 		map.Add(PatternKey, instance.ToString());
 		map.Add(OptionsKey, instance.Options);
 	}
 
 	public override Regex ActivateInstance(Map map, ReplicationProfile profile,
-		IDictionary<int, object> idCache, Type baseType = null) =>
-		new((string) map[PatternKey], RestoreOptions(map[OptionsKey], profile));
+		IDictionary<int, object> cache, Type baseType = null)
+		=> new((string) map[PatternKey], RestoreOptions(map[OptionsKey], profile));
 
-	private static RegexOptions RestoreOptions(object value, ReplicationProfile profile) =>
-		value is RegexOptions regexOptions
+	private static RegexOptions RestoreOptions(object value, ReplicationProfile profile)
+		=> value is RegexOptions regexOptions
 			? regexOptions
 			: profile.TryRestoreTypeInfoImplicitly
 				? (RegexOptions) Enum.Parse(TypeOf<RegexOptions>.Raw, value.ToString(), true)
-				: throw new Exception("Can not restore type info for value " + value);
+				: throw new Exception("Can not restore type info for value " + value)
+		;
 }

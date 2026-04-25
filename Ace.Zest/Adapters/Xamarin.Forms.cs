@@ -1,14 +1,10 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Xamarin.Forms
+﻿namespace Xamarin.Forms
 {
-	// ReSharper disable EmptyNamespace
 	namespace Xaml
 	{
 		public enum XamlCompilationOptions { Skip, Compile }
 
-		public class XamlCompilationAttribute(XamlCompilationOptions options) : System.Attribute
-		{
-		}
+		public class XamlCompilationAttribute(XamlCompilationOptions options) : System.Attribute { }
 	}
 
 	internal class ContentPropertyAttribute { }
@@ -19,9 +15,7 @@ namespace Xamarin.Forms
 	public class DataTemplate : System.Windows.DataTemplate { }
 	public class ControlTemplate : System.Windows.Controls.ControlTemplate { }
 	public class ResourceDictionary : System.Windows.ResourceDictionary { }
-	public class StaticResourceExtension(string key) : System.Windows.StaticResourceExtension(key)
-	{
-	}
+	public class StaticResourceExtension(string key) : System.Windows.StaticResourceExtension(key) { }
 	public class DynamicResourceExtension : System.Windows.DynamicResourceExtension { }
 	public class Binding : System.Windows.Data.Binding
 	{

@@ -112,11 +112,11 @@ public static class Colority
 		var offsetLength = tillPoint.Offset - fromPoint.Offset;
 		var offsetValue = offset - fromPoint.Offset;
 
-		double InterpolateValue(double fromValue, double tillValue) =>
-			fromValue + (tillValue - fromValue) * offsetValue / offsetLength;
+		double InterpolateValue(double fromValue, double tillValue)
+			=> fromValue + (tillValue - fromValue) * offsetValue / offsetLength;
 
-		double InterpolateChannel(Func<Color, double> getChannelValue, GradientPoint fromPoint, GradientPoint tillPoint) =>
-			InterpolateValue(getChannelValue(fromPoint.Color), getChannelValue(tillPoint.Color));
+		double InterpolateChannel(Func<Color, double> getChannelValue, GradientPoint fromPoint, GradientPoint tillPoint)
+			=> InterpolateValue(getChannelValue(fromPoint.Color), getChannelValue(tillPoint.Color));
 
 		var r = InterpolateChannel(c => c.R, fromPoint, tillPoint);
 		var g = InterpolateChannel(c => c.G, fromPoint, tillPoint);

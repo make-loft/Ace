@@ -31,8 +31,8 @@ public static class Behaviour
 		"ContextTriggersInternal", typeof(object), typeof(Behaviour), new PropertyMetadata(null, (o, args) =>
 			((Set)args.NewValue).Cast<ContextTrigger>().ForEach(t => Subscribe(o, t)))).Unbox();
 
-	//public static void SetContextTriggers(UIElement element, Set value) =>
-	//	element.SetValue(ContextTriggersProperty, value);
+	//public static void SetContextTriggers(UIElement element, Set value)
+	//	=> element.SetValue(ContextTriggersProperty, value);
 
 	public static Set GetContextTriggers(Target element)
 	{
@@ -113,11 +113,11 @@ public static class Behaviour
 		}
 	}
 
-	public static void SetUpdateHeaderOnLanguageChange(DependencyObject element, object value) =>
-		element.SetValue(UpdateHeaderOnLanguageChangeProperty, value);
+	public static void SetUpdateHeaderOnLanguageChange(Target element, object value)
+		=> element.SetValue(UpdateHeaderOnLanguageChangeProperty, value);
 
-	public static object GetUpdateHeaderOnLanguageChange(DependencyObject element) =>
-		element.GetValue(UpdateHeaderOnLanguageChangeProperty);
+	public static object GetUpdateHeaderOnLanguageChange(Target element)
+		=> element.GetValue(UpdateHeaderOnLanguageChangeProperty);
 
 	public static bool GetDragMove(UIElement element) => (bool) element.GetValue(DragMoveProperty);
 	public static void SetDragMove(UIElement element, bool value) => element.SetValue(DragMoveProperty, value);

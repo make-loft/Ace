@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// ReSharper disable once CheckNamespace, InconsistentNaming
 namespace Ace;
 
 /* The Language Extensions */
@@ -30,8 +29,8 @@ public static partial class LE_Optional
 	public static bool IsNot<T>(this T o, in T? x) where T : struct => !o.Is(in x);
 
 	/* string based value matching */
-	public static int Compare(this string o, in string x, in StringComparison comparison = StringComparison.Ordinal) =>
-		string.Compare(o, x, comparison);
+	public static int Compare(this string o, in string x, in StringComparison comparison = StringComparison.Ordinal)
+		=> string.Compare(o, x, comparison);
 
 	public static bool Is(this string o, in string x, in StringComparison comparison) => o.Compare(x, comparison).Is(0);
 	public static bool Is(this object o, in object x, in StringComparison comparison) => o.Is(x) || o.To<string>().Is(x.To<string>(), comparison);

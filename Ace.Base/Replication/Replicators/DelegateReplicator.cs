@@ -13,10 +13,10 @@ public class DelegateReplicator : ACachingReplicator<Delegate>
 	public bool SkipMonocastInvokationList { get; set; } = true;
 
 	public override void FillMap(Map map, ref Delegate instance, ReplicationProfile profile,
-		IDictionary<object, int> idCache, Type baseType = null)
+		IDictionary<object, int> cache, Type baseType = null)
 	{
 		var target = instance.Target.Is()
-			? profile.Translate(instance.Target, idCache)
+			? profile.Translate(instance.Target, cache)
 			: instance.Method.DeclaringType;
 
 		map.Add(TargetKey, target);
@@ -25,25 +25,26 @@ public class DelegateReplicator : ACachingReplicator<Delegate>
 		{
 			var invocationList = m.GetInvocationList();
 			if (SkipMonocastInvokationList && invocationList.Length.Is(1)) return;
-			var snapshot = profile.Translate<Delegate[]>(invocationList, idCache);
+			var snapshot = profile.Translate<Delegate[]>(invocationList, cache);
 			map.Add(InvocationListKey, snapshot);
 		}
 	}
 
 	public override Delegate ActivateInstance(Map map, ReplicationProfile profile,
-		IDictionary<int, object> idCache, Type baseType = null) => map[TargetKey].To(out var o).Is(out Type t)
+		IDictionary<int, object> cache, Type baseType = null) => map[TargetKey].To(out var o).Is(out Type t)
 		? Delegate.CreateDelegate(baseType, t, (string)map[MethodNameKey])
-		: Delegate.CreateDelegate(baseType, profile.Replicate(o, idCache), (string)map[MethodNameKey]);
+		: Delegate.CreateDelegate(baseType, profile.Replicate(o, cache), (string)map[MethodNameKey]);
 
-	public override void FillInstance(Map map, ref Delegate instance, ReplicationProfile profile, IDictionary<int, object> idCache, Type baseType = null)
+	public override void FillInstance(Map map, ref Delegate instance, ReplicationProfile profile, IDictionary<int, object> cache, Type baseType = null)
 	{
 		if (map.TryGetValue(InvocationListKey, out var snapshot))
 		{
-			var invocationList = profile.Replicate<Delegate[]>(snapshot, idCache);
+			var invocationList = profile.Replicate<Delegate[]>(snapshot, cache);
 			instance = Delegate.Combine(invocationList);
 		}
 	}
 
-	public override bool CanReplicate(object value, ReplicationProfile profile, IDictionary<int, object> idCache, Type baseType = null) =>
-		TypeOf<Delegate>.Raw.IsAssignableFrom(baseType);
+	public override bool CanReplicate(object value, ReplicationProfile profile,
+		IDictionary<int, object> cache, Type baseType = null)
+		=> TypeOf<Delegate>.Raw.IsAssignableFrom(baseType);
 }

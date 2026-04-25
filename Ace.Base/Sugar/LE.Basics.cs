@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// ReSharper disable once CheckNamespace, InconsistentNaming
 namespace Ace;
 
 /* The Language Extensions */
@@ -47,8 +46,8 @@ public static partial class LE
 	public static bool IsNot<T>(this T o, T? x) where T : struct => !o.Is(x);
 
 	/* string based value matching */
-	public static int Compare(this string o, string x, StringComparison comparison = StringComparison.Ordinal) =>
-		string.Compare(o, x, comparison);
+	public static int Compare(this string o, string x, StringComparison comparison = StringComparison.Ordinal)
+		=> string.Compare(o, x, comparison);
 
 	public static bool Is(this string o, string x, StringComparison comparison) => o.Compare(x, comparison).Is(0);
 	public static bool Is(this object o, object x, StringComparison comparison) => o.Is(x) || o.To<string>().Is(x.To<string>(), comparison);
@@ -60,12 +59,12 @@ public static partial class LE
 	public static bool IsNot<T>(this object o) => !o.Is<T>();
 
 	public static bool Is<T>(this T o, out T x) => (x = o).Is();
-	public static bool Is<T>(this object o, out T x, T fallbackValue = default) =>
-		(x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b);
+	public static bool Is<T>(this object o, out T x, T fallbackValue = default)
+		=> (x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b);
 
 	public static bool IsNot<T>(this T o, out T x) => (x = o).IsNot();
-	public static bool IsNot<T>(this object o, out T x, T fallbackValue = default) =>
-		(x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b).Not();
+	public static bool IsNot<T>(this object o, out T x, T fallbackValue = default)
+		=> (x = o.Is<T>().To(out var b) ? (T)o : fallbackValue).Put(ref b).Not();
 
 	/* type casting */
 	public static object ChangeType<T>(this object o) => TypeOf<T>.IsMatch<string>()

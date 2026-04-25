@@ -6,7 +6,7 @@ using static System.Globalization.NumberStyles;
 using static System.Globalization.NumberFormatInfo;
 using System.Collections.Generic;
 
-// ReSharper disable once CheckNamespace
+
 namespace Ace;
 
 public static class StringExtensions
@@ -16,8 +16,8 @@ public static class StringExtensions
 	public static bool IsNullOrWhiteSpace(this string value) => string.IsNullOrWhiteSpace(value);
 	public static bool IsNotNullOrWhiteSpace(this string value) => !string.IsNullOrWhiteSpace(value);
 	public static string Format(this string value, params object[] args) => string.Format(value, args);
-	public static string Format(this string value, IFormatProvider provider, params object[] args) =>
-		string.Format(provider, value, args);
+	public static string Format(this string value, IFormatProvider provider, params object[] args)
+		=> string.Format(provider, value, args);
 
 	private static readonly Dictionary<string, char[]> stringToChars = [];
 
@@ -26,8 +26,8 @@ public static class StringExtensions
 		: stringToChars[value] = value.ToCharArray()
 		;
 
-	public static string[] SplitByChars(this string value, string separators, bool keepEmptyEntries = false) =>
-		value?.Split(separators.GetCachedChars(), keepEmptyEntries ? StringSplitOptions.None : StringSplitOptions.RemoveEmptyEntries);
+	public static string[] SplitByChars(this string value, string separators, bool keepEmptyEntries = false)
+		=> value?.Split(separators.GetCachedChars(), keepEmptyEntries ? StringSplitOptions.None : StringSplitOptions.RemoveEmptyEntries);
 
 	public static bool Match(this string original, string pattern, int offset)
 	{
@@ -55,31 +55,31 @@ public static class StringExtensions
 	public static bool TryParse(this string pattern, out sbyte value) => sbyte.TryParse(pattern, Integer, InvariantInfo, out value);
 	public static bool TryParse(this string pattern, out char value) => char.TryParse(pattern, out value);
 
-	public static bool TryParse(this string pattern, out int value, NumberFormatInfo format = default) =>
-		int.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
-	public static bool TryParse(this string pattern, out uint value, NumberFormatInfo format = default) =>
-		uint.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
-	public static bool TryParse(this string pattern, out long value, NumberFormatInfo format = default) =>
-		long.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
-	public static bool TryParse(this string pattern, out ulong value, NumberFormatInfo format = default) =>
-		ulong.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
-	public static bool TryParse(this string pattern, out short value, NumberFormatInfo format = default) =>
-		short.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
-	public static bool TryParse(this string pattern, out ushort value, NumberFormatInfo format = default) =>
-		ushort.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out int value, NumberFormatInfo format = default)
+		=> int.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out uint value, NumberFormatInfo format = default)
+		=> uint.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out long value, NumberFormatInfo format = default)
+		=> long.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out ulong value, NumberFormatInfo format = default)
+		=> ulong.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out short value, NumberFormatInfo format = default)
+		=> short.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out ushort value, NumberFormatInfo format = default)
+		=> ushort.TryParse(pattern, Integer, format ?? InvariantInfo, out value);
 
-	public static bool TryParse(this string pattern, out float value, NumberFormatInfo format = default) =>
-		float.TryParse(pattern, Any, format ?? InvariantInfo, out value);
-	public static bool TryParse(this string pattern, out double value, NumberFormatInfo format = default) =>
-		double.TryParse(pattern, Any, format ?? InvariantInfo, out value);
-	public static bool TryParse(this string pattern, out decimal value, NumberFormatInfo format = default) =>
-		decimal.TryParse(pattern, Any, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out float value, NumberFormatInfo format = default)
+		=> float.TryParse(pattern, Any, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out double value, NumberFormatInfo format = default)
+		=> double.TryParse(pattern, Any, format ?? InvariantInfo, out value);
+	public static bool TryParse(this string pattern, out decimal value, NumberFormatInfo format = default)
+		=> decimal.TryParse(pattern, Any, format ?? InvariantInfo, out value);
 
 	public static bool TryParse(this string pattern, out DateTime value) => DateTime.TryParse(pattern, out value);
-	public static bool TryParse(this string pattern, IFormatProvider provider, out DateTime value) =>
-		DateTime.TryParse(pattern, provider, default, out value);
-	public static bool TryParse(this string pattern, IFormatProvider provider, DateTimeStyles styles, out DateTime value) =>
-		DateTime.TryParse(pattern, provider, styles, out value);
+	public static bool TryParse(this string pattern, IFormatProvider provider, out DateTime value)
+		=> DateTime.TryParse(pattern, provider, default, out value);
+	public static bool TryParse(this string pattern, IFormatProvider provider, DateTimeStyles styles, out DateTime value)
+		=> DateTime.TryParse(pattern, provider, styles, out value);
 
 	public static bool TryParse<TValue>(this string text, out TValue value, Func<string, TValue> parse)
 	{
@@ -95,8 +95,8 @@ public static class StringExtensions
 		}
 	}
 
-	public static int Align(this string value, int offset) =>
-		offset < 0 ? value.Length - offset : offset;
+	public static int Align(this string value, int offset)
+		=> offset < 0 ? value.Length - offset : offset;
 
 	public static string Trim(this string value, int from, int till)
 	{
@@ -125,11 +125,11 @@ public static class StringExtensions
 	}
 
 	public static string Trim(this string value, string pattern,
-		int from = int.MinValue, int till = int.MaxValue) =>
-		value.TrimHead(pattern, from).TrimTail(pattern, till);
+		int from = int.MinValue, int till = int.MaxValue)
+		=> value.TrimHead(pattern, from).TrimTail(pattern, till);
 
-	public static string Repeat(this char value, int count) =>
-		count > 0 ? new(value, count) : default;
+	public static string Repeat(this char value, int count)
+		=> count > 0 ? new(value, count) : default;
 
 	public static string Repeat(this string value, int count) => count switch
 	{

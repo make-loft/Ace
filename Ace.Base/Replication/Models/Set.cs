@@ -10,6 +10,6 @@ public class Set : List<object>, INotifyPropertyChanged
 
 	public event PropertyChangedEventHandler PropertyChanged;
 
-	public void EvokePropertyChanged(string propertyName = "Item[]") =>
-		PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+	public void EvokePropertyChanged(string propertyName = "Item[]")
+		=> PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 }

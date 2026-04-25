@@ -1,4 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
+﻿
 namespace Ace;
 
 public class Switch<T>(T value)
@@ -24,6 +24,6 @@ public class Switch<T>(T value)
 	public bool Case<TValue>() where TValue : T => _value.Is<TValue>();
 	public bool Case(out T value) => Case<T>(out value);
 
-	public bool Case<TValue>(out TValue value, TValue fallbackValue = default) where TValue : T =>
-		_value.Is(out value, fallbackValue);
+	public bool Case<TValue>(out TValue value, TValue fallbackValue = default) where TValue : T
+		=> _value.Is(out value, fallbackValue);
 }

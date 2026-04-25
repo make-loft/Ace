@@ -21,6 +21,6 @@ public class Enum : AMarkupExtension
 	[TypeConverter(typeof(TypeTypeConverter))]
 	public Type Type { get; set; }
 	
-	public override object Provide(object targetObject, object targetProperty = default) =>
-		System.Enum.GetValues(Type);
+	public override object Provide(object targetObject, object targetProperty = default)
+		=> System.Enum.GetValues(Type);
 }

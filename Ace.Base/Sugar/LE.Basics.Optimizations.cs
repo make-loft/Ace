@@ -1,7 +1,5 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Ace;
+﻿namespace Ace;
 
-// ReSharper disable once InconsistentNaming
 /* LanguageExtensions */
 public static partial class LE
 {		

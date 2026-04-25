@@ -24,11 +24,11 @@ public static class VisualTreeHelper
 		: content as Element
 		;
 
-	private static PropertyInfo GetContentProperty(Type type) =>
-		type.GetRuntimeProperty("Children") ?? type.GetRuntimeProperty("Content");
+	private static PropertyInfo GetContentProperty(Type type)
+		=> type.GetRuntimeProperty("Children") ?? type.GetRuntimeProperty("Content");
 
-	private static object GetContent(this Element element) =>
-		GetContentProperty(element.GetType())?.GetValue(element);
+	private static object GetContent(this Element element)
+		=> GetContentProperty(element.GetType())?.GetValue(element);
 }
 
 public static class BrushBrushExtensions

@@ -53,8 +53,8 @@ public partial class ColorField : AField<Color>
 
 		var step = FromARGB(stepA, stepR, stepG, stepB);
 
-		static int InvertSign(int d, bool? negate) =>
-			negate is true ? -d : negate is false ? +d : 0;
+		static int InvertSign(int d, bool? negate)
+			=> negate is true ? -d : negate is false ? +d : 0;
 
 		bool? negate = positive is true ? false : positive is false ? true : null;
 		
@@ -101,9 +101,9 @@ public partial class ColorField : AField<Color>
 		return IsReadOnly || TryRotate(default);
 	}
 
-	protected override bool TryFormat(in Color value, out string text) =>
-		value.To(out text).Is();
+	protected override bool TryFormat(in Color value, out string text)
+		=> value.To(out text).Is();
 
-	protected override bool TryParse(in string text, out Color value) =>
-		text.TryParse(out value, text => text.ToColor());
+	protected override bool TryParse(in string text, out Color value)
+		=> text.TryParse(out value, text => text.ToColor());
 }

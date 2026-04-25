@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Ace.Markup.Patterns;
 #if XAMARIN
 using Xamarin.Forms;
 #else
 using System.Windows.Markup;
 #endif
+
+using Ace.Markup.Patterns;
 
 namespace Ace.Markup.Converters;
 
@@ -30,8 +31,8 @@ public class SwitchConverter : ValueConverter
 		{
 			var diagnosticMessage = matchedCase.Is()
 				? $"{DiagnosticKey}: '{matchedValue}' matched by key '{matchedCase.Key}' for '{value}' and converted to '{convertedValue}'"
-				: $"{DiagnosticKey}: The default value '{matchedValue}' matched for '{value}' and converted to '{convertedValue}'";
-
+				: $"{DiagnosticKey}: The default value '{matchedValue}' matched for '{value}' and converted to '{convertedValue}'"
+				;
 			Trace.WriteLine(diagnosticMessage);
 		}
 

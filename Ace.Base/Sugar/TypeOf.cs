@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-// ReSharper disable once CheckNamespace
+
 namespace Ace;
 
 public static class TypeOf
@@ -36,7 +36,6 @@ public static class TypeOf
 	//static TypeOf() { } // see: https://github.com/dotnet/coreclr/issues/17981
 }
 
-// ReSharper disable StaticMemberInGenericType
 public static partial class TypeOf<T>
 {
 	private static RipeType Ripe { get; } = typeof(T).ToRipeType();

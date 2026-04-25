@@ -5,7 +5,7 @@ using Ace.Replication.Models;
 
 namespace Ace;
 
-public class Juxtaposition
+public struct Juxtaposition
 {
 	public string Path { get; set; }
 	public object Etalon { get; set; }
@@ -14,9 +14,10 @@ public class Juxtaposition
 
 	public override string ToString() => $"<{State}> • [{Path}] {Print(Etalon)} {Print(Sample)}";
 
-	private static string Print(object item) =>
-		item is Map || item is Set ? "<instance>"
-		: item is null ? "<null>" : "{" + item + "}";
+	private static string Print(object item) => item is Map || item is Set
+		? "<instance>"
+		: item is null ? "<null>" : "{" + item + "}"
+		;
 }
 
 public static class Etalon
@@ -30,12 +31,12 @@ public static class Etalon
 	}
 
 	public static IEnumerable<Juxtaposition> JuxtaposeWithEtalon(this Snapshot sample,
-		Snapshot etalon, string path = "this", bool reordering = false) =>
-		sample.MasterState.Juxtapose(etalon.MasterState, path, reordering);
+		Snapshot etalon, string path = "this", bool reordering = false)
+		=> sample.MasterState.Juxtapose(etalon.MasterState, path, reordering);
 
 	public static IEnumerable<Juxtaposition> JuxtaposeLikeEtalon(this Snapshot etalon,
-		Snapshot sample, string path = "this", bool reordering = false) =>
-		sample.MasterState.Juxtapose(etalon.MasterState, path, reordering);
+		Snapshot sample, string path = "this", bool reordering = false)
+		=> sample.MasterState.Juxtapose(etalon.MasterState, path, reordering);
 
 	private static IEnumerable<Juxtaposition> Juxtapose(this object sample,
 		object etalon, string path, bool reordering) => sample switch

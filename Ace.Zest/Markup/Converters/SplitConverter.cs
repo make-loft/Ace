@@ -12,6 +12,6 @@ public class SplitConverter : Patterns.AValueConverter.Reflected
 
 	private char[] _separators = [(char)0x0A, (char)0x0D];
 
-	public override object Convert(object value) =>
-		value.As("").Split(_separators, Count, SplitOptions);
+	public override object Convert(object value)
+		=> value.As("").Split(_separators, Count, SplitOptions);
 }

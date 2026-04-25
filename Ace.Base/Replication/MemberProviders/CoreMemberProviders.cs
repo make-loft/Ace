@@ -9,18 +9,20 @@ namespace Ace.Replication.MemberProviders;
 public class CoreMemberProviderForKeyValuePair
 	: MemberProvider
 {
-	public override bool CanApply(Type type) =>
-		type.GetGenericTypeOrDefault().Is(TypeOf.Generic.KeyValuePair.Raw);
+	public override bool CanApply(Type type)
+		=> type.GetGenericTypeOrDefault().Is(TypeOf.Generic.KeyValuePair.Raw);
 
-	protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) =>
-		type.GetMembers(BindingFlags.Instance | BindingFlags.NonPublic).Where(m => m.Is<FieldInfo>());
+	protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type)
+		=> type.GetMembers(BindingFlags.Instance | BindingFlags.NonPublic).Where(m => m.Is<FieldInfo>());
 
 	public override string GetCustomKey(MemberInfo member) => GetCustomKey(member.Name);
 
-	private string GetCustomKey(string name) =>
-		name.Is("value") ? "Value" :
-		name.Is("key") ? "Key" :
-		name;
+	private string GetCustomKey(string name) => name switch
+	{
+		"value" => "Value",
+		"key" => "Key",
+		_ => name
+	};
 }
 
 public class CoreMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, bool> filter)

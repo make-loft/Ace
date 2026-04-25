@@ -31,12 +31,12 @@ public class Snapshot
 
 	public static Snapshot Create(
 		object masterGraph,
-		Dictionary<object, int> idCache = null,
+		Dictionary<object, int> cache = null,
 		ReplicationProfile replicationProfile = null,
 		KeepProfile keepProfile = null,
 		Type baseType = null) => new()
 	{
-		MasterState = replicationProfile.Or(DefaultReplicationProfile).Translate(masterGraph, idCache.OrNew(), baseType),
+		MasterState = replicationProfile.Or(DefaultReplicationProfile).Translate(masterGraph, cache.OrNew(), baseType),
 		ActiveReplicationProfile = replicationProfile.Or(DefaultReplicationProfile),
 		ActiveKeepProfile = keepProfile.Or(DefaultKeepProfile)
 	};
@@ -55,15 +55,19 @@ public class Snapshot
 
 	public string ToString(KeepProfile profile) => MasterState.SnapshotToString(profile);
 
-	public string ToString(StringBuilder builder) =>
-		MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
+	public string ToString(StringBuilder builder)
+		=> MasterState.SnapshotToString(ActiveKeepProfile, 1, builder);
 
-	public object ReplicateGraph(Type baseType, ReplicationProfile replicationProfile = null) =>
-		(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), baseType);
+	public object ReplicateGraph(Type baseType, ReplicationProfile replicationProfile = null)
+		=> (replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), baseType);
 
-	public TRoot ReplicateGraph<TRoot>(ReplicationProfile replicationProfile = null) =>
-		(TRoot)(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, Cache.NewForReplication(), TypeOf<TRoot>.Raw);
+	public TRoot ReplicateGraph<TRoot>(ReplicationProfile replicationProfile = null)
+		=> (TRoot)(replicationProfile ?? ActiveReplicationProfile)
+		.Replicate(MasterState, Cache.NewForReplication(), TypeOf<TRoot>.Raw)
+		;
 
-	public object ReconstructGraph(IDictionary<object, int> cache, ReplicationProfile replicationProfile = null) =>
-		(replicationProfile ?? ActiveReplicationProfile).Replicate(MasterState, cache?.ToMirrorDictionary());
+	public object ReconstructGraph(IDictionary<object, int> cache, ReplicationProfile replicationProfile = null)
+		=> (replicationProfile ?? ActiveReplicationProfile)
+		.Replicate(MasterState, cache?.ToMirrorDictionary())
+		;
 }

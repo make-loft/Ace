@@ -16,10 +16,11 @@ public class Memory(IStorage storage, string keyFormat = "{0}.json") : IMemoryBo
 
 	public ReplicationProfile ReplicationProfile = new() {SimplifyMaps = true, SimplifySets = true};
 
-	public object Revive(string key, Type type, params object[] constructorArgs) =>
-		Storage.Is() && Storage.HasKey(MakeStorageKey(key, type)) && TryDecode(key, type, out var item)
+	public object Revive(string key, Type type, params object[] constructorArgs)
+		=> Storage.Is() && Storage.HasKey(MakeStorageKey(key, type)) && TryDecode(key, type, out var item)
 			? item
-			: ActivationRequired?.Invoke(key, type, constructorArgs) ?? Activator.CreateInstance(type, constructorArgs);
+			: ActivationRequired?.Invoke(key, type, constructorArgs) ?? Activator.CreateInstance(type, constructorArgs)
+			;
 
 	public TItem Revive<TItem>(string key = null) => (TItem)Revive(key, TypeOf<TItem>.Raw);
 

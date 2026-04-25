@@ -101,8 +101,8 @@ public partial class NumericField : AField<double>
 		return true;
 	}
 
-	protected static double GetStep(double stepBase, bool? positive, int digitIndex, double value, bool useMirrorTransform) =>
-		useMirrorTransform
+	protected static double GetStep(double stepBase, bool? positive, int digitIndex, double value, bool useMirrorTransform)
+		=> useMirrorTransform
 			? (positive.Is(true) ? +2d : -2d) * value
 			: Math.Pow(stepBase, digitIndex)
 			;

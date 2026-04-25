@@ -51,8 +51,8 @@ public class KeepProfile
 		return Serializators.FirstOrDefault(s => s.CanApply(model))?.Capture(model, this, data, ref offset);
 	}
 
-	public IEnumerable<string> ToStringBeads(object value, int indentLevel) =>
-		Serializators.FirstOrDefault(s => s.CanApply(value))?.ToStringBeads(value, this, indentLevel);
+	public IEnumerable<string> ToStringBeads(object value, int indentLevel)
+		=> Serializators.FirstOrDefault(s => s.CanApply(value))?.ToStringBeads(value, this, indentLevel);
 	
 	public string GetHead(Type type) => "(";
 	public string GetTail(Type type) => ")";
@@ -77,13 +77,15 @@ public class KeepProfile
 	public string GetKeyHead(object key) => key is "" || !TrimKeys ? KeyHead : null;
 	public string GetKeyTail(object key) => key is "" || !TrimKeys ? KeyTail : null;
 
-	public string GetHead(object body) =>
+	public string GetHead(object body)
+		=>
 		body is Map m ? GetHead(m) :
 		body is Set s ? GetHead(s) :
 		body is null || body.GetType().IsPrimitive ? null :
 		"\"";
 
-	public string GetTail(object body) =>
+	public string GetTail(object body)
+		=>
 		body is Map m ? GetTail(m) :
 		body is Set s ? GetTail(s) :
 		body is null || body.GetType().IsPrimitive ? null :

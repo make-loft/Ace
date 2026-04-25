@@ -4,7 +4,7 @@ using System.Text;
 
 using Ace;
 
-// ReSharper disable once CheckNamespace
+
 namespace System.Linq;
 
 public static class EnumerableExtensions
@@ -15,11 +15,11 @@ public static class EnumerableExtensions
 	public static T HeadOrDefault<T>(this IEnumerable<T> collection) => collection.FirstOrDefault();
 	public static T TailOrDefault<T>(this IEnumerable<T> collection) => collection.LastOrDefault();
 
-	public static T Set<T>(this IList<T> collection, int index, T value) =>
-		collection[index < 0 ? collection.Count + index : index] = value;
+	public static T Set<T>(this IList<T> collection, int index, T value)
+		=> collection[index < 0 ? collection.Count + index : index] = value;
 
-	public static T Get<T>(this IList<T> collection, int index) =>
-		collection[index < 0 ? collection.Count + index : index];
+	public static T Get<T>(this IList<T> collection, int index)
+		=> collection[index < 0 ? collection.Count + index : index];
 
 	public static T[] ToArray<T>(this IList<T> list) => list.ToArray(list.Count);
 	public static T[] ToArray<T>(this IEnumerable<T> collection, int length)
@@ -50,18 +50,24 @@ public static class EnumerableExtensions
 		return false;
 	}
 
-	public static string Concat(this IEnumerable<string> source) =>
-		source.Aggregate(new StringBuilder(), (b, v) => b.Append(v)).ToString();
+	public static string Concat(this IEnumerable<string> source) => source
+		.Aggregate(new StringBuilder(), (b, v) => b.Append(v))
+		.ToString()
+		;
 
-	public static string ToString<T>(this IEnumerable<T> source, Func<T, string> selector, string separator = " ") =>
-		source.Select(selector).Aggregate(new StringBuilder(), (b, v) => b.Append(b.Length > 0 ? separator : "").Append(v)).ToString();
+	public static string ToString<T>(this IEnumerable<T> source, Func<T, string> selector, string separator = " ")
+		=> source
+		.Select(selector)
+		.Aggregate(new StringBuilder(), (b, v) => b.Append(b.Length > 0 ? separator : "").Append(v))
+		.ToString()
+		;
 
 	public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> targetDictionary,
-		IEnumerable<KeyValuePair<TKey, TValue>> sourceItems) =>
-		sourceItems.ForEach(i => targetDictionary.TryGetValue(i.Key, out var value) ? value : i.Value);
+		IEnumerable<KeyValuePair<TKey, TValue>> sourceItems)
+		=> sourceItems.ForEach(i => targetDictionary.TryGetValue(i.Key, out var value) ? value : i.Value);
 
-	public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> collection, Func<T, TKey> lookup) =>
-		collection.Distinct(new Comparer<T, TKey>(lookup));
+	public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> collection, Func<T, TKey> lookup)
+		=> collection.Distinct(new Comparer<T, TKey>(lookup));
 
 	public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source) => source.OrderBy(i => i);
 
@@ -91,11 +97,11 @@ public static class EnumerableExtensions
 		return -1;
 	}
 
-	public static int OffsetOf<T>(this IEnumerable<T> collection, Func<T, bool> match) =>
-		collection.OffsetOf((item, offset) => match(item));
+	public static int OffsetOf<T>(this IEnumerable<T> collection, Func<T, bool> match)
+		=> collection.OffsetOf((item, offset) => match(item));
 
-	public static int OffsetOf<T>(this IEnumerable<T> collection, T value) =>
-		collection.OffsetOf((item, offset) => item.Is(value));
+	public static int OffsetOf<T>(this IEnumerable<T> collection, T value)
+		=> collection.OffsetOf((item, offset) => item.Is(value));
 
 	public static IEnumerable<int> OffsetsOf<T>(this IEnumerable<T> collection, Func<T, int, bool> match)
 	{
@@ -109,11 +115,11 @@ public static class EnumerableExtensions
 		}
 	}
 
-	public static IEnumerable<int> OffsetsOf<T>(this IEnumerable<T> collection, Func<T, bool> match) =>
-		collection.OffsetsOf((item, offset) => match(item));
+	public static IEnumerable<int> OffsetsOf<T>(this IEnumerable<T> collection, Func<T, bool> match)
+		=> collection.OffsetsOf((item, offset) => match(item));
 
-	public static IEnumerable<int> OffsetsOf<T>(this IEnumerable<T> collection, T value) =>
-		collection.OffsetsOf((item, offset) => item.Is(value));
+	public static IEnumerable<int> OffsetsOf<T>(this IEnumerable<T> collection, T value)
+		=> collection.OffsetsOf((item, offset) => item.Is(value));
 
 	public static int ClearFrom<T>(this IList<T> collection, T value)
 	{
@@ -184,22 +190,22 @@ public static class EnumerableExtensions
 
 	public static IEnumerable<T> ToEnumerable<T>(this T singleItem) { yield return singleItem; }
 
-	public static IEnumerable<T> ConcatItems<T>(this IEnumerable<T> collection, T item) =>
-		collection.Concat(item.ToEnumerable());
+	public static IEnumerable<T> ConcatItems<T>(this IEnumerable<T> collection, T item)
+		=> collection.Concat(item.ToEnumerable());
 
-	public static IEnumerable<T> ConcatItems<T>(this IEnumerable<T> collection, params T[] items) =>
-		Enumerable.Concat(collection, items);
+	public static IEnumerable<T> ConcatItems<T>(this IEnumerable<T> collection, params T[] items)
+		=> Enumerable.Concat(collection, items);
 
 	public static Dictionary<TKey, TValue>
-		ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
-		items.ToDictionary(Pair<TKey, TValue>.Key, Pair<TKey, TValue>.Value);
+		ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items)
+		=> items.ToDictionary(Pair<TKey, TValue>.Key, Pair<TKey, TValue>.Value);
 
 	public static Dictionary<TValue, TKey>
-		ToMirrorDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items) =>
-		items.ToDictionary(Pair<TKey, TValue>.Value, Pair<TKey, TValue>.Key);
+		ToMirrorDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items)
+		=> items.ToDictionary(Pair<TKey, TValue>.Value, Pair<TKey, TValue>.Key);
 
-	public static bool Contains(this IEnumerable<string> collection, string value, StringComparison comparison) =>
-		collection.Any(i => i.Is(value, comparison));
+	public static bool Contains(this IEnumerable<string> collection, string value, StringComparison comparison)
+		=> collection.Any(i => i.Is(value, comparison));
 
 	internal static void CopyToMultidimensionalArray(this IList<object> source, Array target, IList<int> dimensions)
 	{

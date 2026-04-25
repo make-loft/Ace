@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Linq;
-using Ace;
 
 #if !NETSTANDARD && !NET45
-// ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
 	internal static class Reflection
 	{
-		public static T GetCustomAttribute<T>(this Type type) where T: class =>
-			type.GetCustomAttributes(TypeOf<T>.Raw, true).FirstOrDefault() as T;
+		public static T GetCustomAttribute<T>(this Type type) where T: class
+			=> type.GetCustomAttributes(TypeOf<T>.Raw, true).FirstOrDefault() as T;
 
-		public static T GetCustomAttribute<T>(this MemberInfo member) where T : class =>
-			member?.GetCustomAttributes(TypeOf<T>.Raw, true).FirstOrDefault() as T;
+		public static T GetCustomAttribute<T>(this MemberInfo member) where T : class
+			=> member?.GetCustomAttributes(TypeOf<T>.Raw, true).FirstOrDefault() as T;
 
-		public static Delegate CreateDelegate(this MethodInfo methodInfo, Type type, object source) =>
-			Delegate.CreateDelegate(type, source, methodInfo);
+		public static Delegate CreateDelegate(this MethodInfo methodInfo, Type type, object source)
+			=> Delegate.CreateDelegate(type, source, methodInfo);
 	}
 }
 #endif
@@ -103,10 +100,11 @@ namespace Ace
 	{
 		public object Context { get; internal set; } = additional;
 
-		public override bool Equals(object obj) =>
-			obj is StreamingContext context &&
-			context.Context == Context &&
-			context.State == State;
+		public override bool Equals(object obj)
+			=> obj is StreamingContext context
+			&& context.Context == Context
+			&& context.State == State
+			;
 
 		public override int GetHashCode() => (int)State;
 

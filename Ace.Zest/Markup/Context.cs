@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+namespace Ace.Markup;
+
 using System.Linq;
-using Ace.Input;
 using System.Windows;
+
+using Ace.Input;
 using Ace.Evocators;
+
 #if XAMARIN
 using Xamarin.Forms;
 using System.Windows.Data;
@@ -16,24 +20,20 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
+
 using ContextElement = System.Windows.FrameworkElement;
 
-namespace Ace.Markup 
+public abstract class AContextExtension : ABindingExtension
 {
-	public abstract class AContextExtension : ABindingExtension
-	{
-		protected AContextExtension() : base(new RelativeSource { Mode = RelativeSourceMode.Self }) =>
-			Mode = BindingMode.OneTime;
+	protected AContextExtension() : base(new RelativeSource { Mode = RelativeSourceMode.Self })
+		=> Mode = BindingMode.OneTime;
 
-		public abstract object Provide(object targetObject, object targetProperty = default);
+	public abstract object Provide(object targetObject, object targetProperty = default);
 
-		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-			Provide(value);
-	}
+	public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		=> Provide(value);
 }
 #endif
-
-namespace Ace.Markup;
 
 [ContentProperty(nameof(Key))]
 public class Context : AContextExtension
@@ -126,13 +126,21 @@ public class Context : AContextExtension
 #else
 	public static object GetContext(ContextElement element) => element.DataContext;
 #endif
-	private static ContextObject FindNearestContextObject(ContextElement element, string key) =>
-		EnumerateContextObjects(element)
-		.Where(c => c.CommandEvocators.Any(p => p.Key.Is(out Command c) && c.Name.Is(key))).FirstOrDefault();
+	private static ContextObject FindNearestContextObject(ContextElement element, string key)
+		=> EnumerateContextObjects(element)
+		.Where(c => c.CommandEvocators.Any(p => p.Key.Is(out Command c) && c.Name.Is(key)))
+		.FirstOrDefault()
+		;
 
-	private static IEnumerable<ContextObject> EnumerateContextObjects(ContextElement target) =>
-		target.EnumerateSelfAndVisualAncestors().OfType<ContextElement>().Select(GetContext).OfType<ContextObject>();
+	private static IEnumerable<ContextObject> EnumerateContextObjects(ContextElement target)
+		=> target.EnumerateSelfAndVisualAncestors()
+		.OfType<ContextElement>()
+		.Select(GetContext)
+		.OfType<ContextObject>()
+		;
 
-	private CommandEvocator GetCommandEvocator(object target) => 
-		target.Is(out ContextObject contextObject) ? contextObject[Ace.Context.Get(Key)] : null;
+	private CommandEvocator GetCommandEvocator(object target) => target.Is(out ContextObject contextObject)
+		? contextObject[Ace.Context.Get(Key)]
+		: null
+		;
 }

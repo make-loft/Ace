@@ -1,8 +1,6 @@
 ﻿#if !NETSTANDARD
 using System.Collections;
 
-// ReSharper disable once CheckNamespace
-
 namespace System.ComponentModel
 {
 	public interface IDataErrorInfo

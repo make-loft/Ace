@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// ReSharper disable once CheckNamespace
-// ReSharper disable InconsistentNaming
+
+
 namespace Ace;
 
 public static partial class New
@@ -12,16 +12,16 @@ public static partial class New
 	
 	public static T _<T>(out T o) where T : new() => o = new T();
 
-	public static T _<T>(out T o, params object[] constructorArgs) =>
-		o = (T) Activator.CreateInstance(TypeOf<T>.Raw, constructorArgs);
+	public static T _<T>(out T o, params object[] constructorArgs)
+		=> o = (T) Activator.CreateInstance(TypeOf<T>.Raw, constructorArgs);
 	
 	public static T Object<T>() where T : new() => new();
 
-	public static T Object<T>(params object[] constructorArgs) =>
-		(T) Activator.CreateInstance(TypeOf<T>.Raw, constructorArgs);
+	public static T Object<T>(params object[] constructorArgs)
+		=> (T) Activator.CreateInstance(TypeOf<T>.Raw, constructorArgs);
 
-	public static object Object(Type type, params object[] constructorArgs) =>
-		Activator.CreateInstance(type, constructorArgs);
+	public static object Object(Type type, params object[] constructorArgs)
+		=> Activator.CreateInstance(type, constructorArgs);
 
 	public static T[] Array<T>(params T[] items) => items;
 
@@ -30,8 +30,8 @@ public static partial class New
 
 	public static Dictionary<TK, TV> Dictionary<TK, TV>() => [];
 
-	public static Dictionary<TK, TV> Dictionary<TK, TV>(params KeyValuePair<TK, TV>[] items) =>
-		new Dictionary<TK, TV>(items.Length).AppendRange(items);
+	public static Dictionary<TK, TV> Dictionary<TK, TV>(params KeyValuePair<TK, TV>[] items)
+		=> new Dictionary<TK, TV>(items.Length).AppendRange(items);
 
 
 	public static EventHandler EventHandler(EventHandler h) => h;

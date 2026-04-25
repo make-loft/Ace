@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Windows;
 
 using Ace.Markup.Patterns;
-using static Ace.Markup.Patterns.ValueConverter;
+using System.Windows;
+using Ace.Controls;
 #if XAMARIN
 using Xamarin.Forms;
 #else
@@ -14,8 +14,13 @@ namespace Ace.Markup;
 [ContentProperty(nameof(Value))]
 public class Case : DependencyObject, ICase<object, object>
 {
-	public static readonly DependencyProperty KeyProperty = For<Case>(nameof(Key));
-	public static readonly DependencyProperty ValueProperty = For<Case>(nameof(Value));
+	public static readonly object UndefinedValue = ValueConverter.UndefinedValue;
+
+	public static readonly DependencyProperty KeyProperty
+		= Type<Case>.Create(c => c.Key, UndefinedValue);
+
+	public static readonly DependencyProperty ValueProperty
+		= Type<Case>.Create(c => c.Value, UndefinedValue);
 
 	public object Key
 	{
@@ -29,8 +34,8 @@ public class Case : DependencyObject, ICase<object, object>
 		set => SetValue(ValueProperty, value);
 	}
 
-	public virtual bool MatchByKey(object key, StringComparison comparison) =>
-		Key.Is(key) || Key.Is(UndefinedValue) || Key.Is(key, comparison);
+	public virtual bool MatchByKey(object key, StringComparison comparison)
+		=> Key.Is(key) || Key.Is(UndefinedValue) || Key.Is(key, comparison);
 }
 
 [ContentProperty(nameof(Value))]
@@ -42,6 +47,6 @@ public class TypedCase : Case
 		set => SetValue(KeyProperty, value);
 	}
 
-	public override bool MatchByKey(object key, StringComparison comparison) =>
-		base.Key.Is(UndefinedValue) || Key.Is(key?.GetType());
+	public override bool MatchByKey(object key, StringComparison comparison)
+		=> base.Key.Is(UndefinedValue) || Key.Is(key?.GetType());
 }

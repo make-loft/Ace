@@ -11,8 +11,8 @@ namespace Ace;
 
 public static class VisualTree
 {
-	public static DependencyObject GetVisualParent(this DependencyObject current) =>
-		VisualTreeHelper.GetParent(current);
+	public static DependencyObject GetVisualParent(this DependencyObject current)
+		=> VisualTreeHelper.GetParent(current);
 
 	public static IEnumerable<DependencyObject> EnumerateVisualChildren(this DependencyObject current)
 	{
@@ -42,9 +42,9 @@ public static class VisualTree
 		}
 	}
 
-	public static IEnumerable<DependencyObject> EnumerateSelfAndVisualAncestors(this DependencyObject current) =>
-		current.ToEnumerable().Concat(current.EnumerateVisualAncestors());
+	public static IEnumerable<DependencyObject> EnumerateSelfAndVisualAncestors(this DependencyObject current)
+		=> current.ToEnumerable().Concat(current.EnumerateVisualAncestors());
 	
-	public static IEnumerable<DependencyObject> EnumerateSelfAndVisualDescendants(this DependencyObject current) =>
-		current.ToEnumerable().Concat(current.EnumerateVisualDescendants());
+	public static IEnumerable<DependencyObject> EnumerateSelfAndVisualDescendants(this DependencyObject current)
+		=> current.ToEnumerable().Concat(current.EnumerateVisualDescendants());
 }

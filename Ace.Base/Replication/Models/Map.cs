@@ -11,8 +11,8 @@ public class Map : Dictionary<string, object>, INotifyPropertyChanged
 
 	public event PropertyChangedEventHandler PropertyChanged;
 
-	public void EvokePropertyChanged(string propertyName = "Item[]") =>
-		PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+	public void EvokePropertyChanged(string propertyName = "Item[]")
+		=> PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 
 	public new void Add(string key, object value)
 	{

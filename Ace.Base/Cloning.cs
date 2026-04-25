@@ -11,30 +11,37 @@ public static class Cloning
 {
 	public static readonly List<Type> LikeImmutableTypes = New.List(TypeOf<Regex>.Raw);
 
-	private static readonly MethodInfo MemberwiseCloneMethod =
-		TypeOf.Object.Raw.GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
+	private static readonly MethodInfo MemberwiseCloneMethod
+		= TypeOf.Object.Raw.GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
 
 	public static T MemberwiseClone<T>(this T origin, bool deepMode,
 		IEqualityComparer<object> comparer = null, Type[] likeImmutableTypes = null) => deepMode
 		? (T) GetDeepClone(origin, origin.GetType(),
 			new Dictionary<object, object>(comparer ?? ReferenceComparer<object>.Default),
 			likeImmutableTypes ?? LikeImmutableTypes.ToArray())
-		: (T) MemberwiseCloneMethod.Invoke(origin, null);
+		: (T) MemberwiseCloneMethod.Invoke(origin, null)
+		;
 
-	private static IEnumerable<FieldInfo> EnumerateFields(this Type type, BindingFlags bindingFlags) =>
-		type.BaseType?.EnumerateFields(bindingFlags)
-			.Concat(type.GetFields(bindingFlags | BindingFlags.DeclaredOnly)) ??
-		type.GetFields(bindingFlags);
+	private static IEnumerable<FieldInfo> EnumerateFields(this Type type, BindingFlags bindingFlags)
+		=> type.BaseType?
+			.EnumerateFields(bindingFlags)
+			.Concat(type.GetFields(bindingFlags | BindingFlags.DeclaredOnly))
+		?? type.GetFields(bindingFlags)
+		;
 
-	private static bool IsLikeImmutable(this Type type, Type[] likeImmutableTypes) =>
-		type.IsValueType || type.Is(TypeOf.String.Raw) || likeImmutableTypes.Contains(type);
+	private static bool IsLikeImmutable(this Type type, Type[] likeImmutableTypes)
+		=> type.IsValueType || type.Is(TypeOf.String.Raw) || likeImmutableTypes.Contains(type);
 
 	private static object GetDeepClone(object origin, Type type,
-		IDictionary<object, object> originToClone, Type[] likeImmutableTypes) =>
-		type is null || type.IsLikeImmutable(likeImmutableTypes) ? origin :
-		originToClone.TryGetValue(origin, out var deepClone) ? deepClone :
-		(originToClone[origin] = MemberwiseCloneMethod.Invoke(origin, null))
-		.MakeDeep(type, o => GetDeepClone(o, o?.GetType(), originToClone, likeImmutableTypes));
+		IDictionary<object, object> originToClone, Type[] likeImmutableTypes)
+		=> type is null || type.IsLikeImmutable(likeImmutableTypes)
+			? origin
+			: originToClone.TryGetValue(origin, out var deepClone)
+				? deepClone
+				: (originToClone[origin] = MemberwiseCloneMethod
+					.Invoke(origin, null))
+					.MakeDeep(type, o => GetDeepClone(o, o?.GetType(), originToClone, likeImmutableTypes))
+			;
 
 	private static object MakeDeep(this object origin, Type type, Func<object, object> getDeepClone)
 	{

@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using IBools = System.Collections.Generic.IEnumerable<bool>;
-// ReSharper disable once CheckNamespace
+
 namespace Ace;
 
-// ReSharper disable InconsistentNaming
+
 public static partial class LE
 {
 	public static bool[] Check<T>(this T o, params bool[] pattern) => pattern;

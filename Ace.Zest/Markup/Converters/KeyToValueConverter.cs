@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
+
+using Ace.Controls;
 using Ace.Markup.Patterns;
 
 namespace Ace.Markup.Converters;
@@ -12,8 +14,11 @@ public enum Source
 
 public class KeyToValueConverter : ValueConverter
 {
-	public static readonly DependencyProperty KeyProperty = For<KeyToValueConverter>(nameof(Key));
-	public static readonly DependencyProperty ValueProperty = For<KeyToValueConverter>(nameof(Value));
+	public static readonly DependencyProperty KeyProperty
+		= Type<KeyToValueConverter>.Create(c => c.Key, UndefinedValue);
+
+	public static readonly DependencyProperty ValueProperty
+		= Type<KeyToValueConverter>.Create(c => c.Value, UndefinedValue);
 
 	public Source KeySource { get; set; } = Source.Manual;
 	public Source ValueSource { get; set; } = Source.Manual;
@@ -35,12 +40,14 @@ public class KeyToValueConverter : ValueConverter
 	{
 		var matchedValue = Choose(KeySource, Key, parameter).Is(value, StringComparison)
 			? Choose(ValueSource, Value, parameter)
-			: ByDefault;
+			: ByDefault
+			;
 		var convertedValue = matchedValue.Is(UndefinedValue) ? value : matchedValue;
 		return convertedValue;
 	}
 
-	private static object Choose(Source source, object manual, object parameter) =>
+	private static object Choose(Source source, object manual, object parameter)
+		=>
 		source.Is(Source.Manual) ? manual :
 		source.Is(Source.ConverterParameter) ? parameter :
 		source.Is(Source.PreferManual) ? (manual.Is(DependencyProperty.UnsetValue) ? parameter : manual) :

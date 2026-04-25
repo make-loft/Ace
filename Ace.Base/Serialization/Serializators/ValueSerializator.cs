@@ -23,17 +23,17 @@ public class ValueSerializator : ASerializator
 		new SystemConverter()
 	);
 	
-	public override object Capture(object value, KeepProfile profile, string data, ref int offset) =>
-		Decode(profile.CaptureSimplex((Simplex) value, data, ref offset));
+	public override object Capture(object value, KeepProfile profile, string data, ref int offset)
+		=> Decode(profile.CaptureSimplex((Simplex) value, data, ref offset));
 
-	public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel) =>
-		Encode(value, profile);
+	public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel)
+		=> Encode(value, profile);
 
 	public static readonly Assembly SystemAssembly = TypeOf<object>.Assembly;
 	public static readonly Assembly ExtendedAssembly = TypeOf<Uri>.Assembly;
 
-	public virtual string GetTypeName(Type type) =>
-		type.Assembly.Is(SystemAssembly) || type.Assembly.Is(ExtendedAssembly)
+	public virtual string GetTypeName(Type type)
+		=> type.Assembly.Is(SystemAssembly) || type.Assembly.Is(ExtendedAssembly)
 			? type.FullName.Substring(type.FullName.IndexOf('.') + 1)
 			: type.GetFriendlyName()
 			;

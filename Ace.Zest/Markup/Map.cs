@@ -26,8 +26,8 @@ public class Map : ResourceDictionary, INotifyPropertyChanged
 	public event System.Action<MapChangeArgs> Changed;
 
 	public Map() { }
-	public Map(ResourceDictionary source) =>
-		EnumerateResources(source).ToList().ForEach(p => this[p.Key] = p.Value);
+	public Map(ResourceDictionary source)
+		=> EnumerateResources(source).ToList().ForEach(p => this[p.Key] = p.Value);
 
 	public ResourceDictionary BasedOn
 	{
@@ -37,8 +37,8 @@ public class Map : ResourceDictionary, INotifyPropertyChanged
 
 	public event PropertyChangedEventHandler PropertyChanged;
 
-	public void EvokePropertyChanged(string propertyName = Binding.IndexerName) =>
-		PropertyChanged?.Invoke(this, new(propertyName));
+	public void EvokePropertyChanged(string propertyName = Binding.IndexerName)
+		=> PropertyChanged?.Invoke(this, new(propertyName));
 
 	public static IEnumerable<KeyValuePair<string, object>> EnumerateResources(ResourceDictionary dictionary)
 	{
@@ -105,6 +105,7 @@ public class Map : ResourceDictionary, INotifyPropertyChanged
 		.Cast<System.Collections.DictionaryEntry>()
 		.ToDictionary(e => (string)e.Key, e => e.Value)
 		.ToList()
-		.ForEach(action);
+		.ForEach(action)
+		;
 #endif
 }

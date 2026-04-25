@@ -20,11 +20,11 @@ public class PropertyMetadata
 
 	public PropertyMetadata(object defaultValue) => DefaultValue = defaultValue;
 
-	public PropertyMetadata(object defaultValue, PropertyChangedCallback propertyChangedCallback) : this(defaultValue) =>
-		PropertyChangedCallback = propertyChangedCallback;
+	public PropertyMetadata(object defaultValue, PropertyChangedCallback propertyChangedCallback) : this(defaultValue)
+		=> PropertyChangedCallback = propertyChangedCallback;
 
-	public PropertyMetadata(PropertyChangedCallback propertyChangedCallback) =>
-		PropertyChangedCallback = propertyChangedCallback;
+	public PropertyMetadata(PropertyChangedCallback propertyChangedCallback)
+		=> PropertyChangedCallback = propertyChangedCallback;
 }
 
 public class DependencyPropertyChangedEventArgs : EventArgs
@@ -53,17 +53,11 @@ public class DependencyProperty
 {
 	public static readonly object UnsetValue = new();
 
-	public static DependencyProperty Register(string name, Type type, Type declaringType, PropertyMetadata m) =>
-		new DependencyProperty
-		{
-			CoreProperty = BindablePropertyExtensions.Register(name, type, declaringType, m)
-		};
+	public static DependencyProperty Register(string name, Type type, Type declaringType, PropertyMetadata m)
+		=> new() { CoreProperty = BindablePropertyExtensions.Register(name, type, declaringType, m) };
 
-	public static DependencyProperty RegisterAttached(string name, Type type, Type declaringType, PropertyMetadata m) =>
-		new DependencyProperty
-		{
-			CoreProperty = BindablePropertyExtensions.RegisterAttached(name, type, declaringType, m)
-		};
+	public static DependencyProperty RegisterAttached(string name, Type type, Type declaringType, PropertyMetadata m)
+		=> new() { CoreProperty = BindablePropertyExtensions.RegisterAttached(name, type, declaringType, m) };
 
 	public BindableProperty CoreProperty { get; private set; }
 
@@ -72,11 +66,11 @@ public class DependencyProperty
 
 public static class ElementAdapters
 {
-	public static void SetValue(this BindableObject item, DependencyProperty property, object value) =>
-		item.SetValue(property.CoreProperty, value);
+	public static void SetValue(this BindableObject item, DependencyProperty property, object value)
+		=> item.SetValue(property.CoreProperty, value);
 
-	public static object GetValue(this BindableObject item, DependencyProperty property) =>
-		item.GetValue(property.CoreProperty);
+	public static object GetValue(this BindableObject item, DependencyProperty property)
+		=> item.GetValue(property.CoreProperty);
 }
 
 public static class BindablePropertyExtensions

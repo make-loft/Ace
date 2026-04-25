@@ -1,7 +1,7 @@
-﻿// ReSharper disable once CheckNamespace
+﻿
 namespace Ace;
 
-// ReSharper disable InconsistentNaming
+
 public static partial class LE
 {
 	public static T With<T>(this T o, params object[] pattern) => o;

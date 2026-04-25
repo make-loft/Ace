@@ -18,13 +18,13 @@ public abstract class ASerializator<T, TItem> : ASerializator
 
 	public abstract object Capture(T map, KeepProfile profile, string data, ref int offset);
 
-	public override object Capture(object value, KeepProfile profile, string data, ref int offset) =>
-		Capture((T) value, profile, data, ref offset);
+	public override object Capture(object value, KeepProfile profile, string data, ref int offset)
+		=> Capture((T) value, profile, data, ref offset);
 
 	public abstract IEnumerable<string> GetSegmentBeads(TItem pair, KeepProfile profile, int indentLevel);
 
-	public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel) =>
-		ToStringBeads((ICollection<TItem>)value, profile, indentLevel);
+	public override IEnumerable<string> ToStringBeads(object value, KeepProfile profile, int indentLevel)
+		=> ToStringBeads((ICollection<TItem>)value, profile, indentLevel);
 	
 	public IEnumerable<string> ToStringBeads(ICollection<TItem> items, KeepProfile profile, int indentLevel = 1)
 	{

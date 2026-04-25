@@ -50,8 +50,8 @@ public class SmartObject : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 
 	protected static IEnumerable<KeyValuePair<string, object>> GetSmartProperties(
-		Dictionary<string, object> smartContainer, Type smartType, BindingFlags bindingFlags = Member.DefaultFlags) =>
-		smartContainer?.Where(p => smartType.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo).Not());
+		Dictionary<string, object> smartContainer, Type smartType, BindingFlags bindingFlags = Member.DefaultFlags)
+		=> smartContainer?.Where(p => smartType.EnumerateMember(p.Key, bindingFlags).Any(m => m is PropertyInfo).Not());
 
 	#region Notification Core
 
@@ -60,29 +60,25 @@ public class SmartObject : INotifyPropertyChanging, INotifyPropertyChanged
 	public event PropertyChangedEventHandler PropertyChanged;
 	public event PropertyChangedEventHandler SmartPropertyChanged;
 
-	public void EvokePropertyChanging(string propertyName) =>
-		PropertyChanging?.Invoke(this, new(propertyName));
+	public void EvokePropertyChanging(string propertyName) => PropertyChanging?.Invoke(this, new(propertyName));
 
-	public void EvokePropertyChanged(string propertyName) =>
-		PropertyChanged?.Invoke(this, new(propertyName));
+	public void EvokePropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new(propertyName));
 
-	public void EvokeSmartPropertyChanging(string propertyName) =>
-		SmartPropertyChanging?.Invoke(this, new(propertyName));
+	public void EvokeSmartPropertyChanging(string propertyName) => SmartPropertyChanging?.Invoke(this, new(propertyName));
 
-	public void EvokeSmartPropertyChanged(string propertyName) =>
-		SmartPropertyChanged?.Invoke(this, new(propertyName));
+	public void EvokeSmartPropertyChanged(string propertyName) => SmartPropertyChanged?.Invoke(this, new(propertyName));
 
-	public void EvokePropertyChanging<TValue>(Expression<Func<TValue>> expression) =>
-		EvokePropertyChanging(expression.UnboxMemberName());
+	public void EvokePropertyChanging<TValue>(Expression<Func<TValue>> expression)
+		=> EvokePropertyChanging(expression.UnboxMemberName());
 
-	public void EvokePropertyChanged<TValue>(Expression<Func<TValue>> expression) =>
-		EvokePropertyChanged(expression.UnboxMemberName());
+	public void EvokePropertyChanged<TValue>(Expression<Func<TValue>> expression)
+		=> EvokePropertyChanged(expression.UnboxMemberName());
 
-	public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default) =>
-		Get(expression.UnboxMemberName(), defaultValue);
+	public TValue Get<TValue>(Expression<Func<TValue>> expression, TValue defaultValue = default)
+		=> Get(expression.UnboxMemberName(), defaultValue);
 
-	public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool matching = false) =>
-		Set(expression.UnboxMemberName(), value, matching);
+	public void Set<TValue>(Expression<Func<TValue>> expression, TValue value, bool matching = false)
+		=> Set(expression.UnboxMemberName(), value, matching);
 	
 	public TValue Get<TValue>(string key, TValue defaultValue = default) => (TValue) this[key, defaultValue];
 

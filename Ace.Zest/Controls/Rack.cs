@@ -224,8 +224,8 @@ public partial class Rack : Grid
 	}
 
 	private static void Bind(Grid grid, DependencyObject definition, DependencyProperty property,
-		PropertyPath updateTriggerPropertyPath) =>
-		definition.SetBinding(property, new Binding
+		PropertyPath updateTriggerPropertyPath)
+		=> definition.SetBinding(property, new Binding
 		{
 			Source = grid,
 			Path = updateTriggerPropertyPath,
@@ -286,7 +286,8 @@ public partial class Rack : Grid
 	public static char[] TrimStartChars = ":=".ToCharArray();
 
 	private static int AdaptIndex(int index, int span) => span < 0 && index + span > 0 ? index + span : index;
-	private static int AdaptSpan(int span) =>
+	private static int AdaptSpan(int span)
+		=>
 		span > 0 ? +span :
 		span < 0 ? -span :
 		int.MaxValue;
@@ -297,11 +298,11 @@ public partial class Rack : Grid
 	public static string ActiveSplitter { get; set; } = " ";
 	public static string[] AllowedSplitters { get; set; } = {" ", ","};
 
-	private static string[] Separate(string pattern) =>
-		pattern?.Split(AllowedSplitters, StringSplitOptions.RemoveEmptyEntries);
+	private static string[] Separate(string pattern)
+		=> pattern?.Split(AllowedSplitters, StringSplitOptions.RemoveEmptyEntries);
 
-	private static string Glue(IEnumerable<string> patterns) =>
-		patterns.Aggregate(new StringBuilder(), (builder, pattern) =>
+	private static string Glue(IEnumerable<string> patterns)
+		=> patterns.Aggregate(new StringBuilder(), (builder, pattern) =>
 			builder.Append(builder.Length.Is(0) ? null : ActiveSplitter).Append(pattern)).ToString();
 
 	private static GridLength ToGridLength(string pattern)

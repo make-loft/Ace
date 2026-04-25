@@ -18,8 +18,8 @@ public static class Context
 
 	private static readonly Dictionary<string, Command> Container = [];
 
-	public static Command Get(string key) =>
-		Container.TryGetValue(key, out var value) ? value : Container[key] = new Command(key);
+	public static Command Get(string key)
+		=> Container.TryGetValue(key, out var value) ? value : Container[key] = new(key);
 
 	public static void UpdateCanExecuteState()
 	{
@@ -59,23 +59,23 @@ public static class Context
 		public static Command Delete => Get("Set.Delete");
 	}
 
-	public static Mediator GetMediator(this ContextObject contextObject, string commandKey, object sender) =>
-		new(sender, contextObject[Get(commandKey)]);
+	public static Mediator GetMediator(this ContextObject contextObject, string commandKey, object sender)
+		=> new(sender, contextObject[Get(commandKey)]);
 
-	public static Mediator GetMediator(this ContextObject contextObject, string commandKey) =>
-		new(contextObject, contextObject[Get(commandKey)]);
+	public static Mediator GetMediator(this ContextObject contextObject, string commandKey)
+		=> new(contextObject, contextObject[Get(commandKey)]);
 
-	public static Mediator GetMediator(this ContextObject contextObject, ICommand command, object sender) =>
-		new(sender, contextObject[command]);
+	public static Mediator GetMediator(this ContextObject contextObject, ICommand command, object sender)
+		=> new(sender, contextObject[command]);
 
-	public static Mediator GetMediator(this ContextObject contextObject, ICommand command) =>
-		new(contextObject, contextObject[command]);
+	public static Mediator GetMediator(this ContextObject contextObject, ICommand command)
+		=> new(contextObject, contextObject[command]);
 
-	public static Mediator GetMediator(this ICommand command, ContextObject contextObject, object sender) =>
-		new(sender, contextObject[command]);
+	public static Mediator GetMediator(this ICommand command, ContextObject contextObject, object sender)
+		=> new(sender, contextObject[command]);
 
-	public static Mediator GetMediator(this ICommand command, ContextObject contextObject) =>
-		new(contextObject, contextObject[command]);
+	public static Mediator GetMediator(this ICommand command, ContextObject contextObject)
+		=> new(contextObject, contextObject[command]);
 
 	public static SmartSet<T> ToSet<T>(this IEnumerable<T> collection) => new(collection);
 }

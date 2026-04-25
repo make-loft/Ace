@@ -35,8 +35,8 @@ public readonly struct ChangeArgs<TSender, TValue>(TSender sender, TValue oldVal
 
 public static class New
 {
-	public static View CreateView(this DataTemplate template, object context) =>
-		template.LoadContent().To(out View c).With(c.SetContext(context));
+	public static View CreateView(this DataTemplate template, object context)
+		=> template.LoadContent().To(out View c).With(c.SetContext(context));
 
 	public static View CreateView(this DataTemplate template) => (View)template.LoadContent();
 
@@ -107,69 +107,69 @@ public static class New
 public static class Type<TOwner>
 {
 #if XAMARIN
-	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func) =>
-		NameToProperty[func.UnboxMemberName().To(out var name)] =
-			Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw);
+	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func)
+		=> NameToProperty[func.UnboxMemberName().To(out var name)]
+			= Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw);
 
-	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func, TValue defaultValue) =>
-		NameToProperty[func.UnboxMemberName().To(out var name)] =
-			Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue);
+	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func, TValue defaultValue)
+		=> NameToProperty[func.UnboxMemberName().To(out var name)]
+			= Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue);
 
-	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func, Action<ChangeArgs<TOwner, TValue>> changed, TValue defaultValue = default) =>
-		NameToProperty[func.UnboxMemberName().To(out var name)] =
-			Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue,
+	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func, Action<ChangeArgs<TOwner, TValue>> changed, TValue defaultValue = default)
+		=> NameToProperty[func.UnboxMemberName().To(out var name)]
+			= Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue,
 				propertyChanged: (s, o, n) => changed?.Invoke(new((TOwner)(object)s, (TValue)o, (TValue)n)));
 
-	public static Property Attach<TValue>(string name) =>
-		Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, default(TValue));
-	public static Property Attach<TValue>(string name, TValue defaultValue, Action<ChangeArgs<View, TValue>> changed = default) =>
-		Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue,
+	public static Property Attach<TValue>(string name)
+		=> Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, default(TValue));
+	public static Property Attach<TValue>(string name, TValue defaultValue, Action<ChangeArgs<View, TValue>> changed = default)
+		=> Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue,
 			propertyChanged: (s, o, n) => changed(new((View)s, (TValue)o, (TValue)n)));
-	public static Property Attach<TValue>(string name, Action<ChangeArgs<View, TValue>> changed) =>
-		Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, default(TValue),
+	public static Property Attach<TValue>(string name, Action<ChangeArgs<View, TValue>> changed)
+		=> Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, default(TValue),
 			propertyChanged: (s, o, n) => changed(new((View)s, (TValue)o, (TValue)n)));
 
 	public static Property Attach<TView, TValue>(string name, TValue defaultValue, Action<ChangeArgs<TView, TValue>> changed = default)
-		where TView : View =>
-		Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue,
+		where TView : View
+		=> Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue,
 			propertyChanged: (s, o, n) => changed(new((TView)s, (TValue)o, (TValue)n)));
 	public static Property Attach<TView, TValue>(string name, Action<ChangeArgs<TView, TValue>> changed)
-		where TView : View =>
-		Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, default(TValue),
+		where TView : View
+		=> Property.CreateAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, default(TValue),
 			propertyChanged: (s, o, n) => changed(new((TView)s, (TValue)o, (TValue)n)));
 #else
-	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func) =>
-		NameToProperty[func.UnboxMemberName().To(out var name)] =
-			Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw);
+	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func)
+		=> NameToProperty[func.UnboxMemberName().To(out var name)]
+			= Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw);
 
-	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func, TValue defaultValue) =>
-		NameToProperty[func.UnboxMemberName().To(out var name)] =
-			Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue));
+	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func, TValue defaultValue)
+		=> NameToProperty[func.UnboxMemberName().To(out var name)]
+			= Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue));
 
-	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func, Action<ChangeArgs<TOwner, TValue>> changed, TValue defaultValue = default) =>
-		NameToProperty[func.UnboxMemberName().To(out var name)] =
-			Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed?.Invoke(new((TOwner)(object)s, args))));
+	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func, Action<ChangeArgs<TOwner, TValue>> changed, TValue defaultValue = default)
+		=> NameToProperty[func.UnboxMemberName().To(out var name)]
+			= Property.Register(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed?.Invoke(new((TOwner)(object)s, args))));
 
-	public static Property Attach<TValue>(string name) =>
-		Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw);
-	public static Property Attach<TValue>(string name, TValue defaultValue, Action<ChangeArgs<View, TValue>> changed = default) =>
-		Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((View)s, args))));
-	public static Property Attach<TValue>(string name, Action<ChangeArgs<View, TValue>> changed) =>
-		Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new((s, args) => changed(new((View)s, args))));
+	public static Property Attach<TValue>(string name)
+		=> Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw);
+	public static Property Attach<TValue>(string name, TValue defaultValue, Action<ChangeArgs<View, TValue>> changed = default)
+		=> Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((View)s, args))));
+	public static Property Attach<TValue>(string name, Action<ChangeArgs<View, TValue>> changed)
+		=> Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new((s, args) => changed(new((View)s, args))));
 
 	public static Property Attach<TView, TValue>(string name, TValue defaultValue, Action<ChangeArgs<TView, TValue>> changed = default)
-		where TView : View =>
-		Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((TView)s, args))));
+		where TView : View
+		=> Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new(defaultValue, (s, args) => changed(new((TView)s, args))));
 	public static Property Attach<TView, TValue>(string name, Action<ChangeArgs<TView, TValue>> changed)
-		where TView : View =>
-		Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new((s, args) => changed(new((TView)s, args))));
+		where TView : View
+		=> Property.RegisterAttached(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, new((s, args) => changed(new((TView)s, args))));
 #endif
 	private static readonly Dictionary<string, Property> NameToProperty = [];
 
 	public static Property GetProperty<TValue>(
 		Expression<Func<TOwner, TValue>> func,
-		TValue defaultValue = default) =>
-		GetProperty(func.UnboxMemberName(), defaultValue);
+		TValue defaultValue = default)
+		=> GetProperty(func.UnboxMemberName(), defaultValue);
 
 	public static Property GetProperty<TValue>(string name, TValue defaultValue)
 	{
@@ -206,11 +206,11 @@ public static class Type<TOwner>
 		properties.ForEach(p => p.GetValue(instance));
 	}
 
-	public static Handler<TValue> When<TValue>(Expression<Func<TOwner, TValue>> func) =>
-		Handler<TValue>.NameToHandler.TryGetValue(func.UnboxMemberName().To(out var name), out var handler)
+	public static Handler<TValue> When<TValue>(Expression<Func<TOwner, TValue>> func)
+		=> Handler<TValue>.NameToHandler.TryGetValue(func.UnboxMemberName().To(out var name), out var handler)
 			? handler
 			: Handler<TValue>.NameToHandler[name] = new()
-		;
+			;
 
 	public class Handler<TValue>
 	{
@@ -250,8 +250,8 @@ public class RegisterPropertyAttribute : Attribute
 
 public static class BindableExtantions
 {
-	public static Property Register(this PropertyInfo info, PropertyMetadata metadata = default) =>
-		Property.Register(info.Name, info.PropertyType, info.DeclaringType, metadata);
+	public static Property Register(this PropertyInfo info, PropertyMetadata metadata = default)
+		=> Property.Register(info.Name, info.PropertyType, info.DeclaringType, metadata);
 
 	public static TValue Get<TBindable, TValue>(this TBindable bindable,
 		TValue defaultValue = default, [CallerMemberName] string name = default)
@@ -260,13 +260,13 @@ public static class BindableExtantions
 
 	public static void Set<TBindable, TValue>(this TBindable bindable,
 		TValue value = default, [CallerMemberName] string name = default)
-		where TBindable : BindableObject =>
-		bindable.SetValue(Type<TBindable>.GetProperty(name, value), value);
+		where TBindable : BindableObject
+		=> bindable.SetValue(Type<TBindable>.GetProperty(name, value), value);
 
-	public static TValue Get<TValue>(this BindableObject bindable, Property property, TValue value = default) =>
-		(TValue)bindable.GetValue(property);
-	public static void Set<TValue>(this BindableObject bindable, Property property, TValue value) =>
-		bindable.SetValue(property, value);
+	public static TValue Get<TValue>(this BindableObject bindable, Property property, TValue value = default)
+		=> (TValue)bindable.GetValue(property);
+	public static void Set<TValue>(this BindableObject bindable, Property property, TValue value)
+		=> bindable.SetValue(property, value);
 }
 
 public class Ext
@@ -454,8 +454,8 @@ public class ItemsView : ItemsControl
 		};
 	}
 
-	public static readonly DependencyProperty BindingContextProperty =
-		DependencyProperty.Register(nameof(BindingContext), typeof(object), typeof(ItemsView), new PropertyMetadata((o, e) =>
+	public static readonly Property BindingContextProperty
+		= Property.Register(nameof(BindingContext), typeof(object), typeof(ItemsView), new PropertyMetadata((o, e) =>
 		{
 			if (o is ItemsView control) control.SetValue(DataContextProperty, e.NewValue);
 		}));
@@ -466,17 +466,13 @@ public class ItemsView : ItemsControl
 		set => SetValue(BindingContextProperty, value);
 	}
 
-	protected override DependencyObject GetContainerForItemOverride() => new ContentControl();
+	protected override BindableObject GetContainerForItemOverride() => new ContentControl();
 
 	protected override bool IsItemItsOwnContainerOverride(object item)
 	{
-		if (item is FrameworkElement e && e.DataContext is null) e.DataContext = DataContext;
+		if (item is View e && e.DataContext is null) e.DataContext = DataContext;
 		return false; // wrap always
 	}
 }
-}
-
-namespace Xamarin.Forms
-{
 
 #endif

@@ -16,11 +16,11 @@ public abstract class AView<TView> : ContentView where TView : View
 {
 	private readonly static Dictionary<string, Property> NameToProperty = [];
 
-	public static Property Create<TValue>(Expression<Func<TView, TValue>> func, TValue defaultValue = default) =>
-		NameToProperty[func.UnboxMemberName()] = Type<TView>.Create(func, defaultValue);
+	public static Property Create<TValue>(Expression<Func<TView, TValue>> func, TValue defaultValue = default)
+		=> NameToProperty[func.UnboxMemberName()] = Type<TView>.Create(func, defaultValue);
 
-	public static Property Create<TValue>(Expression<Func<TView, TValue>> func, Action<ChangeArgs<TView, TValue>> changed, TValue defaultValue = default) =>
-		NameToProperty[func.UnboxMemberName()] = Type<TView>.Create(func, changed, defaultValue);
+	public static Property Create<TValue>(Expression<Func<TView, TValue>> func, Action<ChangeArgs<TView, TValue>> changed, TValue defaultValue = default)
+		=> NameToProperty[func.UnboxMemberName()] = Type<TView>.Create(func, changed, defaultValue);
 
 	public TValue Get<TValue>(Expression<Func<TView, TValue>> func) => (TValue)GetValue(NameToProperty[func.UnboxMemberName()]);
 

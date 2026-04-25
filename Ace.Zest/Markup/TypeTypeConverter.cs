@@ -13,7 +13,7 @@ public class TypeTypeConverter : TypeConverter
 		if (value.IsNot()) return default;
 		var typeName = value.ToString().Split(':').Last();
 		var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-		// ReSharper disable once LoopCanBeConvertedToQuery
+
 		foreach (var assembly in assemblies)
 		{
 			var types = assembly.GetTypes();
@@ -31,18 +31,18 @@ using System.ComponentModel;
 
 public class TypeTypeConverter : TypeConverter
 {
-	public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) =>
-		TypeOf.String.Raw.Is(sourceType);
+	public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		=> TypeOf.String.Raw.Is(sourceType);
 
-	public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) =>
-		TypeOf.Type.Raw.Is(destinationType);
+	public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+		=> TypeOf.Type.Raw.Is(destinationType);
 
 	public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 	{
 		if (value.IsNot()) return default;
 		var typeName = value.ToString().Split(':').Last();
 		var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-		// ReSharper disable once LoopCanBeConvertedToQuery
+
 		foreach (var assembly in assemblies)
 		{
 			var types = assembly.GetTypes();
@@ -55,7 +55,7 @@ public class TypeTypeConverter : TypeConverter
 	}
 
 	public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture,
-		object value, Type destinationType) =>
-		value.ToString();
+		object value, Type destinationType)
+		=> value.ToString();
 }
 #endif

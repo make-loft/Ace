@@ -30,6 +30,6 @@ public class Localizing : Patterns.ABindingExtension
 
 	public bool ForceStringFormat { get; set; } = ForceStringFormatByDefault;
 
-	public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-		LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(ForceStringFormat ? StringFormat : default);
+	public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		=> LocalizationSource.Wrap[Key].Apply(Modifiers).Apply(ForceStringFormat ? StringFormat : default);
 }

@@ -2,6 +2,6 @@
 
 public class LocalizingConverter : Patterns.AValueConverter.Reflected
 {
-	public override object Convert(object value) =>
-		LocalizationSource.Wrap[value?.ToString()];
+	public override object Convert(object value)
+		=> LocalizationSource.Wrap[value?.ToString()];
 }

@@ -24,9 +24,10 @@ public class PropertyEvocator<TPropertyChanging, TPropertyChanged, TErrorsChange
 	public void EvokeChanged(TPropertyChanged args) => Changed?.Invoke(args);
 	public void EvokeErrorsChanged(TErrorsChanged args) => ErrorsChanged?.Invoke(args);
 
-	public IEnumerable<object> GetErrors(string propertyName) =>
-		ValidationRules.GetInvocationList().OfType<Func<string, object>>()
-			.Select(validationHandler => validationHandler(propertyName));
+	public IEnumerable<object> GetErrors(string propertyName) => ValidationRules.GetInvocationList()
+		.OfType<Func<string, object>>()
+		.Select(validationHandler => validationHandler(propertyName))
+		;
 }
 
 public class PropertyEvocator(string propertyName)

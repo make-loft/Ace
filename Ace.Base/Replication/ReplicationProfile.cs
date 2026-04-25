@@ -49,23 +49,23 @@ public class ReplicationProfile
 		new DeepReplicator()
 	);
 
-	public object Replicate(object graph, IDictionary<int, object> idCache, Type baseType = null)
+	public object Replicate(object graph, IDictionary<int, object> cache, Type baseType = null)
 	{
-		var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, this, idCache, baseType)) ??
-						 throw new Exception("Can not replicate " + graph);
-		return replicator.Replicate(graph, this, idCache, baseType);
+		var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, this, cache, baseType))
+			?? throw new Exception("Can not replicate: " + graph);
+		return replicator.Replicate(graph, this, cache, baseType);
 	}
 
-	public object Translate(object graph, IDictionary<object, int> idCache, Type baseType = null)
+	public object Translate(object graph, IDictionary<object, int> cache, Type baseType = null)
 	{
-		var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, this, idCache, baseType)) ??
-						 throw new Exception("Can not translate " + graph);
-		return replicator.Translate(graph, this, idCache, baseType);
+		var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, this, cache, baseType))
+			?? throw new Exception("Can not translate: " + graph);
+		return replicator.Translate(graph, this, cache, baseType);
 	}
 
-	public TBase Replicate<TBase>(object graph, IDictionary<int, object> idCache) =>
-		(TBase)Replicate(graph, idCache, TypeOf<TBase>.Raw);
+	public TBase Replicate<TBase>(object graph, IDictionary<int, object> cache)
+		=> (TBase)Replicate(graph, cache, TypeOf<TBase>.Raw);
 
-	public object Translate<TBase>(object graph, IDictionary<object, int> idCache) =>
-		Translate(graph, idCache, TypeOf<TBase>.Raw);
+	public object Translate<TBase>(object graph, IDictionary<object, int> cache)
+		=> Translate(graph, cache, TypeOf<TBase>.Raw);
 }

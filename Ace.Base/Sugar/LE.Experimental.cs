@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-// ReSharper disable once CheckNamespace
+
 namespace Ace;
 
-// ReSharper disable InconsistentNaming
+
 public static partial class LE
 {
-	public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, object> map, TKey key, TValue fallbackValue = default) =>
-		map.TryGetValue(key, out var value) ? (TValue)value : fallbackValue;
+	public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, object> map, TKey key, TValue fallbackValue = default)
+		=> map.TryGetValue(key, out var value) ? (TValue)value : fallbackValue;
 
-	public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, TValue> map, TKey key, TValue fallbackValue = default) =>
-		map.TryGetValue(key, out var value) ? value : fallbackValue;
+	public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, TValue> map, TKey key, TValue fallbackValue = default)
+		=> map.TryGetValue(key, out var value) ? value : fallbackValue;
 
 	public static Switch<T> ToSwitch<T>(this T value, params object[] pattern) => new(value, pattern);
 
@@ -38,8 +38,8 @@ public static partial class LE
 	public static Guid ToGuid(this string value) => new(value);
 
 	public static bool EqualsAsStrings(this object a, object b,
-		StringComparison comparison = StringComparison.CurrentCultureIgnoreCase) =>
-		ReferenceEquals(a, b) || string.Compare(a.To<string>(), b.To<string>(), comparison).Is(0);
+		StringComparison comparison = StringComparison.CurrentCultureIgnoreCase)
+		=> ReferenceEquals(a, b) || string.Compare(a.To<string>(), b.To<string>(), comparison).Is(0);
 
 	public static string GetPath(this Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
 

@@ -101,8 +101,8 @@ public class ReferenceExtension : IMarkupExtension
 {
 	public string Name { get; set; }
 
-	public object ProvideValue(IServiceProvider serviceProvider) =>
-		new Xamarin.Forms.Xaml.ReferenceExtension() { Name = Name }.ProvideValue(serviceProvider);
+	public object ProvideValue(IServiceProvider serviceProvider)
+		=> new Xamarin.Forms.Xaml.ReferenceExtension() { Name = Name }.ProvideValue(serviceProvider);
 }
 
 [AcceptEmptyServiceProvider]
@@ -117,8 +117,8 @@ public class BindingExtension : IMarkupExtension<BindingBase>
 	public object FallbackValue { get; set; }
 	public string StringFormat { get; set; }
 
-	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider) =>
-		this.To<IMarkupExtension<BindingBase>>().ProvideValue(serviceProvider);
+	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider)
+		=> this.To<IMarkupExtension<BindingBase>>().ProvideValue(serviceProvider);
 
 	public BindingBase ProvideValue(IServiceProvider serviceProvider = default) => new Binding
 	//public BindingBase ProvideValue(IServiceProvider serviceProvider = default) => new Xamarin.Forms.Xaml.BindingExtension
@@ -147,8 +147,8 @@ public class TemplateBindingExtension : IMarkupExtension<BindingBase>
 	public object FallbackValue { get; set; }
 	public string StringFormat { get; set; }
 
-	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider) =>
-		this.To<IMarkupExtension<BindingBase>>().ProvideValue(serviceProvider);
+	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider)
+		=> this.To<IMarkupExtension<BindingBase>>().ProvideValue(serviceProvider);
 
 	public BindingBase ProvideValue(IServiceProvider serviceProvider = default) => new Xamarin.Forms.Xaml.TemplateBindingExtension
 	{

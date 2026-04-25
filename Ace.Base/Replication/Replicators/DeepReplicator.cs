@@ -11,7 +11,7 @@ namespace Ace.Replication.Replicators;
 public class DeepReplicator : ACachingReplicator<object>
 {
 	public override void FillMap(Map snapshot, ref object instance, ReplicationProfile profile,
-		IDictionary<object, int> idCache, Type baseType = null)
+		IDictionary<object, int> cache, Type baseType = null)
 	{
 		var type = instance.GetType();
 
@@ -21,7 +21,7 @@ public class DeepReplicator : ACachingReplicator<object>
 				.FirstOrDefault(i => i.GetGenericTypeOrDefault().Is(TypeOf.Generic.IDictionary.Raw))?
 				.GetGenericArguments()[1];
 			var items = new Map(map.Cast<DictionaryEntry>()
-				.ToDictionary(p => (string) p.Key, p => profile.Translate(p.Value, idCache, subtype)));
+				.ToDictionary(p => (string) p.Key, p => profile.Translate(p.Value, cache, subtype)));
 			snapshot.Add(profile.MapKey, items);
 		}
 		else if (instance is ICollection set)
@@ -29,7 +29,7 @@ public class DeepReplicator : ACachingReplicator<object>
 			var subtype = type.GetInterfaces()
 				.FirstOrDefault(i => i.GetGenericTypeOrDefault().Is(TypeOf.Generic.ICollection.Raw))?
 				.GetGenericArguments()[0];
-			var items = new Set(set.Cast<object>().Select(i => profile.Translate(i, idCache, subtype)));
+			var items = new Set(set.Cast<object>().Select(i => profile.Translate(i, cache, subtype)));
 			if (instance is Array array && array.Rank > 1)
 			{
 				var dimensions = new List<int>();
@@ -50,7 +50,7 @@ public class DeepReplicator : ACachingReplicator<object>
 			try
 			{
 				var key = memberProvider.GetDataKey(m, type, members);
-				var value = profile.Translate(m.GetValue(instance), idCache, m.GetMemberType());
+				var value = profile.Translate(m.GetValue(instance), cache, m.GetMemberType());
 				snapshot.Add(key, value);
 			}
 			catch (Exception exception)
@@ -66,7 +66,7 @@ public class DeepReplicator : ACachingReplicator<object>
 	}
 
 	public override void FillInstance(Map snapshot, ref object replica, ReplicationProfile profile,
-		IDictionary<int, object> idCache, Type baseType = null)
+		IDictionary<int, object> cache, Type baseType = null)
 	{
 		var type = replica.GetType();
 
@@ -77,7 +77,7 @@ public class DeepReplicator : ACachingReplicator<object>
 				?.GetGenericArguments()[1];
 			var pairs = (IDictionary) snapshot[profile.MapKey];
 			foreach (DictionaryEntry pair in pairs)
-				map.Add(pair.Key, profile.Replicate(pair.Value, idCache, subtype));
+				map.Add(pair.Key, profile.Replicate(pair.Value, cache, subtype));
 		}
 		else if (replica is ICollection set)
 		{
@@ -90,12 +90,12 @@ public class DeepReplicator : ACachingReplicator<object>
 					// var dimensions = ((Set) snapshot[profile.SetDimensionKey]).Cast<int>().ToArray();
 					var dimensions = items.RestoreDimensions(array.Rank);
 					var source = items.EnumerateMultidimensionArray(array.Rank)
-						.Select(i => profile.Replicate(i, idCache, subtype)).ToList();
+						.Select(i => profile.Replicate(i, cache, subtype)).ToList();
 					source.CopyToMultidimensionalArray(array, dimensions);
 				}
 				else
 				{
-					var source = items.Select(i => profile.Replicate(i, idCache, subtype)).ToArray();
+					var source = items.Select(i => profile.Replicate(i, cache, subtype)).ToArray();
 					Array.Copy(source, array, source.Length); /* array [replica] is cached */
 				}
 			}
@@ -105,14 +105,14 @@ public class DeepReplicator : ACachingReplicator<object>
 				var subtype = type.GetInterfaces()
 					.FirstOrDefault(i => i.GetGenericTypeOrDefault().Is(TypeOf.Generic.IList.Raw))?
 					.GetGenericArguments()[0];
-				items.ForEach(i => list.Add(profile.Replicate(i, idCache, subtype)));
+				items.ForEach(i => list.Add(profile.Replicate(i, cache, subtype)));
 			}
 			else if (replica is IDictionary dictionary)
 			{
 				dictionary.Clear(); // for reconstruction
 				items.ForEach(i =>
 				{
-					var entry = (DictionaryEntry)profile.Replicate(i, idCache, TypeOf<DictionaryEntry>.Raw);
+					var entry = (DictionaryEntry)profile.Replicate(i, cache, TypeOf<DictionaryEntry>.Raw);
 					dictionary.Add(entry.Key, entry.Value);
 				});
 			}
@@ -128,7 +128,7 @@ public class DeepReplicator : ACachingReplicator<object>
 				/* should enumerate items at read-only members too */
 				var key = memberProvider.GetDataKey(m, type, members);
 				if (snapshot.TryGetValue(key, out var snapshotValue).Not()) continue;
-				var value = profile.Replicate(snapshotValue, idCache, memberType);
+				var value = profile.Replicate(snapshotValue, cache, memberType);
 				if (profile.TryRestoreTypeInfoImplicitly && value.Is() && value.GetType().IsNot(memberType))
 					value = ChangeType(value, memberType, profile);
 				if (m.CanWrite()) m.SetValue(replica, value);
@@ -140,16 +140,16 @@ public class DeepReplicator : ACachingReplicator<object>
 		}
 	}
 
-	private static object ChangeType(object value, Type targetType, ReplicationProfile profile) =>
-		value is string @string
+	private static object ChangeType(object value, Type targetType, ReplicationProfile profile)
+		=> value is string @string
 			? Decode(profile, @string, targetType)
 			: (targetType.IsPrimitive ? Convert.ChangeType(value, targetType, null) : value);
 
-	private static object Decode(ReplicationProfile profile, string s, Type type) =>
-		profile.ImplicitConverters.Select(c => c.Decode(s, type)).First(v => v.IsNot(Converter.Undefined));
+	private static object Decode(ReplicationProfile profile, string s, Type type)
+		=> profile.ImplicitConverters.Select(c => c.Decode(s, type)).First(v => v.IsNot(Converter.Undefined));
 
 	public override object ActivateInstance(Map snapshot,
-		ReplicationProfile profile, IDictionary<int, object> idCache, Type baseType = null)
+		ReplicationProfile profile, IDictionary<int, object> cache, Type baseType = null)
 	{
 		Type type = null;
 
@@ -166,13 +166,13 @@ public class DeepReplicator : ACachingReplicator<object>
 		}
 	}
 
-	private static Type RestoreType(Map snapshot, ReplicationProfile profile, Type baseType) =>
-		snapshot.TryGetValue(profile.TypeKey, out var typeName)
+	private static Type RestoreType(Map snapshot, ReplicationProfile profile, Type baseType)
+		=> snapshot.TryGetValue(profile.TypeKey, out var typeName)
 			? Type.GetType(typeName.ToString(), true)
 			: baseType ?? throw new Exception("Missed type info. Can not restore implicitly.");
 
-	private static object CreateInstance(Type type, Map snapshot, ReplicationProfile profile) =>
-		type.IsArray && type.GetElementType() is Type elementType
+	private static object CreateInstance(Type type, Map snapshot, ReplicationProfile profile)
+		=> type.IsArray && type.GetElementType() is Type elementType
 			? (snapshot.TryGetValue(profile.SetDimensionKey, out var dimensions)
 				? Array.CreateInstance(elementType, ((Set) dimensions).Cast<int>().ToArray())
 				: Array.CreateInstance(elementType, ((Set) snapshot[profile.SetKey]).Count))

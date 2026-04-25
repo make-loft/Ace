@@ -11,6 +11,6 @@ public class ContextBinding : ABindingExtension
 
 	public string Key { get; set; }
 
-	public override object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-		value.To<ContextObject>().GetMediator(Ace.Context.Get(Key));
+	public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		=> value.To<ContextObject>().GetMediator(Ace.Context.Get(Key));
 }

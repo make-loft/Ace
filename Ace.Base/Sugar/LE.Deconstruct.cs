@@ -1,7 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Ace;
-
-// ReSharper disable once InconsistentNaming
+﻿namespace Ace;
 public static partial class LE
 {
 	public static void Deconstruct<T>(this T o, out T a) => a = o;

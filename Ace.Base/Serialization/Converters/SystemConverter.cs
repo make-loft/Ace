@@ -33,8 +33,8 @@ public class SystemConverter : Converter
 		_ => TryParse(value, type),
 	};
 
-	private DateTimeStyles GetDateTimeStyle(string value) =>
-		value.EndsWith("Z") ? DateTimeStyles.AdjustToUniversal : DateTimeStyles.None;
+	private DateTimeStyles GetDateTimeStyle(string value)
+		=> value.EndsWith("Z") ? DateTimeStyles.AdjustToUniversal : DateTimeStyles.None;
 
 	private object TryParse(string value, Type type)
 	{

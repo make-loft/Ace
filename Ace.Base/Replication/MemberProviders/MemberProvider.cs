@@ -13,11 +13,11 @@ public class MemberProvider
 
 	public virtual string GetCustomKey(MemberInfo member) => member.Name;
 
-	private bool IsFullKeyRequried(MemberInfo member, IList<MemberInfo> members) =>
-		PreferFullKeyWhenInheritance || members.Any(m => m.Name.Is(member.Name) && m.IsNot(member));
+	private bool IsFullKeyRequried(MemberInfo member, IList<MemberInfo> members)
+		=> PreferFullKeyWhenInheritance || members.Any(m => m.Name.Is(member.Name) && m.IsNot(member));
 
-	public string GetDataKey(MemberInfo member, Type activeType, IList<MemberInfo> members) =>
-		(member.DeclaringType.IsNot(activeType) && IsFullKeyRequried(member, members)
+	public string GetDataKey(MemberInfo member, Type activeType, IList<MemberInfo> members)
+		=> (member.DeclaringType.IsNot(activeType) && IsFullKeyRequried(member, members)
 			? member.DeclaringType?.Name + "."
 			: default)
 		+ GetCustomKey(member);

@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-// ReSharper disable once CheckNamespace
 namespace Ace;
 
-// ReSharper disable once InconsistentNaming
 public static partial class LE
 {
 	public static T AddToUntyped<T>(this T item, IList list)

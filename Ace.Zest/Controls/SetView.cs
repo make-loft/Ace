@@ -191,8 +191,8 @@ public class SetView : ContentView
 		scrollView.Content = content;
 		scrollView.Scrolled += (o, e) => FillContent(scrollView, content);
 
-		void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args) =>
-			FillContent(scrollView, content);
+		void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+			=> FillContent(scrollView, content);
 
 		if (_collection.Is())
 		{
@@ -453,11 +453,11 @@ public class SetView : ContentView
 		}
 	}
 
-	double GetGroupsVisualSize(List<IGrouping<object, object>> groups) =>
-		groups.Aggregate(0d, (s, g) => s + GetGroupVisualSize(g));
+	double GetGroupsVisualSize(List<IGrouping<object, object>> groups)
+		=> groups.Aggregate(0d, (s, g) => s + GetGroupVisualSize(g));
 
-	double GetGroupVisualSize(IGrouping<object, object> group) =>
-		groupToLines[group].Count * ItemSize + (IsGrouping ? GroupHeaderSize : 0);
+	double GetGroupVisualSize(IGrouping<object, object> group)
+		=> groupToLines[group].Count * ItemSize + (IsGrouping ? GroupHeaderSize : 0);
 
 	double GetGroupVisualOffset(List<IGrouping<object, object>> groups, IGrouping<object, object> group)
 	{

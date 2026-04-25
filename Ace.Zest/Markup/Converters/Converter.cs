@@ -21,11 +21,11 @@ public class Converter : Patterns.AMarkupExtension, IValueConverter
 	public Converter(Convert convert) => Convert = convert;
 	public Converter(Convert convert, Convert convertBack) : this(convert) => ConvertBack = convertBack;
 
-	object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-		(Convert ?? ConvertBack ?? NotImplementedException)(new(value, targetType, parameter, culture));
+	object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		=> (Convert ?? ConvertBack ?? NotImplementedException)(new(value, targetType, parameter, culture));
 
-	object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-		(ConvertBack ?? Convert ?? NotImplementedException)(new(value, targetType, parameter, culture));
+	object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		=> (ConvertBack ?? Convert ?? NotImplementedException)(new(value, targetType, parameter, culture));
 
 	public override object Provide(object targetObject, object targetProperty = default) => this;
 }

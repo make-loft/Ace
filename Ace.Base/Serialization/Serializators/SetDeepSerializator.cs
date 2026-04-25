@@ -5,8 +5,8 @@ namespace Ace.Serialization.Serializators;
 
 public class SetDeepSerializator : ASerializator<Set, object>
 {	 
-	public override IEnumerable<string> GetSegmentBeads(object item, KeepProfile profile, int indentLevel) =>
-		profile.ToStringBeads(item, indentLevel + 1);
+	public override IEnumerable<string> GetSegmentBeads(object item, KeepProfile profile, int indentLevel)
+		=> profile.ToStringBeads(item, indentLevel + 1);
 	
 	public override object Capture(Set set, KeepProfile profile, string data, ref int offset)
 	{

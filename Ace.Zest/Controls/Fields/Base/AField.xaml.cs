@@ -134,8 +134,8 @@ public abstract partial class AField
 
 	protected virtual void TillButton_Click(object sender, RoutedEventArgs args) => Click(true);
 
-	protected void Skip_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs args) =>
-		args.Handled = true;
+	protected void Skip_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs args)
+		=> args.Handled = true;
 
 	protected virtual object ToolTipConverter_Convert(ConvertArgs args) => args.Value;
 
@@ -223,9 +223,9 @@ public abstract class AField<TValue> : AField
 
 	protected override object ToolTipConverter_Convert(ConvertArgs args) => args.Value;
 
-	protected override object FormatConverter_Convert(ConvertArgs args) =>
-		TryFormat(args.Value.To<TValue>(), out var text) ? text : Binding.DoNothing;
+	protected override object FormatConverter_Convert(ConvertArgs args)
+		=> TryFormat(args.Value.To<TValue>(), out var text) ? text : Binding.DoNothing;
 
-	protected override object FormatConverter_ConvertBack(ConvertArgs args) =>
-		Binding.DoNothing;
+	protected override object FormatConverter_ConvertBack(ConvertArgs args)
+		=> Binding.DoNothing;
 }

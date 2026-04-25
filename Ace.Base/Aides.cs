@@ -9,26 +9,37 @@ namespace Ace;
 
 public static class Aides
 {
-	internal static string SnapshotToString(this object value, KeepProfile profile,
-		int indentLevel = 1, StringBuilder builder = null) =>
-		profile.ToStringBeads(value, indentLevel)
-			.Aggregate(builder ?? new StringBuilder(256), (sb, s) => sb.Append(s))
-			.ToString();
+	internal static string SnapshotToString
+	(
+		this object value,
+		KeepProfile profile,
+		int indentLevel = 1,
+		StringBuilder builder = null
+	) 
+		=> profile
+		.ToStringBeads(value, indentLevel)
+		.Aggregate(builder ?? new StringBuilder(256), (sb, s) => sb.Append(s))
+		.ToString()
+		;
 
-	public static Snapshot CreateSnapshot(
+	public static Snapshot CreateSnapshot
+	(
 		this object master,
 		ReplicationProfile replicationProfile = null,
 		KeepProfile keepProfile = null,
 		Dictionary<object, int> cache = null,
-		Type baseType = null) =>
-		Snapshot.Create(master, cache, replicationProfile, keepProfile, baseType);
+		Type baseType = null
+	)
+		=> Snapshot.Create(master, cache, replicationProfile, keepProfile, baseType);
 
-	public static Snapshot ParseSnapshot(
+	public static Snapshot ParseSnapshot
+	(
 		this string matrix,
 		ReplicationProfile replicationProfile = null,
-		KeepProfile keepProfile = null) =>
-		Snapshot.Parse(matrix, replicationProfile, keepProfile);
+		KeepProfile keepProfile = null
+	)
+		=> Snapshot.Parse(matrix, replicationProfile, keepProfile);
 
-	public static object Capture(this string matrix, KeepProfile profile, int offset = 0) =>
-		profile.ReadItem(matrix, ref offset);
+	public static object Capture(this string matrix, KeepProfile profile, int offset = 0)
+		=> profile.ReadItem(matrix, ref offset);
 }

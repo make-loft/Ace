@@ -31,7 +31,8 @@ public partial class Pick
 
 	public string DisplayMemberPath { get; set; }
 
-	private object ItemDisplayBindingConvert(Markup.Patterns.ConvertArgs args) =>
+	private object ItemDisplayBindingConvert(Markup.Patterns.ConvertArgs args)
+		=>
 		args.Value is Delegate d ? d.Method.Name :
 		args.Value.To(out string s).Is() && ItemTemplate.Is() ? s.Localize() :
 		DisplayMemberPath.Is() ? args.Value?.Get(DisplayMemberPath).To<string>()?.Localize() :

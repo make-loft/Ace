@@ -56,18 +56,22 @@ public class NumericConverter : Converter
 		_ => default
 	};
 
-	public override object Decode(string value, Type type) =>
-		value.Length > 0 && char.IsDigit(value.Pick(-1))
+	public override object Decode(string value, Type type)
+		=> value.Length > 0 && char.IsDigit(value.Pick(-1))
 			? DecodeWithoutKey(value, NumberStyles.Any, ActiveCulture)
 			: DecodeByKey(value.ToUpper(), NumberStyles.Any, ActiveCulture);
 
-	private static object DecodeWithoutKey(string number, NumberStyles style, CultureInfo culture) =>
-		number.Contains(culture.NumberFormat.NumberDecimalSeparator).Not() &&
-		int.TryParse(number, style, culture, out var i) ? i :
-		double.TryParse(number, style, culture, out var r) ? r :
-		Undefined;
+	private static object DecodeWithoutKey(string number, NumberStyles style, CultureInfo culture)
+		=> (number.Contains(culture.NumberFormat.NumberDecimalSeparator).Not() 
+		&& int.TryParse(number, style, culture, out var i))
+			? i
+			: double.TryParse(number, style, culture, out var r)
+				? r
+				: Undefined
+		;
 
-	private static object DecodeByKey(string number, NumberStyles style, CultureInfo culture) =>
+	private static object DecodeByKey(string number, NumberStyles style, CultureInfo culture)
+		=>
 		number.EndsWith("B") && byte.TryParse(TrimEnd(number, 1), out var b) ? b :
 		number.EndsWith("C") && int.TryParse(TrimEnd(number, 1), style, culture, out var c) ? c :
 		number.EndsWith("UL") && ulong.TryParse(TrimEnd(number, 2), style, culture, out var ul) ? ul :
