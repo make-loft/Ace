@@ -11,9 +11,10 @@ public class ContractMemberProvider(BindingFlags bindingFlags, Func<MemberInfo, 
 	protected override IEnumerable<MemberInfo> GetDataMembersForCaching(Type type)
 	{
 		var members = base.GetDataMembersForCaching(type);
-		var hasContract =
-			type.IsDefined(TypeOf<DataContractAttribute>.Raw, true) ||
-			type.IsDefined(TypeOf<CollectionDataContractAttribute>.Raw, true);
+		var hasContract = type.IsDefined(TypeOf<DataContractAttribute>.Raw, true)
+			|| type.IsDefined(TypeOf<CollectionDataContractAttribute>.Raw, true)
+			;
+
 		return hasContract
 			? members
 				.ToDictionary(m => m, m => m.GetCustomAttribute<DataMemberAttribute>())

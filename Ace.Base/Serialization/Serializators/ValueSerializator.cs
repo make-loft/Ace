@@ -77,7 +77,8 @@ public class ValueSerializator : ASerializator
 
 	private static Type GetType(params string[] typeKeyParts) => typeKeyParts.Length.Is(2)
 		? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name.Is(typeKeyParts[1]))?.GetType(typeKeyParts[0])
-		: default;
+		: default
+		;
 
 	//public static Dictionary<string, bool> stringToVerbatim = new Dictionary<string, bool>();
 

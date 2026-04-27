@@ -2,24 +2,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+
 using Ace.Replication.Models;
 
 namespace Ace.Replication.Replicators;
 
+public struct ReplicationArgs(ReplicationProfile profile, IDictionary<int, object> cache)
+{
+	public ReplicationProfile Profile { get; set; } = profile;
+	public IDictionary<int, object> Cache { get; } = cache;
+	public void Deconstruct(out ReplicationProfile profile, out IDictionary<int, object> cache)
+	{
+		profile = Profile;
+		cache = Cache;
+	}
+}
+
+public struct TranslationArgs(ReplicationProfile profile, IDictionary<object, int> cache)
+{
+	public ReplicationProfile Profile { get; set; } = profile;
+	public IDictionary<object, int> Cache { get; } = cache;
+	public void Deconstruct(out ReplicationProfile profile, out IDictionary<object, int> cache)
+	{
+		profile = Profile;
+		cache = Cache;
+	}
+}
+
 public abstract class ACachingReplicator<T> : Replicator<T>
 {
-	public abstract T ActivateInstance(Map map, ReplicationProfile profile,
-		IDictionary<int, object> cache, Type baseType = null);
+	public abstract T ActivateInstance(Map map, ReplicationArgs args, Type baseType);
 
-	public virtual void FillMap(Map map, ref T instance, ReplicationProfile profile,
-		IDictionary<object, int> cache, Type baseType = null) => Const.Stub();
+	public virtual void FillMap(Map map, ref T instance, TranslationArgs args) => Const.Stub();
 
-	public virtual void FillInstance(Map map, ref T instance, ReplicationProfile profile,
-		IDictionary<int, object> cache, Type baseType = null) => Const.Stub();
+	public virtual void FillInstance(Map map, ref T instance, ReplicationArgs args) => Const.Stub();
 
-	public override object Translate(object value, ReplicationProfile profile,
-		IDictionary<object, int> cache, Type baseType = null)
+	public override object Translate(object value, TranslationArgs args, Type baseType)
 	{
+		args.Deconstruct(out var profile, out var cache);
+
 		if (cache.TryGetValue(value, out var id)) return new Map { { profile.IdKey, id } };
 		id = cache.Count;
 		cache.Add(value, id);
@@ -30,21 +51,22 @@ public abstract class ACachingReplicator<T> : Replicator<T>
 		if ((profile.AttachType is null && valueType.IsNot(baseType)) || profile.AttachType is true)
 			map.Add(profile.TypeKey, valueType.GetFriendlyName());
 		var typedValue = (T)value;
-		FillMap(map, ref typedValue, profile, cache, baseType);
+		FillMap(map, ref typedValue, args);
 		var snapshot = Simplify(map, value, profile, baseType);
 		return snapshot;
 	}
 
-	public override object Replicate(object value, ReplicationProfile profile,
-		IDictionary<int, object> cache, Type baseType = null)
+	public override object Replicate(object value, ReplicationArgs args, Type baseType)
 	{
+		args.Deconstruct(out var profile, out var cache);
+
 		var map = CompleteMapIfRequried(value, profile, baseType);
 		var hasKey = map.TryGetValue(profile.IdKey, out var key);
 		var id = hasKey ? (int)key : cache.Count;
 		if (cache.TryGetValue(id, out var replica) && hasKey && map.Count.Is(1)) return replica;
 		var isReusable = baseType.Is() && baseType.IsAssignableFrom(replica?.GetType());
-		var typedReplica = (T)(cache[id] = isReusable ? replica : ActivateInstance(map, profile, cache, baseType));
-		if (typedReplica.Is()) FillInstance(map, ref typedReplica, profile, cache, baseType);
+		var typedReplica = (T)(cache[id] = isReusable ? replica : ActivateInstance(map, args, baseType));
+		if (typedReplica.Is()) FillInstance(map, ref typedReplica, args);
 		return typedReplica;
 	}
 

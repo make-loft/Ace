@@ -10,6 +10,7 @@ public class BooleanConverter : Converter
 	public string ActiveNoneLiteral = "~";
 	public string ActiveFalseLiteral = "-";
 	public string ActiveTruthLiteral = "+";
+
 	public readonly List<string> NoneLiterals = New.List("null", "~"); // "default", "none", "no", "nil"
 	public readonly List<string> FalseLiterals = New.List("false", "-"); // "fake", "not", "off", "enabled"
 	public readonly List<string> TruthLiterals = New.List("true", "+"); // "truth", "yes", "on", "disabled"

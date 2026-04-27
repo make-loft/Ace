@@ -22,7 +22,7 @@ public class Map : Dictionary<string, object>, INotifyPropertyChanged
 		}
 		catch (Exception exception)
 		{
-			throw new Exception($"{key} : {value}", exception);
+			throw new($"{key} : {value}", exception);
 		}
 	}
 }

@@ -30,7 +30,7 @@ public static class Marker
 		for (var i = 0; i < matrix.Length; i++)
 		{
 			var marker = markers.FirstOrDefault(m => matrix.Match(m, i));
-			if (marker == null) continue;
+			if (marker is null) continue;
 			yield return new Hit(matrix, marker, i);
 			i += marker.Length;
 		}
@@ -89,10 +89,10 @@ public class GeneralEscaper
 	public string BreakSequence = "\"";
 
 	public string Escape(StringBuilder builder, string originalSequence)
-	{
-		return Escape(originalSequence, EscapeRules, EscapeSequence, BreakSequence)
-			.Aggregate(builder, (b, s) => b.Append(s)).ToString();
-	}
+		=> Escape(originalSequence, EscapeRules, EscapeSequence, BreakSequence)
+			.Aggregate(builder, (b, s) => b.Append(s))
+			.ToString()
+			;
 
 	public static IEnumerable<string> Escape(
 		string originalSequence, Dictionary<string, string> rules,
@@ -102,7 +102,7 @@ public class GeneralEscaper
 		for (var i = 0; i < originalSequence.Length; i++)
 		{
 			var rule = rules.FirstOrDefault(r => originalSequence.Match(r.Key, i));
-			if (rule.Key == null)
+			if (rule.Key is null)
 			{
 				if (originalSequence.Match(breakMarker, i)) yield break;
 				//yield return originalSequence;

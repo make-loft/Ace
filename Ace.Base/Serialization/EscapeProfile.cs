@@ -49,7 +49,7 @@ public class EscapeProfile
 	public static StringBuilder AppendWithEscape(StringBuilder builder, string value, Dictionary<char, string> escapeChars,
 		bool verbatim, char escapeSequence, bool asciMode = false)
 	{
-		if (value == null) return builder;
+		if (value is null) return builder;
 
 		foreach (var c in value)
 		{

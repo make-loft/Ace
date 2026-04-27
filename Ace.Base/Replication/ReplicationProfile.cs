@@ -51,16 +51,18 @@ public class ReplicationProfile
 
 	public object Replicate(object graph, IDictionary<int, object> cache, Type baseType = null)
 	{
-		var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, this, cache, baseType))
+		var args = new ReplicationArgs(this, cache);
+		var replicator = Replicators.FirstOrDefault(i => i.CanReplicate(graph, args, baseType))
 			?? throw new Exception("Can not replicate: " + graph);
-		return replicator.Replicate(graph, this, cache, baseType);
+		return replicator.Replicate(graph, args, baseType);
 	}
 
 	public object Translate(object graph, IDictionary<object, int> cache, Type baseType = null)
 	{
-		var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, this, cache, baseType))
+		var args = new TranslationArgs(this, cache);
+		var replicator = Replicators.FirstOrDefault(i => i.CanTranslate(graph, args, baseType))
 			?? throw new Exception("Can not translate: " + graph);
-		return replicator.Translate(graph, this, cache, baseType);
+		return replicator.Translate(graph, args, baseType);
 	}
 
 	public TBase Replicate<TBase>(object graph, IDictionary<int, object> cache)

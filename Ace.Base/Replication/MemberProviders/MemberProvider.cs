@@ -19,8 +19,8 @@ public class MemberProvider
 	public string GetDataKey(MemberInfo member, Type activeType, IList<MemberInfo> members)
 		=> (member.DeclaringType.IsNot(activeType) && IsFullKeyRequried(member, members)
 			? member.DeclaringType?.Name + "."
-			: default)
-		+ GetCustomKey(member);
+			: default
+			) + GetCustomKey(member);
 
 	protected virtual IEnumerable<MemberInfo> GetDataMembersForCaching(Type type) => type.GetMembers();
 

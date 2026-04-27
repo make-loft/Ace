@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
 using Ace.Replication.Models;
 using Ace.Serialization.Serializators;
 
@@ -162,12 +163,13 @@ public class KeepProfile
 	static readonly UnicodeCategory[] SkipableCategories = { Format, Control };
 	public bool IsSkipable(char c, string forSkip = ",;.:") => IsLetterOrDigit(c)
 		? false
-		: IsWhiteSpace(c) || IsSeparator(c) || SkipableCategories.Contains(GetUnicodeCategory(c)) || forSkip.Contains(c);
+		: IsWhiteSpace(c) || IsSeparator(c) || SkipableCategories.Contains(GetUnicodeCategory(c)) || forSkip.Contains(c)
+		;
 
 	public string GetHeadIndent<TItem>(int indentLevel, ICollection<TItem> items, int index)
 	{
 		if (items is Set set && index < set.Count &&
-			(set[index] == null || set[index].GetType().IsPrimitive)) return " ";
+			(set[index] is null || set[index].GetType().IsPrimitive)) return " ";
 
 		var indent = string.Empty;
 		for (var i = 0; i < indentLevel; i++)
@@ -180,5 +182,6 @@ public class KeepProfile
 
 	public string GetTailIndent<TItem>(int indentLevel, ICollection<TItem> items, int index) => items.Count == ++index
 		? (UseTailDelimiter ? Delimiter : null) + GetHeadIndent(indentLevel - 1, items, index)
-		: Delimiter;
+		: Delimiter
+		;
 }

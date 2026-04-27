@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using Ace.Replication.Models;
 using Ace.Serialization;
 
@@ -10,9 +11,10 @@ namespace Ace.Replication.Replicators;
 
 public class DeepReplicator : ACachingReplicator<object>
 {
-	public override void FillMap(Map snapshot, ref object instance, ReplicationProfile profile,
-		IDictionary<object, int> cache, Type baseType = null)
+	public override void FillMap(Map snapshot, ref object instance, TranslationArgs args)
 	{
+		args.Deconstruct(out var profile, out var cache);
+
 		var type = instance.GetType();
 
 		if (instance is IDictionary map && type.IsGenericDictionaryWithKey<string>())
@@ -65,9 +67,10 @@ public class DeepReplicator : ACachingReplicator<object>
 		}
 	}
 
-	public override void FillInstance(Map snapshot, ref object replica, ReplicationProfile profile,
-		IDictionary<int, object> cache, Type baseType = null)
+	public override void FillInstance(Map snapshot, ref object replica, ReplicationArgs args)
 	{
+		args.Deconstruct(out var profile, out var cache);
+
 		var type = replica.GetType();
 
 		if (replica is IDictionary map && type.IsGenericDictionaryWithKey<string>())
@@ -135,7 +138,7 @@ public class DeepReplicator : ACachingReplicator<object>
 			}
 			catch (Exception excepton)
 			{
-				throw new Exception($"{memberProvider.GetDataKey(m, type, members)}", excepton);
+				throw new($"{memberProvider.GetDataKey(m, type, members)}", excepton);
 			}
 		}
 	}
@@ -149,13 +152,13 @@ public class DeepReplicator : ACachingReplicator<object>
 	private static object Decode(ReplicationProfile profile, string s, Type type)
 		=> profile.ImplicitConverters.Select(c => c.Decode(s, type)).First(v => v.IsNot(Converter.Undefined));
 
-	public override object ActivateInstance(Map snapshot,
-		ReplicationProfile profile, IDictionary<int, object> cache, Type baseType = null)
+	public override object ActivateInstance(Map snapshot, ReplicationArgs args, Type baseType)
 	{
 		Type type = null;
 
 		try
 		{
+			var profile = args.Profile;
 			type = baseType.IsMatch<DictionaryEntry>()
 				? baseType
 				: RestoreType(snapshot, profile, baseType)

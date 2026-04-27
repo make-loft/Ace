@@ -2,26 +2,19 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Ace.Replication.Models;
+using Ace.Replication.Replicators;
 
 namespace Ace.Replication;
 
-using IdToValue = IDictionary<int, object>;
-using ValueToId = IDictionary<object, int>;
-using RepProfile = ReplicationProfile;
-
 public class Replicator
 {
-	public virtual bool CanTranslate(object value, RepProfile profile, ValueToId cache, Type baseType = null)
-		=> true;
+	public virtual bool CanTranslate(object value, TranslationArgs args, Type baseType) => true;
 
-	public virtual bool CanReplicate(object value, RepProfile profile, IdToValue cache, Type baseType = null)
-		=> true;
+	public virtual bool CanReplicate(object value, ReplicationArgs args, Type baseType) => true;
 
-	public virtual object Translate(object value, RepProfile profile, ValueToId cache, Type baseType = null)
-		=> value?.ToString();
+	public virtual object Translate(object value, TranslationArgs args, Type baseType) => value?.ToString();
 
-	public virtual object Replicate(object value, RepProfile profile, IdToValue cache, Type baseType = null)
-		=> value?.ToString();
+	public virtual object Replicate(object value, ReplicationArgs args, Type baseType) => value?.ToString();
 
 	public virtual List<MemberInfo> GetDataMembers(Type type, Func<MemberInfo, bool> filter)
 		=> throw new NotSupportedException();
@@ -34,14 +27,12 @@ public class Replicator<TValue> : Replicator
 {
 	public readonly Type ActiveType = TypeOf<TValue>.Raw;
 
-	public override bool CanTranslate(object value, RepProfile profile,
-		ValueToId cache, Type baseType = null)
+	public override bool CanTranslate(object value, TranslationArgs args, Type baseType = null)
 		=> value is TValue;
 
-	public override bool CanReplicate(object value, RepProfile profile,
-		IdToValue cache, Type baseType = null)
+	public override bool CanReplicate(object value, ReplicationArgs args, Type baseType = null)
 		=> TypeOf.Object.Raw.Is(ActiveType) || baseType.Is(ActiveType) || value is Map map &&
-		map.TryGetValue(profile.TypeKey, out var typeValue) && RestoreType(typeValue).Is(ActiveType);
+		map.TryGetValue(args.Profile.TypeKey, out var typeValue) && RestoreType(typeValue).Is(ActiveType);
 
 	private Type RestoreType(object typeValue) => typeValue switch
 	{
