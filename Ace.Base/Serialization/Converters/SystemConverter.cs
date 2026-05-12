@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 
 namespace Ace.Serialization.Converters;
 
@@ -23,28 +25,39 @@ public class SystemConverter : Converter
 
 	public override object Decode(string value, Type type) => type.Name switch
 	{
-		"Uri" => new Uri(value),
-		"Guid" => Guid.Parse(value),
-		"TimeSpan" => TimeSpan.Parse(value, ActiveCulture),
-		"DateTime" => DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
-		"DateTimeOffset" => DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
+		nameof(Uri) => new Uri(value),
+		nameof(Guid) => Guid.Parse(value),
+		nameof(TimeSpan) => TimeSpan.Parse(value, ActiveCulture),
+		nameof(DateTime) => DateTime.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
+		nameof(DateTimeOffset) => DateTimeOffset.Parse(value, ActiveCulture, GetDateTimeStyle(value)),
 		"RuntimeType" => Type.GetType(value),
-		"Object" => value,
-		_ => TryParse(value, type),
+		nameof(Object) => value,
+		_ => Parse(value, type),
 	};
 
 	private DateTimeStyles GetDateTimeStyle(string value)
 		=> value.EndsWith("Z") ? DateTimeStyles.AdjustToUniversal : DateTimeStyles.None;
 
-	private object TryParse(string value, Type type)
+	private static readonly Dictionary<Type, MethodInfo> TypeToParseWithFormatMethod = [];
+	private static readonly Dictionary<Type, MethodInfo> TypeToParseMethod = [];
+
+	private object Parse(string value, Type type)
 	{
 		if (type is null) return Undefined;
-		if (type.IsEnum) return Enum.Parse(type, value, true);
+		if (type.IsEnum) return Enum.Parse(type, value, ignoreCase: true);
 
-		var parseWithFormatMethod = type.GetMethod("Parse", new[] { TypeOf.String.Raw, typeof(IFormatProvider) });
-		if (parseWithFormatMethod.Is()) return parseWithFormatMethod.Invoke(null, new object[] { value, ActiveCulture });
+		var parseWithFormatMethod = TypeToParseWithFormatMethod.TryGetValue(type, out var methodWithFormat)
+			? methodWithFormat
+			: TypeToParseWithFormatMethod[type] = type.GetMethod("Parse", [TypeOf.String.Raw, typeof(IFormatProvider)])
+			;
 
-		var parseMethod = type.GetMethod("Parse", new[] { TypeOf.String.Raw });
-		return parseMethod?.Invoke(null, new object[] { value });
+		if (parseWithFormatMethod.Is()) return parseWithFormatMethod.Invoke(null, [value, ActiveCulture]);
+
+		var parseMethod = TypeToParseWithFormatMethod.TryGetValue(type, out var method)
+			? method
+			: TypeToParseMethod[type] = type.GetMethod("Parse", [TypeOf.String.Raw])
+			;
+
+		return parseMethod?.Invoke(null, [value]);
 	}
 }

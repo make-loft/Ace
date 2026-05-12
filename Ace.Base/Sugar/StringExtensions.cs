@@ -98,7 +98,13 @@ public static class StringExtensions
 	public static int Align(this string value, int offset)
 		=> offset < 0 ? value.Length - offset : offset;
 
-	public static string Trim(this string value, int from, int till)
+	public static string From(this string value, int offset)
+		=> value.Substring(Align(value, offset));
+
+	public static string Till(this string value, int offset)
+		=> value.Substring(0, value.Length - Align(value, offset));
+
+	public static string Clip(this string value, int from, int till)
 	{
 		from = value.Align(from);
 		till = value.Align(till);
