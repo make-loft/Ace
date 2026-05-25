@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
-
 namespace Ace;
 
 public static partial class New
@@ -37,15 +35,15 @@ public static partial class New
 	public static EventHandler EventHandler(EventHandler h) => h;
 	public static EventHandler<T> EventHandler<T>(EventHandler<T> h) where T : EventArgs => h;
 	
-	public static Func<Z> Func<Z>(Func<Z> f) => f;
-	public static Func<A, Z> Func<A, Z>(Func<A, Z> f) => f;
-	public static Func<A, B, Z> Func<A, B, Z>(Func<A, B, Z> f) => f;
-	public static Func<A, B, C, Z> Func<A, B, C, Z>(Func<A, B, C, Z> f) => f;
-	public static Func<A, B, C, D, Z> Func<A, B, C, D, Z>(Func<A, B, C, D, Z> f) => f;
-	public static Func<A, B, C, D, E, Z> Func<A, B, C, D, E, Z>(Func<A, B, C, D, E, Z> f) => f;
-	public static Func<A, B, C, D, E, F, Z> Func<A, B, C, D, E, F, Z>(Func<A, B, C, D, E, F, Z> f) => f;
-	public static Func<A, B, C, D, E, F, G, Z> Func<A, B, C, D, E, F, G, Z>(Func<A, B, C, D, E, F, G, Z> f) => f;
-	public static Func<A, B, C, D, E, F, G, H, Z> Func<A, B, C, D, E, F, G, H, Z>(Func<A, B, C, D, E, F, G, H, Z> f) => f;
+	public static Func<_> Func<_>(Func<_> f) => f;
+	public static Func<A, _> Func<A, _>(Func<A, _> f) => f;
+	public static Func<A, B, _> Func<A, B, _>(Func<A, B, _> f) => f;
+	public static Func<A, B, C, _> Func<A, B, C, _>(Func<A, B, C, _> f) => f;
+	public static Func<A, B, C, D, _> Func<A, B, C, D, _>(Func<A, B, C, D, _> f) => f;
+	public static Func<A, B, C, D, E, _> Func<A, B, C, D, E, _>(Func<A, B, C, D, E, _> f) => f;
+	public static Func<A, B, C, D, E, F, _> Func<A, B, C, D, E, F, _>(Func<A, B, C, D, E, F, _> f) => f;
+	public static Func<A, B, C, D, E, F, G, _> Func<A, B, C, D, E, F, G, _>(Func<A, B, C, D, E, F, G, _> f) => f;
+	public static Func<A, B, C, D, E, F, G, H, _> Func<A, B, C, D, E, F, G, H, _>(Func<A, B, C, D, E, F, G, H, _> f) => f;
 
 	public static Action Action(Action a) => a;
 	public static Action<A> Action<A>(Action<A> a) => a;

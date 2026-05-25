@@ -69,12 +69,12 @@ public static class New
 		_ => throw new NotImplementedException(),
 	};
 
-	public static void ContextChanged<TView>(this TView element, Action<ChangeArgs<TView, object>> onContextChanged) where TView : View =>
-		element.BindingContextChanged += (sender, args) => onContextChanged(new(element, default, element.BindingContext));
+	public static void ContextChanged<TView>(this TView element, Action<ChangeArgs<TView, object>> onContextChanged) where TView : View
+		=> element.BindingContextChanged += (sender, args) => onContextChanged(new(element, default, element.BindingContext));
 #else
 
-	public static void ContextChanged<TView>(this TView element, Action<ChangeArgs<TView, object>> onContextChanged) where TView : FrameworkElement =>
-		element.DataContextChanged += (sender, args) => onContextChanged(new(element, args));
+	public static void ContextChanged<TView>(this TView element, Action<ChangeArgs<TView, object>> onContextChanged) where TView : View
+		=> element.DataContextChanged += (sender, args) => onContextChanged(new(element, args));
 
 	public static object GetContext(this View view) => view.DataContext;
 	public static object SetContext(this View view, object value) => view.DataContext = value;
@@ -241,7 +241,7 @@ public class RegisterPropertyAttribute : Attribute
 					m.Name.Is("GetProperty") &&
 					TypeOf<string>.Raw.Is(m.GetParameters().FirstOrDefault()?.ParameterType))
 				.MakeGenericMethod(property.PropertyType);
-			var p = getPropertyMethod.Invoke(default, new[] { property.Name, attributeInfo.RegisterAttribute.DefaultValue });
+			var p = getPropertyMethod.Invoke(default, [property.Name, attributeInfo.RegisterAttribute.DefaultValue]);
 		}
 	}
 
@@ -451,7 +451,7 @@ public class ItemsView : ItemsControl
 	{
 		DataContextChanged += (sender, args) =>
 		{
-			foreach (var item in Items.OfType<FrameworkElement>())
+			foreach (var item in Items.OfType<View>())
 				item.DataContext = DataContext;
 		};
 	}

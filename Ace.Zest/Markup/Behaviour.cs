@@ -61,20 +61,20 @@ public static class Behaviour
 
 #if !XAMARIN
 
-	public static readonly DependencyProperty UpdateHeaderOnLanguageChangeProperty = RegisterAttached(
+	public static readonly TargetProperty UpdateHeaderOnLanguageChangeProperty = RegisterAttached(
 		"UpdateHeaderOnLanguageChange", typeof(object), typeof(Behaviour),
 		new PropertyMetadata(default, null, CoerceValueCallback));
 	
-	private static object CoerceValueCallback(DependencyObject dependencyObject, object baseValue)
+	private static object CoerceValueCallback(Target dependencyObject, object baseValue)
 	{
 		BindingOperations.GetBindingExpression(dependencyObject, HeaderedItemsControl.HeaderProperty)?.UpdateTarget();
 		return baseValue;
 	}
 
-	public static readonly DependencyProperty DragMoveProperty =
+	public static readonly TargetProperty DragMoveProperty =
 		RegisterAttached("DragMove", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool), DragMoveChangedCallback));
 
-	public static readonly DependencyProperty DragMoveHandlerProperty =
+	public static readonly TargetProperty DragMoveHandlerProperty =
 		RegisterAttached("DragMoveHandler", typeof(bool), typeof(Behaviour), new PropertyMetadata(default(bool),
 			(sender, args) =>
 			{
