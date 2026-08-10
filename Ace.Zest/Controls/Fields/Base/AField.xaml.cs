@@ -1,16 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows;
 using System.Windows.Controls;
-#if XAMARIN
-using Binding = Xamarin.Forms.Binding;
-#else
-using System.Windows.Data;
-#endif
+//using System.Windows.Data;
+using System.Windows.Input;
 
 using Ace.Markup.Patterns;
 using Ace.Mathematics;
+
+using Keyboard = System.Windows.Input.Keyboard;
 
 namespace Ace.Controls;
 
@@ -125,7 +121,7 @@ public abstract partial class AField
 	protected void UpdateValueField(in string text, in int caretIndex)
 	{
 		WriteValueField(in text, in caretIndex);
-#if !XAMARIN
+#if !(XAMARIN || MAUI)
 		ValueField.GetBindingExpression(Field.TextProperty)?.UpdateSource();
 #endif
 	}
@@ -175,7 +171,7 @@ public abstract class AField<TValue> : AField
 	protected static void Initialize<TField>() where TField : AField<TValue>, new()
 	{
 		Type<TField>.Create(v => v.Value);
-#if !XAMARIN
+#if !(XAMARIN || MAUI)
 		Type<AField>.When(v => v.Format).Changed += args =>
 			args.Sender.ValueField.GetBindingExpression(Field.TextProperty)?.UpdateTarget();
 #endif

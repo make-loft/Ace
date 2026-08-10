@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Globalization;
-#if XAMARIN
-using Xamarin.Forms;
-#else
-using System.Windows.Data;
-#endif
 
 namespace Ace.Markup.Converters;
 

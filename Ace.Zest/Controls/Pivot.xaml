@@ -1,8 +1,9 @@
 ﻿<c:List
 	x:Class="Ace.Controls.Pivot"
-	xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:c="clr-namespace:Ace.Controls"
+	xmlns:m="clr-namespace:Ace.Markup"
 	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
 	>
 
@@ -63,16 +64,16 @@
 
 		<cnv:KeyToValueConverter
 			x:Key="IsActiveToBackgroundConverter"
-			Key="{True}"
+			Key="{m:True}"
 			Value="{StaticResource ActiveItemBrush}"
 			ByDefault="{StaticResource ItemBrush}"
 			/>
 
 		<cnv:KeyToValueConverter
 			x:Key="IsActiveToOpacityConverter"
-			Key="{True}"
-			Value="{Double 1.000}"
-			ByDefault="{Double 0.617}"
+			Key="{m:True}"
+			Value="{m:Double 1.000}"
+			ByDefault="{m:Double 0.617}"
 			/>
 
 		<cnv:KeyToValueConverter

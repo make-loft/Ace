@@ -1,12 +1,10 @@
 ﻿namespace Ace.Controls;
 
 using System;
-#if XAMARIN
+#if XAMARIN || MAUI
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-
-using Xamarin.Forms;
 
 public class Field : Entry
 {

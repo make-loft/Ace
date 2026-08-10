@@ -10,7 +10,7 @@ namespace System.Windows.Input;
 //[ValueSerializer(typeof(KeyValueSerializer))]
 public enum Key
 {
-	None, Left, Right, Up, Down, Enter
+	None, Left, Right, Up, Down, Enter, Escape
 }
 
 //[TypeConverter(typeof(ModifierKeysConverter))]

@@ -7,7 +7,12 @@ using static System.Windows.DependencyProperty;
 #if XAMARIN
 using Target = Xamarin.Forms.BindableObject;
 using TargetProperty = Xamarin.Forms.BindableProperty;
-#else
+#endif
+#if MAUI
+using Target = Microsoft.Maui.Controls.BindableObject;
+using TargetProperty = Microsoft.Maui.Controls.BindableProperty;
+#endif
+#if DESKTOP
 using Target = System.Windows.DependencyObject;
 using TargetProperty = System.Windows.DependencyProperty;
 using System.Windows.Controls;
@@ -59,7 +64,7 @@ public static class Behaviour
 		contextTrigger.Element = element;
 	}
 
-#if !XAMARIN
+#if !(XAMARIN || MAUI)
 
 	public static readonly TargetProperty UpdateHeaderOnLanguageChangeProperty = RegisterAttached(
 		"UpdateHeaderOnLanguageChange", typeof(object), typeof(Behaviour),

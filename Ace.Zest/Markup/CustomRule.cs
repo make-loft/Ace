@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
-using System.Windows.Controls;
 using System.Windows.Data;
+
+using System.Windows.Controls;
 
 namespace Ace.Markup;
 

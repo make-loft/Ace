@@ -1,16 +1,12 @@
-﻿using System;
+﻿namespace Ace.Markup.Patterns;
 
-namespace Ace.Markup.Patterns;
-
-#if XAMARIN
-using Xamarin.Forms.Xaml;
-
+#if XAMARIN || MAUI
 public abstract class AMarkupExtension : IMarkupExtension
 {
 	public object ProvideValue(IServiceProvider serviceProvider)
 	{
 		var targets = (IProvideValueTarget) serviceProvider.GetService(typeof(IProvideValueTarget));
-		return Provide(targets.TargetObject, targets.TargetProperty);
+		return Provide(targets?.TargetObject, targets?.TargetProperty);
 	}
 
 	public abstract object Provide(object targetObject, object targetProperty = default);

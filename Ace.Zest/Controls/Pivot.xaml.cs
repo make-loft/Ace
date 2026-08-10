@@ -1,12 +1,15 @@
 ﻿using System;
 
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+//using Xamarin.Forms;
+//using Xamarin.Forms.Xaml;
+
+//using XamlCompilationAttribute = Microsoft.Maui.Controls.Xaml.XamlCompilationAttribute;
+//using XamlCompilationOptions = Xamarin.Forms.Xaml.XamlCompilationOptions;
 
 namespace Ace.Controls;
 
 [XamlCompilation(XamlCompilationOptions.Skip)]
-public partial class Pivot
+public partial class Pivot : List
 {
 	public Pivot() => InitializeComponent();
 

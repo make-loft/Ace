@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Ace.Extensions;
 
-public static class Reflection
+public static class ReflectionExtensions
 {
 	public static PropertyInfo GetProperty(this object @this, string name)
 		=> @this.GetType().GetProperty(name)

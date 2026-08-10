@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-#if XAMARIN
-using Xamarin.Forms;
-#else
+#if DESKTOP
 using System.Windows.Media;
 #endif
 
@@ -16,12 +14,22 @@ public static class Colority
 	private static byte Byte(in float value) => (byte)(255f * value);
 
 	private static readonly Dictionary<Color, SolidColorBrush> ColorToBrush = [];
-	public static SolidColorBrush ToBrush(this in Color color) => ColorToBrush.TryGetValue(color, out var brush)
+	public static SolidColorBrush ToBrush(this Color color) => ColorToBrush.TryGetValue(color, out var brush)
 		? brush
 		: ColorToBrush[color] = new(color)
 		;
 
-#if XAMARIN
+#if MAUI
+	extension(Color color)
+	{
+		public float A => (float)color.Alpha;
+		public float R => (float)color.Red;
+		public float G => (float)color.Green;
+		public float B => (float)color.Blue;
+	}
+#endif
+
+#if XAMARIN || MAUI
 	public static Color FromARGB(double a, double r, double g, double b) => Color.FromRgba(r, g, b, a);
 	public static Color FromARGB(float a, float r, float g, float b) => Color.FromRgba(r, g, b, a);
 	public static Color FromARGB(byte a, byte r, byte g, byte b) => Color.FromRgba(r, g, b, a);
@@ -36,10 +44,10 @@ public static class Colority
 
 	public static Color ToColor(this string code) => Color.FromHex(code);
 
-	public static int GetA(this in Color color) => (int)(color.A * 255d);
-	public static int GetR(this in Color color) => (int)(color.R * 255d);
-	public static int GetG(this in Color color) => (int)(color.G * 255d);
-	public static int GetB(this in Color color) => (int)(color.B * 255d);
+	public static int GetA(this Color color) => (int)(color.A * 255d);
+	public static int GetR(this Color color) => (int)(color.R * 255d);
+	public static int GetG(this Color color) => (int)(color.G * 255d);
+	public static int GetB(this Color color) => (int)(color.B * 255d);
 
 	public static Color Mix(this Color color, Channel channel, byte value) => channel switch
 	{
@@ -49,7 +57,8 @@ public static class Colority
 		Channel.B => FromARGB(Byte(color.A), Byte(color.R), Byte(color.G), value),
 		_ => FromARGB(Byte(color.A), Byte(color.R), Byte(color.G), Byte(color.B)),
 	};
-#else
+#endif
+#if DESKTOP
 	public static Color FromARGB(double a, double r, double g, double b) => Color.FromArgb(Byte(a), Byte(r), Byte(g), Byte(b));
 	public static Color FromARGB(float a, float r, float g, float b) => Color.FromArgb(Byte(a), Byte(r), Byte(g), Byte(b));
 	public static Color FromARGB(byte a, byte r, byte g, byte b) => Color.FromArgb(a, r, g, b);
@@ -123,7 +132,7 @@ public static class Colority
 		var b = InterpolateChannel(c => c.B, fromPoint, tillPoint);
 		var a = InterpolateChannel(c => c.A, fromPoint, tillPoint);
 
-#if XAMARIN
+#if XAMARIN || MAUI
 		return FromRGBA(r, g, b, a);
 #else
 		return FromRGBA(r / 255, g / 255, b / 255, a / 255);

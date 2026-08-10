@@ -8,6 +8,9 @@ using Xamarin.Forms.Xaml;
 #else
 using System.Reflection;
 using System.Windows.Markup;
+#if MAUI
+using XmlnsPrefixAttribute = Microsoft.Maui.Controls.XmlnsPrefixAttribute;
+#else
 
 // Version information for an assembly consists of the following four values:
 //
@@ -29,7 +32,7 @@ using System.Windows.Markup;
 //[assembly: AssemblyDescription("Developed by Makeloft Studio")]
 //[assembly: AssemblyConfiguration("")]
 //[assembly: AssemblyCulture("")]
-
+#endif
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -41,20 +44,32 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Xamarin.Forms")]
 #endif
 
-[assembly: XmlnsDefinition("ace", "Ace.Controls")]
-[assembly: XmlnsDefinition("ace", "Ace.Dictionaries")]
-[assembly: XmlnsDefinition("ace", "Ace.Markup.Converters")]
-[assembly: XmlnsDefinition("ace", "Ace.Markup")]
-[assembly: XmlnsPrefix("ace", "ace")]
+//[assembly: XmlnsDefinition("ace", "Ace.Controls")]
+//[assembly: XmlnsDefinition("ace", "Ace.Dictionaries")]
+//[assembly: XmlnsDefinition("ace", "Ace.Markup.Converters")]
+//[assembly: XmlnsDefinition("ace", "Ace.Markup")]
+//[assembly: XmlnsPrefix("ace", "ace")]
 
-[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Controls")]
-[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Dictionaries")]
-[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup.Converters")]
-[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup")]
-[assembly: XmlnsPrefix("http://xamarin.com/schemas/2014/forms", "xamarin")]
+//[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Controls")]
+//[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Dictionaries")]
+//[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup.Converters")]
+//[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Ace.Markup")]
+//[assembly: XmlnsPrefix("http://xamarin.com/schemas/2014/forms", "xamarin")]
 
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Controls")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Dictionaries")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup.Converters")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup")]
-[assembly: XmlnsPrefix("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "m")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/2021/maui", "Ace.Controls")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/2021/maui", "Ace.Dictionaries")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/2021/maui", "Ace.Markup.Converters")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/2021/maui", "Ace.Markup")]
+[assembly: XmlnsPrefix("http://schemas.microsoft.com/dotnet/2021/maui", "maui")]
+
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ace.Controls")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ace.Dictionaries")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ace.Markup.Converters")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ace.Markup")]
+[assembly: XmlnsPrefix("http://schemas.microsoft.com/dotnet/maui/global", "maui")]
+
+//[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Controls")]
+//[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Dictionaries")]
+//[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup.Converters")]
+//[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup")]
+//[assembly: XmlnsPrefix("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "m")]

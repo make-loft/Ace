@@ -8,21 +8,30 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Xamarin.Forms;
-
+#if XAMARIN
 using static Xamarin.Forms.ScrollOrientation;
 using static Xamarin.Forms.ScrollToPosition;
+
+using IView = Xamarin.Forms.View;
+using Colors = Xamarin.Forms.Color;
+using TappedHandler = System.EventHandler;
+#endif
+#if MAUI
+using static Microsoft.Maui.ScrollOrientation;
+using static Microsoft.Maui.Controls.ScrollToPosition;
+using TappedHandler = System.EventHandler<Microsoft.Maui.Controls.TappedEventArgs>;
+#endif
 
 namespace Ace.Markup;
 
 public delegate object ItemMakerDelegate();
 
 [ContentProperty(nameof(Items))]
-public class SetView : ContentView
+public class SetView : ContentControl
 {
 	public class Cell : Rack
 	{
-		private static readonly Color TransparentGrayColor = new(0.5, 0.5, 0.5, 0.0);
+		private static readonly Color TransparentGrayColor = new(0.5f, 0.5f, 0.5f, 0.0f);
 		private static readonly Brush TransparentGrayBrush = new SolidColorBrush(TransparentGrayColor);
 
 		public void SetState(bool isSelected, SetView setView)
@@ -33,18 +42,18 @@ public class SetView : ContentView
 				setView._selectedCell = this;
 			}
 
-			Children[0].BackgroundColor = isSelected
+			Children[0].To<View>().BackgroundColor = isSelected
 				? setView.SelectionBackgroundColor
 				: TransparentGrayColor
 				;
 
-			Children[0].Background = isSelected
+			Children[0].To<View>().Background = isSelected
 				? setView.SelectionBackground
 				: TransparentGrayBrush
 				;
 		}
 
-		public View Content
+		public IView Content
 		{
 			get => Children[1];
 			set => Children[1] = value;
@@ -53,7 +62,7 @@ public class SetView : ContentView
 
 	private Cell _selectedCell;
 
-	public Cell CreateCell(object item, ItemMakerDelegate maker, EventHandler tapped,
+	public Cell CreateCell(object item, ItemMakerDelegate maker, TappedHandler tapped,
 		double size, ScrollOrientation orientation) => new Cell()
 		{
 			HeightRequest = orientation.Is(Vertical)
@@ -67,7 +76,8 @@ public class SetView : ContentView
 			BindingContext = item,
 			Children =
 			{
-				new Frame { CornerRadius = 5f, HasShadow = false },
+				new Border {  },
+				//new Frame { CornerRadius = 5f, HasShadow = false },
 				maker().To(out var content).Is(out ViewCell cell)
 					? cell.View
 					: content.As<View>()
@@ -181,8 +191,15 @@ public class SetView : ContentView
 		if (ItemsSource.IsNot() || ItemTemplate.IsNot())
 			return;
 
+		if (Content is not ScrollView and not null)
+			return;
+
 		var scrollView = new ScrollView { Orientation = Orientation };
-		var content = new Rack();
+		var content = new AbsoluteLayout
+		{
+			VerticalOptions = LayoutOptions.Start,
+			HorizontalOptions = LayoutOptions.Start,
+		};
 
 		Content = scrollView;
 
@@ -222,6 +239,7 @@ public class SetView : ContentView
 			var itemSize = ItemSize;
 			var itemLength = ItemLength;
 			itemsInLineCount = itemLength > 0d ? (int)(lineSize / itemLength) : 1;
+			if (itemsInLineCount is 0) itemsInLineCount = 1;
 			var isGrouping = GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
 			groups = isGrouping
 				? items.Cast<IGrouping<object, object>>().ToList()
@@ -350,7 +368,7 @@ public class SetView : ContentView
 		_ => throw new NotImplementedException()
 	};
 
-	void FillContent(ScrollView scrollView, Rack content)
+	void FillContent(ScrollView scrollView, AbsoluteLayout content)
 	{
 		var items = ItemsSource;
 		var itemSize = ItemSize;
@@ -364,8 +382,6 @@ public class SetView : ContentView
 				? default
 				: item
 				;
-
-			ItemSelected?.Invoke(SelectedItem, new(item, items.IndexOf(item)));
 		}
 
 		var isGrouping = IsGrouping;
@@ -478,7 +494,7 @@ public class SetView : ContentView
 	bool IsGrouping => GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
 	
 	public static BindableProperty IsLoadedProperty = Type<SetView>.Create(v => v.IsLoaded);
-	public bool IsLoaded
+	public new bool IsLoaded
 	{
 		get => GetValue(IsLoadedProperty).To<bool>();
 		set => SetValue(IsLoadedProperty, value);
@@ -486,17 +502,27 @@ public class SetView : ContentView
 
 	public static BindableProperty SelectedItemProperty = Type<SetView>.Create(v => v.SelectedItem, args =>
 	{
-		var groupContainers = args.Sender.To(out var setView)
+		if (args.NewValue.IsNot())
+		{
+			return;
+		}
+
+		var setView = args.Sender;
+		var items = setView.ItemsSource ?? setView.Items;
+		var item = args.NewValue;
+		args.Sender.ItemSelected?.Invoke(item, new(item, items.IndexOf(item)));
+
+		var groupContainers = args.Sender
 			.Content?.To<ScrollView>()
-			.Content?.To<Rack>()
-			.Children.OfType<Layout<View>>()
+			.Content?.To<AbsoluteLayout>()
+			.Children.OfType<Layout>()
 			;
 
 		if (groupContainers.IsNot()) return;
 
 		foreach (var groupContainer in groupContainers)
 		{
-			var lines = groupContainer.Children.Last().To<Rack>().Children.OfType<Layout<View>>();
+			var lines = groupContainer.Children.Last().To<Rack>().Children.OfType<Layout>();
 			if (lines.IsNot()) return;
 
 			foreach (var line in lines)
@@ -524,8 +550,8 @@ public class SetView : ContentView
 		set => SetValue(SelectedItemProperty, value);
 	}
 
-	public static BindableProperty ItemsSourceProperty = Type<SetView>.Create(v => v.ItemsSource, args =>
-		args.Sender.Changed());
+	public static BindableProperty ItemsSourceProperty
+		= Type<SetView>.Create(v => v.ItemsSource, args => args.Sender.Changed());
 
 	public IList ItemsSource
 	{
@@ -540,7 +566,15 @@ public class SetView : ContentView
 	public bool IsGroupingEnabled { get; set; } = false;
 	public DataTemplate GroupHeaderTemplate { get; set; }
 	public BindingBase ItemDisplayBinding { get; set; }
-	public DataTemplate ItemTemplate { get; set; }
+
+	public static BindableProperty ItemTemplateProperty
+	= Type<SetView>.Create(v => v.ItemTemplate, args => args.Sender.Changed());
+
+	public DataTemplate ItemTemplate
+	{
+		get => this.Get(default(DataTemplate));
+		set => this.Set(value);
+	}
 	public SmartSet<object> Items { get; } = new();
 
 	public ScrollOrientation Orientation { get; set; } = Vertical;
@@ -549,7 +583,7 @@ public class SetView : ContentView
 	public double GroupHeaderSize { get; set; } = 48d;
 	public bool AllowSelectedItemReset { get; set; } = true;
 
-	public Color SelectionBackgroundColor { get; set; } = Color.Orange;
+	public Color SelectionBackgroundColor { get; set; } = Colors.Orange;
 	public Brush SelectionBackground { get; set; }
 	#endregion
 }

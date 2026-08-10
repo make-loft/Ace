@@ -4,6 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+#if MAUI
+//using INotifyPropertyChanging = Microsoft.Maui.Controls.INotifyPropertyChanging;
+using PropertyChangingEventHandler = System.ComponentModel.PropertyChangingEventHandler;
+#endif
 
 namespace Ace;
 

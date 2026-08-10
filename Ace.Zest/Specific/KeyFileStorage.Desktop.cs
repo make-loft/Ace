@@ -7,7 +7,8 @@ public class KeyFileStorage : IStorage
 {
 	public string PavePathFor(string key) => Path.GetDirectoryName(key).To(out var path).Length > 0
 		? Directory.CreateDirectory(path).Put(key)
-		: key;
+		: key
+		;
 
 	public long GetLength(string key) => new FileInfo(PavePathFor(key)).Length;
 	public Stream GetReadStream(string key) => File.OpenRead(PavePathFor(key));

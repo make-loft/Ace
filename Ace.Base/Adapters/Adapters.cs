@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Ace;
 
-#if !NETSTANDARD && !NET45
+#if !NETSTANDARD && !NET45 && !MAUI
 namespace System.Reflection
 {
-	internal static class Reflection
+	internal static class ReflectionExtensions
 	{
 		public static T GetCustomAttribute<T>(this Type type) where T: class
 			=> type.GetCustomAttributes(TypeOf<T>.Raw, true).FirstOrDefault() as T;

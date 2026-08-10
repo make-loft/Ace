@@ -1,17 +1,32 @@
 ﻿<c:List
 	x:Class="Ace.Controls.Pick"
-	xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:c="clr-namespace:Ace.Controls"
+	xmlns:cnv="clr-namespace:Ace.Markup.Converters"
 	x:Name="This"
 	>
+	<c:List.Resources>
+		<cnv:Converter
+			x:Key="ItemDisplayBindingConverter"
+			Convert="ItemDisplayBindingConvert"
+			/>
+	</c:List.Resources>
 	<c:List.ControlTemplate>
 		<ControlTemplate>
-			<Picker
-				ItemsSource="{TemplateBinding ItemsSource}"
-				SelectedItem="{TemplateBinding ActiveItem, Mode=TwoWay}"
-				ItemDisplayBinding="{Binding Converter={Converter Convert=ItemDisplayBindingConvert}}"
-				/>
+			<ScrollView
+				VerticalScrollBarVisibility="Never"
+				HorizontalScrollBarVisibility="Always"
+				>
+				<Picker
+					Background="Violet"
+					MinimumWidthRequest="32"
+					Title="{TemplateBinding Title}"
+					ItemsSource="{TemplateBinding ItemsSource}"
+					SelectedItem="{TemplateBinding ActiveItem, Mode=TwoWay}"
+					ItemDisplayBinding="{Binding Converter={StaticResource ItemDisplayBindingConverter}}"
+					/>
+			</ScrollView>
 		</ControlTemplate>
 	</c:List.ControlTemplate>
 </c:List>

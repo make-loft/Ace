@@ -1,8 +1,4 @@
-﻿using System.Linq;
-
-using Property = Xamarin.Forms.BindableProperty;
-
-namespace Ace.Controls;
+﻿namespace Ace.Controls;
 
 public partial class Grip : AView<Grip>
 {
@@ -29,7 +25,7 @@ public partial class Grip : AView<Grip>
 
 	public Grip()
 	{
-		Content = new Xamarin.Forms.Slider().To(out var slider);
+		Content = new Slider().To(out var slider);
 
 		void SetupSlider(double minimum, double maximum, double value)
 		{

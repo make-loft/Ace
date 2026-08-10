@@ -1,4 +1,8 @@
 ﻿using System.ComponentModel;
+#if MAUI
+//using INotifyPropertyChanging = Microsoft.Maui.Controls.INotifyPropertyChanging;
+using PropertyChangingEventHandler = System.ComponentModel.PropertyChangingEventHandler;
+#endif
 
 namespace Ace;
 
@@ -18,9 +22,9 @@ public class Segregator<TValue> : INotifyPropertyChanging, INotifyPropertyChange
 		get => _value;
 		set
 		{
-			PropertyChanging?.Invoke(this, new PropertyChangingEventArgs("Value"));
+			PropertyChanging?.Invoke(this, new("Value"));
 			_value = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
+			PropertyChanged?.Invoke(this, new("Value"));
 		}
 	}
 }

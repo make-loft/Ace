@@ -1,0 +1,155 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net10.0-maccatalyst</TargetFrameworks>
+
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+
+		<!-- Enable XAML source generation for faster build times and improved performance.
+		     This generates C# code from XAML at compile time instead of runtime inflation.
+		     To disable, remove this line.
+		     For individual files, you can override by setting Inflator metadata:
+		       <MauiXaml Update="MyPage.xaml" Inflator="Default" /> (reverts to defaults: Runtime for Debug, XamlC for Release)
+		       <MauiXaml Update="MyPage.xaml" Inflator="Runtime" /> (force runtime inflation) -->
+		<!--MauiXamlInflator>SourceGen</MauiXamlInflator-->
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<NuGetAudit>False</NuGetAudit>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-maccatalyst|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-windows10.0.19041.0|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-ios|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-maccatalyst|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-windows10.0.19041.0|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <AndroidJavaSource Remove="Ace.Tests\**" />
+	  <AndroidJavaSource Remove="Ace.Zest.Universal\**" />
+	  <AndroidJavaSource Remove="Compressor\**" />
+	  <AndroidLibrary Remove="Ace.Tests\**" />
+	  <AndroidLibrary Remove="Ace.Zest.Universal\**" />
+	  <AndroidLibrary Remove="Compressor\**" />
+	  <AndroidNativeLibrary Remove="Ace.Tests\**" />
+	  <AndroidNativeLibrary Remove="Ace.Zest.Universal\**" />
+	  <AndroidNativeLibrary Remove="Compressor\**" />
+	  <AndroidResource Remove="Ace.Base\Properties\**" />
+	  <AndroidResource Remove="Ace.Core\Adapters\**" />
+	  <AndroidResource Remove="Ace.Core\Properties\**" />
+	  <AndroidResource Remove="Ace.Zest.Demo\**" />
+	  <Compile Remove="Ace.Base\Properties\**" />
+	  <Compile Remove="Ace.Core\Adapters\**" />
+	  <Compile Remove="Ace.Core\Properties\**" />
+	  <Compile Remove="Ace.Tests\**" />
+	  <Compile Remove="Ace.Zest.Demo\**" />
+	  <Compile Remove="Ace.Zest.Universal\**" />
+	  <Compile Remove="Compressor\**" />
+	  <EmbeddedResource Remove="Ace.Base\Properties\**" />
+	  <EmbeddedResource Remove="Ace.Core\Adapters\**" />
+	  <EmbeddedResource Remove="Ace.Core\Properties\**" />
+	  <EmbeddedResource Remove="Ace.Tests\**" />
+	  <EmbeddedResource Remove="Ace.Zest.Demo\**" />
+	  <EmbeddedResource Remove="Ace.Zest.Universal\**" />
+	  <EmbeddedResource Remove="Compressor\**" />
+	  <JavaSourceJar Remove="Ace.Tests\**" />
+	  <JavaSourceJar Remove="Ace.Zest.Universal\**" />
+	  <JavaSourceJar Remove="Compressor\**" />
+	  <MauiCss Remove="Ace.Base\Properties\**" />
+	  <MauiCss Remove="Ace.Core\Adapters\**" />
+	  <MauiCss Remove="Ace.Core\Properties\**" />
+	  <MauiCss Remove="Ace.Zest.Demo\**" />
+	  <MauiXaml Remove="Ace.Base\Properties\**" />
+	  <MauiXaml Remove="Ace.Core\Adapters\**" />
+	  <MauiXaml Remove="Ace.Core\Properties\**" />
+	  <MauiXaml Remove="Ace.Zest.Demo\**" />
+	  <None Remove="Ace.Base\Properties\**" />
+	  <None Remove="Ace.Core\Adapters\**" />
+	  <None Remove="Ace.Core\Properties\**" />
+	  <None Remove="Ace.Tests\**" />
+	  <None Remove="Ace.Zest.Demo\**" />
+	  <None Remove="Ace.Zest.Universal\**" />
+	  <None Remove="Compressor\**" />
+	  <ProguardConfiguration Remove="Ace.Tests\**" />
+	  <ProguardConfiguration Remove="Ace.Zest.Universal\**" />
+	  <ProguardConfiguration Remove="Compressor\**" />
+	  <TransformFile Remove="Ace.Tests\**" />
+	  <TransformFile Remove="Ace.Zest.Universal\**" />
+	  <TransformFile Remove="Compressor\**" />
+	</ItemGroup>
+
+  <ItemGroup>
+		<Compile Remove="Ace.Base\WildThread.cs" />
+		<Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
+		<Compile Remove="Ace.Zest\Adapters\Xamarin.Essentials.cs" />
+		<Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
+		<Compile Remove="Ace.Zest\Controls\Pick.Desktop.xaml.cs" />
+		<Compile Remove="Ace.Zest\Controls\Pivot.Desktop.xaml.cs" />
+		<Compile Remove="Ace.Zest\Controls\Switch.xaml.cs" />
+		<Compile Remove="Ace.Zest\Dictionaries\AppConverters.cs" />
+		<Compile Remove="Ace.Zest\Extensions\PresentationExtensions.cs" />
+		<Compile Remove="Ace.Zest\Extensions\ProjectionCameraExtensions.cs" />
+		<Compile Remove="Ace.Zest\Markup\Picture.cs" />
+		<Compile Remove="Ace.Zest\Specific\Core.Store.cs" />
+		<Compile Remove="Ace.Zest\Specific\KeyFileStorage.Phone.cs" />
+		<Compile Remove="Ace.Zest\Specific\KeyFileStorage.Store.cs" />
+		<Compile Remove="Ace.Zest\Sugar\BindingOperationsExt.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiXaml Remove="Ace.Zest\Controls\Pick.Desktop.xaml" />
+    <MauiXaml Remove="Ace.Zest\Controls\Pivot.Desktop.xaml" />
+    <MauiXaml Remove="Ace.Zest\Controls\Switch.xaml" />
+  </ItemGroup>
+
+	<ItemGroup>
+	  <None Remove=".git" />
+	  <None Remove=".gitignore" />
+	  <None Remove="Ace.Base\packages.config" />
+	  <None Remove="Ace.Maui.csproj.Backup.tmp" />
+	  <None Remove="azure-pipelines.yml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Ace.Base\Adapters\" />
+	  <Folder Include="Ace.Zest\Dictionaries\" />
+	</ItemGroup>
+
+</Project>

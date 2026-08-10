@@ -1,12 +1,10 @@
-﻿#if XAMARIN
-using Xamarin.Forms;
-using Property = Xamarin.Forms.BindableProperty;
-#else
-using Property = System.Windows.DependencyProperty;
+﻿#if MAUI
+using ContentView = Microsoft.Maui.Controls.ContentPresenter;
+#endif
+#if DESKTOP
 using System.Windows;
 using System.Windows.Markup;
 
-using View = System.Windows.FrameworkElement;
 using Label = System.Windows.Controls.TextBlock;
 using ContentView = System.Windows.Controls.ContentPresenter;
 #endif
@@ -14,7 +12,7 @@ using ContentView = System.Windows.Controls.ContentPresenter;
 namespace Ace.Controls;
 
 [ContentProperty(nameof(Item))]
-public class Slot : ContentView
+public class Slot : ContentControl
 {
 	public Slot() => this.ContextChanged(args => ApplyContent());
 
@@ -38,5 +36,6 @@ public class Slot : ContentView
 
 	private void ApplyContent() => Content = (Item ?? this.GetContext()).Is(out var item) && ItemTemplate.Is(out var template)
 		? template.CreateView(item)
-		: item.Is(out View view) ? view : new Label { Text = item?.ToString() };
+		: item.Is(out View view) ? view : new Label { Text = item?.ToString() }
+		;
 }

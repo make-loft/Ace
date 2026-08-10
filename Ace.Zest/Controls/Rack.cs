@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-#if XAMARIN
-using Xamarin.Forms;
-using FrameworkElement = Xamarin.Forms.BindableObject;
-using DependencyObject = Xamarin.Forms.BindableObject;
-using DependencyProperty = Xamarin.Forms.BindableProperty;
+﻿using System.Text;
+using System.Windows;
+using System.Windows.Data;
+
+//using Binding = System.Windows.Data.Binding;
+#if MAUI
+using DependencyObject = Microsoft.Maui.Controls.BindableObject;
+using FrameworkElement = Microsoft.Maui.Controls.BindableObject;
 using DependencyPropertyChangedEventArgs = System.Windows.DependencyPropertyChangedEventArgs;
 using PropertyMetadata = System.Windows.PropertyMetadata;
 using PropertyPath = System.Windows.PropertyPath;
-using Binding = System.Windows.Data.Binding;
 using static System.Windows.BindablePropertyExtensions;
-#else
-using System.Windows;
+#endif
+#if XAMARIN
+using FrameworkElement = Xamarin.Forms.BindableObject;
+using DependencyPropertyChangedEventArgs = System.Windows.DependencyPropertyChangedEventArgs;
+using PropertyMetadata = System.Windows.PropertyMetadata;
+using PropertyPath = System.Windows.PropertyPath;
+using static System.Windows.BindablePropertyExtensions;
+
+using DependencyObject = Xamarin.Forms.BindableObject;
+#endif
+#if DESKTOP
 using System.Windows.Controls;
 using System.Windows.Data;
 using static System.Windows.DependencyProperty;
@@ -25,7 +32,7 @@ public struct DefinitionProperties
 {
 	public static DefinitionProperties Rows = new()
 	{
-#if !XAMARIN
+#if !(XAMARIN || MAUI)
 		Min = RowDefinition.MinHeightProperty,
 		Max = RowDefinition.MaxHeightProperty,
 #endif
@@ -34,7 +41,7 @@ public struct DefinitionProperties
 
 	public static DefinitionProperties Cols = new()
 	{
-#if !XAMARIN
+#if !(XAMARIN || MAUI)
 		Min = ColumnDefinition.MinWidthProperty,
 		Max = ColumnDefinition.MinWidthProperty,
 #endif
@@ -225,7 +232,7 @@ public partial class Rack : Grid
 
 	private static void Bind(Grid grid, DependencyObject definition, DependencyProperty property,
 		PropertyPath updateTriggerPropertyPath)
-		=> definition.SetBinding(property, new Binding
+		=> definition.SetBinding(property, new System.Windows.Data.Binding
 		{
 			Source = grid,
 			Path = updateTriggerPropertyPath,
@@ -274,7 +281,7 @@ public partial class Rack : Grid
 		var sssPattern = patterns.FirstOrDefault(p => p.StartsWith("SSS"))?.Replace("SSS", "").TrimStart(TrimStartChars);
 		var colSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("CS"))?.Replace("CS", "").TrimStart(TrimStartChars);
 		var rowSpanPattern = patterns.FirstOrDefault(p => p.StartsWith("RS"))?.Replace("RS", "").TrimStart(TrimStartChars);
-#if !XAMARIN
+#if !(XAMARIN || MAUI)
 		if (sssPattern.TryParse(out bool sharedSizeScope)) SetIsSharedSizeScope(element, sharedSizeScope);
 #endif
 		if (colSpanPattern.TryParse(out int colSpan)) SetColumnSpan(element, AdaptSpan(colSpan));
@@ -320,7 +327,7 @@ public partial class Rack : Grid
 
 	private const GridUnitType Auto = GridUnitType.Auto;
 	private const GridUnitType Star = GridUnitType.Star;
-#if XAMARIN
+#if XAMARIN || MAUI
 	private const GridUnitType Pixel = GridUnitType.Absolute;
 	private static void SetShowGridLines(Grid grid, bool value) { }
 #else

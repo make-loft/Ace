@@ -1,20 +1,15 @@
 ﻿using System.Collections;
-#if XAMARIN
-using Xamarin.Forms;
-using Property = Xamarin.Forms.BindableProperty;
-#else
-using Property = System.Windows.DependencyProperty;
+#if DESKTOP
 using System.Windows.Markup;
 using System.Windows;
 
-using View = System.Windows.Controls.ContentControl;
 #endif
 
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
 namespace Ace.Controls;
 
 [ContentProperty(nameof(Items))]
-public class List : View
+public class List : ContentControl
 {
 	static List()
 	{

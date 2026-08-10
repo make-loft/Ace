@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Globalization;
-#if XAMARIN
-using IValueConverter = Xamarin.Forms.IValueConverter;
-#else
-using System.Windows.Data;
-#endif
 using System.Windows;
 
 namespace Ace.Markup.Patterns;

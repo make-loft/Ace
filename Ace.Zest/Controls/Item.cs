@@ -1,19 +1,15 @@
-﻿#if XAMARIN
-using Xamarin.Forms;
-
-using Property = Xamarin.Forms.BindableProperty;
-#else
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Markup;
-
-using View = System.Windows.FrameworkElement;
-using Property = System.Windows.DependencyProperty;
-#endif
+﻿using System.Windows.Data;
 
 namespace Ace.Controls;
 
-public class Item : ContentView
+#if XAMARIN
+using Binding = Xamarin.Forms.Binding;
+#endif
+#if MAUI
+using Binding = Microsoft.Maui.Controls.Binding;
+#endif
+
+public class Item : ContentControl
 {
 	public static readonly Property HeaderProperty = Type<Item>.Create(v => v.Header);
 

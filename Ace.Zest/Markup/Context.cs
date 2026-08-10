@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-namespace Ace.Markup;
+﻿namespace Ace.Markup;
 
 using System.Linq;
 using System.Windows;
@@ -8,13 +6,7 @@ using System.Windows;
 using Ace.Input;
 using Ace.Evocators;
 
-#if XAMARIN
-using Xamarin.Forms;
-using System.Windows.Data;
-using Command = Ace.Input.Command;
-using ContextElement = Xamarin.Forms.Element;
-using AContextExtension = Ace.Markup.Patterns.AMarkupExtension;
-#else
+#if DESKTOP
 using Ace.Markup.Patterns;
 using System.ComponentModel;
 using System.Globalization;
@@ -35,8 +27,20 @@ public abstract class AContextExtension : ABindingExtension
 }
 #endif
 
+
+#if XAMARIN || MAUI
+//using AContextExtension = Patterns.AMarkupExtension;
+using System.ComponentModel;
+using System.Windows.Data;
+#endif
+
 [ContentProperty(nameof(Key))]
+#if XAMARIN || MAUI
+public class Context : Patterns.AMarkupExtension
+
+#else
 public class Context : AContextExtension
+#endif
 {
 	private PropertyChangedWatcher _keyPathWatcher, _sourcePathWatcher, _trackedPathWatcher;
 
@@ -44,7 +48,7 @@ public class Context : AContextExtension
 	public Context(string key) => Key = key;
 
 	public string Key { get; set; }
-#if XAMARIN
+#if XAMARIN || MAUI
 	public object Source { get; set; }
 	public BindingMode Mode { get; set; }
 	[TypeConverter(typeof(PathConverter))] public PropertyPath KeyPath { get; set; }
@@ -71,7 +75,7 @@ public class Context : AContextExtension
 				else
 					mediator.Set(targetObject, GetCommandEvocator(FindNearestContextObject(element, Key)));
 			}
-#if XAMARIN
+#if XAMARIN || MAUI
 			element.BindingContextChanged += Set;
 
 			void Set(object sender, EventArgs args)
@@ -121,7 +125,7 @@ public class Context : AContextExtension
 		return mediator;
 	}
 
-#if XAMARIN
+#if XAMARIN || MAUI
 	public static object GetContext(ContextElement element) => element.BindingContext;
 #else
 	public static object GetContext(ContextElement element) => element.DataContext;
@@ -141,6 +145,6 @@ public class Context : AContextExtension
 
 	private CommandEvocator GetCommandEvocator(object target) => target.Is(out ContextObject contextObject)
 		? contextObject[Ace.Context.Get(Key)]
-		: null
+		: default
 		;
 }

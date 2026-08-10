@@ -1,21 +1,19 @@
 ﻿#if XAMARIN
-using Xamarin.Forms;
-using View = Xamarin.Forms.View;
-using Property = Xamarin.Forms.BindableProperty;
 using Panel = Xamarin.Forms.Layout<Xamarin.Forms.View>;
-#else
+
+#endif
+#if MAUI
+using FrameworkElement = Microsoft.Maui.Controls.BindableObject;
+//using View = Microsoft.Maui.Controls.View;
+using Panel = Microsoft.Maui.Controls.Layout;
+#endif
+#if DESKTOP
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Controls;
-using View = System.Windows.FrameworkElement;
-using Property = System.Windows.DependencyProperty;
-using BindableObject = System.Windows.DependencyObject;
 #endif
 using System.Windows;
 using System.Linq.Expressions;
-using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -40,7 +38,7 @@ public static class New
 
 	public static View CreateView(this DataTemplate template) => (View)template.LoadContent();
 
-#if XAMARIN
+#if XAMARIN || MAUI
 	public static View LoadContent(this DataTemplate template) => (View)template.CreateContent();
 
 	public static object GetContext(this View view) => view.BindingContext;
@@ -106,7 +104,7 @@ public static class New
 
 public static class Type<TOwner>
 {
-#if XAMARIN
+#if XAMARIN || MAUI
 	public static Property Create<TValue>(Expression<Func<TOwner, TValue>> func)
 		=> NameToProperty[func.UnboxMemberName().To(out var name)]
 			= Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw);
@@ -182,7 +180,7 @@ public static class Type<TOwner>
 			;
 
 		property =
-#if XAMARIN
+#if XAMARIN || MAUI
 			Property.Create(name, TypeOf<TValue>.Raw, TypeOf<TOwner>.Raw, defaultValue, propertyChanged: (s, o, n) =>
 				handler.EvokeChanged(new((TOwner)(object)s, (TValue)o, (TValue)n)))
 #else
@@ -250,8 +248,8 @@ public class RegisterPropertyAttribute : Attribute
 
 public static class BindableExtantions
 {
-	public static Property Register(this PropertyInfo info, PropertyMetadata metadata = default)
-		=> Property.Register(info.Name, info.PropertyType, info.DeclaringType, metadata);
+	//public static Property Register(this PropertyInfo info, PropertyMetadata metadata = default)
+	//	=> Property.Register(info.Name, info.PropertyType, info.DeclaringType, metadata);
 
 	public static TValue Get<TBindable, TValue>(this TBindable bindable,
 		TValue defaultValue = default, [CallerMemberName] string name = default)
@@ -352,7 +350,7 @@ public class Children
 	public static DataTemplate GetItemTemplate(Panel b) => (DataTemplate)b.GetValue(ItemTemplateProperty);
 }
 
-#if XAMARIN
+#if XAMARIN || MAUI
 public class Title : Label
 {
 	public TextAlignment TextAlignment
@@ -372,9 +370,9 @@ public class Knob : Button
 		set => SetValue(ContentProperty, value);
 	}
 }
-
+#if XAMARIN
 public class Border : Frame { }
-
+#endif
 public class GridSplitter : Grid { }
 public class RackSplitter : GridSplitter { }
 #else

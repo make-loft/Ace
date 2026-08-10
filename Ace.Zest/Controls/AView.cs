@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-#if XAMARIN
-using Xamarin.Forms;
-
-using Property = Xamarin.Forms.BindableProperty;
-#else
-using View = System.Windows.FrameworkElement;
-using Property = System.Windows.DependencyProperty;
-#endif
+﻿using System.Linq.Expressions;
 
 namespace Ace.Controls;
 
-public abstract class AView<TView> : ContentView where TView : View
+public abstract class AView<TView> : ContentControl where TView : View
 {
 	private readonly static Dictionary<string, Property> NameToProperty = [];
 

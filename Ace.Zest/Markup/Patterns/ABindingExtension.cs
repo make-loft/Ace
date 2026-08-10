@@ -2,6 +2,11 @@
 using System.Globalization;
 using System.Windows.Data;
 
+#if XAMARIN || MAUI
+using Binding = System.Windows.Data.Binding;
+using IValueConverter = System.Windows.Data.IValueConverter;
+#endif
+
 namespace Ace.Markup.Patterns;
 
 public abstract class ABindingExtension : Binding, IValueConverter

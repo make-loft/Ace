@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 
 using Ace.Replication.Models;
 using Ace.Serialization.Serializators;
 
 using static System.Char;
-using static System.Globalization.UnicodeCategory;
 
 namespace Ace.Serialization;
 
@@ -160,7 +156,7 @@ public class KeepProfile
 		} while (offset < data.Length);
 	}
 
-	static readonly UnicodeCategory[] SkipableCategories = { Format, Control };
+	static readonly UnicodeCategory[] SkipableCategories = [UnicodeCategory.Format, UnicodeCategory.Control ];
 	public bool IsSkipable(char c, string forSkip = ",;.:") => IsLetterOrDigit(c)
 		? false
 		: IsWhiteSpace(c) || IsSeparator(c) || SkipableCategories.Contains(GetUnicodeCategory(c)) || forSkip.Contains(c)

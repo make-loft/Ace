@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using Ace.Controls;
+using Binding = System.Windows.Data.Binding;
 #if XAMARIN
 using ResourceDictionary = Xamarin.Forms.ResourceDictionary;
 #else
@@ -49,7 +50,7 @@ public class Map : ResourceDictionary, INotifyPropertyChanged
 				yield return pair;
 			}
 		}
-#if XAMARIN
+#if XAMARIN || MAUI
 		foreach (KeyValuePair<string, object> pair in dictionary)
 		{
 			yield return pair;
@@ -62,7 +63,7 @@ public class Map : ResourceDictionary, INotifyPropertyChanged
 		}
 #endif
 	}
-#if XAMARIN
+#if XAMARIN || MAUI
 	public new bool ContainsKey(string key) => Keys.Contains(key) || MergedDictionaries.Reverse().Any(d => d.Keys.Contains(key));
 
 	public new bool TryGetValue(string key, out object value)

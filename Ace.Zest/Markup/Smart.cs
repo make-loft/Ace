@@ -2,12 +2,8 @@
 using System.Globalization;
 using System.Windows;
 using System.Linq;
-
-#if XAMARIN
-using Xamarin.Forms;
-#else
+#if !XAMARIN
 using System.ComponentModel;
-using System.Windows.Data;
 using System.Windows.Markup;
 #endif
 

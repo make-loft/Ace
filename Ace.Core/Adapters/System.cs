@@ -2,8 +2,8 @@
 using System.Reflection;
 
 namespace System;
-
-public static class Attribute
+#if !MAUI && !XAMARIN
+public static class AttributeE
 {
     public static bool IsDefined(Type type, Type attributeType)
     {
@@ -11,10 +11,11 @@ public static class Attribute
     }
 }
 
-public static class Reflection
+public static class ReflectionE
 {
     public static PropertyInfo GetProperty(this Type type, string name)
     {
         return type.GetTypeInfo().GetDeclaredProperty(name);
     }
 }
+#endif

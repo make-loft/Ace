@@ -1,12 +1,4 @@
-﻿#if XAMARIN
-using Xamarin.Forms;
-
-using Property = Xamarin.Forms.BindableProperty;
-#else
-using System.Windows.Controls;
-#endif
-
-namespace Ace.Controls;
+﻿namespace Ace.Controls;
 
 public partial class ItemCell : Border
 {

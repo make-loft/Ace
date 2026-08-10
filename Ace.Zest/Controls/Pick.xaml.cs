@@ -1,16 +1,19 @@
 ﻿using Ace.Extensions;
 
-using System;
-
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-
 namespace Ace.Controls;
 
 [XamlCompilation(XamlCompilationOptions.Skip)]
-public partial class Pick
+public partial class Pick : List
 {
 	public Pick() => InitializeComponent();
+
+	public static readonly BindableProperty TitleProperty
+		= Type<Picker>.Create(v => v.Title);
+	public string Title
+	{
+		get => this.Get("");
+		set => this.Set(value);
+	}
 
 	private void ItemCell_Tapped(object sender, EventArgs e)
 	{

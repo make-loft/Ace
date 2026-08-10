@@ -5,6 +5,7 @@
 		<RootNamespace>Ace</RootNamespace>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>preview</LangVersion>
+		<UseMaui>true</UseMaui>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,7 +29,9 @@
 		<Compile Remove="Ace.Zest\bin\**" />
 		<Compile Remove="Ace.Zest\obj\**" />
 		<Compile Remove="Ace.Zest\Properties\**" />
+		<Compile Remove="Compressor\**" />
 		<Compile Remove="Dictionaries\**" />
+		<Compile Remove="Platforms\**" />
 		<Compile Remove="Properties\**" />
 		<EmbeddedResource Remove="Ace.Base\bin\**" />
 		<EmbeddedResource Remove="Ace.Base\obj\**" />
@@ -42,7 +45,9 @@
 		<EmbeddedResource Remove="Ace.Zest\bin\**" />
 		<EmbeddedResource Remove="Ace.Zest\obj\**" />
 		<EmbeddedResource Remove="Ace.Zest\Properties\**" />
+		<EmbeddedResource Remove="Compressor\**" />
 		<EmbeddedResource Remove="Dictionaries\**" />
+		<EmbeddedResource Remove="Platforms\**" />
 		<EmbeddedResource Remove="Properties\**" />
 		<None Remove="Ace.Base\bin\**" />
 		<None Remove="Ace.Base\obj\**" />
@@ -56,12 +61,15 @@
 		<None Remove="Ace.Zest\bin\**" />
 		<None Remove="Ace.Zest\obj\**" />
 		<None Remove="Ace.Zest\Properties\**" />
+		<None Remove="Compressor\**" />
 		<None Remove="Dictionaries\**" />
+		<None Remove="Platforms\**" />
 		<None Remove="Properties\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="Ace.Base\WildThread.cs" />
+		<Compile Remove="Ace.Core\Adapters\Net4.0.cs" />
 		<Compile Remove="Ace.Core\Adapters\System.Threading.cs" />
 		<Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
 		<Compile Remove="Ace.Zest\Adapters\Xamarin.Essentials.cs" />
@@ -92,6 +100,7 @@
 		<None Remove="Ace.Base\packages.config" />
 		<None Remove="Ace.Zest\Ace.Zest.Xamarin.csproj.DotSettings" />
 		<None Remove="Ace.Zest\packages.config" />
+		<None Remove="azure-pipelines.yml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -109,6 +118,12 @@
 
 	<ItemGroup>
 		<Folder Include="Ace.Zest\Dictionaries\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="System.Xaml">
+	    <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Xaml.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>

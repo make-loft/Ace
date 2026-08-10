@@ -2,11 +2,13 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+#if MAUI
+using DependencyObject = Microsoft.Maui.Controls.Element;
+#endif
 #if XAMARIN
-using Xamarin.Forms;
-using DependencyObject = Xamarin.Forms.BindableObject;
-using DependencyProperty = Xamarin.Forms.BindableProperty;
-#else
+using DependencyObject = Xamarin.Forms.Element;
+#endif
+#if DESKTOP
 using System.Windows;
 using System.Windows.Data;
 #endif
@@ -16,7 +18,7 @@ namespace Ace;
 internal class PropertyChangedWatcher : DependencyObject, INotifyPropertyChanged, IValueConverter
 {
 	public static readonly DependencyProperty TargetProperty =
-#if XAMARIN
+#if XAMARIN || MAUI
 		DependencyProperty.Create("Context", typeof(object), typeof(PropertyChangedWatcher), default);
 
 	public new event PropertyChangedEventHandler PropertyChanged;

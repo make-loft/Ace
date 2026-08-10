@@ -1,27 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Media;
+﻿using System.Windows.Media;
+
 #if XAMARIN
-using DependencyObject = Xamarin.Forms.Element;
-#else
-using System.Windows;
+using VisualElement = Xamarin.Forms.Element;
+#endif
+#if MAUI
+using VisualElement = Microsoft.Maui.Controls.Element;
+#endif
+#if DESKTOP
+using VisualElement = System.Windows.DependencyObject;
 #endif
 
 namespace Ace;
 
 public static class VisualTree
 {
-	public static DependencyObject GetVisualParent(this DependencyObject current)
+	public static VisualElement GetVisualParent(this VisualElement current)
 		=> VisualTreeHelper.GetParent(current);
 
-	public static IEnumerable<DependencyObject> EnumerateVisualChildren(this DependencyObject current)
+	public static IEnumerable<VisualElement> EnumerateVisualChildren(this VisualElement current)
 	{
 		var n = VisualTreeHelper.GetChildrenCount(current);
 		for (var i = 0; i < n; i++)
 			yield return VisualTreeHelper.GetChild(current, i);
 	}
 
-	public static IEnumerable<DependencyObject> EnumerateVisualDescendants(this DependencyObject current)
+	public static IEnumerable<VisualElement> EnumerateVisualDescendants(this VisualElement current)
 	{
 		foreach (var child in current.EnumerateVisualChildren())
 		{
@@ -32,7 +35,7 @@ public static class VisualTree
 		}
 	}
 
-	public static IEnumerable<DependencyObject> EnumerateVisualAncestors(this DependencyObject current)
+	public static IEnumerable<VisualElement> EnumerateVisualAncestors(this VisualElement current)
 	{
 		while (true)
 		{
@@ -42,9 +45,9 @@ public static class VisualTree
 		}
 	}
 
-	public static IEnumerable<DependencyObject> EnumerateSelfAndVisualAncestors(this DependencyObject current)
+	public static IEnumerable<VisualElement> EnumerateSelfAndVisualAncestors(this VisualElement current)
 		=> current.ToEnumerable().Concat(current.EnumerateVisualAncestors());
 	
-	public static IEnumerable<DependencyObject> EnumerateSelfAndVisualDescendants(this DependencyObject current)
+	public static IEnumerable<VisualElement> EnumerateSelfAndVisualDescendants(this VisualElement current)
 		=> current.ToEnumerable().Concat(current.EnumerateVisualDescendants());
 }

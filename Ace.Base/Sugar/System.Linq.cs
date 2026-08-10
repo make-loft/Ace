@@ -195,11 +195,11 @@ public static class EnumerableExtensions
 
 	public static IEnumerable<T> ConcatItems<T>(this IEnumerable<T> collection, params T[] items)
 		=> Enumerable.Concat(collection, items);
-
+#if !MAUI
 	public static Dictionary<TKey, TValue>
 		ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items)
 		=> items.ToDictionary(Pair<TKey, TValue>.Key, Pair<TKey, TValue>.Value);
-
+#endif
 	public static Dictionary<TValue, TKey>
 		ToMirrorDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> items)
 		=> items.ToDictionary(Pair<TKey, TValue>.Value, Pair<TKey, TValue>.Key);
@@ -262,7 +262,7 @@ public static class EnumerableExtensions
 			else yield return item;
 		}
 	}
-
+#if !MAUI
 	public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize)
 	{
 		using var enumerator = source.GetEnumerator();
@@ -272,7 +272,7 @@ public static class EnumerableExtensions
 			yield return ChunkSequence(enumerator, chunkSize);
 		}
 	}
-
+#endif
 	private static IEnumerable<T> ChunkSequence<T>(IEnumerator<T> enumerator, int chunkSize)
 	{
 		var count = 0;
