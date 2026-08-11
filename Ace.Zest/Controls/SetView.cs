@@ -502,20 +502,15 @@ public class SetView : ContentControl
 
 	public static BindableProperty SelectedItemProperty = Type<SetView>.Create(v => v.SelectedItem, args =>
 	{
-		if (args.NewValue.IsNot())
-		{
-			return;
-		}
-
 		var setView = args.Sender;
 		var items = setView.ItemsSource ?? setView.Items;
 		var item = args.NewValue;
 		args.Sender.ItemSelected?.Invoke(item, new(item, items.IndexOf(item)));
 
 		var groupContainers = args.Sender
-			.Content?.To<ScrollView>()
-			.Content?.To<AbsoluteLayout>()
-			.Children.OfType<Layout>()
+			?.Content?.As<ScrollView>()
+			?.Content?.As<AbsoluteLayout>()
+			?.Children.OfType<Layout>()
 			;
 
 		if (groupContainers.IsNot()) return;
