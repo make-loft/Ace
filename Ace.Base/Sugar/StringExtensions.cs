@@ -1,11 +1,9 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using System.Globalization;
 
 using static System.Globalization.NumberStyles;
 using static System.Globalization.NumberFormatInfo;
-using System.Collections.Generic;
-
 
 namespace Ace;
 
@@ -18,6 +16,8 @@ public static class StringExtensions
 	public static string Format(this string value, params object[] args) => string.Format(value, args);
 	public static string Format(this string value, IFormatProvider provider, params object[] args)
 		=> string.Format(provider, value, args);
+
+	public static string Unescape(this string value) => Regex.Unescape(value);
 
 	private static readonly Dictionary<string, char[]> stringToChars = [];
 

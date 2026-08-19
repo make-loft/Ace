@@ -5,7 +5,7 @@ namespace Ace.Mathematics;
 
 public static class Visualisation
 {
-	public static async void Animate(
+	public static async Task Animate(
 		this Action<double> action,
 		int framesCount,
 		int frameDuration_Milliseconds = 4,

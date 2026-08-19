@@ -17,6 +17,7 @@ using Colors = Xamarin.Forms.Color;
 using TappedHandler = System.EventHandler;
 #endif
 #if MAUI
+using Microsoft.Maui.Controls.Shapes;
 using static Microsoft.Maui.ScrollOrientation;
 using static Microsoft.Maui.Controls.ScrollToPosition;
 using TappedHandler = System.EventHandler<Microsoft.Maui.Controls.TappedEventArgs>;
@@ -31,6 +32,9 @@ public class SetView : ContentControl
 {
 	public class Cell : Rack
 	{
+#if MAUI
+		public static IShape StrokeShape = new RoundRectangle { CornerRadius = new(5d) };
+#endif
 		private static readonly Color TransparentGrayColor = new(0.5f, 0.5f, 0.5f, 0.0f);
 		private static readonly Brush TransparentGrayBrush = new SolidColorBrush(TransparentGrayColor);
 
@@ -76,8 +80,11 @@ public class SetView : ContentControl
 			BindingContext = item,
 			Children =
 			{
-				new Border {  },
-				//new Frame { CornerRadius = 5f, HasShadow = false },
+#if MAUI
+				new Border { StrokeShape = Cell.StrokeShape, StrokeThickness = 0 },
+#else
+				new Frame { CornerRadius = 5f, HasShadow = false },
+#endif
 				maker().To(out var content).Is(out ViewCell cell)
 					? cell.View
 					: content.As<View>()
@@ -122,7 +129,7 @@ public class SetView : ContentControl
 		return true;
 	}
 
-	public async Task TryScrollTo(object item, ScrollToPosition position = Center, bool animated = true)
+	public async Task TryScrollTo(object item, ScrollToPosition position = Center, bool animate = true)
 	{
 		if (Content.IsNot(out ScrollView scrollView) || IsLoaded is false) return;
 
@@ -172,16 +179,27 @@ public class SetView : ContentControl
 			_ => throw new NotImplementedException()
 		};
 
-		if (animated)
-			scrollToAction.Animate(
+
+		if (animate)
+		{
+			if (_animationState.Is(true))
+				_breakState = true;
+
+			_animationState = true;
+			await scrollToAction.Animate(
 				change: value =>
 					fromVisualOffset + (1d - Math.Pow(1d - value, 3d)) * (tillVisualOffset - fromVisualOffset),
-
+				@break: () => _breakState,
+				finish: () => _animationState = _breakState = false,
 				framesCount: 48,
 				frameDuration_Milliseconds: 4);
+		}
 		else
 			scrollToAction(tillVisualOffset);
 	}
+
+	private bool _breakState;
+	private bool _animationState;
 
 	private INotifyCollectionChanged _collection;
 	private int itemsInLineCount;
@@ -224,7 +242,10 @@ public class SetView : ContentControl
 
 		content.SizeChanged += async (sender, args) =>
 		{
-			if (ItemsSource.IsNot()) return;
+			var isVisibleSize = content.Height > 0 && content.Width > 0;
+
+			if (ItemsSource.IsNot())
+				return;
 
 			IsLoaded = false;
 
@@ -287,7 +308,8 @@ public class SetView : ContentControl
 
 			IsLoaded = true;
 
-			await TryScrollTo(SelectedItem);
+			if (isVisibleSize)
+				await TryScrollTo(SelectedItem);
 		};
 	}
 
@@ -555,15 +577,16 @@ public class SetView : ContentControl
 	}
 
 	public event EventHandler<SelectedItemChangedEventArgs> ItemSelected;
-	public event ItemMakerDelegate GroupHeaderMaker;
-	public event ItemMakerDelegate ItemMaker;
+
+	public ItemMakerDelegate GroupHeaderMaker;
+	public ItemMakerDelegate ItemMaker;
 
 	public bool IsGroupingEnabled { get; set; } = false;
 	public DataTemplate GroupHeaderTemplate { get; set; }
 	public BindingBase ItemDisplayBinding { get; set; }
 
 	public static BindableProperty ItemTemplateProperty
-	= Type<SetView>.Create(v => v.ItemTemplate, args => args.Sender.Changed());
+		= Type<SetView>.Create(v => v.ItemTemplate, args => args.Sender.Changed());
 
 	public DataTemplate ItemTemplate
 	{

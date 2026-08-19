@@ -1,14 +1,33 @@
-﻿using System;
+﻿using Ace.Evocators;
+
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Ace;
 
-
 public static partial class LE
 {
+	public static PropertyEvocator When<TValue>(this INotifyPropertyChanged item,
+		Expression<Func<TValue>> expression)
+		=> item.When(expression.UnboxMemberName());
+
+	public static PropertyEvocator When(this INotifyPropertyChanged item, string propertyName)
+	{
+		var evokator = new PropertyEvocator(propertyName);
+		item.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName.Is(evokator.Name))
+				evokator.EvokeChanged(new(sender, propertyName));
+		};
+
+		return evokator;
+	}
+
 	public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, object> map, TKey key, TValue fallbackValue = default)
 		=> map.TryGetValue(key, out var value) ? (TValue)value : fallbackValue;
 
