@@ -73,3 +73,5 @@ using XmlnsPrefixAttribute = Microsoft.Maui.Controls.XmlnsPrefixAttribute;
 //[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup.Converters")]
 //[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Markup")]
 //[assembly: XmlnsPrefix("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "m")]
+
+[assembly: XamlCompilation(XamlCompilationOptions.Skip)]

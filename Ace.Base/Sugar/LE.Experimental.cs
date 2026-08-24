@@ -12,6 +12,10 @@ namespace Ace;
 
 public static partial class LE
 {
+	public static PropertyEvocator When<TSource, TValue>(this INotifyPropertyChanged item,
+		Expression<Func<TSource, TValue>> expression)
+		=> item.When(expression.UnboxMemberName());
+
 	public static PropertyEvocator When<TValue>(this INotifyPropertyChanged item,
 		Expression<Func<TValue>> expression)
 		=> item.When(expression.UnboxMemberName());

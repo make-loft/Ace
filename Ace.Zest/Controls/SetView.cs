@@ -42,8 +42,8 @@ public class SetView : ContentControl
 		{
 			if (isSelected)
 			{
-				setView._selectedCell?.SetState(false, setView);
-				setView._selectedCell = this;
+				setView._activeCell?.SetState(false, setView);
+				setView._activeCell = this;
 			}
 
 			Children[0].To<View>().BackgroundColor = isSelected
@@ -64,7 +64,7 @@ public class SetView : ContentControl
 		}
 	}
 
-	private Cell _selectedCell;
+	private Cell _activeCell;
 
 	public Cell CreateCell(object item, ItemMakerDelegate maker, TappedHandler tapped,
 		double size, ScrollOrientation orientation) => new Cell()
@@ -94,7 +94,7 @@ public class SetView : ContentControl
 				new TapGestureRecognizer().Use(r => r.Tapped += tapped)
 			}
 		}
-		.Use(c => c.SetState(item.Is(SelectedItem), this));
+		.Use(c => c.SetState(item.Is(ActiveItem), this));
 
 	public async Task TryScrollTo(double scrollX, double scrollY, bool animated = true)
 	{
@@ -289,9 +289,9 @@ public class SetView : ContentControl
 			if (items.Count > scrollView.Height / itemLength)
 				await Task.Delay(8);
 
-			if (TryGetItemVisualOffset(SelectedItem, out var itemVisualOffset))
+			if (TryGetItemVisualOffset(ActiveItem, out var itemVisualOffset))
 			{
-				var selectedItemOffset = items.OffsetOf(SelectedItem);
+				var selectedItemOffset = items.OffsetOf(ActiveItem);
 				var animationVisualOffset = items.Count / 2 < selectedItemOffset ? itemSize - scrollView.Height : +0d; 
 			
 				if (Orientation is Vertical)
@@ -309,7 +309,7 @@ public class SetView : ContentControl
 			IsLoaded = true;
 
 			if (isVisibleSize)
-				await TryScrollTo(SelectedItem);
+				await TryScrollTo(ActiveItem);
 		};
 	}
 
@@ -400,7 +400,7 @@ public class SetView : ContentControl
 		{
 			s.To(out Cell cell).BindingContext.To(out var item);
 
-			SelectedItem = AllowSelectedItemReset && SelectedItem.Is(item)
+			ActiveItem = AllowActiveItemReset && ActiveItem.Is(item)
 				? default
 				: item
 				;
@@ -522,49 +522,56 @@ public class SetView : ContentControl
 		set => SetValue(IsLoadedProperty, value);
 	}
 
-	public static BindableProperty SelectedItemProperty = Type<SetView>.Create(v => v.SelectedItem, args =>
+	public static BindableProperty ActiveItemProperty = Type<SetView>.Create(v => v.ActiveItem, args =>
 	{
-		var setView = args.Sender;
-		var items = setView.ItemsSource ?? setView.Items;
-		var item = args.NewValue;
-		args.Sender.ItemSelected?.Invoke(item, new(item, items.IndexOf(item)));
-
-		var groupContainers = args.Sender
-			?.Content?.As<ScrollView>()
-			?.Content?.As<AbsoluteLayout>()
-			?.Children.OfType<Layout>()
-			;
-
-		if (groupContainers.IsNot()) return;
-
-		foreach (var groupContainer in groupContainers)
+		try
 		{
-			var lines = groupContainer.Children.Last().To<Rack>().Children.OfType<Layout>();
-			if (lines.IsNot()) return;
+			var setView = args.Sender;
+			var items = setView.ItemsSource ?? setView.Items;
+			var item = args.NewValue;
+			args.Sender.ActiveItemChanged?.Invoke(item, new(item, items.IndexOf(item)));
 
-			foreach (var line in lines)
+			var groupContainers = args.Sender
+				?.Content?.As<ScrollView>()
+				?.Content?.As<AbsoluteLayout>()
+				?.Children.OfType<Layout>()
+				;
+
+			if (groupContainers.IsNot()) return;
+
+			foreach (var groupContainer in groupContainers)
 			{
-				var cell = line.Children.OfType<Cell>().FirstOrDefault(c => c.BindingContext.Is(args.NewValue));
-				if (cell.Is())
-				{
-					if (setView._selectedCell.Is(cell))
-						return;
+				var lines = groupContainer.Children.Last().To<Rack>().Children.OfType<Layout>();
+				if (lines.IsNot()) return;
 
-					cell.SetState(true, setView);
-					return;
+				foreach (var line in lines)
+				{
+					var cell = line.Children.OfType<Cell>().FirstOrDefault(c => c.BindingContext.Is(args.NewValue));
+					if (cell.Is())
+					{
+						if (setView._activeCell.Is(cell))
+							return;
+
+						cell.SetState(true, setView);
+						return;
+					}
 				}
 			}
 
-			if (setView.SelectedItem.Is()) return;
-			setView._selectedCell?.SetState(false, setView);
-			setView._selectedCell = default;
+			if (setView.ActiveItem.Is()) return;
+			setView._activeCell?.SetState(false, setView);
+			setView._activeCell = default;
+		}
+		catch (Exception exception)
+		{
+			Console.WriteLine(exception);
 		}
 	});
 
-	public object SelectedItem
+	public object ActiveItem
 	{
-		get => GetValue(SelectedItemProperty);
-		set => SetValue(SelectedItemProperty, value);
+		get => GetValue(ActiveItemProperty);
+		set => SetValue(ActiveItemProperty, value);
 	}
 
 	public static BindableProperty ItemsSourceProperty
@@ -576,12 +583,12 @@ public class SetView : ContentControl
 		set => this.Set(value);
 	}
 
-	public event EventHandler<SelectedItemChangedEventArgs> ItemSelected;
+	public event EventHandler<SelectedItemChangedEventArgs> ActiveItemChanged;
 
-	public ItemMakerDelegate GroupHeaderMaker;
-	public ItemMakerDelegate ItemMaker;
+	public event ItemMakerDelegate GroupHeaderMaker;
+	public event ItemMakerDelegate ItemMaker;
 
-	public bool IsGroupingEnabled { get; set; } = false;
+	public bool IsGroupingEnabled => GroupHeaderMaker.Is() || GroupHeaderTemplate.Is();
 	public DataTemplate GroupHeaderTemplate { get; set; }
 	public BindingBase ItemDisplayBinding { get; set; }
 
@@ -599,9 +606,25 @@ public class SetView : ContentControl
 	public double ItemSize { get; set; } = 48d;
 	public double ItemLength { get; set; } = 0d;
 	public double GroupHeaderSize { get; set; } = 48d;
-	public bool AllowSelectedItemReset { get; set; } = true;
+	public bool AllowActiveItemReset { get; set; } = true;
 
 	public Color SelectionBackgroundColor { get; set; } = Colors.Orange;
 	public Brush SelectionBackground { get; set; }
+
+	public void SyncFrom(SetView setView)
+	{
+		AllowActiveItemReset = setView.AllowActiveItemReset;
+
+		GroupHeaderTemplate = setView.GroupHeaderTemplate;
+		GroupHeaderMaker = setView.GroupHeaderMaker;
+		GroupHeaderSize = setView.GroupHeaderSize;
+
+		ItemTemplate = setView.ItemTemplate;
+		ItemLength = setView.ItemLength;
+		ItemMaker = setView.ItemMaker;
+		ItemSize = setView.ItemSize;
+
+		Orientation = setView.Orientation;
+	}
 	#endregion
 }

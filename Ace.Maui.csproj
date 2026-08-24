@@ -116,6 +116,10 @@
 		<Compile Remove="Ace.Zest\Adapters\System.Enum.cs" />
 		<Compile Remove="Ace.Zest\Adapters\Xamarin.Essentials.cs" />
 		<Compile Remove="Ace.Zest\Adapters\Xamarin.Forms.cs" />
+		<Compile Remove="Ace.Zest\Controls\Field.cs" />
+		<Compile Remove="Ace.Zest\Controls\Fields\Base\AField.xaml.cs" />
+		<Compile Remove="Ace.Zest\Controls\Fields\ColorField.cs" />
+		<Compile Remove="Ace.Zest\Controls\Fields\NumericField.cs" />
 		<Compile Remove="Ace.Zest\Controls\Pick.Desktop.xaml.cs" />
 		<Compile Remove="Ace.Zest\Controls\Pivot.Desktop.xaml.cs" />
 		<Compile Remove="Ace.Zest\Controls\Switch.xaml.cs" />
@@ -130,6 +134,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <MauiXaml Remove="Ace.Zest\Controls\Fields\Base\AField.xaml" />
     <MauiXaml Remove="Ace.Zest\Controls\Pick.Desktop.xaml" />
     <MauiXaml Remove="Ace.Zest\Controls\Pivot.Desktop.xaml" />
     <MauiXaml Remove="Ace.Zest\Controls\Switch.xaml" />
@@ -149,6 +154,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Ace.Base\Adapters\" />
+	  <Folder Include="Ace.Zest\Controls\Fields\Base\" />
 	  <Folder Include="Ace.Zest\Dictionaries\" />
 	</ItemGroup>
 
