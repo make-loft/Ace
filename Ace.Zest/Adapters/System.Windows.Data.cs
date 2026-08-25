@@ -3,7 +3,6 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
-using System.Windows;
 #if MAUI
 using _Binding = Microsoft.Maui.Controls.Binding;
 #endif

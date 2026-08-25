@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Windows;
 using System.Windows.Data;
 
 //using Binding = System.Windows.Data.Binding;
@@ -9,6 +8,7 @@ using FrameworkElement = Microsoft.Maui.Controls.BindableObject;
 using DependencyPropertyChangedEventArgs = System.Windows.DependencyPropertyChangedEventArgs;
 using PropertyMetadata = System.Windows.PropertyMetadata;
 using PropertyPath = System.Windows.PropertyPath;
+
 using static System.Windows.BindablePropertyExtensions;
 #endif
 #if XAMARIN
@@ -303,7 +303,7 @@ public partial class Rack : Grid
 
 	public static string AutoKeyword { get; set; } = "^";
 	public static string ActiveSplitter { get; set; } = " ";
-	public static string[] AllowedSplitters { get; set; } = {" ", ","};
+	public static string[] AllowedSplitters { get; set; } = [" ", ","];
 
 	private static string[] Separate(string pattern)
 		=> pattern?.Split(AllowedSplitters, StringSplitOptions.RemoveEmptyEntries);

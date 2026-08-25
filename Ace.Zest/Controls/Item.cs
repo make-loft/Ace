@@ -1,6 +1,4 @@
-﻿using System.Windows.Data;
-
-namespace Ace.Controls;
+﻿namespace Ace.Controls;
 
 #if XAMARIN
 using Binding = Xamarin.Forms.Binding;

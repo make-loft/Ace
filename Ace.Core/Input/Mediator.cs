@@ -1,6 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Input;
+
 using Ace.Evocators;
 
 namespace Ace.Input;

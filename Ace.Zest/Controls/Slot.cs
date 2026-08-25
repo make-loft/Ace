@@ -1,5 +1,4 @@
 ﻿#if MAUI
-using ContentView = Microsoft.Maui.Controls.ContentPresenter;
 #endif
 #if DESKTOP
 using System.Windows;

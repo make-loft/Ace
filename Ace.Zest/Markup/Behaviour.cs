@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
+
 using Ace.Adapters;
+
 using static System.Windows.DependencyProperty;
 #if XAMARIN
 using Target = Xamarin.Forms.BindableObject;
@@ -51,7 +51,7 @@ public static class Behaviour
 	}
 
 	private static readonly MethodInfo MethodInfo =
-		typeof(ContextTrigger).GetRuntimeMethod("ExecuteCommand", new[] { typeof(object), typeof(EventArgs) });
+		typeof(ContextTrigger).GetRuntimeMethod("ExecuteCommand", [typeof(object), typeof(EventArgs)]);
 
 	public static void Subscribe(object element, ContextTrigger contextTrigger)
 	{

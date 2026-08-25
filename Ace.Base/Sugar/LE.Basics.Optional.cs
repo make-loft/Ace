@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Ace;
+﻿namespace Ace;
 
 /* The Language Extensions */
 public static partial class LE_Optional

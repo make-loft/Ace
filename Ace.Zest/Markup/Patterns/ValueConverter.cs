@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows;
-
-using Ace.Controls;
+﻿using Ace.Controls;
 
 namespace Ace.Markup.Patterns;
 

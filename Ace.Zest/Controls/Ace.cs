@@ -3,7 +3,6 @@ using Panel = Xamarin.Forms.Layout<Xamarin.Forms.View>;
 
 #endif
 #if MAUI
-using FrameworkElement = Microsoft.Maui.Controls.BindableObject;
 //using View = Microsoft.Maui.Controls.View;
 using Panel = Microsoft.Maui.Controls.Layout;
 #endif
@@ -15,7 +14,6 @@ using System.Windows;
 using System.Linq.Expressions;
 using System.Collections;
 using System.Collections.Specialized;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 #if MAUI
 using DependencyObject = Microsoft.Maui.Controls.Element;
 #endif

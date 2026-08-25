@@ -1,12 +1,9 @@
-﻿using System;
-
-using Ace.Markup.Patterns;
+﻿using Ace.Markup.Patterns;
 
 #if XAMARIN
 using Xamarin.Forms;
 #else
 using System.ComponentModel;
-using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup;

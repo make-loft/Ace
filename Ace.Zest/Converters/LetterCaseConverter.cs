@@ -1,8 +1,5 @@
 ﻿using Ace.Markup.Patterns;
 
-using System;
-using System.Linq;
-
 namespace Ace.Converters;
 
 [Flags]

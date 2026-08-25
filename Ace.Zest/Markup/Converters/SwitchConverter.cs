@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 #if XAMARIN
 using Xamarin.Forms;
 #else
-using System.Windows.Markup;
 #endif
 
 using Ace.Markup.Patterns;

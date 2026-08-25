@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-
-using Ace.Replication.Models;
-
-namespace Ace.Serialization.Serializators;
+﻿namespace Ace.Serialization.Serializators;
 
 public class MapDeepSerializator : ASerializator<Map, KeyValuePair<string, object>>
 {		

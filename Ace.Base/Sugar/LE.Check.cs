@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using IBools = System.Collections.Generic.IEnumerable<bool>;
+﻿using IBools = System.Collections.Generic.IEnumerable<bool>;
 
 namespace Ace;
 

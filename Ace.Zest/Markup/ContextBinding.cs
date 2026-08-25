@@ -1,5 +1,5 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
+
 using Ace.Markup.Patterns;
 
 namespace Ace.Markup;

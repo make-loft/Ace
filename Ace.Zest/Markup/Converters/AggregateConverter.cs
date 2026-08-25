@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 #if !XAMARIN
-using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup.Converters;

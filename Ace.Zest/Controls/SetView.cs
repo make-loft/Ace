@@ -1,12 +1,8 @@
 ﻿using Ace.Controls;
 using Ace.Mathematics;
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Threading.Tasks;
 
 #if XAMARIN
 using static Xamarin.Forms.ScrollOrientation;
@@ -14,12 +10,15 @@ using static Xamarin.Forms.ScrollToPosition;
 
 using IView = Xamarin.Forms.View;
 using Colors = Xamarin.Forms.Color;
+
 using TappedHandler = System.EventHandler;
 #endif
 #if MAUI
 using Microsoft.Maui.Controls.Shapes;
+
 using static Microsoft.Maui.ScrollOrientation;
 using static Microsoft.Maui.Controls.ScrollToPosition;
+
 using TappedHandler = System.EventHandler<Microsoft.Maui.Controls.TappedEventArgs>;
 #endif
 

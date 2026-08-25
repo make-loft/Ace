@@ -31,7 +31,6 @@ public abstract class AContextExtension : ABindingExtension
 #if XAMARIN || MAUI
 //using AContextExtension = Patterns.AMarkupExtension;
 using System.ComponentModel;
-using System.Windows.Data;
 #endif
 
 [ContentProperty(nameof(Key))]

@@ -6,8 +6,6 @@ using Xamarin.Forms.Xaml;
 [assembly: XmlnsDefinition("ace", "Ace.Presentation")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Ace.Presentation")]
 #else
-using System.Reflection;
-using System.Windows.Markup;
 #if MAUI
 using XmlnsPrefixAttribute = Microsoft.Maui.Controls.XmlnsPrefixAttribute;
 #else

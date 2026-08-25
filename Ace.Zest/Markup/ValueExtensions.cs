@@ -1,15 +1,11 @@
 ﻿using Ace.Markup.Patterns;
 
-using System.Windows;
-
 #if MAUI
 using Visibility = Microsoft.Maui.Visibility;
 #endif
 #if XAMARIN
 
 #else
-using System.Windows.Markup;
-using System.Windows.Media;
 
 #endif
 

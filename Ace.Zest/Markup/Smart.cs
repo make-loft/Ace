@@ -1,10 +1,6 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using System.Linq;
+﻿using System.Globalization;
 #if !XAMARIN
 using System.ComponentModel;
-using System.Windows.Markup;
 #endif
 
 namespace Ace.Markup;
@@ -78,12 +74,12 @@ public class Smart : Patterns.ABindingExtension
 	private void Initialize(string set = "")
 	{
 		set = set.Replace("[", "").Replace("]", "");
-		var parts = set.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+		var parts = set.Split([','], StringSplitOptions.RemoveEmptyEntries);
 		if (parts.Length > 0) Key = parts[0].Trim();
 		if (parts.Length > 1) DefaultValue = parts[1].Trim();
 		if (parts.Length > 2)
 			Segregate = SegregationLiterals.Contains(parts[2].Trim().ToLower());
 	}
 
-	private static readonly string[] SegregationLiterals = { "true", "segregate" };
+	private static readonly string[] SegregationLiterals = ["true", "segregate"];
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-namespace Ace;
+﻿namespace Ace;
 
 
 public static class Const

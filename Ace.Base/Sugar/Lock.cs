@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Ace.Sugar;
+﻿namespace Ace.Sugar;
 
 public static class Lock<TResult>
 {

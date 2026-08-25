@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Data;
-using Ace.Controls;
+﻿using System.ComponentModel;
+
 using Binding = System.Windows.Data.Binding;
 #if XAMARIN
 using ResourceDictionary = Xamarin.Forms.ResourceDictionary;
 #else
-using System.Windows;
 #endif
 
 namespace Ace.Markup;

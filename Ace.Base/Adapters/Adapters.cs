@@ -1,6 +1,4 @@
-﻿using Ace;
-
-#if !NETSTANDARD && !NET45 && !MAUI
+﻿#if !NETSTANDARD && !NET45 && !MAUI
 namespace System.Reflection
 {
 	internal static class ReflectionExtensions

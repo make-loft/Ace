@@ -1,11 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-
-using Ace.Evocators;
-
-namespace Ace.Adapters;
+﻿namespace Ace.Adapters;
 
 #if !DESKTOP
 internal static class RoutedCommandsAdapter

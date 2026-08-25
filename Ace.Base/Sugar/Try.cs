@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Ace;
+﻿namespace Ace;
 
 public static class Try
 {

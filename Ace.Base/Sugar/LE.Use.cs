@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace Ace;
+﻿namespace Ace;
 
 
 public static partial class LE

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Ace.Mathematics;
+﻿namespace Ace.Mathematics;
 
 public static class Visualisation
 {

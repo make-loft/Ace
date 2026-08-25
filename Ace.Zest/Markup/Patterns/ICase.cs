@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Ace.Markup.Patterns;
+﻿namespace Ace.Markup.Patterns;
 
 public interface ICase<TKey, TValue>
 {

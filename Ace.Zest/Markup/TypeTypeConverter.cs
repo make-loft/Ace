@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Ace.Markup;
+﻿namespace Ace.Markup;
 
 #if XAMARIN
 using Xamarin.Forms;

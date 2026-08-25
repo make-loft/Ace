@@ -1,8 +1,4 @@
-﻿using System;
-
-using Ace.Replication.Models;
-
-namespace Ace.Replication.Replicators;
+﻿namespace Ace.Replication.Replicators;
 
 public class DelegateReplicator : ACachingReplicator<Delegate>
 {

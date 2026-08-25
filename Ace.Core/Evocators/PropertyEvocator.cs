@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Ace.Evocators;
+﻿namespace Ace.Evocators;
 
 public class PropertyArgs(object sender, string propertyName) : EventArgs
 {

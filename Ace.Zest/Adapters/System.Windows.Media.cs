@@ -168,13 +168,13 @@ public sealed class ColorConverter : ComponentModel.TypeConverter
 		{
 			if (destinationType == typeof(InstanceDescriptor))
 			{
-				MethodInfo method = typeof(Color).GetMethod("FromArgb", new Type[4]
-				{
+				MethodInfo method = typeof(Color).GetMethod("FromArgb",
+				[
 					typeof(byte),
 					typeof(byte),
 					typeof(byte),
 					typeof(byte)
-				});
+				]);
 				Color color = (Color)value;
 #if MAUI
 				return new InstanceDescriptor(method, new object[4] { color.Alpha, color.Red, color.Green, color.Blue });

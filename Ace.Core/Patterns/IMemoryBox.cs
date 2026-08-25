@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Ace.Patterns;
+﻿namespace Ace.Patterns;
 
 public delegate object ActivationQueryHandler(string key, Type type, params object[] constructorArgs);
 
